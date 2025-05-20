@@ -3,6 +3,11 @@
 ## Project Name
 DocketMate
 
+## Project Configuration & Environment
+- **ProjectRoot**: "/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_DocketMate"
+- **PlatformDir**: "_macOS"
+- **ProjectNamePlaceholder**: "DocketMate"
+
 ---
 
 # Product Requirements Document (PRD)
@@ -16,6 +21,36 @@ The project aims to deliver a polished, user-focused application that is:
 - **Integrated:** Provides robust connections to popular cloud spreadsheet services (Office365 Excel Online, Google Sheets) and future integrations like Gmail.
 - **Secure:** Ensures user data and API keys are handled with utmost security using macOS Keychain and best practices.
 - **Reliable:** Built with a focus on stability, maintainability, and continuous improvement through Test-Driven Development (TDD) and comprehensive logging.
+
+## Milestone Targets
+
+### Milestone 1: Foundation (Current Focus)
+- Establish robust project structure and technical foundation
+- Create comprehensive Core Data models for all entities
+- Implement core application architecture and navigation
+- Set up authentication services including Google SSO
+- Develop MVVM framework for consistent development
+
+### Milestone 2: Core Functionality
+- Implement case management (creation and editing)
+- Develop basic client information management
+- Create simple calendar view and event management
+- Build document storage functionality
+- Establish notification system for deadlines
+
+### Milestone 3: Advanced Features
+- Implement document template system
+- Enhance navigation and dashboard experience
+- Add client communication logging
+- Develop search functionality across data types
+- Create time tracking system
+
+### Milestone 4: Integration & Refinement
+- Add calendar synchronization with macOS Calendar
+- Implement advanced document features (versioning, automation)
+- Develop reporting and analytics capabilities
+- Optional CloudKit integration for data sync
+- UI polish and accessibility improvements
 
 ---
 
