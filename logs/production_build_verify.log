@@ -1,0 +1,11 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild clean -workspace ./_macOS/DocketMate.xcworkspace -scheme Docketmate -configuration Release ARCHS=x86_64 ONLY_ACTIVE_ARCH=NO CODE_SIGN_IDENTITY= CODE_SIGNING_REQUIRED=NO
+
+Build settings from command line:
+    ARCHS = x86_64
+    CODE_SIGN_IDENTITY = 
+    CODE_SIGNING_REQUIRED = NO
+    ONLY_ACTIVE_ARCH = NO
+
+2025-05-20 13:26:53.965 xcodebuild[47312:11312889] Writing error result bundle to /var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/ResultBundle_2025-20-05_13-26-0053.xcresult
+xcodebuild: error: The workspace named "DocketMate" does not contain a scheme named "Docketmate". The "-list" option can be used to find the names of the schemes in the workspace.

@@ -1,0 +1,43 @@
+# Task ID: 41
+# Title: Implement Modular, Polished SSO Modal with Apple and Google Integration (P0 Feature)
+# Status: pending
+# Dependencies: None
+# Priority: high
+# Description: Develop a reusable, professional SSO modal for Sandbox that supports both Apple and Google SSO, adheres to the Corporate Style Guide and .cursorrules, and provides dynamic error handling and loading states. Reference example code in docs/ExampleCode/XcodeFiles/Example macOS Application.
+# Details:
+Design and implement a modular SSO modal component for the Sandbox macOS application, ensuring full compliance with the Corporate Style Guide and .cursorrules for code quality, documentation, and maintainability. The modal must support both Apple and Google SSO flows, leveraging best practices for secure authentication and seamless user experience. Ensure the UI is polished, visually consistent, and accessible, with clear feedback for loading and error states. Architect the modal for reusability across different contexts within Sandbox. Reference the provided example code in docs/ExampleCode/XcodeFiles/Example macOS Application for implementation patterns and UI conventions. All code must be written using TDD, with comprehensive unit and UI tests covering authentication flows, error handling, and state transitions. Log this as a P0 (high-priority) feature task.
+
+# Test Strategy:
+Verify completion by: (1) confirming the modal visually matches the Corporate Style Guide and passes accessibility checks; (2) ensuring both Apple and Google SSO flows function correctly, including proper handling of authentication errors and loading states; (3) running all unit and UI tests to validate TDD coverage, including tests for error and loading scenarios; (4) reviewing code for .cursorrules compliance and modularity; (5) confirming the modal can be reused in multiple Sandbox contexts without modification.
+
+# Subtasks:
+## 1. Design Modular SSO Modal UI and Architecture [done]
+### Dependencies: None
+### Description: Create detailed UI/UX designs for the SSO modal, ensuring compliance with the Corporate Style Guide and .cursorrules. Define a modular architecture that supports reusability and extensibility for future SSO providers.
+### Details:
+Reference the example code in docs/ExampleCode/XcodeFiles/Example macOS Application for UI conventions and modular patterns. Document component boundaries, props, and state management strategies. Ensure accessibility and visual polish in all design assets.
+
+## 2. Implement Core Modal Component with State Management [pending]
+### Dependencies: 41.1
+### Description: Develop the base modal component, including layout, styling, and state management for loading, error, and success states. Ensure the component is reusable and adheres to code quality standards.
+### Details:
+Use TDD to implement the modal shell, integrating dynamic feedback for loading and error states. Apply styles and structure per the Corporate Style Guide and .cursorrules. Ensure the component can be easily embedded in different contexts.
+
+## 3. Integrate Apple SSO Authentication Flow [pending]
+### Dependencies: 41.2
+### Description: Add Apple SSO support to the modal, implementing secure authentication flow and handling all relevant states and errors.
+### Details:
+Leverage best practices for Apple SSO integration on macOS, referencing example code for authentication patterns. Ensure secure handling of tokens and user data. Provide clear user feedback for authentication progress and errors.
+
+## 4. Integrate Google SSO Authentication Flow [pending]
+### Dependencies: 41.3
+### Description: Add Google SSO support to the modal, ensuring seamless integration and consistent user experience alongside Apple SSO.
+### Details:
+Implement Google SSO using secure authentication APIs, following best practices for token management and error handling. Ensure UI and feedback are consistent with Apple SSO flow.
+
+## 5. Finalize Documentation, Code Quality, and Comprehensive Testing [pending]
+### Dependencies: 41.4
+### Description: Document the modal's API, usage patterns, and integration steps. Ensure code quality, maintainability, and full compliance with .cursorrules. Complete comprehensive unit and UI tests for all flows and states.
+### Details:
+Write clear documentation for developers and QA. Perform code reviews for maintainability and adherence to standards. Ensure all tests (unit, UI, integration) are passing and cover authentication, error, and loading states.
+

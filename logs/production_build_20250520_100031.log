@@ -1,0 +1,3 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -workspace _macOS/Picketmate.xcworkspace -scheme Picketmate -configuration Release clean build
+

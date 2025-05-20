@@ -1,0 +1,349 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		867AA307-7060-4FB7-A46E-B24907242097 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C41D77E6-99DE-4320-BD73-35AEFE0F9AC2 /* DashboardView.swift */; };
+		C2741F5E-3BE0-42A4-9F81-176E203F3373 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4D7963A-0501-45DC-9C9E-846FFDF49966 /* SettingsView.swift */; };
+		11460C1F-E512-45BD-B98C-7E4F10C49FD3 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D92B624A-BF6F-46E3-AE66-E1CE6A0EE7A7 /* ProfileView.swift */; };
+		EA960F5B-56FE-4983-9B8D-76440146C7DA /* DocumentUploadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74EE2EA0-527C-4D0D-8C01-9AB367C1D2F0 /* DocumentUploadView.swift */; };
+		2BAB0048-7254-4A11-A8F1-60581CFBADF5 /* SidebarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6471F63D-4394-499A-B5AE-BFD66C9F5581 /* SidebarView.swift */; };
+		56DCA512-ED18-4671-B045-96C572BC5A44 /* DocketMateApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D83B152E-4513-4814-BDBF-2BCC65660DFE /* DocketMateApp.swift */; };
+		7E077AE5-FBDF-4225-860C-EBC70F6245E1 /* DocumentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31E08FF6-925C-4B1A-B1F6-EC2ABECA2CC1 /* DocumentsView.swift */; };
+		AD633D8A-BD68-4907-8181-913EA19C9553 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9BC58CC-FD50-4085-9648-7013F42F9F65 /* ContentView.swift */; };
+
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		C41D77E6-99DE-4320-BD73-35AEFE0F9AC2 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DashboardView.swift"; sourceTree = "<group>"; };
+		A4D7963A-0501-45DC-9C9E-846FFDF49966 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SettingsView.swift"; sourceTree = "<group>"; };
+		D92B624A-BF6F-46E3-AE66-E1CE6A0EE7A7 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProfileView.swift"; sourceTree = "<group>"; };
+		74EE2EA0-527C-4D0D-8C01-9AB367C1D2F0 /* DocumentUploadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DocumentUploadView.swift"; sourceTree = "<group>"; };
+		6471F63D-4394-499A-B5AE-BFD66C9F5581 /* SidebarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SidebarView.swift"; sourceTree = "<group>"; };
+		D83B152E-4513-4814-BDBF-2BCC65660DFE /* DocketMateApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DocketMateApp.swift"; sourceTree = "<group>"; };
+		31E08FF6-925C-4B1A-B1F6-EC2ABECA2CC1 /* DocumentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DocumentsView.swift"; sourceTree = "<group>"; };
+		D9BC58CC-FD50-4085-9648-7013F42F9F65 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContentView.swift"; sourceTree = "<group>"; };
+		EF4312D1-C2BF-43C5-86DF-51A56E22CCF8 /* DocketMate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "DocketMate.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		52151E99-89E2-4967-8425-18230F909466 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		FAC25C4F-87BF-4136-9670-A3B16DCDBCBE = {
+			isa = PBXGroup;
+			children = (
+				E05BC463-77BD-4D7E-9623-BC6D92AE9B24 /* Sources */,
+				BC232DC8-DBA6-4477-BB9F-DF6E62FF97A6 /* Resources */,
+				E1614FF5-DD17-485E-9DDC-DECEB415B58D /* Products */,
+				94E3EA0F-AE7B-4C31-847F-FF28A63C9B5C /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		E1614FF5-DD17-485E-9DDC-DECEB415B58D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				EF4312D1-C2BF-43C5-86DF-51A56E22CCF8 /* DocketMate.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		94E3EA0F-AE7B-4C31-847F-FF28A63C9B5C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E05BC463-77BD-4D7E-9623-BC6D92AE9B24 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				C41D77E6-99DE-4320-BD73-35AEFE0F9AC2 /* DashboardView.swift */,
+				A4D7963A-0501-45DC-9C9E-846FFDF49966 /* SettingsView.swift */,
+				D92B624A-BF6F-46E3-AE66-E1CE6A0EE7A7 /* ProfileView.swift */,
+				74EE2EA0-527C-4D0D-8C01-9AB367C1D2F0 /* DocumentUploadView.swift */,
+				6471F63D-4394-499A-B5AE-BFD66C9F5581 /* SidebarView.swift */,
+				D83B152E-4513-4814-BDBF-2BCC65660DFE /* DocketMateApp.swift */,
+				31E08FF6-925C-4B1A-B1F6-EC2ABECA2CC1 /* DocumentsView.swift */,
+				D9BC58CC-FD50-4085-9648-7013F42F9F65 /* ContentView.swift */,
+
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		BC232DC8-DBA6-4477-BB9F-DF6E62FF97A6 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		B0FB2BF3-AFC6-4236-9875-AE95839FC7D4 /* DocketMate */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 30434FA0-607E-40DE-B482-5E5BB14FFFE1 /* Build configuration list for PBXNativeTarget "DocketMate" */;
+			buildPhases = (
+				62A67257-B8EB-421B-99B2-74D93376DCE2 /* Sources */,
+				96D9BE8D-3DB7-480D-A1DE-D584F1114E33 /* Resources */,
+				52151E99-89E2-4967-8425-18230F909466 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DocketMate;
+			productName = DocketMate;
+			productReference = EF4312D1-C2BF-43C5-86DF-51A56E22CCF8 /* DocketMate.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		EECEE4CE-7079-4FBC-A7D6-A245D3FAAF19 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				ORGANIZATIONNAME = "DocketMate";
+				TargetAttributes = {
+					B0FB2BF3-AFC6-4236-9875-AE95839FC7D4 = {
+						CreatedOnToolsVersion = 14.0;
+					};
+				};
+			};
+			buildConfigurationList = 30434FA0-607E-40DE-B482-5E5BB14FFFE1 /* Build configuration list for PBXNativeTarget "DocketMate" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = FAC25C4F-87BF-4136-9670-A3B16DCDBCBE;
+			productRefGroup = E1614FF5-DD17-485E-9DDC-DECEB415B58D /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				B0FB2BF3-AFC6-4236-9875-AE95839FC7D4 /* DocketMate */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		96D9BE8D-3DB7-480D-A1DE-D584F1114E33 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		62A67257-B8EB-421B-99B2-74D93376DCE2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				867AA307-7060-4FB7-A46E-B24907242097 /* DashboardView.swift in Sources */,
+				C2741F5E-3BE0-42A4-9F81-176E203F3373 /* SettingsView.swift in Sources */,
+				11460C1F-E512-45BD-B98C-7E4F10C49FD3 /* ProfileView.swift in Sources */,
+				EA960F5B-56FE-4983-9B8D-76440146C7DA /* DocumentUploadView.swift in Sources */,
+				2BAB0048-7254-4A11-A8F1-60581CFBADF5 /* SidebarView.swift in Sources */,
+				56DCA512-ED18-4671-B045-96C572BC5A44 /* DocketMateApp.swift in Sources */,
+				7E077AE5-FBDF-4225-860C-EBC70F6245E1 /* DocumentsView.swift in Sources */,
+				AD633D8A-BD68-4907-8181-913EA19C9553 /* ContentView.swift in Sources */,
+
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		2CD1278D-DBF1-4E37-AD44-9452ED1CDA58 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = "$(SRCROOT)/Resources/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = DocketMate;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © DocketMate. All rights reserved.";
+				INFOPLIST_KEY_NSMainStoryboardFile = "";
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.docketmate.docketmate;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		D12652DB-398C-4643-9C88-A0A16F30BC7A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = "$(SRCROOT)/Resources/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = DocketMate;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © DocketMate. All rights reserved.";
+				INFOPLIST_KEY_NSMainStoryboardFile = "";
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.docketmate.docketmate;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		30434FA0-607E-40DE-B482-5E5BB14FFFE1 /* Build configuration list for PBXNativeTarget "DocketMate" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2CD1278D-DBF1-4E37-AD44-9452ED1CDA58 /* Debug */,
+				D12652DB-398C-4643-9C88-A0A16F30BC7A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = EECEE4CE-7079-4FBC-A7D6-A245D3FAAF19 /* Project object */;
+}

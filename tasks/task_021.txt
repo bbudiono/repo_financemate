@@ -1,0 +1,52 @@
+# Task ID: 21
+# Title: Track and Document Directory Structure Reorganization for P0 Violation Fix
+# Status: pending
+# Dependencies: None
+# Priority: medium
+# Description: Document and track the directory structure reorganization implemented to resolve critical P0 violations, including moving Xcode workspace/project files, consolidating build directories, and updating scripts.
+# Details:
+Review and document all changes made to the project directory structure as part of the P0 violation fix. This includes:
+- Verifying that Xcode workspace (.xcworkspace) and project (.xcodeproj) files have been moved to their correct platform-specific directories, following best practices for Xcode project organization[1][2][3][4].
+- Ensuring all build artifacts are now consolidated under temp/build, and that the legacy tmp/ folder has been removed in favor of the new temp/ directory.
+- Confirming that the fix_project_directory_structure.sh script accurately performs these operations and is included in the repository.
+- Updating any project documentation (e.g., README, developer onboarding guides) to reflect the new directory structure and usage of the script.
+- Coordinating with the team to ensure all references to old paths are updated in build scripts, CI/CD configurations, and documentation.
+
+# Test Strategy:
+1. Run fix_project_directory_structure.sh and verify that all Xcode workspace and project files are correctly located in their platform-specific directories.
+2. Confirm that all build outputs are present in temp/build and that tmp/ no longer exists.
+3. Review the repository to ensure no references to the old tmp/ directory remain in scripts, documentation, or configuration files.
+4. Build and run the project from the reorganized structure to ensure no regressions or build errors occur.
+5. Check that documentation accurately describes the new directory layout and script usage.
+
+# Subtasks:
+## 1. Document Xcode Workspace and Project File Reorganization [pending]
+### Dependencies: None
+### Description: Verify and document the relocation of Xcode workspace (.xcworkspace) and project (.xcodeproj) files to their correct platform-specific directories according to best practices.
+### Details:
+Create a comprehensive document that maps old file locations to new locations, verify each file has been properly moved, and confirm the new structure follows Apple's recommended organization patterns. Include screenshots of the new Project Navigator structure and explain the rationale behind the reorganization.
+
+## 2. Validate Build Directory Consolidation [pending]
+### Dependencies: 21.1
+### Description: Confirm that all build artifacts are now properly consolidated under the new temp/build directory and that the legacy tmp/ folder has been completely removed.
+### Details:
+Create a detailed inventory of all build artifacts and their new locations. Verify that no artifacts are being generated in the old tmp/ directory. Document the new build path structure with examples of where specific artifacts are now stored. Ensure all temporary files are properly gitignored.
+
+## 3. Review and Document fix_project_directory_structure.sh Script [pending]
+### Dependencies: 21.1, 21.2
+### Description: Analyze the fix_project_directory_structure.sh script to ensure it correctly performs all necessary directory structure operations and is properly included in the repository.
+### Details:
+Review the script line by line, documenting each operation it performs. Create a flowchart of the script's execution path. Verify the script handles error conditions gracefully. Ensure the script is executable and properly located in the repository. Add comments to the script if necessary to improve maintainability.
+
+## 4. Update Project Documentation [pending]
+### Dependencies: 21.1, 21.2, 21.3
+### Description: Revise all project documentation to reflect the new directory structure, including README files, developer onboarding guides, and any other relevant documentation.
+### Details:
+Create a comprehensive guide to the new directory structure with visual diagrams. Update the README.md with clear instructions on project organization. Revise developer onboarding documentation to reflect new practices. Create a migration guide for developers working with existing checkouts.
+
+## 5. Coordinate Path Updates in Build Scripts and CI/CD [pending]
+### Dependencies: 21.1, 21.2, 21.3, 21.4
+### Description: Work with the team to ensure all references to old paths are updated in build scripts, CI/CD configurations, and any other automated systems.
+### Details:
+Create an inventory of all scripts and configurations that reference project paths. Update each reference to use the new directory structure. Test each updated script and configuration. Document all changes made. Coordinate with DevOps to update CI/CD pipelines. Create a verification checklist to ensure no references to old paths remain.
+

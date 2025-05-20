@@ -1,0 +1,556 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 54;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		5B82C086484D83F45D14A85D /* EduTrackQLDApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F584490C1B61EFF0995A6C1 /* EduTrackQLDApp.swift */; };
+		8BFECAD68906946A83AC9EFC /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9D4725BC90DA3FA704F4905 /* Foundation.framework */; };
+		A3D15E501619856D1A82EF75 /* ContentView_sandboxTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 557AAF5A7E966BE04670DFB0 /* ContentView_sandboxTests.swift */; };
+		D46B7B9D778DE5B915DBE959 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5851B05E80FB37B30D85E0D3 /* ContentView.swift */; };
+		10000001 /* AccessibilityTests_sandbox.swift */ = {isa = PBXBuildFile; fileRef = 10000001 /* AccessibilityTests_sandbox.swift */; };
+		20000001 /* AccessibilityTests_sandbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10000001 /* AccessibilityTests_sandbox.swift */; };
+		10000002 /* ProjectFileCorruptionTests.swift */ = {isa = PBXBuildFile; fileRef = 10000002 /* ProjectFileCorruptionTests.swift */; };
+		20000002 /* ProjectFileCorruptionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10000002 /* ProjectFileCorruptionTests.swift */; };
+		10000003 /* SandboxLandingPageViewTests.swift */ = {isa = PBXBuildFile; fileRef = 10000003 /* SandboxLandingPageViewTests.swift */; };
+		20000003 /* SandboxLandingPageViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10000003 /* SandboxLandingPageViewTests.swift */; };
+		10000004 /* AcceptanceSandboxTests.swift */ = {isa = PBXBuildFile; fileRef = 10000004 /* AcceptanceSandboxTests.swift */; };
+		20000004 /* AcceptanceSandboxTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10000004 /* AcceptanceSandboxTests.swift */; };
+		10000005 /* SecuritySandboxTests.swift */ = {isa = PBXBuildFile; fileRef = 10000005 /* SecuritySandboxTests.swift */; };
+		20000005 /* SecuritySandboxTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10000005 /* SecuritySandboxTests.swift */; };
+		10000006 /* PerformanceSandboxTests.swift */ = {isa = PBXBuildFile; fileRef = 10000006 /* PerformanceSandboxTests.swift */; };
+		20000006 /* PerformanceSandboxTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10000006 /* PerformanceSandboxTests.swift */; };
+		10000007 /* IntegrationSandboxTests.swift */ = {isa = PBXBuildFile; fileRef = 10000007 /* IntegrationSandboxTests.swift */; };
+		20000007 /* IntegrationSandboxTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10000007 /* IntegrationSandboxTests.swift */; };
+		10000008 /* E2ESandboxTests.swift */ = {isa = PBXBuildFile; fileRef = 10000008 /* E2ESandboxTests.swift */; };
+		20000008 /* E2ESandboxTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10000008 /* E2ESandboxTests.swift */; };
+		10000009 /* UnitSandboxTests.swift */ = {isa = PBXBuildFile; fileRef = 10000009 /* UnitSandboxTests.swift */; };
+		20000009 /* UnitSandboxTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10000009 /* UnitSandboxTests.swift */; };
+		10000010 /* SmokeSandboxTests.swift */ = {isa = PBXBuildFile; fileRef = 10000010 /* SmokeSandboxTests.swift */; };
+		20000010 /* SmokeSandboxTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10000010 /* SmokeSandboxTests.swift */; };
+		10000012 /* FailingSandboxTests.swift */ = {isa = PBXBuildFile; fileRef = 10000012 /* FailingSandboxTests.swift */; };
+		20000012 /* FailingSandboxTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10000012 /* FailingSandboxTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		AB6939B3BBB000A62403EABE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 436897433363D59E8990631E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0A112DEC3387BB563D0E32D3;
+			remoteInfo = EduTrackQLD;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		1F584490C1B61EFF0995A6C1 /* EduTrackQLDApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EduTrackQLDApp.swift; sourceTree = "<group>"; };
+		2646098D3A4533EFFDF0F9B3 /* EduTrackQLD.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EduTrackQLD.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		42E6B5DA3915C54D67CA6090 /* EduTrackQLDTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EduTrackQLDTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		557AAF5A7E966BE04670DFB0 /* ContentView_sandboxTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ContentView_sandboxTests.swift; path = ContentView_sandboxTests.swift; sourceTree = "<group>"; };
+		5851B05E80FB37B30D85E0D3 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		9D629E1564E501779A2E83C1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		A4B1730F9F86BD25CE1B31BE /* SandboxTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SandboxTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B9D4725BC90DA3FA704F4905 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		10000001 /* AccessibilityTests_sandbox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AccessibilityTests_sandbox.swift; path = AccessibilityTests_sandbox.swift; sourceTree = "<group>"; };
+		10000002 /* ProjectFileCorruptionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProjectFileCorruptionTests.swift; path = ProjectFileCorruptionTests.swift; sourceTree = "<group>"; };
+		10000003 /* SandboxLandingPageViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SandboxLandingPageViewTests.swift; path = SandboxLandingPageViewTests.swift; sourceTree = "<group>"; };
+		10000004 /* AcceptanceSandboxTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AcceptanceSandboxTests.swift; path = AcceptanceSandboxTests.swift; sourceTree = "<group>"; };
+		10000005 /* SecuritySandboxTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SecuritySandboxTests.swift; path = SecuritySandboxTests.swift; sourceTree = "<group>"; };
+		10000006 /* PerformanceSandboxTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PerformanceSandboxTests.swift; path = PerformanceSandboxTests.swift; sourceTree = "<group>"; };
+		10000007 /* IntegrationSandboxTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = IntegrationSandboxTests.swift; path = IntegrationSandboxTests.swift; sourceTree = "<group>"; };
+		10000008 /* E2ESandboxTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = E2ESandboxTests.swift; path = E2ESandboxTests.swift; sourceTree = "<group>"; };
+		10000009 /* UnitSandboxTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UnitSandboxTests.swift; path = UnitSandboxTests.swift; sourceTree = "<group>"; };
+		10000010 /* SmokeSandboxTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SmokeSandboxTests.swift; path = SmokeSandboxTests.swift; sourceTree = "<group>"; };
+		10000012 /* FailingSandboxTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FailingSandboxTests.swift; path = FailingSandboxTests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		144DB39A839FC56B2C07B66E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8BFECAD68906946A83AC9EFC /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		3A226A602C23BE60A9BF83B5 = {
+			isa = PBXGroup;
+			children = (
+				9B4B75CDAE04785CF9889344 /* EduTrackQLD */,
+				61262BCE2D4D31EB3A54D5C0 /* EduTrackQLDTests */,
+				7B4AD4A5DBD437510F68064F /* Products */,
+				D36C31767EE71C810912ACDE /* Frameworks */,
+				5889E34EB9CBF5DF7A6E0A57 /* Sandbox */,
+			);
+			sourceTree = "<group>";
+		};
+		5889E34EB9CBF5DF7A6E0A57 /* Sandbox */ = {
+			isa = PBXGroup;
+			children = (
+				89D2A216B0E2645EB21D594D /* Tests */,
+			);
+			name = Sandbox;
+			path = Sandbox;
+			sourceTree = "<group>";
+		};
+		61262BCE2D4D31EB3A54D5C0 /* EduTrackQLDTests */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = EduTrackQLDTests;
+			sourceTree = "<group>";
+		};
+		77892908EB1BA43F33B64793 /* OS X */ = {
+			isa = PBXGroup;
+			children = (
+				B9D4725BC90DA3FA704F4905 /* Foundation.framework */,
+			);
+			name = "OS X";
+			sourceTree = "<group>";
+		};
+		7B4AD4A5DBD437510F68064F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2646098D3A4533EFFDF0F9B3 /* EduTrackQLD.app */,
+				42E6B5DA3915C54D67CA6090 /* EduTrackQLDTests.xctest */,
+				A4B1730F9F86BD25CE1B31BE /* SandboxTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		89D2A216B0E2645EB21D594D /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				557AAF5A7E966BE04670DFB0 /* ContentView_sandboxTests.swift */,
+			);
+			name = Tests;
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		9B4B75CDAE04785CF9889344 /* EduTrackQLD */ = {
+			isa = PBXGroup;
+			children = (
+				5851B05E80FB37B30D85E0D3 /* ContentView.swift */,
+				1F584490C1B61EFF0995A6C1 /* EduTrackQLDApp.swift */,
+				9D629E1564E501779A2E83C1 /* Info.plist */,
+			);
+			path = EduTrackQLD;
+			sourceTree = "<group>";
+		};
+		D36C31767EE71C810912ACDE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				77892908EB1BA43F33B64793 /* OS X */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		0A112DEC3387BB563D0E32D3 /* EduTrackQLD */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7DBBA2CB831C0E50BA3D67A8 /* Build configuration list for PBXNativeTarget "EduTrackQLD" */;
+			buildPhases = (
+				49534D63273355AF76526C01 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = EduTrackQLD;
+			productName = EduTrackQLD;
+			productReference = 2646098D3A4533EFFDF0F9B3 /* EduTrackQLD.app */;
+			productType = "com.apple.product-type.application";
+		};
+		2FEA5C7FEBEA61695398C52A /* SandboxTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 51A6C5B8259C485CF455C847 /* Build configuration list for PBXNativeTarget "SandboxTests" */;
+			buildPhases = (
+				10A7C9BCB99932E06F76047C /* Sources */,
+				144DB39A839FC56B2C07B66E /* Frameworks */,
+				CDB638EA1213B1C16A3A6ED7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SandboxTests;
+			productName = SandboxTests;
+			productReference = A4B1730F9F86BD25CE1B31BE /* SandboxTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		5925F07F8C8F5F41E643FEB9 /* EduTrackQLDTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 82D09ED77D6D211495FDB7DA /* Build configuration list for PBXNativeTarget "EduTrackQLDTests" */;
+			buildPhases = (
+				D12BAF85A7E47D4CCC30794B /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				76911B0EF50A925A8249A9A2 /* PBXTargetDependency */,
+			);
+			name = EduTrackQLDTests;
+			productName = EduTrackQLDTests;
+			productReference = 42E6B5DA3915C54D67CA6090 /* EduTrackQLDTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		436897433363D59E8990631E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					0A112DEC3387BB563D0E32D3 = {
+						DevelopmentTeam = "";
+					};
+					5925F07F8C8F5F41E643FEB9 = {
+						DevelopmentTeam = "";
+					};
+				};
+			};
+			buildConfigurationList = F9511145557A40056CCA4508 /* Build configuration list for PBXProject "EduTrackQLD" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 3A226A602C23BE60A9BF83B5;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 54;
+			productRefGroup = 7B4AD4A5DBD437510F68064F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				0A112DEC3387BB563D0E32D3 /* EduTrackQLD */,
+				5925F07F8C8F5F41E643FEB9 /* EduTrackQLDTests */,
+				2FEA5C7FEBEA61695398C52A /* SandboxTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		CDB638EA1213B1C16A3A6ED7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		10A7C9BCB99932E06F76047C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A3D15E501619856D1A82EF75 /* ContentView_sandboxTests.swift in Sources */,
+				20000001 /* AccessibilityTests_sandbox.swift in Sources */,
+				20000002 /* ProjectFileCorruptionTests.swift in Sources */,
+				20000003 /* SandboxLandingPageViewTests.swift in Sources */,
+				20000004 /* AcceptanceSandboxTests.swift in Sources */,
+				20000005 /* SecuritySandboxTests.swift in Sources */,
+				20000006 /* PerformanceSandboxTests.swift in Sources */,
+				20000007 /* IntegrationSandboxTests.swift in Sources */,
+				20000008 /* E2ESandboxTests.swift in Sources */,
+				20000009 /* UnitSandboxTests.swift in Sources */,
+				20000010 /* SmokeSandboxTests.swift in Sources */,
+				20000012 /* FailingSandboxTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		49534D63273355AF76526C01 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D46B7B9D778DE5B915DBE959 /* ContentView.swift in Sources */,
+				5B82C086484D83F45D14A85D /* EduTrackQLDApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D12BAF85A7E47D4CCC30794B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		76911B0EF50A925A8249A9A2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0A112DEC3387BB563D0E32D3 /* EduTrackQLD */;
+			targetProxy = AB6939B3BBB000A62403EABE /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		3D280F4039CE54B05BF39D51 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		42978E7ABDF65A1F43EF6759 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = EduTrackQLD/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.edutrackqld;
+				PRODUCT_NAME = EduTrackQLD;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		838FFEDC03750B5A64314BD9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		83DEC340C1EC0CD74120D149 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.SandboxTests;
+				SDKROOT = macosx;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				INFOPLIST_FILE = EduTrackQLD/Sandbox/Tests/Info.plist;
+			};
+			name = Debug;
+		};
+		9F1C0215AA77C7E238AF4FAC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/$(WRAPPER_NAME)/Contents/MacOS/$(EXECUTABLE_NAME)";
+				COMBINE_HIDPI_IMAGES = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.EduTrackQLDTests;
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUNDLE_LOADER)";
+			};
+			name = Debug;
+		};
+		C4CF8B5C945FE0B42C3B0415 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.SandboxTests;
+				SDKROOT = macosx;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				INFOPLIST_FILE = EduTrackQLD/Sandbox/Tests/Info.plist;
+			};
+			name = Release;
+		};
+		C567718AB3A7AB53E47AAC18 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/$(WRAPPER_NAME)/Contents/MacOS/$(EXECUTABLE_NAME)";
+				COMBINE_HIDPI_IMAGES = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.EduTrackQLDTests;
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUNDLE_LOADER)";
+			};
+			name = Release;
+		};
+		E97CE7AB70AC8375456DDCDA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = EduTrackQLD/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.edutrackqld;
+				PRODUCT_NAME = EduTrackQLD;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		51A6C5B8259C485CF455C847 /* Build configuration list for PBXNativeTarget "SandboxTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C4CF8B5C945FE0B42C3B0415 /* Release */,
+				83DEC340C1EC0CD74120D149 /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7DBBA2CB831C0E50BA3D67A8 /* Build configuration list for PBXNativeTarget "EduTrackQLD" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				42978E7ABDF65A1F43EF6759 /* Debug */,
+				E97CE7AB70AC8375456DDCDA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		82D09ED77D6D211495FDB7DA /* Build configuration list for PBXNativeTarget "EduTrackQLDTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9F1C0215AA77C7E238AF4FAC /* Debug */,
+				C567718AB3A7AB53E47AAC18 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		F9511145557A40056CCA4508 /* Build configuration list for PBXProject "EduTrackQLD" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3D280F4039CE54B05BF39D51 /* Debug */,
+				838FFEDC03750B5A64314BD9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 436897433363D59E8990631E /* Project object */;
+}

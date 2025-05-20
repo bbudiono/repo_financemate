@@ -1,0 +1,60 @@
+=== cleanup_directory_structure Log (20250520_071933) ===
+Script: cleanup_directory_structure
+Timestamp: Tue May 20 07:19:33 AEST 2025
+Project Root: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate
+[07:19:33] [INIT] Logging initialized for cleanup_directory_structure
+[07:19:33] [INFO] App name from Xcode project: _Documents
+[07:19:33] [INFO] Using app name: [0;32m[INFO][0m App name from Xcode project: _Documents
+_Documents
+[07:19:33] [INFO] Detected platforms: macOS
+[07:19:33] [INFO] Creating required directories according to canonical structure...
+[07:19:33] [INFO] Setting up directories for macOS...
+[07:19:33] [INFO] Initialized platform-specific log for macOS at /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS/logs/cleanup_directory_structure_20250520_071933.log
+[07:19:33] [INFO] Ensuring standard documentation files exist...
+[07:19:33] [WARNING] Essential document missing: SCRIPTS.MD. Creating stub file.
+[07:19:33] [WARNING] Essential document missing: AI_MODEL_STM.MD. Creating stub file.
+[07:19:33] [INFO] Moving any log files from root to logs directory...
+[07:19:33] [INFO] Relocating stray backups to temp/backups...
+[07:19:33] [INFO] Cleaning up nested platform directories...
+[07:19:33] [WARNING] Found nested platform directory: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS
+[07:19:33] [INFO] Moving files from nested directory to parent...
+[07:19:33] [WARNING] Could not remove directory, may not be empty: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS
+[07:19:33] [INFO] Handling corrupted backup directories...
+[07:19:33] [WARNING] Found nested backups directory: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/temp/backups
+[07:19:33] [INFO] Organizing platform-specific logs...
+[07:19:33] [INFO] Checking Xcode project structure...
+[07:19:33] [INFO] Removing nested workspaces within .xcodeproj bundles...
+[07:19:33] [WARNING] Found nested workspace inside project bundle: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/DocketMate-Sandbox/DocketMate-Sandbox.xcodeproj/project.xcworkspace
+[07:19:33] [INFO] Removing workspace from within project bundle: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/DocketMate-Sandbox/DocketMate-Sandbox.xcodeproj/project.xcworkspace
+[07:19:33] [WARNING] Found nested workspace inside project bundle: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/temp/backup/20250520022453/Docketmate-Sandbox_backup/DocketMate-Sandbox.xcodeproj/project.xcworkspace
+[07:19:33] [INFO] Removing workspace from within project bundle: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/temp/backup/20250520022453/Docketmate-Sandbox_backup/DocketMate-Sandbox.xcodeproj/project.xcworkspace
+[07:19:33] [WARNING] Found nested workspace inside project bundle: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/docs/ExampleCode/XcodeFiles/Example SynchroNext/SynchroNext.xcodeproj/project.xcworkspace
+[07:19:33] [INFO] Removing workspace from within project bundle: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/docs/ExampleCode/XcodeFiles/Example SynchroNext/SynchroNext.xcodeproj/project.xcworkspace
+[07:19:33] [WARNING] Found nested workspace inside project bundle: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/docs/ExampleCode/XcodeFiles/EXAMPLE_0.xcodeproj/project.xcworkspace
+[07:19:33] [INFO] Removing workspace from within project bundle: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/docs/ExampleCode/XcodeFiles/EXAMPLE_0.xcodeproj/project.xcworkspace
+[07:19:33] [WARNING] Found nested workspace inside project bundle: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/docs/ExampleCode/XcodeFiles/Example DocketMate/DocketMate.xcodeproj/project.xcworkspace
+[07:19:33] [INFO] Removing workspace from within project bundle: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/docs/ExampleCode/XcodeFiles/Example DocketMate/DocketMate.xcodeproj/project.xcworkspace
+[07:19:33] [WARNING] Found nested workspace inside project bundle: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/docs/ExampleCode/XcodeFiles/EXAMPLE_1.xcodeproj/project.xcworkspace
+[07:19:33] [INFO] Removing workspace from within project bundle: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/docs/ExampleCode/XcodeFiles/EXAMPLE_1.xcodeproj/project.xcworkspace
+[07:19:33] [WARNING] Found nested workspace inside project bundle: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/docs/ExampleCode/XcodeFiles/EXAMPLE_4.xcodeproj/project.xcworkspace
+[07:19:33] [INFO] Removing workspace from within project bundle: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/docs/ExampleCode/XcodeFiles/EXAMPLE_4.xcodeproj/project.xcworkspace
+[07:19:33] [WARNING] Found nested workspace inside project bundle: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/docs/ExampleCode/XcodeFiles/EXAMPLE_2.xcodeproj/PassengerManifest.xcodeproj/project.xcworkspace
+[07:19:33] [INFO] Removing workspace from within project bundle: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/docs/ExampleCode/XcodeFiles/EXAMPLE_2.xcodeproj/PassengerManifest.xcodeproj/project.xcworkspace
+[07:19:33] [WARNING] Found nested workspace inside project bundle: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/docs/ExampleCode/XcodeFiles/EXAMPLE_2.xcodeproj/project.xcworkspace
+[07:19:33] [INFO] Removing workspace from within project bundle: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/docs/ExampleCode/XcodeFiles/EXAMPLE_2.xcodeproj/project.xcworkspace
+[07:19:33] [WARNING] Found nested workspace inside project bundle: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/docs/ExampleCode/XcodeFiles/EXAMPLE_5.xcodeproj/project.xcworkspace
+[07:19:33] [INFO] Removing workspace from within project bundle: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/docs/ExampleCode/XcodeFiles/EXAMPLE_5.xcodeproj/project.xcworkspace
+[07:19:33] [WARNING] Found nested workspace inside project bundle: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/docs/ExampleCode/XcodeFiles/EXAMPLE_3.xcodeproj/project.xcworkspace
+[07:19:33] [INFO] Removing workspace from within project bundle: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/docs/ExampleCode/XcodeFiles/EXAMPLE_3.xcodeproj/project.xcworkspace
+[07:19:33] [WARNING] Found nested workspace inside project bundle: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/DocketMate/DocketMate.xcodeproj/project.xcworkspace
+[07:19:33] [INFO] Removing workspace from within project bundle: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/DocketMate/DocketMate.xcodeproj/project.xcworkspace
+[07:19:33] [INFO] Checking for stray .swift files at project root...
+[07:19:33] [INFO] Directory structure cleanup complete.
+[07:19:33] [INFO] Logs have been written to:
+[07:19:33] [INFO]   - /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/logs/cleanup_directory_structure_20250520_071933.log
+[07:19:33] [INFO]   - /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS/logs/cleanup_directory_structure_20250520_071933.log
+[07:19:33] [SUCCESS] cleanup_directory_structure completed successfully
+[07:19:33] [INFO] Logging finalized for cleanup_directory_structure
+[07:19:33] [INFO] Logs have been written to:
+[07:19:33] [INFO]   - /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/logs/cleanup_directory_structure_20250520_071933.log
+[07:19:33] [INFO]   - /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS/logs/cleanup_directory_structure_20250520_071933.log

@@ -1,0 +1,3 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -scheme Docketmate-Sandbox -workspace _macOS/Docketmate-Sandbox/Docketmate-Sandbox.xcworkspace -destination platform=macOS clean build test
+

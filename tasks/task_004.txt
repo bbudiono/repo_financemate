@@ -1,0 +1,43 @@
+# Task ID: 4
+# Title: Case Management: Creation and Editing
+# Status: pending
+# Dependencies: 2, 3
+# Priority: high
+# Description: Implement UI and logic for creating and editing case files with comprehensive metadata.
+# Details:
+Build SwiftUI forms for case creation/editing. Include fields for name, number, type, status, dates, assigned team, and document references. Connect to CoreData models. Support basic validation.
+
+# Test Strategy:
+Test form validation, case creation, editing, and persistence. Verify metadata integrity.
+
+# Subtasks:
+## 1. Design SwiftUI Form Layout for Case Metadata [pending]
+### Dependencies: None
+### Description: Create the SwiftUI form structure for case creation and editing, including all required fields: name, number, type, status, dates, assigned team, and document references.
+### Details:
+Use SwiftUI's Form, Section, TextField, Picker, and DatePicker components to lay out the form. Organize fields into logical sections for clarity and usability. Ensure the UI is visually clear and user-friendly, applying grouping and styling as needed.
+
+## 2. Implement State Management and Data Binding [pending]
+### Dependencies: 4.1
+### Description: Set up @State and @Binding variables to manage form input and enable editing of existing case data.
+### Details:
+Declare @State variables for each form field. For editing, initialize these variables with existing case data. Ensure two-way binding between UI controls and state variables for real-time updates.
+
+## 3. Integrate CoreData Model Connectivity [pending]
+### Dependencies: 4.2
+### Description: Connect the form to CoreData models to support creating new cases and updating existing ones.
+### Details:
+Implement logic to save new case entries and update existing records in CoreData. Use @Environment(\.managedObjectContext) and fetch requests as needed. Ensure relationships (e.g., assigned team, document references) are properly handled.
+
+## 4. Add Input Validation and Error Handling [pending]
+### Dependencies: 4.3
+### Description: Implement validation logic for required fields and provide user feedback for invalid or incomplete input.
+### Details:
+Use conditional logic and @State variables to check for missing or invalid data (e.g., empty name, invalid dates). Display inline error messages or disable the save button until validation passes.
+
+## 5. Implement Document Reference Selection and Linking [pending]
+### Dependencies: 4.4
+### Description: Enable users to select and link document references within the case form, supporting both creation and editing scenarios.
+### Details:
+Provide a UI component (e.g., Picker or List) for selecting documents from available options. Ensure selected documents are linked to the case in CoreData and reflected in the UI.
+

@@ -1,0 +1,52 @@
+=== create_buildable_swiftui_app Log (20250520_085605) ===
+Script: create_buildable_swiftui_app
+Timestamp: Tue May 20 08:56:05 AEST 2025
+Project Root: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate
+[08:56:05] [INIT] Logging initialized for create_buildable_swiftui_app
+[0;32m[INFO][0m Starting script: Create Buildable SwiftUI App
+[08:56:05] [INFO] Starting script: Create Buildable SwiftUI App
+[0;32m[INFO][0m -------------------------------------------------
+[08:56:05] [INFO] -------------------------------------------------
+[0;32m[INFO][0m Project Root: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate
+[08:56:05] [INFO] Project Root: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate
+[0;32m[INFO][0m Script Dir: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/scripts
+[08:56:05] [INFO] Script Dir: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/scripts
+[0;32m[INFO][0m Effective Project Name: DocketMate
+[08:56:05] [INFO] Effective Project Name: DocketMate
+[0;32m[INFO][0m Targeting as: PRODUCTION
+[08:56:05] [INFO] Targeting as: PRODUCTION
+[0;32m[INFO][0m Platform: macOS
+[08:56:05] [INFO] Platform: macOS
+[0;32m[INFO][0m Org ID: com.example
+[08:56:05] [INFO] Org ID: com.example
+[0;32m[INFO][0m Preserve Sources: false
+[08:56:05] [INFO] Preserve Sources: false
+[0;32m[INFO][0m Skip XcodeGen: false
+[08:56:05] [INFO] Skip XcodeGen: false
+[0;32m[INFO][0m XcodeGen Path: xcodegen
+[08:56:05] [INFO] XcodeGen Path: xcodegen
+[0;32m[INFO][0m -------------------------------------------------
+[08:56:05] [INFO] -------------------------------------------------
+[0;32m[INFO][0m Platform Directory: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS
+[08:56:05] [INFO] Platform Directory: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS
+[0;32m[INFO][0m Project Directory: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+[08:56:05] [INFO] Project Directory: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+[0;32m[INFO][0m Platform directory already exists: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS
+[08:56:05] [INFO] Platform directory already exists: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS
+[0;32m[INFO][0m Created project directory: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+[08:56:05] [INFO] Created project directory: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+[0;32m[INFO][0m Ensured directory structure for DocketMate
+[08:56:05] [INFO] Ensured directory structure for DocketMate
+[0;32m[INFO][0m Created/Updated file: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/Resources/Info.plist
+[08:56:05] [INFO] Created/Updated file: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/Resources/Info.plist
+[0;32m[INFO][0m Created/Updated file: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/Sources/App/DocketMateApp.swift
+[08:56:05] [INFO] Created/Updated file: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/Sources/App/DocketMateApp.swift
+[0;32m[INFO][0m Created MainApp.swift
+[08:56:05] [INFO] Created MainApp.swift
+[0;32m[INFO][0m Created/Updated file: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/Sources/UI/MainContentView.swift
+[08:56:05] [INFO] Created/Updated file: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/Sources/UI/MainContentView.swift
+[0;32m[INFO][0m Created MainContentView.swift
+[08:56:05] [INFO] Created MainContentView.swift
+[0;32m[INFO][0m Created project.yml for XcodeGen
+[08:56:05] [INFO] Created project.yml for XcodeGen
+DEBUG: End of script after commenting out workspace and final log/exit

@@ -1,0 +1,43 @@
+# Task ID: 11
+# Title: Client Communication Logging
+# Status: pending
+# Dependencies: 2, 5
+# Priority: medium
+# Description: Implement logging for client communications and meeting notes.
+# Details:
+Add communication log model in CoreData. Build UI for logging calls, emails, and meetings. Associate logs with clients and cases.
+
+# Test Strategy:
+Test log creation, retrieval, and association. Verify data integrity.
+
+# Subtasks:
+## 1. Create Communication Log Core Data Model [pending]
+### Dependencies: None
+### Description: Design and implement the Core Data model for client communication logging
+### Details:
+Create a new Core Data entity named 'CommunicationLog' with attributes for date, type (call/email/meeting), duration, summary, and action items. Add relationships to existing Client and Case entities. Include necessary validation rules and default values.
+
+## 2. Implement CRUD Operations Manager [pending]
+### Dependencies: 11.1
+### Description: Develop a manager class to handle all database operations for communication logs
+### Details:
+Create a CommunicationLogManager class with methods for creating, reading, updating, and deleting communication logs. Implement filtering capabilities to retrieve logs by client, case, date range, and communication type. Add error handling and validation logic.
+
+## 3. Design Communication Log UI Components [pending]
+### Dependencies: 11.1
+### Description: Create reusable UI components for displaying and entering communication logs
+### Details:
+Design a form view for entering new logs with fields for all required attributes. Create a detail view for displaying existing logs. Implement a list view component for showing communication history. Ensure all components support different communication types (call, email, meeting).
+
+## 4. Integrate Communication Log with Client and Case Views [pending]
+### Dependencies: 11.2, 11.3
+### Description: Add communication logging functionality to existing client and case screens
+### Details:
+Update the client detail view to show associated communication logs. Modify the case detail view to display case-specific communications. Add action buttons to create new logs from both screens. Implement filtering options to sort and search through logs.
+
+## 5. Implement Communication Log Reports and Export [pending]
+### Dependencies: 11.4
+### Description: Create reporting functionality for communication logs
+### Details:
+Develop a reporting screen to view communication statistics and summaries. Add filtering by date range, client, case, and communication type. Implement export functionality to generate PDF or CSV reports of communication history. Include charts to visualize communication patterns.
+

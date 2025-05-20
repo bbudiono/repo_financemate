@@ -1,0 +1,3 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -workspace _macOS/EduTrackQLD.xcworkspace -scheme EduTrackQLD -configuration Release clean build
+

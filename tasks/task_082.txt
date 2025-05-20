@@ -1,0 +1,53 @@
+# Task ID: 82
+# Title: Implement Production-Ready Apple SSO and Google SSO with Environment Configuration and Testing
+# Status: pending
+# Dependencies: None
+# Priority: medium
+# Description: Develop and integrate fully functional Apple SSO and Google SSO authentication into the macOS application, using environment variables for configuration and leveraging provided example code. Ensure robust automated and manual testing for both authentication flows.
+# Details:
+1. Analyze the example code in /docs/ExampleCode/XcodeFiles/Example macOS Application/ to understand integration patterns and reusable components for SSO.
+2. Integrate Apple SSO using the latest Apple authentication APIs, ensuring all client IDs, secrets, and relevant credentials are loaded securely from the /.env file. Follow best practices for handling user identity, token management, and error handling.
+3. Integrate Google SSO by installing required dependencies (e.g., via CocoaPods or Swift Package Manager) and configuring the app as per Google Sign-In documentation for macOS. All sensitive values (client IDs, secrets, redirect URIs) must be sourced from /.env. Implement the sign-in UI and callback handling as per the example code and Google’s guidelines[1][2].
+4. Refactor authentication logic for modularity and testability. Ensure both SSO flows are isolated, reusable, and easily maintainable.
+5. Implement comprehensive unit and integration tests for both SSO flows, including edge cases (e.g., failed logins, revoked tokens, network errors). Use mocks/stubs for external services where appropriate.
+6. Document setup, configuration, and usage instructions for both SSO providers, including environment variable requirements and troubleshooting tips.
+7. Prioritize clear error messaging and user feedback throughout the authentication process to meet MVP standards.
+
+# Test Strategy:
+- Verify that both Apple SSO and Google SSO can be configured entirely via /.env values, with no hardcoded secrets or credentials.
+- Manually test sign-in and sign-out flows for both providers, confirming correct user data retrieval and session management.
+- Run automated unit and integration tests covering successful authentication, error handling, and edge cases for both SSO providers.
+- Validate that the authentication UI matches the example code and provides clear feedback for all states (loading, success, error).
+- Confirm that documentation is accurate and that a new developer can set up both SSO providers using only the provided instructions and environment variables.
+
+# Subtasks:
+## 1. Analyze Example Code and Define SSO Integration Architecture [pending]
+### Dependencies: None
+### Description: Review the provided example code in /docs/ExampleCode/XcodeFiles/Example macOS Application/ to identify reusable components, integration patterns, and architectural considerations for Apple and Google SSO. Define a modular authentication architecture that supports both SSO providers and environment-based configuration.
+### Details:
+Carefully examine the example code to understand how authentication flows are structured, how environment variables are accessed, and how UI and callback handling are implemented. Document the planned architecture, including separation of concerns for each SSO provider and configuration management.
+
+## 2. Integrate Apple SSO with Environment-Based Configuration [pending]
+### Dependencies: 82.1
+### Description: Implement Apple SSO authentication using the latest Apple authentication APIs, ensuring all credentials (client IDs, secrets) are securely loaded from the .env file. Follow best practices for user identity, token management, and error handling.
+### Details:
+Use Apple's SSO extensions and APIs to set up the authentication flow. Reference the example code for UI and callback handling. Ensure all sensitive values are sourced from environment variables and not hardcoded. Implement robust error handling and user feedback throughout the flow.
+
+## 3. Integrate Google SSO with Environment-Based Configuration [pending]
+### Dependencies: 82.1
+### Description: Install required dependencies (e.g., via CocoaPods or Swift Package Manager) and configure the app for Google Sign-In on macOS. Implement the sign-in UI and callback handling, sourcing all sensitive values from the .env file.
+### Details:
+Follow Google Sign-In documentation for macOS to set up the authentication flow. Reference the example code for integration patterns. Ensure all client IDs, secrets, and redirect URIs are loaded from environment variables. Implement error handling and user feedback as per best practices.
+
+## 4. Refactor Authentication Logic for Modularity and Testability [pending]
+### Dependencies: 82.2, 82.3
+### Description: Refactor the authentication codebase to ensure both SSO flows are isolated, reusable, and maintainable. Abstract common logic and provide clear interfaces for each provider.
+### Details:
+Organize authentication logic into separate modules or classes for Apple and Google SSO. Extract shared utilities (e.g., environment variable loading, error handling) into reusable components. Ensure the code is structured for easy unit testing and future extensibility.
+
+## 5. Implement Comprehensive Automated and Manual Testing for SSO Flows [pending]
+### Dependencies: 82.4
+### Description: Develop unit and integration tests for both Apple and Google SSO flows, covering successful authentication, edge cases, and error scenarios. Use mocks/stubs for external services where appropriate. Document setup, configuration, and troubleshooting steps.
+### Details:
+Write automated tests for all authentication logic, including token management and error handling. Perform manual end-to-end testing for both SSO providers. Create documentation covering environment variable requirements, setup instructions, and troubleshooting tips.
+

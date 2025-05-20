@@ -1,0 +1,43 @@
+# Task ID: 10
+# Title: Enhanced Navigation and Dashboard
+# Status: pending
+# Dependencies: 3, 6
+# Priority: medium
+# Description: Refine navigation and add a dashboard with key metrics and upcoming events.
+# Details:
+Improve sidebar and split-view navigation. Add dashboard view with case stats, upcoming deadlines, and recent activity. Use SwiftUI for dynamic layout.
+
+# Test Strategy:
+Test dashboard data accuracy and navigation flow. Verify UI responsiveness.
+
+# Subtasks:
+## 1. Refactor and Enhance Sidebar Navigation [pending]
+### Dependencies: None
+### Description: Redesign the sidebar navigation using SwiftUI to improve usability and visual clarity, ensuring it adapts responsively to different device sizes (iPhone, iPad, Mac).
+### Details:
+Implement the sidebar as a SwiftUI List embedded in a NavigationView. Follow Apple Human Interface Guidelines for sidebars, ensuring clear sectioning and iconography. Add selection logic and state management for navigation. Test on multiple device simulators for adaptive layout.
+
+## 2. Implement Split-View Navigation Structure [pending]
+### Dependencies: 10.1
+### Description: Introduce a split-view navigation pattern to allow users to view and interact with multiple content panes simultaneously.
+### Details:
+Use SwiftUI's NavigationView with multiple columns to create a split-view layout. Ensure seamless transitions between sidebar, detail, and content views. Bind selection state to update the detail pane dynamically.
+
+## 3. Design Dashboard Layout with Key Metrics [pending]
+### Dependencies: 10.2
+### Description: Create a dashboard view in SwiftUI that displays case statistics, upcoming deadlines, and recent activity in a visually organized manner.
+### Details:
+Design the dashboard using SwiftUI stacks and grids for dynamic layout. Use cards or sections for each metric (case stats, deadlines, activity). Ensure the layout is responsive and visually distinct.
+
+## 4. Integrate Data Sources for Dashboard Metrics [pending]
+### Dependencies: 10.3
+### Description: Connect the dashboard view to real or mock data sources to populate case statistics, deadlines, and recent activity.
+### Details:
+Implement data models and fetch logic for each dashboard metric. Use SwiftUI's data binding to update the dashboard in real time. Provide sample/mock data for development and testing.
+
+## 5. Polish UI and Add Interactivity to Dashboard and Navigation [pending]
+### Dependencies: 10.4
+### Description: Enhance the user experience by refining UI elements, adding animations, and enabling interactions such as tapping metrics for details or navigating to related views.
+### Details:
+Apply SwiftUI modifiers for visual polish (shadows, rounded corners, color schemes). Add tap gestures to dashboard cards to navigate to detailed views. Ensure accessibility and smooth animations for transitions.
+

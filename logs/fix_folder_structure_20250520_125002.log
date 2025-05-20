@@ -1,0 +1,15 @@
+Starting folder structure fix: Tue May 20 12:50:02 AEST 2025
+Project: DocketMate
+Platform: _macOS
+[12:50:02] Backing up _macOS/Sources to ./temp/backup/folder_structure_backup_20250520_125002/Sources
+[12:50:02] Backing up _macOS/Tests to ./temp/backup/folder_structure_backup_20250520_125002/Tests
+[12:50:02] WARNING: Destination already has Sources directory. Merging content...
+[12:50:02] Moving App files from _macOS/Sources/App to _macOS/DocketMate/Sources/App
+[12:50:02] Removing original _macOS/Sources directory
+[12:50:02] WARNING: Destination already has Tests directory. Merging content...
+[12:50:02] Removing original _macOS/Tests directory
+[12:50:02] Creating standard directory _macOS/DocketMate/Sources/Core
+[12:50:02] Creating standard directory _macOS/DocketMate/Sources/Features
+[12:50:02] Creating standard directory _macOS/DocketMate-Sandbox/Sources/UI
+[12:50:02] Folder structure fix completed successfully.
+[12:50:02] See backup in ./temp/backup/folder_structure_backup_20250520_125002 if needed.

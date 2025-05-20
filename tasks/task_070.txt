@@ -1,0 +1,43 @@
+# Task ID: 70
+# Title: Add Mandatory Comment Block to sync_taskmaster.sh
+# Status: pending
+# Dependencies: None
+# Priority: Critical
+# Description: Add the mandatory comment block (purpose, issues & complexity, ranking/rating, last updated) to the top of scripts/sync_taskmaster.sh as per .cursorrules section 6.4.1.
+# Details:
+
+
+# Test Strategy:
+
+
+# Subtasks:
+## 1. Review .cursorrules section 6.4.1 requirements [pending]
+### Dependencies: None
+### Description: Examine the .cursorrules documentation to understand the exact format and content requirements for the mandatory comment block
+### Details:
+Open the .cursorrules file and locate section 6.4.1 to identify the specific format, required fields (purpose, issues & complexity, ranking/rating, last updated), and any other guidelines for comment blocks. Take notes on the exact syntax and structure required for compliance.
+
+## 2. Analyze existing sync_taskmaster.sh script [pending]
+### Dependencies: 70.1
+### Description: Review the current content of the sync_taskmaster.sh script to understand its functionality and prepare for appropriate documentation
+### Details:
+Open scripts/sync_taskmaster.sh and analyze its purpose, functionality, and complexity. Identify any existing comments or documentation that might need to be preserved or integrated with the new comment block. Note any issues or complexities that should be documented in the comment block.
+
+## 3. Draft the mandatory comment block content [pending]
+### Dependencies: 70.2
+### Description: Create the content for each required section of the comment block based on script analysis
+### Details:
+Write detailed content for each required field: 1) Purpose - describe what the script does and why, 2) Issues & Complexity - document any known issues or complex aspects of the script, 3) Ranking/Rating - assign appropriate values based on script complexity, 4) Last Updated - use the current date or appropriate timestamp. Ensure content is clear, concise, and accurately reflects the script's functionality.
+
+## 4. Implement the comment block in the script [pending]
+### Dependencies: 70.3
+### Description: Add the formatted comment block to the top of the sync_taskmaster.sh script using proper shell script comment syntax
+### Details:
+Insert the comment block at the top of the script file, immediately after the shebang line (#!/bin/bash) if present. Use the appropriate shell script comment syntax (# for single-line comments or a block comment method like : ' ... ' for multi-line comments). Format the comment block according to the requirements in .cursorrules section 6.4.1, ensuring proper indentation and structure.
+
+## 5. Validate compliance with .cursorrules [pending]
+### Dependencies: 70.4
+### Description: Verify that the implemented comment block fully complies with all requirements specified in section 6.4.1
+### Details:
+Compare the implemented comment block against the requirements from .cursorrules section 6.4.1. Check that all required fields are present, properly formatted, and contain appropriate content. Ensure the comment syntax is correct for shell scripts and follows any style guidelines specified in the rules.
+

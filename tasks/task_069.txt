@@ -1,0 +1,43 @@
+# Task ID: 69
+# Title: Add Mandatory Comment Block to create_minimal_swiftui_app.sh
+# Status: pending
+# Dependencies: None
+# Priority: Critical
+# Description: Add the mandatory comment block (purpose, issues & complexity, ranking/rating, last updated) to the top of scripts/create_minimal_swiftui_app.sh as per .cursorrules section 6.4.1.
+# Details:
+
+
+# Test Strategy:
+
+
+# Subtasks:
+## 1. Review .cursorrules Section 6.4.1 for Comment Block Requirements [pending]
+### Dependencies: None
+### Description: Examine the .cursorrules file, specifically section 6.4.1, to identify the exact format and required fields (purpose, issues & complexity, ranking/rating, last updated) for the mandatory comment block.
+### Details:
+Open the .cursorrules file and carefully read section 6.4.1. Note the required structure, field order, and any formatting conventions for the mandatory comment block.
+
+## 2. Draft the Mandatory Comment Block Content [pending]
+### Dependencies: 69.1
+### Description: Prepare the content for each required field (purpose, issues & complexity, ranking/rating, last updated) based on the script's functionality and current project context.
+### Details:
+Summarize the script's purpose, note any known issues or complexities, assign a ranking/rating as per .cursorrules, and set the 'last updated' date. Ensure clarity and completeness for each field.
+
+## 3. Format the Comment Block for Shell Script Compatibility [pending]
+### Dependencies: 69.2
+### Description: Convert the drafted comment block into a format suitable for shell scripts, using the appropriate comment syntax.
+### Details:
+Use the hash (#) at the start of each line to create a block comment, as this is the standard and most portable method for shell scripts[1][4]. Ensure the block is visually distinct and readable at the top of the script.
+
+## 4. Insert the Comment Block at the Top of create_minimal_swiftui_app.sh [pending]
+### Dependencies: 69.3
+### Description: Add the formatted comment block to the very top of scripts/create_minimal_swiftui_app.sh, above any code or shebang line if required by .cursorrules.
+### Details:
+Open the script file and paste the comment block at the top. If .cursorrules specifies placement relative to the shebang (#!/bin/bash), follow those instructions precisely.
+
+## 5. Validate Compliance and Commit Changes [pending]
+### Dependencies: 69.4
+### Description: Review the script to ensure the comment block meets all .cursorrules requirements, then commit the changes to version control.
+### Details:
+Perform a final check against .cursorrules section 6.4.1. Run any available linting or compliance tools. Commit the updated script with a descriptive commit message referencing the addition of the mandatory comment block.
+

@@ -1,0 +1,3 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -scheme DocketMate -workspace ../DocketMate.xcworkspace -destination platform=macOS clean build test
+

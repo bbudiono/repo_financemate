@@ -1,0 +1,53 @@
+# Task ID: 86
+# Title: Implement User Avatar Upload, Display, and Edit Functionality for MVP
+# Status: pending
+# Dependencies: None
+# Priority: medium
+# Description: Develop the core user avatar feature, enabling users to upload, display, and edit their profile images within the app, prioritizing a seamless and intuitive experience for the MVP.
+# Details:
+1. Integrate the native SwiftUI PhotosPicker to allow users to select and upload an image from their device as their avatar. Ensure the picker is accessible from the user's profile screen and that image selection is intuitive and responsive.
+2. Store the uploaded avatar image securely, associating it with the user's profile in the data model defined in Task 85. Consider image compression and format conversion for optimal storage and performance.
+3. Implement a reusable AvatarView SwiftUI component that displays the user's avatar in a circular or rounded shape, with a placeholder shown if no image is set. Use a view modifier for consistent styling across the app.
+4. Enable users to update or remove their avatar by tapping the avatar image, re-invoking the PhotosPicker or providing a remove/reset option.
+5. Ensure avatar changes are immediately reflected in the UI and persisted in the user profile data, supporting both local and remote (if applicable) storage.
+6. Follow accessibility best practices, including appropriate labels and tap targets, and ensure the avatar feature integrates smoothly with existing profile and navigation UI.
+
+# Test Strategy:
+- Verify that users can successfully upload an avatar image from their device and that the image displays correctly in all relevant UI locations (profile, navigation bar, lists).
+- Test that the avatar persists across app launches and is correctly associated with the user profile data.
+- Confirm that users can update or remove their avatar, and that changes are immediately reflected in the UI and data model.
+- Check that the AvatarView displays a placeholder when no image is set and maintains consistent styling.
+- Validate accessibility by ensuring avatar controls are labeled and navigable via VoiceOver.
+- Perform edge case testing with large images, unsupported formats, and rapid avatar changes to ensure robustness and graceful error handling.
+
+# Subtasks:
+## 1. Integrate SwiftUI PhotosPicker for Avatar Selection [pending]
+### Dependencies: None
+### Description: Implement the PhotosPicker component on the user profile screen to allow users to select and upload an image from their device as their avatar.
+### Details:
+Use SwiftUI's PhotosPicker to present a photo selection interface. Bind the selected image to a @State property and ensure the picker is easily accessible and responsive. Handle image loading using the loadTransferable method for optimal performance and compatibility.
+
+## 2. Implement Secure Avatar Image Storage and Data Model Integration [pending]
+### Dependencies: 86.1
+### Description: Store the uploaded avatar image securely and associate it with the user's profile in the data model, including image compression and format conversion for performance.
+### Details:
+Upon image selection, compress and convert the image to an efficient format (e.g., JPEG or PNG). Store the image in the app's secure storage (such as the file system or Core Data) and update the user profile data model (from Task 85) to reference the stored image. Ensure proper error handling and data integrity.
+
+## 3. Develop Reusable AvatarView SwiftUI Component [pending]
+### Dependencies: 86.2
+### Description: Create a reusable AvatarView component that displays the user's avatar in a circular or rounded shape, with a placeholder if no image is set, and applies consistent styling via a view modifier.
+### Details:
+Design the AvatarView to accept an optional image and display a default placeholder when none is provided. Use SwiftUI's .clipShape(Circle()) and shadow modifiers for styling. Implement a view modifier for consistent appearance across the app.
+
+## 4. Enable Avatar Update and Removal Functionality [pending]
+### Dependencies: 86.3
+### Description: Allow users to update or remove their avatar by tapping the avatar image, re-invoking the PhotosPicker or providing a remove/reset option.
+### Details:
+Add tap gesture handling to the AvatarView to trigger the PhotosPicker for updates. Provide a contextual menu or button to remove/reset the avatar, clearing the stored image and reverting to the placeholder.
+
+## 5. Ensure Real-Time UI Updates, Persistence, and Accessibility Compliance [pending]
+### Dependencies: 86.4
+### Description: Guarantee that avatar changes are instantly reflected in the UI, persisted in the user profile data, and that the feature meets accessibility standards.
+### Details:
+Implement data binding so avatar changes update the UI in real time. Ensure changes persist locally (and remotely if applicable). Add accessibility labels, hints, and appropriate tap targets to the avatar feature. Integrate the avatar seamlessly with existing profile and navigation UI.
+

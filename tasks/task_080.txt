@@ -1,0 +1,43 @@
+# Task ID: 80
+# Title: Parse Product Feature Inbox and Generate Structured, Actionable Tasks by Feature
+# Status: pending
+# Dependencies: None
+# Priority: medium
+# Description: Parse all items from the Product Feature Inbox in the user prompt and create a distinct, actionable task for each feature, ensuring each task is clear, aligned with project requirements, and compliant with the Corporate Style Guide and .cursorrules.
+# Details:
+Develop a parser that scans the Product Feature Inbox for all listed features in the user prompt, extracting each feature as a separate entity. For each feature (TDD, UI/UX, SSO, Core Data, Profile/Data sharing, Avatars, Navigation, Email/Password, Landing Page, modular UI components), automatically generate a new, actionable task with a clear title and description. Where appropriate, break down complex features into subtasks (e.g., TDD setup, UI/UX wireframes, SSO provider integration). Ensure all generated tasks reference the Corporate Style Guide and .cursorrules for compliance. Implement prioritization logic to order tasks by milestone value and complexity (with >90% complexity prioritized). The parser should output tasks in a structured format (e.g., JSON) ready for import into the project management system. Include error handling for ambiguous or missing feature descriptions and log all parsing actions for traceability.
+
+# Test Strategy:
+1. Seed the Product Feature Inbox with a prompt containing all required features and variations in formatting. 2. Run the parser and verify that each feature results in a distinct, actionable task with appropriate subtasks where needed. 3. Confirm that all tasks reference the Corporate Style Guide and .cursorrules. 4. Check that tasks are prioritized correctly by milestone value and complexity (>90% complexity first). 5. Validate the output structure (JSON) for import compatibility. 6. Test error handling by introducing ambiguous or incomplete feature descriptions and reviewing logs for accurate reporting and graceful handling.
+
+# Subtasks:
+## 1. Extract and Categorize Features from Product Feature Inbox [pending]
+### Dependencies: None
+### Description: Develop a parser to scan the Product Feature Inbox in the user prompt, systematically extracting each listed feature as a distinct entity and categorizing them for further processing.
+### Details:
+Implement logic to identify and separate each feature (e.g., TDD, UI/UX, SSO, Core Data, etc.) from the inbox text. Ensure robust handling of various input formats and ambiguous entries. Log all parsing actions for traceability.
+
+## 2. Generate Actionable Tasks for Each Feature [pending]
+### Dependencies: 80.1
+### Description: For each extracted feature, automatically generate a new, actionable task with a clear title and description, ensuring alignment with project requirements.
+### Details:
+Create task templates that include actionable language and specify expected outcomes. Reference the Corporate Style Guide and .cursorrules in each task description to ensure compliance. Handle missing or unclear feature descriptions by flagging them for review.
+
+## 3. Decompose Complex Features into Subtasks [pending]
+### Dependencies: 80.2
+### Description: Identify complex features and break them down into logical, manageable subtasks (e.g., TDD setup, UI/UX wireframes, SSO provider integration), ensuring each subtask is actionable and clear.
+### Details:
+Implement logic to detect features that require decomposition based on predefined criteria or feature complexity. Generate subtasks with clear dependencies and descriptions, referencing the Corporate Style Guide and .cursorrules.
+
+## 4. Prioritize Tasks by Milestone Value and Complexity [pending]
+### Dependencies: 80.3
+### Description: Apply prioritization logic to order all generated tasks and subtasks based on milestone value and complexity, giving highest priority to those with over 90% complexity.
+### Details:
+Use a weighted scoring or similar prioritization framework to assign scores to each task and subtask. Sort tasks in descending order of priority, ensuring that high-complexity and high-value items are surfaced first.
+
+## 5. Output Structured Tasks and Implement Status Reset [pending]
+### Dependencies: 80.4
+### Description: Format all tasks and subtasks into a structured output (e.g., JSON) ready for import into the project management system, and set the status of all items to 'pending' to reset progress tracking.
+### Details:
+Ensure the output includes all required fields (title, description, dependencies, compliance references, and status). Implement logic to set the status of every task and subtask to 'pending' regardless of previous state.
+
