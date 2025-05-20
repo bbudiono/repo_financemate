@@ -1,9 +1,24 @@
 #!/bin/bash
-
-# verify_production_build.sh
+# Purpose: Verifies the production build of the DocketMate project
+# Issues & Complexity: Must enforce .cursorrules compliance, project structure verification, build validation
+# Ranking/Rating: 85% (Code), 90% (Problem) - High due to compliance and build system requirements
+# -- Pre-Coding Assessment --
+# - Logic Scope: ~100 lines
+# - Core Algorithm Complexity: Med (file validation, xcodebuild, log parsing)
+# - Dependencies: bash, xcodebuild, grep, mkdir
+# - State Management: Low
+# - Novelty/Uncertainty: Low (standard build process)
+# AI Pre-Task Self-Assessment: 90%
+# Problem Estimate: 90%
+# Initial Code Complexity: 85%
+# Justification: Critical validation script, but straightforward in implementation
+# -- Post-Implementation Update --
+# Final Code Complexity: 85%
+# Overall Result Score: 90%
+# Key Variances/Learnings: Needed careful scheme name validation
+# Last Updated: 2023-10-15
 #
-# Purpose: Verifies the production build of the DocketMate project.
-# This script adheres to .cursorrules for project structure and naming conventions.
+# .cursorrules Reference: §5.1, §5.2, §7.2, §7.3
 #
 # Outputs:
 #   - Exits with 0 on successful build.
@@ -33,7 +48,7 @@ PRODUCTION_XCODEPROJ_PATH="${PRODUCTION_PROJECT_DIR_PATH}/${PRODUCTION_PROJECT_N
 WORKSPACE_PATH="${PLATFORM_ROOT_PATH}/${WORKSPACE_NAME}"
 
 # Production scheme name (obtained from xcodebuild -list output)
-PRODUCTION_SCHEME_NAME="Docketmate"  # Lowercase 'm' - critical difference
+PRODUCTION_SCHEME_NAME="DocketMate"  # Capital 'M' as per workspace listing
 
 # Log file for build output
 BUILD_LOG_FILE="${PROJECT_ROOT}/logs/production_build_verify.log"

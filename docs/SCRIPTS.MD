@@ -1,8 +1,54 @@
-# SCRIPTS.MD
-Created by cleanup_directory_structure.sh on Tue May 20 07:19:33 AEST 2025
-Please update with proper content.
+# DocketMate Project Scripts
 
-## Canonical Build & Project Automation Scripts
+This document catalogs all utility scripts used in the DocketMate project, their purpose, and usage instructions.
+
+## Build Scripts
+
+### test_builds.sh
+
+**Purpose**: Validates that the project builds successfully in both Debug and Release configurations.
+
+**Location**: `scripts/test_builds.sh`
+
+**Usage**:
+```bash
+./scripts/test_builds.sh
+```
+
+**Features**:
+- Tests both Debug and Release configurations
+- Generates detailed logs in the `logs/` directory
+- Provides clear success/failure indicators for each build
+- Returns non-zero exit code if any build fails
+
+**When to use**: 
+- Before committing changes that might affect build integrity
+- As part of continuous integration workflows
+- When troubleshooting build-related issues
+
+## Xcode Configuration Scripts
+
+### ensure_xcode_files.sh
+
+**Purpose**: Ensures that all required Xcode project files exist and are properly configured according to project standards.
+
+**Location**: `scripts/ensure_xcode_files.sh`
+
+**Usage**:
+```bash
+./scripts/ensure_xcode_files.sh
+```
+
+**Features**:
+- Validates shared workspace structure
+- Configures proper FileRef entries for production and sandbox projects
+- Sets up dependency-based parallel builds
+- Implements robust logging to the `logs/` directory
+
+**When to use**:
+- After pulling changes that modify Xcode project structure
+- When setting up a new development environment
+- When experiencing issues with Xcode project configuration 
 
 ### create_buildable_swiftui_app.sh
 - **Purpose:** Canonical, project-agnostic script to create and verify a buildable SwiftUI macOS app (Production or Sandbox).
@@ -16,21 +62,6 @@ Please update with proper content.
 - **Notes:**
   - All logs are written to `logs/create_buildable_swiftui_app_<env>_<timestamp>.log`
   - Script must be tested in Sandbox before Production use
-
-### ensure_xcode_files.sh
-- **Purpose:** Project-agnostic script to ensure required Xcode files exist and are properly structured.
-- **Usage:**
-  - `bash scripts/ensure_xcode_files.sh --app <app_name> --env <environment> --root <project_root>`
-  - Example: `bash scripts/ensure_xcode_files.sh --app DocketMate --env sandbox --root /path/to/project`
-- **Compliance:**
-  - Fully project-agnostic with parameterized app name and environment 
-  - Logs to `logs/` directory with timestamp (never to project root)
-  - Creates minimal, compliant Swift files with proper CMD+Q functionality
-  - Creates necessary directory structure and basic project files
-- **Notes:**
-  - Ensures existence of Sources, Resources, Tests directories
-  - Generates Info.plist and entitlements files if missing
-  - Writes logs to `logs/ensure_xcode_files_<env>_<timestamp>.log`
 
 ---
 
