@@ -1286,7 +1286,7 @@
       "description": "The ensure_xcode_files.sh script needs to be updated. It currently creates a non-standard nested `project.xcworkspace` within `.xcodeproj` bundles. It should instead: 1. NOT create these nested workspaces. 2. Focus on verifying and, if necessary, correctly configuring the single shared `_{PlatformDir}/{ProjectName}.xcworkspace` to ensure it includes valid `<FileRef>` entries for both production (`{ProjectName}/{ProjectName}.xcodeproj`) and sandbox (`{ProjectName}-Sandbox/{ProjectName}-Sandbox.xcodeproj`) projects. 3. Ensure logs are correctly written to the `logs/` directory as per .cursorrules. This is a P0 compliance fix.",
       "details": "Update script logic to align with .cursorrules §5.1.1. Remove nested workspace creation. Add verification for shared workspace project references. Ensure robust logging to `logs/` and not project root.",
       "testStrategy": "",
-      "status": "pending",
+      "status": "done",
       "dependencies": [],
       "priority": "P0",
       "subtasks": [
@@ -1296,7 +1296,7 @@
           "description": "Modify ensure_xcode_files.sh to eliminate code that creates nested project.xcworkspace within .xcodeproj bundles",
           "dependencies": [],
           "details": "Identify and remove all script sections that create or modify nested workspaces. This includes finding patterns like 'mkdir -p *.xcodeproj/project.xcworkspace' or similar commands. Ensure removal is complete while preserving other essential functionality. Update any related documentation comments to reflect this change.",
-          "status": "pending",
+          "status": "done",
           "testStrategy": "Run the modified script against a test project and verify no nested workspaces are created. Use 'find . -name \"project.xcworkspace\" -path \"*.xcodeproj/*\"' to confirm absence of nested workspaces."
         },
         {
@@ -1307,7 +1307,7 @@
             1
           ],
           "details": "Create a function that checks if the shared workspace exists at the expected path. If it doesn't exist, create it with the proper structure. Use Xcode workspace format specifications to ensure compliance. The function should determine the correct platform directory and project name dynamically from the environment or parameters.",
-          "status": "pending",
+          "status": "done",
           "testStrategy": "Test with both existing and non-existing workspaces to verify proper detection and creation. Validate workspace structure using 'plutil -lint' on the workspace's contents.xcworkspacedata file."
         },
         {
@@ -1318,7 +1318,7 @@
             2
           ],
           "details": "Parse the contents.xcworkspacedata XML file to check for and add required FileRef entries. Implement logic to correctly reference both {ProjectName}/{ProjectName}.xcodeproj and {ProjectName}-Sandbox/{ProjectName}-Sandbox.xcodeproj. Use relative paths to ensure portability across different development environments. Handle edge cases where projects might have non-standard naming.",
-          "status": "pending",
+          "status": "done",
           "testStrategy": "Verify FileRef entries by opening the workspace in Xcode and confirming both projects appear. Also validate XML structure programmatically by parsing the contents.xcworkspacedata file."
         },
         {
@@ -1327,7 +1327,7 @@
           "description": "Update the script to ensure all logs are written to the logs/ directory as per .cursorrules",
           "dependencies": [],
           "details": "Create a logging function that directs all output to appropriate files in the logs/ directory. Ensure the logs/ directory exists or is created if missing. Implement different log levels (INFO, WARNING, ERROR) and timestamp each entry. Update all existing log statements in the script to use this new logging system. Remove any direct output to project root.",
-          "status": "pending",
+          "status": "done",
           "testStrategy": "Run the script with various inputs and verify logs appear in the correct location with proper formatting. Check for absence of log files in the project root."
         },
         {
@@ -1339,7 +1339,7 @@
             3
           ],
           "details": "Modify the script to set the workspace build configuration to use 'Dependency Order' instead of 'Manual Order'. Enable the 'Find Implicit Dependencies' option to allow Xcode to automatically determine build dependencies between targets. This will improve build performance on multi-core systems and ensure correct build order based on the project's dependency graph.",
-          "status": "pending",
+          "status": "done",
           "testStrategy": "Open the configured workspace in Xcode, check scheme settings to verify 'Dependency Order' is selected and 'Find Implicit Dependencies' is enabled. Perform a clean build to ensure all dependencies are correctly resolved."
         }
       ]
