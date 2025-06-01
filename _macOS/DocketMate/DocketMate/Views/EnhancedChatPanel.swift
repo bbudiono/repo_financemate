@@ -41,8 +41,11 @@ struct EnhancedChatPanel: View {
     // MARK: - MLACS Integration
     @StateObject private var mlacsCoordinationEngine = MLACSCoordinationEngine()
     @StateObject private var mlacsLearningEngine = MLACSLearningEngine()
+    @StateObject private var mcpCoordinationService = MCPCoordinationService()
     @State private var enableMLACS: Bool = false
+    @State private var enableMCPIntegration: Bool = false
     @State private var mlacsCoordinationMode: MLACSCoordinationMode = .hybrid
+    @State private var mcpDistributionStrategy: MCPDistributionStrategy = .loadBalanced
     @State private var mlacsMaxLLMs: Int = 3
     @State private var mlacsQualityThreshold: Double = 0.8
     
@@ -61,8 +64,10 @@ struct EnhancedChatPanel: View {
     
     // MARK: - Persistence
     @AppStorage("chat_enable_mlacs") private var persistedEnableMLACS: Bool = false
+    @AppStorage("chat_enable_mcp") private var persistedEnableMCP: Bool = false
     @AppStorage("chat_adaptive_learning") private var persistedAdaptiveLearning: Bool = true
     @AppStorage("chat_mlacs_mode") private var persistedMLACSMode: String = "hybrid"
+    @AppStorage("chat_mcp_strategy") private var persistedMCPStrategy: String = "loadBalanced"
     
     var body: some View {
         VStack(spacing: 0) {
@@ -125,6 +130,20 @@ struct EnhancedChatPanel: View {
                         Text(mlacsCoordinationMode.displayName)
                             .font(.caption2)
                             .foregroundColor(.secondary)
+                    }
+                    
+                    // MCP Integration Status
+                    if enableMCPIntegration {
+                        HStack(spacing: 4) {
+                            Image(systemName: mcpCoordinationService.isConnected ? "server.rack" : "server.rack.fill")
+                                .foregroundColor(mcpCoordinationService.isConnected ? .green : .orange)
+                            Text("MCP")
+                                .font(.caption)
+                                .foregroundColor(mcpCoordinationService.isConnected ? .green : .orange)
+                            Text("\(mcpCoordinationService.activeServers.count)")
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                        }
                     }
                     
                     // Learning Status
@@ -326,7 +345,7 @@ struct EnhancedChatPanel: View {
             let aiResponse: ChatMessage
             
             if enableMLACS {
-                // Use MLACS coordination
+                // Create MLACS request
                 let mlacsRequest = MLACSRequest(
                     userQuery: query,
                     context: "Enhanced chat session",
@@ -342,11 +361,25 @@ struct EnhancedChatPanel: View {
                     )
                 )
                 
-                let mlacsResponse = try await mlacsCoordinationEngine.coordinateTask(mlacsRequest)
-                aiResponse = ChatMessage(
-                    content: formatMLACSResponse(mlacsResponse),
-                    isUser: false
-                )
+                if enableMCPIntegration && mcpCoordinationService.isConnected {
+                    // Use distributed MCP coordination
+                    let distributedResponse = try await mcpCoordinationService.distributeCoordination(
+                        request: mlacsRequest,
+                        strategy: mcpDistributionStrategy
+                    )
+                    
+                    aiResponse = ChatMessage(
+                        content: formatDistributedResponse(distributedResponse),
+                        isUser: false
+                    )
+                } else {
+                    // Use local MLACS coordination
+                    let mlacsResponse = try await mlacsCoordinationEngine.coordinateTask(mlacsRequest)
+                    aiResponse = ChatMessage(
+                        content: formatMLACSResponse(mlacsResponse),
+                        isUser: false
+                    )
+                }
                 
                 // Record learning pattern
                 if enableAdaptiveLearning {
@@ -481,6 +514,47 @@ struct EnhancedChatPanel: View {
                         VStack(alignment: .leading) {
                             Text("Quality Threshold: \(Int(mlacsQualityThreshold * 100))%")
                             Slider(value: $mlacsQualityThreshold, in: 0.5...1.0, step: 0.05)
+                        }
+                    }
+                }
+                
+                Section("MCP Integration") {
+                    Toggle("Enable MCP Servers", isOn: $enableMCPIntegration)
+                    
+                    if enableMCPIntegration {
+                        HStack {
+                            Text("Connected Servers:")
+                            Spacer()
+                            Text("\(mcpCoordinationService.activeServers.count)")
+                                .foregroundColor(mcpCoordinationService.isConnected ? .green : .orange)
+                        }
+                        
+                        HStack {
+                            Text("Connection Status:")
+                            Spacer()
+                            Text(mcpCoordinationService.isConnected ? "Connected" : "Disconnected")
+                                .foregroundColor(mcpCoordinationService.isConnected ? .green : .red)
+                        }
+                        
+                        Picker("Distribution Strategy", selection: $mcpDistributionStrategy) {
+                            Text("Load Balanced").tag(MCPDistributionStrategy.loadBalanced)
+                            Text("Redundant").tag(MCPDistributionStrategy.redundant)
+                            Text("Specialized").tag(MCPDistributionStrategy.specialized)
+                            Text("Fastest").tag(MCPDistributionStrategy.fastest)
+                        }
+                        
+                        HStack {
+                            Text("Distributed Sessions:")
+                            Spacer()
+                            Text("\(mcpCoordinationService.distributedSessions.count)")
+                                .foregroundColor(.secondary)
+                        }
+                        
+                        HStack {
+                            Text("Avg Quality:")
+                            Spacer()
+                            Text(String(format: "%.1f%%", mcpCoordinationService.performanceMetrics.averageQuality * 100))
+                                .foregroundColor(.secondary)
                         }
                     }
                 }
@@ -653,17 +727,24 @@ struct EnhancedChatPanel: View {
     
     private func restorePersistedState() {
         enableMLACS = persistedEnableMLACS
+        enableMCPIntegration = persistedEnableMCP
         enableAdaptiveLearning = persistedAdaptiveLearning
         
         if let mode = MLACSCoordinationMode(rawValue: persistedMLACSMode) {
             mlacsCoordinationMode = mode
         }
+        
+        if let strategy = mcpDistributionStrategyFromString(persistedMCPStrategy) {
+            mcpDistributionStrategy = strategy
+        }
     }
     
     private func saveSettings() {
         persistedEnableMLACS = enableMLACS
+        persistedEnableMCP = enableMCPIntegration
         persistedAdaptiveLearning = enableAdaptiveLearning
         persistedMLACSMode = mlacsCoordinationMode.rawValue
+        persistedMCPStrategy = mcpDistributionStrategyToString(mcpDistributionStrategy)
     }
     
     private func formatMLACSResponse(_ response: MLACSResponse) -> String {
@@ -705,6 +786,46 @@ struct EnhancedChatPanel: View {
         factors["technical"] = query.lowercased().contains("technical") ? 1.0 : 0.0
         
         return factors
+    }
+    
+    // MARK: - MCP Helper Methods
+    
+    private func formatDistributedResponse(_ response: MCPDistributedResponse) -> String {
+        var formatted = "🌐 **Distributed AI Coordination Response**\n\n"
+        
+        // Add main content (would extract from aggregated results)
+        formatted += "Response coordinated across \(response.serversUsed.count) MCP servers with \(String(format: "%.1f%%", response.qualityScore * 100)) quality.\n\n"
+        
+        // Add distributed coordination insights
+        if enableAdaptiveLearning {
+            formatted += "---\n🚀 **Distributed Coordination Insights:**\n"
+            formatted += "• Servers Used: \(response.serversUsed.joined(separator: ", "))\n"
+            formatted += "• Overall Quality: \(Int(response.qualityScore * 100))%\n"
+            formatted += "• Confidence: \(Int(response.confidence * 100))%\n"
+            formatted += "• Processing Time: \(String(format: "%.1fs", response.processingTime))\n"
+            formatted += "• Distribution Strategy: \(mcpDistributionStrategyToString(mcpDistributionStrategy))\n"
+        }
+        
+        return formatted
+    }
+    
+    private func mcpDistributionStrategyFromString(_ string: String) -> MCPDistributionStrategy? {
+        switch string {
+        case "loadBalanced": return .loadBalanced
+        case "redundant": return .redundant
+        case "specialized": return .specialized
+        case "fastest": return .fastest
+        default: return nil
+        }
+    }
+    
+    private func mcpDistributionStrategyToString(_ strategy: MCPDistributionStrategy) -> String {
+        switch strategy {
+        case .loadBalanced: return "loadBalanced"
+        case .redundant: return "redundant"
+        case .specialized: return "specialized"
+        case .fastest: return "fastest"
+        }
     }
 }
 
