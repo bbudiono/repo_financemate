@@ -7,13 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		38052FED7CC349B19F28B2AEE12FDDE4 /* DocumentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 221AF239D0C640B3876CEFC1891317A7 /* DocumentsView.swift */; };
 		84629DFC41CD9C40E5C712E6 /* FinanceMateApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD23538CF257D51DBA226B97 /* FinanceMateApp.swift */; };
 		9092D5A7400F9B0CB893874C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F654E30EB3BB8388F98E94 /* ContentView.swift */; };
+		A9EDDD0E9BBA4D0286A0CE234B0C4B3A /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3F78B08CDBB4B74973C660565BCDABE /* DashboardView.swift */; };
+		B197F5CBA06343C5ABDD46CE6738CBFC /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE74DA56CA14FC99080F4D66630B464 /* SettingsView.swift */; };
+		D62D0351A2F14CD8816B3337F0FE5F6A /* AnalyticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2AAC89D21EB40AABC6461CF42C85165 /* AnalyticsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		04F654E30EB3BB8388F98E94 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		221AF239D0C640B3876CEFC1891317A7 /* DocumentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentsView.swift; sourceTree = "<group>"; };
+		ADE74DA56CA14FC99080F4D66630B464 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		CD23538CF257D51DBA226B97 /* FinanceMateApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinanceMateApp.swift; sourceTree = "<group>"; };
+		D3F78B08CDBB4B74973C660565BCDABE /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
+		F2AAC89D21EB40AABC6461CF42C85165 /* AnalyticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsView.swift; sourceTree = "<group>"; };
 		F74A98781F1B874D7128CEE5 /* FinanceMate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FinanceMate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -34,11 +42,23 @@
 			);
 			sourceTree = "<group>";
 		};
-		D5D10089FFAD4150861B279B /* FinanceMate */ = {
+		5A3E0825B270488F84D0B970B9505899 /* Views */ = {
 			isa = PBXGroup;
 			children = (
 				04F654E30EB3BB8388F98E94 /* ContentView.swift */,
+				D3F78B08CDBB4B74973C660565BCDABE /* DashboardView.swift */,
+				F2AAC89D21EB40AABC6461CF42C85165 /* AnalyticsView.swift */,
+				221AF239D0C640B3876CEFC1891317A7 /* DocumentsView.swift */,
+				ADE74DA56CA14FC99080F4D66630B464 /* SettingsView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		D5D10089FFAD4150861B279B /* FinanceMate */ = {
+			isa = PBXGroup;
+			children = (
 				CD23538CF257D51DBA226B97 /* FinanceMateApp.swift */,
+				5A3E0825B270488F84D0B970B9505899 /* Views */,
 			);
 			path = FinanceMate;
 			sourceTree = "<group>";
@@ -102,6 +122,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				9092D5A7400F9B0CB893874C /* ContentView.swift in Sources */,
+				A9EDDD0E9BBA4D0286A0CE234B0C4B3A /* DashboardView.swift in Sources */,
+				D62D0351A2F14CD8816B3337F0FE5F6A /* AnalyticsView.swift in Sources */,
+				38052FED7CC349B19F28B2AEE12FDDE4 /* DocumentsView.swift in Sources */,
+				B197F5CBA06343C5ABDD46CE6738CBFC /* SettingsView.swift in Sources */,
 				84629DFC41CD9C40E5C712E6 /* FinanceMateApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
