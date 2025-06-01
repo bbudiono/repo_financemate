@@ -1,12 +1,13 @@
+// SANDBOX FILE: For testing/development. See .cursorrules.
 //
 //  DashboardView.swift
-//  FinanceMate
+//  FinanceMate-Sandbox
 //
 //  Created by Assistant on 6/2/25.
 //
 
 /*
-* Purpose: Comprehensive financial dashboard displaying key metrics, recent activity, and quick actions
+* Purpose: Comprehensive financial dashboard displaying key metrics, recent activity, and quick actions - SANDBOX VERSION
 * Issues & Complexity Summary: Complex state management for financial data, real-time updates, chart integration
 * Key Complexity Drivers:
   - Logic Scope (Est. LoC): ~180
@@ -39,11 +40,23 @@ struct DashboardView: View {
     var body: some View {
         ScrollView {
             LazyVStack(spacing: 20) {
-                // Header Section
+                // SANDBOX HEADER WITH WATERMARK
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Financial Overview")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
+                    HStack {
+                        Text("Financial Overview")
+                            .font(.largeTitle)
+                            .fontWeight(.bold)
+                        
+                        Spacer()
+                        
+                        Text("🧪 SANDBOX MODE")
+                            .font(.caption)
+                            .fontWeight(.bold)
+                            .foregroundColor(.orange)
+                            .padding(6)
+                            .background(Color.orange.opacity(0.2))
+                            .cornerRadius(6)
+                    }
                     
                     Text("Welcome back! Here's your financial summary.")
                         .font(.subheadline)
@@ -150,9 +163,9 @@ struct DashboardView: View {
                                 .font(.subheadline)
                                 .foregroundColor(.secondary)
                             
-                            Text("Upload documents to get started")
+                            Text("Upload documents to get started (SANDBOX)")
                                 .font(.caption)
-                                .foregroundColor(.secondary)
+                                .foregroundColor(.orange)
                         }
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 40)
@@ -370,8 +383,9 @@ struct AddTransactionView: View {
     var body: some View {
         NavigationView {
             VStack {
-                Text("Add Transaction")
+                Text("🧪 SANDBOX: Add Transaction")
                     .font(.title)
+                    .foregroundColor(.orange)
                 Text("Feature coming soon...")
                     .foregroundColor(.secondary)
             }

@@ -1,12 +1,13 @@
+// SANDBOX FILE: For testing/development. See .cursorrules.
 //
 //  DocumentsView.swift
-//  FinanceMate
+//  FinanceMate-Sandbox
 //
 //  Created by Assistant on 6/2/25.
 //
 
 /*
-* Purpose: Comprehensive document management with drag-drop upload, filtering, and document processing
+* Purpose: Comprehensive document management with drag-drop upload, filtering, and document processing - SANDBOX VERSION
 * Issues & Complexity Summary: Complex file handling, drag-drop integration, document processing workflow
 * Key Complexity Drivers:
   - Logic Scope (Est. LoC): ~220
@@ -52,7 +53,7 @@ struct DocumentsView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            // Header with search and filters
+            // Header with search and filters - SANDBOX VERSION
             VStack(spacing: 16) {
                 HStack {
                     Text("Document Management")
@@ -60,6 +61,14 @@ struct DocumentsView: View {
                         .fontWeight(.bold)
                     
                     Spacer()
+                    
+                    Text("🧪 SANDBOX")
+                        .font(.caption)
+                        .fontWeight(.bold)
+                        .foregroundColor(.orange)
+                        .padding(6)
+                        .background(Color.orange.opacity(0.2))
+                        .cornerRadius(6)
                     
                     Button("Import Files") {
                         showingFileImporter = true
@@ -131,9 +140,9 @@ struct DocumentsView: View {
                 HStack {
                     ProgressView()
                         .scaleEffect(0.8)
-                    Text("Processing documents...")
+                    Text("Processing documents... (SANDBOX)")
                         .font(.caption)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(.orange)
                 }
                 .padding()
                 .background(Color.gray.opacity(0.1))
@@ -184,7 +193,7 @@ struct DocumentsView: View {
                 processDocument(url: url)
             }
         case .failure(let error):
-            print("File import error: \(error)")
+            print("SANDBOX - File import error: \(error)")
         }
         
         isProcessing = false
@@ -197,7 +206,7 @@ struct DocumentsView: View {
             url: url,
             type: DocumentType.from(url: url),
             dateAdded: Date(),
-            extractedText: "Processing...", // Would be processed by AI service
+            extractedText: "Processing... (SANDBOX MODE)", // Would be processed by AI service
             processingStatus: .pending
         )
         
@@ -206,7 +215,7 @@ struct DocumentsView: View {
         // Simulate AI processing
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
             if let index = documents.firstIndex(where: { $0.id == document.id }) {
-                documents[index].extractedText = "Sample extracted text for \(document.name)"
+                documents[index].extractedText = "SANDBOX: Sample extracted text for \(document.name)"
                 documents[index].processingStatus = .completed
             }
         }
@@ -220,19 +229,19 @@ struct DocumentsView: View {
         // Load sample documents for demo
         documents = [
             DocumentItem(
-                name: "Invoice_2025_001.pdf",
+                name: "SANDBOX_Invoice_2025_001.pdf",
                 url: URL(string: "file://sample1.pdf")!,
                 type: .invoice,
                 dateAdded: Date().addingTimeInterval(-86400),
-                extractedText: "Invoice from ABC Company for $1,250.00",
+                extractedText: "SANDBOX: Invoice from ABC Company for $1,250.00",
                 processingStatus: .completed
             ),
             DocumentItem(
-                name: "Receipt_Grocery.jpg",
+                name: "SANDBOX_Receipt_Grocery.jpg",
                 url: URL(string: "file://sample2.jpg")!,
                 type: .receipt,
                 dateAdded: Date().addingTimeInterval(-172800),
-                extractedText: "Grocery receipt for $87.45",
+                extractedText: "SANDBOX: Grocery receipt for $87.45",
                 processingStatus: .completed
             )
         ]
@@ -258,9 +267,9 @@ struct DragDropZone: View {
                     .font(.subheadline)
                     .foregroundColor(.secondary)
                 
-                Text("Supports PDF, images, and text files")
+                Text("🧪 SANDBOX: Supports PDF, images, and text files")
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(.orange)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -375,7 +384,7 @@ struct DragOverlay: View {
                     Image(systemName: "doc.badge.plus")
                         .font(.largeTitle)
                         .foregroundColor(.blue)
-                    Text("Drop to upload")
+                    Text("Drop to upload (SANDBOX)")
                         .font(.headline)
                         .foregroundColor(.blue)
                 }
