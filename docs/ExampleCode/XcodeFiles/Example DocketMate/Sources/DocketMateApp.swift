@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct DocketMateApp: App {
+struct FinanceMateApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
@@ -11,7 +11,7 @@ struct DocketMateApp: App {
         .commands {
             // Standard application commands group with Quit option (CMD+Q)
             CommandGroup(replacing: .appInfo) {
-                Button("About DocketMate") {
+                Button("About FinanceMate") {
                     // About app action
                 }
             }
@@ -33,7 +33,7 @@ struct DocketMateApp: App {
             
             // Explicitly add the Quit menu item to ensure CMD+Q works
             CommandGroup(replacing: .appTermination) {
-                Button("Quit DocketMate") {
+                Button("Quit FinanceMate") {
                     NSApplication.shared.terminate(nil)
                 }
                 .keyboardShortcut("q", modifiers: .command)

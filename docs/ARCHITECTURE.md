@@ -1,9 +1,9 @@
 # ARCHITECTURE.md
 
-## High-Level Architecture: DocketMate
+## High-Level Architecture: FinanceMate
 
 ### Overview
-DocketMate is structured as a modular macOS SwiftUI application, following MVVM and service-oriented patterns. The app is divided into clear modules for UI, business logic, integrations, and utilities, supporting extensibility for future features (e.g., email integration).
+FinanceMate is structured as a modular macOS SwiftUI application, following MVVM and service-oriented patterns. The app is divided into clear modules for UI, business logic, integrations, and utilities, supporting extensibility for future features (e.g., email integration).
 
 ### Main Modules
 - **App**: Entry point, app lifecycle, environment setup

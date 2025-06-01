@@ -2,7 +2,7 @@
 
 
 
-## Code Quality Standards for DocketMate
+## Code Quality Standards for FinanceMate
 
 - Follow SwiftLint rules (add SwiftLint.yml to project root)
 - Use 2-space indentation

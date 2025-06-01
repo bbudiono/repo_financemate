@@ -18,11 +18,11 @@
 ### Error Details
 - **Error Message (Exact):**
   ```
-  xcodebuild: error: Unable to load workspace '_macOS/DocketMate.xcodeproj/project.xcworkspace'.
-  Reason: The project 'DocketMate' is damaged and cannot be opened due to a parse error. Examine the project file for invalid edits or unresolved source control conflicts.
+  xcodebuild: error: Unable to load workspace '_macOS/FinanceMate.xcodeproj/project.xcworkspace'.
+  Reason: The project 'FinanceMate' is damaged and cannot be opened due to a parse error. Examine the project file for invalid edits or unresolved source control conflicts.
   CFPropertyListCreateFromXMLData(): Old-style plist parser: missing semicolon in dictionary on line 412. Parsing will be abandoned. Break on _CFPropertyListMissingSemicolon to debug.
   ```
-- **Error Location:** _macOS/DocketMate.xcodeproj/project.pbxproj (line 412)
+- **Error Location:** _macOS/FinanceMate.xcodeproj/project.pbxproj (line 412)
 - **Preceding Actions:**
   - Restored project.pbxproj from backup
   - Repaired workspace file
@@ -47,7 +47,7 @@
 - **Fix Verification:** Pending
 - **Programmatic Fix Script/Command:**
   ```
-  cp _macOS/DocketMate.xcodeproj/project.pbxproj.bak_working_20250510004038 _macOS/DocketMate.xcodeproj/project.pbxproj
+  cp _macOS/FinanceMate.xcodeproj/project.pbxproj.bak_working_20250510004038 _macOS/FinanceMate.xcodeproj/project.pbxproj
   ```
 
 ### Prevention
@@ -78,15 +78,15 @@
   ** CLEAN FAILED **
   The following build commands failed:
         Compute target dependency graph for package preparation
-        Cleaning workspace DocketMate with scheme DocketMate and configuration Debug
+        Cleaning workspace FinanceMate with scheme FinanceMate and configuration Debug
 (2 failures)
   ** BUILD FAILED **
   The following build commands failed:
         Compute target dependency graph for package preparation
-        Building workspace DocketMate with scheme DocketMate and configuration Debug
+        Building workspace FinanceMate with scheme FinanceMate and configuration Debug
 (2 failures)
   ```
-- **Error Location:** _macOS/DocketMate.xcodeproj/project.pbxproj (restored from backup)
+- **Error Location:** _macOS/FinanceMate.xcodeproj/project.pbxproj (restored from backup)
 - **Preceding Actions:**
   - Documented previous parse error
   - Restored project.pbxproj from backup
@@ -137,15 +137,15 @@
 ### Error Details
 - **Error Message (Exact):**
   ```
-  Sandbox build system cannot recognize temp Xcode project (_macOS/DocketMate_temp.xcodeproj). All attempts to build in the sandbox have failed. Build system reports: "The project directory exists, but is not recognized as a valid Xcode project."
+  Sandbox build system cannot recognize temp Xcode project (_macOS/FinanceMate_temp.xcodeproj). All attempts to build in the sandbox have failed. Build system reports: "The project directory exists, but is not recognized as a valid Xcode project."
   Attempts to build as both workspace and project failed. Directory structure was checked and re-copied, but issue persists.
   ```
-- **Error Location:** _macOS/DocketMate_temp.xcodeproj
+- **Error Location:** _macOS/FinanceMate_temp.xcodeproj
 - **Preceding Actions:** Copied original .xcodeproj to temp, attempted build, removed nested directories, cleaned derived data, retried build.
 - **Relevant Code Snippet:**
   ```bash
-  cp -R _macOS/DocketMate.xcodeproj _macOS/DocketMate_temp.xcodeproj
-  xcodebuild -project _macOS/DocketMate_temp.xcodeproj -scheme DocketMate -configuration Debug
+  cp -R _macOS/FinanceMate.xcodeproj _macOS/FinanceMate_temp.xcodeproj
+  xcodebuild -project _macOS/FinanceMate_temp.xcodeproj -scheme FinanceMate -configuration Debug
   # Also attempted workspace build, cleaned derived data, removed nested dirs
   ```
 
@@ -255,12 +255,12 @@
   ```
   No such module 'XCTest'
   ```
-- **Error Location:** _macOS/DocketMateTests/Models/DocumentViewModelTests.swift, line 3
+- **Error Location:** _macOS/FinanceMateTests/Models/DocumentViewModelTests.swift, line 3
 - **Preceding Actions:** Created placeholder test file for DocumentViewModel as part of TDD and build failure prevention.
 - **Relevant Code Snippet:**
   ```swift
   import XCTest
-  @testable import DocketMate
+  @testable import FinanceMate
   ```
 
 ### Analysis
@@ -305,27 +305,27 @@
 ### Error Details
 - **Error Message (Exact):**
   ```
-  No such module 'DocketMate' (in TestPersistenceController.swift)
+  No such module 'FinanceMate' (in TestPersistenceController.swift)
   Cannot override instance method parameter of type 'NSItemProvider.CompletionHandler?' with non-optional type ...
   Invalid redeclaration of 'uploadFile(data:filename:)'
   ... (see logs/build_logs/category_viewmodel_test_run.log for full output)
   ```
 - **Error Location:**
   - _macOS/Tests/UnitTests/TestPersistenceController.swift:3
-  - _macOS/Tests/DocketMateTests/DocumentUploadViewModelTests.swift
-  - _macOS/Tests/DocketMateTests/DocumentUploadViewModelTests_Enhanced.swift
+  - _macOS/Tests/FinanceMateTests/DocumentUploadViewModelTests.swift
+  - _macOS/Tests/FinanceMateTests/DocumentUploadViewModelTests_Enhanced.swift
 - **Preceding Actions:**
   - Refactored PersistenceController to public for test injection
   - Updated CategoryViewModel and TestPersistenceController for DI
   - Ran xcodebuild test (see logs/build_logs/category_viewmodel_test_run.log)
 - **Relevant Code Snippet:**
   ```swift
-  import DocketMate // Fails in test target
+  import FinanceMate // Fails in test target
   ```
 
 ### Analysis
 - **Root Cause Analysis:**
-  - Test target cannot import DocketMate module; likely project/target config or modulemap issue.
+  - Test target cannot import FinanceMate module; likely project/target config or modulemap issue.
   - Additional unrelated test files have protocol conformance and override errors, blocking test suite.
 - **Error Pattern:**
   - Known: Test target import/module config issues are common after module refactor or new public types.
@@ -405,7 +405,7 @@
   - Example log entry:
     ```
     [2025-05-10 10:15:23] Removed reference to missing file: Models/ObsoleteModel.swift
-    [2025-05-10 10:15:23] Created backup: _macOS/DocketMate.xcodeproj/project.pbxproj.bak_20250510_101523
+    [2025-05-10 10:15:23] Created backup: _macOS/FinanceMate.xcodeproj/project.pbxproj.bak_20250510_101523
     ```
 - **Key points:**
   - Timestamps indicate when actions occurred
@@ -450,15 +450,15 @@
 
 ## Build Stability Enhancement Guide
 
-To ensure ongoing build stability for the DocketMate project, the following strategies should be implemented:
+To ensure ongoing build stability for the FinanceMate project, the following strategies should be implemented:
 
 ### 1. Project File Backup & Restoration
 
 #### Automatic Backup Creation
 - Every successful build should trigger a backup of critical project configuration files
 - The following files should be automatically backed up with timestamps:
-  - DocketMate.xcodeproj/project.pbxproj
-  - Key entry point files (DocketMateApp.swift, MainContentView.swift)
+  - FinanceMate.xcodeproj/project.pbxproj
+  - Key entry point files (FinanceMateApp.swift, MainContentView.swift)
   - Any modified service files (e.g., OCRServiceWithFallback.swift)
 
 #### Backup Detection & Restoration
@@ -494,13 +494,13 @@ For consistent build verification, use these commands:
 
 ```bash
 # Clean build (primary verification)
-xcodebuild -project DocketMate.xcodeproj -scheme DocketMate clean build
+xcodebuild -project FinanceMate.xcodeproj -scheme FinanceMate clean build
 
 # Quick rebuild (incremental)
-xcodebuild -project DocketMate.xcodeproj -scheme DocketMate build
+xcodebuild -project FinanceMate.xcodeproj -scheme FinanceMate build
 
 # Debug build with verbose output
-xcodebuild -project DocketMate.xcodeproj -scheme DocketMate -configuration Debug build
+xcodebuild -project FinanceMate.xcodeproj -scheme FinanceMate -configuration Debug build
 ```
 
 ### 4. Critical Build Fix Script Listing
@@ -537,16 +537,16 @@ For SweetPad compatibility:
 **Basic Info:**
 - Date: 2025-06-18
 - Environment: Production
-- Build Target: DocketMate (Release)
-- Command: xcodebuild -workspace DocketMate.xcworkspace -scheme DocketMate -configuration Release clean build
+- Build Target: FinanceMate (Release)
+- Command: xcodebuild -workspace FinanceMate.xcworkspace -scheme FinanceMate -configuration Release clean build
 
 **Error Details:**
 - Build input files cannot be found:
   - _macOS/Docketmate/Sources/AppDelegate.swift
   - _macOS/Docketmate/Sources/ContentView.swift
-  - _macOS/Docketmate/Sources/DocketMateApp.swift
+  - _macOS/Docketmate/Sources/FinanceMateApp.swift
   - _macOS/Docketmate/Sources/UI/MainContentView.swift
-- Error: Did you forget to declare these files as outputs of any script phases or custom build rules which produce them? (in target 'DocketMate' from project 'DocketMate')
+- Error: Did you forget to declare these files as outputs of any script phases or custom build rules which produce them? (in target 'FinanceMate' from project 'FinanceMate')
 
 **Preceding Actions:**
 - Routine production build verification as mandated by .cursorrules

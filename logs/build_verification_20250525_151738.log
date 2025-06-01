@@ -1,0 +1,16 @@
+[INFO] Sunday, 25 May 2025 at 15:17:38 - DocketMate Build Verification Script Started
+[INFO] Sunday, 25 May 2025 at 15:17:38 - Starting comprehensive build verification
+[INFO] Sunday, 25 May 2025 at 15:17:38 - Verifying project structure compliance
+[BUILD] Sunday, 25 May 2025 at 15:17:38 - Project Structure - FAIL: Missing required project files
+[INFO] Sunday, 25 May 2025 at 15:17:38 - Verifying TDD workflow compliance
+[BUILD] Sunday, 25 May 2025 at 15:17:38 - TDD Compliance - FAIL: Insufficient test coverage detected
+[INFO] Sunday, 25 May 2025 at 15:17:38 - Starting Sandbox clean build process
+[BUILD] Sunday, 25 May 2025 at 15:17:38 - Sandbox Clean Build - FAIL: sh: line 0: cd: ~/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate-Sandbox: No such file or directory
+[INFO] Sunday, 25 May 2025 at 15:17:38 - Starting Production clean build process
+[BUILD] Sunday, 25 May 2025 at 15:17:38 - Production Clean Build - FAIL: sh: line 0: cd: ~/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate: No such file or directory
+[INFO] Sunday, 25 May 2025 at 15:17:38 - Starting Workspace build process
+[BUILD] Sunday, 25 May 2025 at 15:17:38 - Workspace Build - FAIL: sh: line 0: cd: ~/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS: No such file or directory
+[INFO] Sunday, 25 May 2025 at 15:17:38 - Generating build verification report...
+[INFO] Sunday, 25 May 2025 at 15:17:38 - Build report saved to: ~/Desktop/build_verification_report_Sunday, 25 May 2025 at 15:17:38.txt
+[ERROR] Sunday, 25 May 2025 at 15:17:38 - ❌ Build verification failures detected!
+BUILD_FAILURE

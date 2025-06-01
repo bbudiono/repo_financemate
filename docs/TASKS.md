@@ -133,8 +133,8 @@
 # Status: pending
 # Dependencies: None
 # Priority: m... |
-| 22 | Enhance Apple Sign-In UX, Validation, and Accessibility in DocketMate | Not Started | P2 | None | # Task ID: 22
-# Title: Enhance Apple Sign-In UX, Validation, and Accessibility in DocketMate
+| 22 | Enhance Apple Sign-In UX, Validation, and Accessibility in FinanceMate | Not Started | P2 | None | # Task ID: 22
+# Title: Enhance Apple Sign-In UX, Validation, and Accessibility in FinanceMate
 # Status: pending
 # Dependencies: None
 # Priority: medium... |
@@ -149,8 +149,8 @@
 # Status: pending
 # Dependencies: None
 # Pr... |
-| 25 | Implement Google SSO in DocketMate-Sandbox macOS App with TDD and Modular Architecture | Not Started | P1 | None | # Task ID: 25
-# Title: Implement Google SSO in DocketMate-Sandbox macOS App with TDD and Modular Architecture
+| 25 | Implement Google SSO in FinanceMate-Sandbox macOS App with TDD and Modular Architecture | Not Started | P1 | None | # Task ID: 25
+# Title: Implement Google SSO in FinanceMate-Sandbox macOS App with TDD and Modular Architecture
 # Status: pending
 # Dependencies: None
 #... |
@@ -180,8 +180,8 @@
 # Status: pending
 # Dependencies: None
 # ... |
-| 31 | Refactor DocketMateSandboxTests.swift for Code Quality, Coverage, and Compliance | Not Started | P1 | None | # Task ID: 31
-# Title: Refactor DocketMateSandboxTests.swift for Code Quality, Coverage, and Compliance
+| 31 | Refactor FinanceMateSandboxTests.swift for Code Quality, Coverage, and Compliance | Not Started | P1 | None | # Task ID: 31
+# Title: Refactor FinanceMateSandboxTests.swift for Code Quality, Coverage, and Compliance
 # Status: pending
 # Dependencies: None
 # Prior... |
@@ -367,7 +367,7 @@
 # Status: pending
 # Dependencies: None
 # Priority: High
-# Description: Refactor _macOS/DocketMate-Sa... |
+# Description: Refactor _macOS/FinanceMate-Sa... |
 | 68 | Add Mandatory Comment Block to create_buildable_swiftui_app.sh | Not Started | P2 | None | # Task ID: 68
 # Title: Add Mandatory Comment Block to create_buildable_swiftui_app.sh
 # Status: pending
@@ -396,8 +396,8 @@
 # Title: Refactor AuthenticationService.swift for .cursorrules compliance and to fix build warnings
 # Status: pending
 # Dependencies: No... |
-| 73 | Review and Curate UI/UX Patterns for DocketMate Enhancement | Not Started | P2 | None | # Task ID: 73
-# Title: Review and Curate UI/UX Patterns for DocketMate Enhancement
+| 73 | Review and Curate UI/UX Patterns for FinanceMate Enhancement | Not Started | P2 | None | # Task ID: 73
+# Title: Review and Curate UI/UX Patterns for FinanceMate Enhancement
 # Status: pending
 # Dependencies: None
 # Priority: medium
@@ -437,4 +437,4 @@
 # Dependencies: None
 # Priority: medium
 # Descr... |
-| 30.5.1 | Create AboutSettingsViewModel | ⏳ Not Started | P3 | 30.5 | **Feature Goal:** View model for about screen | **API Relationships:** SettingsView | **Detailed Implementation Guide:** Create in `_macOS/DocketMate/ViewModels/Settings/`. |
+| 30.5.1 | Create AboutSettingsViewModel | ⏳ Not Started | P3 | 30.5 | **Feature Goal:** View model for about screen | **API Relationships:** SettingsView | **Detailed Implementation Guide:** Create in `_macOS/FinanceMate/ViewModels/Settings/`. |

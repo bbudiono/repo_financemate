@@ -1,6 +1,6 @@
-# DocketMate Project Scripts
+# FinanceMate Project Scripts
 
-This document catalogs all utility scripts used in the DocketMate project, their purpose, and usage instructions.
+This document catalogs all utility scripts used in the FinanceMate project, their purpose, and usage instructions.
 
 ## Build Scripts
 

@@ -1,8 +1,8 @@
-# DocketMate Xcode Build Guide
+# FinanceMate Xcode Build Guide
 
 ## 1. Overview
 
-This guide provides critical information for building, maintaining, and troubleshooting the DocketMate Xcode project. It's essential for ensuring consistent build success, SweetPad compatibility, and project structure standards.
+This guide provides critical information for building, maintaining, and troubleshooting the FinanceMate Xcode project. It's essential for ensuring consistent build success, SweetPad compatibility, and project structure standards.
 
 **Version:** 1.1.0  
 **Last Updated:** 2025-05-10
@@ -12,9 +12,9 @@ This guide provides critical information for building, maintaining, and troubles
 ### 2.1 Essential Directory Structure
 
 ```
-DocketMate/
+FinanceMate/
 ├── App/                 # App configuration and entry point files
-│   └── DocketMateApp.swift  # Main app entry point (@main)
+│   └── FinanceMateApp.swift  # Main app entry point (@main)
 ├── ContentView.swift    # REQUIRED: Main entry point view - must be in root directory
 ├── Models/              # Data models
 ├── Services/            # Business logic services
@@ -30,8 +30,8 @@ DocketMate/
 
 ### 2.2 Critical File Naming Requirements
 
-* **DocketMateApp.swift:** Main application entry point with `@main` annotation
-* **ContentView.swift:** Root view referenced by DocketMateApp - MUST be in the root directory
+* **FinanceMateApp.swift:** Main application entry point with `@main` annotation
+* **ContentView.swift:** Root view referenced by FinanceMateApp - MUST be in the root directory
 * Other view components should follow a consistent naming pattern (e.g., `EntityNameView.swift`)
 
 ## 3. Build Standards & Requirements
@@ -39,13 +39,13 @@ DocketMate/
 ### 3.1 Standard Build Command
 
 ```bash
-xcodebuild -project DocketMate.xcodeproj -scheme DocketMate clean build
+xcodebuild -project FinanceMate.xcodeproj -scheme FinanceMate clean build
 ```
 
 ### 3.2 SweetPad Compatibility Requirements
 
 1. Project must maintain a stable entry point structure:
-   - `DocketMateApp.swift` with `@main` annotation
+   - `FinanceMateApp.swift` with `@main` annotation
    - `ContentView.swift` in the root directory 
    - Stable imports and SwiftUI references
 
@@ -81,7 +81,7 @@ For comprehensive prevention strategies, refer to the `BUILD_FAILURE_PREVENTION_
 #### Issue: "Cannot find 'MainContentView' in scope"
 * **Resolution:** 
   1. Ensure ContentView.swift exists in the root directory
-  2. Update DocketMateApp.swift to reference ContentView() not MainContentView()
+  2. Update FinanceMateApp.swift to reference ContentView() not MainContentView()
   3. Run `./scripts/build_fixes/fix_quick.sh` to apply the fix automatically
 
 #### Issue: "OCRServiceWithFallback missing type references"
@@ -296,7 +296,7 @@ All changes should include:
 ### 6.2 Test Command
 
 ```bash
-xcodebuild -project DocketMate.xcodeproj -scheme DocketMate test
+xcodebuild -project FinanceMate.xcodeproj -scheme FinanceMate test
 ```
 
 ### 6.3 Pre-Commit Testing
@@ -341,11 +341,11 @@ validation:
 
 build:
   script:
-    - xcodebuild -project DocketMate.xcodeproj -scheme DocketMate clean build
+    - xcodebuild -project FinanceMate.xcodeproj -scheme FinanceMate clean build
 
 test:
   script:
-    - xcodebuild -project DocketMate.xcodeproj -scheme DocketMate test
+    - xcodebuild -project FinanceMate.xcodeproj -scheme FinanceMate test
 ```
 
 ### 8.2 Automated Notifications

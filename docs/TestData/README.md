@@ -1,6 +1,6 @@
 # TestData Directory
 
-This directory is used to store test data files (images, PDFs, sample documents) for automated and manual testing of DocketMate features. Add non-sensitive, realistic test files here for use in unit and UI tests. 
+This directory is used to store test data files (images, PDFs, sample documents) for automated and manual testing of FinanceMate features. Add non-sensitive, realistic test files here for use in unit and UI tests. 
 
 ## Purpose & Importance
 

@@ -1,0 +1,42 @@
+[0;36m[INFO] 2025-05-24 18:37:40 Auto-detected Production project name: DocketMate[0m
+[0;36m[INFO] 2025-05-24 18:37:40 Auto-detected Sandbox project name: DocketMate-Sandbox[0m
+[0;36m[INFO] 2025-05-24 18:37:40 Using project names: Production=DocketMate, Sandbox=DocketMate-Sandbox[0m
+[0;36m[INFO] 2025-05-24 18:37:40 Using directories: _macOS/DocketMate and _macOS/DocketMate-Sandbox[0m
+[Starting build verification for both environments...] 2025-05-24 18:37:40 STEP[0m
+[Starting build verification for both environments...] 2025-05-24 18:37:40 STEP[0m
+[Verifying Production environment] 2025-05-24 18:37:40 STEP[0m
+[Verifying Production environment] 2025-05-24 18:37:40 STEP[0m
+[Production directory exists: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate] 2025-05-24 18:37:40 SUCCESS[0m
+[Production directory exists: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate] 2025-05-24 18:37:40 SUCCESS[0m
+[Production Xcode project exists] 2025-05-24 18:37:40 SUCCESS[0m
+[Production Xcode project exists] 2025-05-24 18:37:40 SUCCESS[0m
+[Building Production project...] 2025-05-24 18:37:40 INFO[0m
+[Building Production project...] 2025-05-24 18:37:40 INFO[0m
+[Production build succeeded] 2025-05-24 18:37:46 SUCCESS[0m
+[Production build succeeded] 2025-05-24 18:37:46 SUCCESS[0m
+[Production build has 2 warnings] 2025-05-24 18:37:46 INFO[0m
+[Production build has 2 warnings] 2025-05-24 18:37:46 INFO[0m
+[Verifying Sandbox environment] 2025-05-24 18:37:46 STEP[0m
+[Verifying Sandbox environment] 2025-05-24 18:37:46 STEP[0m
+[Sandbox directory exists: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate-Sandbox] 2025-05-24 18:37:46 SUCCESS[0m
+[Sandbox directory exists: /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate-Sandbox] 2025-05-24 18:37:46 SUCCESS[0m
+[Sandbox Xcode project exists] 2025-05-24 18:37:46 SUCCESS[0m
+[Sandbox Xcode project exists] 2025-05-24 18:37:46 SUCCESS[0m
+[Building Sandbox project...] 2025-05-24 18:37:46 INFO[0m
+[Building Sandbox project...] 2025-05-24 18:37:46 INFO[0m
+[Sandbox build succeeded] 2025-05-24 18:37:53 SUCCESS[0m
+[Sandbox build succeeded] 2025-05-24 18:37:53 SUCCESS[0m
+[Sandbox build has 2 warnings] 2025-05-24 18:37:53 INFO[0m
+[Sandbox build has 2 warnings] 2025-05-24 18:37:53 INFO[0m
+[Updating DEVELOPMENT_LOG.md with build status] 2025-05-24 18:37:53 STEP[0m
+[Updating DEVELOPMENT_LOG.md with build status] 2025-05-24 18:37:53 STEP[0m
+[Development log updated in docs/DEVELOPMENT_LOG.md] 2025-05-24 18:37:53 INFO[0m
+[Development log updated in docs/DEVELOPMENT_LOG.md] 2025-05-24 18:37:53 INFO[0m
+[=== BUILD VERIFICATION SUMMARY ===] 2025-05-24 18:37:53 STEP[0m
+[=== BUILD VERIFICATION SUMMARY ===] 2025-05-24 18:37:53 STEP[0m
+[Production: PASSED] 2025-05-24 18:37:53 INFO[0m
+[Production: PASSED] 2025-05-24 18:37:53 INFO[0m
+[Sandbox: PASSED] 2025-05-24 18:37:53 INFO[0m
+[Sandbox: PASSED] 2025-05-24 18:37:53 INFO[0m
+[All builds are passing!] 2025-05-24 18:37:53 SUCCESS[0m
+[All builds are passing!] 2025-05-24 18:37:53 SUCCESS[0m

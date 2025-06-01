@@ -1,0 +1,84 @@
+2025-05-31 18:27:48,660 - __main__ - INFO - ❌ FAIL GET /health - 0.005s - 0
+2025-05-31 18:27:48,660 - __main__ - ERROR - Error: Connection error - server not responding
+2025-05-31 18:27:48,661 - __main__ - INFO - ❌ FAIL GET /config/providers - 0.001s - 0
+2025-05-31 18:27:48,661 - __main__ - ERROR - Error: Connection error - server not responding
+2025-05-31 18:27:48,662 - __main__ - INFO - ❌ FAIL GET /config/api-keys - 0.001s - 0
+2025-05-31 18:27:48,662 - __main__ - ERROR - Error: Connection error - server not responding
+2025-05-31 18:27:48,663 - __main__ - INFO - ❌ FAIL GET /config/storage - 0.001s - 0
+2025-05-31 18:27:48,663 - __main__ - ERROR - Error: Connection error - server not responding
+2025-05-31 18:27:48,664 - __main__ - INFO - ❌ FAIL GET /config/models/anthropic - 0.001s - 0
+2025-05-31 18:27:48,664 - __main__ - ERROR - Error: Connection error - server not responding
+2025-05-31 18:27:48,665 - __main__ - INFO - ❌ FAIL GET /config/models/openai - 0.001s - 0
+2025-05-31 18:27:48,665 - __main__ - ERROR - Error: Connection error - server not responding
+2025-05-31 18:27:48,666 - __main__ - INFO - ❌ FAIL GET /config/models/google - 0.001s - 0
+2025-05-31 18:27:48,666 - __main__ - ERROR - Error: Connection error - server not responding
+2025-05-31 18:27:48,667 - __main__ - INFO - ❌ FAIL GET /config/models/deepseek - 0.001s - 0
+2025-05-31 18:27:48,667 - __main__ - ERROR - Error: Connection error - server not responding
+2025-05-31 18:27:48,668 - __main__ - INFO - ❌ FAIL GET /config/models/lm_studio - 0.001s - 0
+2025-05-31 18:27:48,668 - __main__ - ERROR - Error: Connection error - server not responding
+2025-05-31 18:27:48,669 - __main__ - INFO - ❌ FAIL GET /config/models/ollama - 0.001s - 0
+2025-05-31 18:27:48,669 - __main__ - ERROR - Error: Connection error - server not responding
+2025-05-31 18:27:48,670 - __main__ - INFO - ❌ FAIL POST /config/provider - 0.001s - 0
+2025-05-31 18:27:48,670 - __main__ - ERROR - Error: Connection error - server not responding
+2025-05-31 18:27:48,670 - __main__ - INFO - ❌ FAIL GET /models/installed - 0.001s - 0
+2025-05-31 18:27:48,670 - __main__ - ERROR - Error: Connection error - server not responding
+2025-05-31 18:27:48,671 - __main__ - INFO - ❌ FAIL GET /models/available - 0.001s - 0
+2025-05-31 18:27:48,671 - __main__ - ERROR - Error: Connection error - server not responding
+2025-05-31 18:27:48,672 - __main__ - INFO - ❌ FAIL GET /models/catalog - 0.001s - 0
+2025-05-31 18:27:48,672 - __main__ - ERROR - Error: Connection error - server not responding
+2025-05-31 18:27:48,672 - __main__ - INFO - ❌ FAIL POST /models/download - 0.001s - 0
+2025-05-31 18:27:48,672 - __main__ - ERROR - Error: Connection error - server not responding
+2025-05-31 18:27:48,673 - __main__ - INFO - ❌ FAIL POST /chat/set-model - 0.001s - 0
+2025-05-31 18:27:48,673 - __main__ - ERROR - Error: Connection error - server not responding
+2025-05-31 18:27:48,674 - __main__ - INFO - ❌ FAIL POST /chat/completions - 0.001s - 0
+2025-05-31 18:27:48,674 - __main__ - ERROR - Error: Connection error - server not responding
+2025-05-31 18:27:48,674 - __main__ - INFO - ❌ FAIL POST /v1/chat/completions - 0.001s - 0
+2025-05-31 18:27:48,675 - __main__ - ERROR - Error: Connection error - server not responding
+2025-05-31 18:27:48,675 - __main__ - INFO - ❌ FAIL POST /chat/stream - 0.001s - 0
+2025-05-31 18:27:48,675 - __main__ - ERROR - Error: Connection error - server not responding
+2025-05-31 18:27:48,676 - __main__ - INFO - ❌ FAIL GET /system/status - 0.001s - 0
+2025-05-31 18:27:48,676 - __main__ - ERROR - Error: Connection error - server not responding
+2025-05-31 18:27:48,676 - __main__ - INFO - ❌ FAIL POST /backend/deploy - 0.001s - 0
+2025-05-31 18:27:48,676 - __main__ - ERROR - Error: Connection error - server not responding
+2025-05-31 18:27:56,839 - __main__ - INFO - ❌ FAIL GET /health - 0.005s - 0
+2025-05-31 18:27:56,839 - __main__ - ERROR - Error: Connection error - server not responding
+2025-05-31 18:27:56,840 - __main__ - INFO - ❌ FAIL GET /config/providers - 0.001s - 0
+2025-05-31 18:27:56,840 - __main__ - ERROR - Error: Connection error - server not responding
+2025-05-31 18:27:56,841 - __main__ - INFO - ❌ FAIL GET /config/api-keys - 0.001s - 0
+2025-05-31 18:27:56,841 - __main__ - ERROR - Error: Connection error - server not responding
+2025-05-31 18:27:56,842 - __main__ - INFO - ❌ FAIL GET /config/storage - 0.001s - 0
+2025-05-31 18:27:56,842 - __main__ - ERROR - Error: Connection error - server not responding
+2025-05-31 18:27:56,842 - __main__ - INFO - ❌ FAIL GET /config/models/anthropic - 0.001s - 0
+2025-05-31 18:27:56,842 - __main__ - ERROR - Error: Connection error - server not responding
+2025-05-31 18:27:56,843 - __main__ - INFO - ❌ FAIL GET /config/models/openai - 0.001s - 0
+2025-05-31 18:27:56,843 - __main__ - ERROR - Error: Connection error - server not responding
+2025-05-31 18:27:56,844 - __main__ - INFO - ❌ FAIL GET /config/models/google - 0.001s - 0
+2025-05-31 18:27:56,844 - __main__ - ERROR - Error: Connection error - server not responding
+2025-05-31 18:27:56,844 - __main__ - INFO - ❌ FAIL GET /config/models/deepseek - 0.001s - 0
+2025-05-31 18:27:56,844 - __main__ - ERROR - Error: Connection error - server not responding
+2025-05-31 18:27:56,845 - __main__ - INFO - ❌ FAIL GET /config/models/lm_studio - 0.001s - 0
+2025-05-31 18:27:56,845 - __main__ - ERROR - Error: Connection error - server not responding
+2025-05-31 18:27:56,846 - __main__ - INFO - ❌ FAIL GET /config/models/ollama - 0.001s - 0
+2025-05-31 18:27:56,846 - __main__ - ERROR - Error: Connection error - server not responding
+2025-05-31 18:27:56,847 - __main__ - INFO - ❌ FAIL POST /config/provider - 0.001s - 0
+2025-05-31 18:27:56,847 - __main__ - ERROR - Error: Connection error - server not responding
+2025-05-31 18:27:56,847 - __main__ - INFO - ❌ FAIL GET /models/installed - 0.001s - 0
+2025-05-31 18:27:56,847 - __main__ - ERROR - Error: Connection error - server not responding
+2025-05-31 18:27:56,848 - __main__ - INFO - ❌ FAIL GET /models/available - 0.001s - 0
+2025-05-31 18:27:56,848 - __main__ - ERROR - Error: Connection error - server not responding
+2025-05-31 18:27:56,849 - __main__ - INFO - ❌ FAIL GET /models/catalog - 0.000s - 0
+2025-05-31 18:27:56,849 - __main__ - ERROR - Error: Connection error - server not responding
+2025-05-31 18:27:56,849 - __main__ - INFO - ❌ FAIL POST /models/download - 0.001s - 0
+2025-05-31 18:27:56,849 - __main__ - ERROR - Error: Connection error - server not responding
+2025-05-31 18:27:56,850 - __main__ - INFO - ❌ FAIL POST /chat/set-model - 0.001s - 0
+2025-05-31 18:27:56,850 - __main__ - ERROR - Error: Connection error - server not responding
+2025-05-31 18:27:56,851 - __main__ - INFO - ❌ FAIL POST /chat/completions - 0.001s - 0
+2025-05-31 18:27:56,851 - __main__ - ERROR - Error: Connection error - server not responding
+2025-05-31 18:27:56,851 - __main__ - INFO - ❌ FAIL POST /v1/chat/completions - 0.001s - 0
+2025-05-31 18:27:56,851 - __main__ - ERROR - Error: Connection error - server not responding
+2025-05-31 18:27:56,852 - __main__ - INFO - ❌ FAIL POST /chat/stream - 0.001s - 0
+2025-05-31 18:27:56,852 - __main__ - ERROR - Error: Connection error - server not responding
+2025-05-31 18:27:56,853 - __main__ - INFO - ❌ FAIL GET /system/status - 0.001s - 0
+2025-05-31 18:27:56,853 - __main__ - ERROR - Error: Connection error - server not responding
+2025-05-31 18:27:56,853 - __main__ - INFO - ❌ FAIL POST /backend/deploy - 0.001s - 0
+2025-05-31 18:27:56,853 - __main__ - ERROR - Error: Connection error - server not responding

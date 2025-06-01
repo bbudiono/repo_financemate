@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		9280A1E29D23195D550122F9 /* DocketMateApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE57145E373E89352CE76F52 /* DocketMateApp.swift */; };
+		9280A1E29D23195D550122F9 /* FinanceMateApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE57145E373E89352CE76F52 /* FinanceMateApp.swift */; };
 		9B2E1D461F44649B19E37B75 /* AppEnvironmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 097A8210B78DAFCFB34D9EE7 /* AppEnvironmentTests.swift */; };
 		9E295FCE056581BBC6CDA38E /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B9290A6770802D5DC347693 /* AppEnvironment.swift */; };
 		FC025A1CB02809D26E968E45 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E18C26F4F3AF42AA830F46F3 /* ContentView.swift */; };
@@ -19,45 +19,45 @@
 			containerPortal = 0A583971E86D889EC014362E /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = C0501184582E4B8B33A799AE;
-			remoteInfo = DocketMate;
+			remoteInfo = FinanceMate;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		097A8210B78DAFCFB34D9EE7 /* AppEnvironmentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironmentTests.swift; sourceTree = "<group>"; };
-		137346099AF589FC999C2690 /* DocketMateTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DocketMateTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		137346099AF589FC999C2690 /* FinanceMateTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FinanceMateTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B9290A6770802D5DC347693 /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
 		68567087D968C2FE8D53B34C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		E18C26F4F3AF42AA830F46F3 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		F74A98781F1B874D7128CEE5 /* DocketMate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DocketMate.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		FE57145E373E89352CE76F52 /* DocketMateApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocketMateApp.swift; sourceTree = "<group>"; };
+		F74A98781F1B874D7128CEE5 /* FinanceMate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FinanceMate.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FE57145E373E89352CE76F52 /* FinanceMateApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinanceMateApp.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
-		0092735E907B7EB838D383E9 /* DocketMateTests */ = {
+		0092735E907B7EB838D383E9 /* FinanceMateTests */ = {
 			isa = PBXGroup;
 			children = (
 				097A8210B78DAFCFB34D9EE7 /* AppEnvironmentTests.swift */,
 			);
-			path = DocketMateTests;
+			path = FinanceMateTests;
 			sourceTree = "<group>";
 		};
-		1D5D0CF1626B0D96F891FB4D /* DocketMate */ = {
+		1D5D0CF1626B0D96F891FB4D /* FinanceMate */ = {
 			isa = PBXGroup;
 			children = (
 				3B9290A6770802D5DC347693 /* AppEnvironment.swift */,
 				E18C26F4F3AF42AA830F46F3 /* ContentView.swift */,
-				FE57145E373E89352CE76F52 /* DocketMateApp.swift */,
+				FE57145E373E89352CE76F52 /* FinanceMateApp.swift */,
 				68567087D968C2FE8D53B34C /* Info.plist */,
 			);
-			path = DocketMate;
+			path = FinanceMate;
 			sourceTree = "<group>";
 		};
 		411DBE5F53A298C126242F34 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F74A98781F1B874D7128CEE5 /* DocketMate.app */,
-				137346099AF589FC999C2690 /* DocketMateTests.xctest */,
+				F74A98781F1B874D7128CEE5 /* FinanceMate.app */,
+				137346099AF589FC999C2690 /* FinanceMateTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -65,8 +65,8 @@
 		A287CCF3077F77AF035FE4EE = {
 			isa = PBXGroup;
 			children = (
-				1D5D0CF1626B0D96F891FB4D /* DocketMate */,
-				0092735E907B7EB838D383E9 /* DocketMateTests */,
+				1D5D0CF1626B0D96F891FB4D /* FinanceMate */,
+				0092735E907B7EB838D383E9 /* FinanceMateTests */,
 				411DBE5F53A298C126242F34 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -74,9 +74,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		AEB2CC7C147A130B1383B9A9 /* DocketMateTests */ = {
+		AEB2CC7C147A130B1383B9A9 /* FinanceMateTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 74C745A9357669E2CE33FC1A /* Build configuration list for PBXNativeTarget "DocketMateTests" */;
+			buildConfigurationList = 74C745A9357669E2CE33FC1A /* Build configuration list for PBXNativeTarget "FinanceMateTests" */;
 			buildPhases = (
 				08B216261B6D2BA3443B1A0C /* Sources */,
 			);
@@ -85,16 +85,16 @@
 			dependencies = (
 				35A11468A090B36B9A3217ED /* PBXTargetDependency */,
 			);
-			name = DocketMateTests;
+			name = FinanceMateTests;
 			packageProductDependencies = (
 			);
-			productName = DocketMateTests;
-			productReference = 137346099AF589FC999C2690 /* DocketMateTests.xctest */;
+			productName = FinanceMateTests;
+			productReference = 137346099AF589FC999C2690 /* FinanceMateTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		C0501184582E4B8B33A799AE /* DocketMate */ = {
+		C0501184582E4B8B33A799AE /* FinanceMate */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 435707CA1503CC15628E92D7 /* Build configuration list for PBXNativeTarget "DocketMate" */;
+			buildConfigurationList = 435707CA1503CC15628E92D7 /* Build configuration list for PBXNativeTarget "FinanceMate" */;
 			buildPhases = (
 				D2B194BACCAE2FCF7AD52E55 /* Sources */,
 			);
@@ -102,11 +102,11 @@
 			);
 			dependencies = (
 			);
-			name = DocketMate;
+			name = FinanceMate;
 			packageProductDependencies = (
 			);
-			productName = DocketMate;
-			productReference = F74A98781F1B874D7128CEE5 /* DocketMate.app */;
+			productName = FinanceMate;
+			productReference = F74A98781F1B874D7128CEE5 /* FinanceMate.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -120,7 +120,7 @@
 				TargetAttributes = {
 				};
 			};
-			buildConfigurationList = 7A0CCCB705D31A0A38967D1E /* Build configuration list for PBXProject "DocketMate" */;
+			buildConfigurationList = 7A0CCCB705D31A0A38967D1E /* Build configuration list for PBXProject "FinanceMate" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -134,8 +134,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				C0501184582E4B8B33A799AE /* DocketMate */,
-				AEB2CC7C147A130B1383B9A9 /* DocketMateTests */,
+				C0501184582E4B8B33A799AE /* FinanceMate */,
+				AEB2CC7C147A130B1383B9A9 /* FinanceMateTests */,
 			);
 		};
 /* End PBXProject section */
@@ -155,7 +155,7 @@
 			files = (
 				9E295FCE056581BBC6CDA38E /* AppEnvironment.swift in Sources */,
 				FC025A1CB02809D26E968E45 /* ContentView.swift in Sources */,
-				9280A1E29D23195D550122F9 /* DocketMateApp.swift in Sources */,
+				9280A1E29D23195D550122F9 /* FinanceMateApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -164,7 +164,7 @@
 /* Begin PBXTargetDependency section */
 		35A11468A090B36B9A3217ED /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = C0501184582E4B8B33A799AE /* DocketMate */;
+			target = C0501184582E4B8B33A799AE /* FinanceMate */;
 			targetProxy = 2BC5C1070192D8CC9E9CDA4C /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -295,7 +295,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				INFOPLIST_FILE = DocketMate/Info.plist;
+				INFOPLIST_FILE = FinanceMate/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -317,11 +317,11 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.docketmate.DocketMateTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.docketmate.FinanceMateTests;
 				SDKROOT = macosx;
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DocketMate.app/Contents/MacOS/DocketMate";
-				INFOPLIST_FILE = DocketMateTests/Info.plist;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FinanceMate.app/Contents/MacOS/FinanceMate";
+				INFOPLIST_FILE = FinanceMateTests/Info.plist;
 			};
 			name = Debug;
 		};
@@ -331,7 +331,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				INFOPLIST_FILE = DocketMate/Info.plist;
+				INFOPLIST_FILE = FinanceMate/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -353,18 +353,18 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.docketmate.DocketMateTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.docketmate.FinanceMateTests;
 				SDKROOT = macosx;
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DocketMate.app/Contents/MacOS/DocketMate";
-				INFOPLIST_FILE = DocketMateTests/Info.plist;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FinanceMate.app/Contents/MacOS/FinanceMate";
+				INFOPLIST_FILE = FinanceMateTests/Info.plist;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		435707CA1503CC15628E92D7 /* Build configuration list for PBXNativeTarget "DocketMate" */ = {
+		435707CA1503CC15628E92D7 /* Build configuration list for PBXNativeTarget "FinanceMate" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				64B95EE3699006D87282614C /* Debug */,
@@ -373,7 +373,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		74C745A9357669E2CE33FC1A /* Build configuration list for PBXNativeTarget "DocketMateTests" */ = {
+		74C745A9357669E2CE33FC1A /* Build configuration list for PBXNativeTarget "FinanceMateTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2D6F15379B557DE87C663791 /* Debug */,
@@ -382,7 +382,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		7A0CCCB705D31A0A38967D1E /* Build configuration list for PBXProject "DocketMate" */ = {
+		7A0CCCB705D31A0A38967D1E /* Build configuration list for PBXProject "FinanceMate" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				092555CC9EBA2D24E0C1D61F /* Debug */,

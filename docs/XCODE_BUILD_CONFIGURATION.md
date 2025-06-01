@@ -1,14 +1,14 @@
 # XCODE_BUILD_CONFIGURATION.md
 
-## Xcode Build Settings for DocketMate
+## Xcode Build Settings for FinanceMate
 
-- Scheme: DocketMate
+- Scheme: FinanceMate
 - Configuration: Debug/Release
-- Workspace: _macOS/DocketMate.xcodeproj/project.xcworkspace
+- Workspace: _macOS/FinanceMate.xcodeproj/project.xcworkspace
 - Deployment Target: macOS 13+
 - Swift Version: 5.0+
 - Enable Automatic Code Signing
-- Entitlements: _macOS/DocketMate/DocketMate.entitlements
+- Entitlements: _macOS/FinanceMate/FinanceMate.entitlements
 - Asset Catalog: AppIcon, AccentColor
 - Info.plist: Auto-generated
 
@@ -20,38 +20,38 @@ This section maps key application features to their primary views, providing pat
 
 | Feature Name          | Key View Name               | Full Path to View File                                      | Brief Description of View's Role                                  |
 |-----------------------|-----------------------------|-------------------------------------------------------------|-------------------------------------------------------------------|
-| **Main App Entry**    | `DocketMateApp`             | `_macOS/DocketMate/DocketMateApp.swift`                      | SwiftUI App instance and entry point. Manages app lifecycle.       |
-| **Content Container** | `ContentView`               | `_macOS/DocketMate/ContentView.swift`                        | Root view of the app, hosts top-level navigation.                 |
-| **Main Navigation**   | `MainContentView`           | `_macOS/DocketMate/Views/MainContentView.swift`              | TabView-based navigation between Dashboard and Settings.          |
-| **Dashboard**         | `DashboardView`             | `_macOS/DocketMate/Views/DashboardView.swift`                | Main dashboard with analytics, recent documents, and quick actions. NavigationView with sidebar and main content. |
-| **Dashboard Analytics** | `DashboardAnalyticsPanelView` | `_macOS/DocketMate/Views/DashboardAnalyticsPanelView.swift` | Analytics summary with metrics cards, time range selector.        |
-| **Analytics Metrics** | `MetricCardView`            | `_macOS/DocketMate/Views/Dashboard/MetricCardView.swift`     | Individual metric card showing value, trend, and title.           |
-| **Document Upload**   | `DocumentUploadView`        | `_macOS/DocketMate/Views/DocumentUploadView.swift`           | Interface for uploading documents via drag-and-drop.              |
-| **Document Drop Area** | `DocumentDropArea`        | `_macOS/DocketMate/Views/DocumentDropArea.swift`             | SwiftUI drag-and-drop area for document files.                    |
-| **File Picker**       | `FilePickerButton`          | `_macOS/DocketMate/Views/FilePickerButton.swift`             | Button that opens a file picker dialog.                           |
-| **Authentication**    | `LoginView`                 | `_macOS/DocketMate/Views/Authentication/LoginView.swift`     | User authentication screen.                                       |
-| **Placeholders**      | `ProfileView`               | `_macOS/DocketMate/Views/ProfileView.swift`                  | Empty placeholder for user profile page.                          |
-|                       | `SettingsView`              | `_macOS/DocketMate/Views/SettingsView.swift`                  | Empty placeholder for settings page.                              |
+| **Main App Entry**    | `FinanceMateApp`             | `_macOS/FinanceMate/FinanceMateApp.swift`                      | SwiftUI App instance and entry point. Manages app lifecycle.       |
+| **Content Container** | `ContentView`               | `_macOS/FinanceMate/ContentView.swift`                        | Root view of the app, hosts top-level navigation.                 |
+| **Main Navigation**   | `MainContentView`           | `_macOS/FinanceMate/Views/MainContentView.swift`              | TabView-based navigation between Dashboard and Settings.          |
+| **Dashboard**         | `DashboardView`             | `_macOS/FinanceMate/Views/DashboardView.swift`                | Main dashboard with analytics, recent documents, and quick actions. NavigationView with sidebar and main content. |
+| **Dashboard Analytics** | `DashboardAnalyticsPanelView` | `_macOS/FinanceMate/Views/DashboardAnalyticsPanelView.swift` | Analytics summary with metrics cards, time range selector.        |
+| **Analytics Metrics** | `MetricCardView`            | `_macOS/FinanceMate/Views/Dashboard/MetricCardView.swift`     | Individual metric card showing value, trend, and title.           |
+| **Document Upload**   | `DocumentUploadView`        | `_macOS/FinanceMate/Views/DocumentUploadView.swift`           | Interface for uploading documents via drag-and-drop.              |
+| **Document Drop Area** | `DocumentDropArea`        | `_macOS/FinanceMate/Views/DocumentDropArea.swift`             | SwiftUI drag-and-drop area for document files.                    |
+| **File Picker**       | `FilePickerButton`          | `_macOS/FinanceMate/Views/FilePickerButton.swift`             | Button that opens a file picker dialog.                           |
+| **Authentication**    | `LoginView`                 | `_macOS/FinanceMate/Views/Authentication/LoginView.swift`     | User authentication screen.                                       |
+| **Placeholders**      | `ProfileView`               | `_macOS/FinanceMate/Views/ProfileView.swift`                  | Empty placeholder for user profile page.                          |
+|                       | `SettingsView`              | `_macOS/FinanceMate/Views/SettingsView.swift`                  | Empty placeholder for settings page.                              |
 
 ## Key Application View Models
 
 | View Model Name             | Full Path to File                                 | Associated View(s)                | Description                          |
 |-----------------------------|---------------------------------------------------|-----------------------------------|--------------------------------------|
-| `DashboardAnalyticsViewModel` | `_macOS/DocketMate/ViewModels/DashboardAnalyticsViewModel.swift` | `DashboardAnalyticsPanelView` | Manages analytics data and time range selection. |
-| `SpreadsheetColumnViewModel`  | `_macOS/DocketMate/ViewModels/SpreadsheetColumnViewModel.swift` | Spreadsheet column customization | Manages column configuration.        |
+| `DashboardAnalyticsViewModel` | `_macOS/FinanceMate/ViewModels/DashboardAnalyticsViewModel.swift` | `DashboardAnalyticsPanelView` | Manages analytics data and time range selection. |
+| `SpreadsheetColumnViewModel`  | `_macOS/FinanceMate/ViewModels/SpreadsheetColumnViewModel.swift` | Spreadsheet column customization | Manages column configuration.        |
 
 ## Key Service Components
 
 | Service Name        | Full Path to File                             | Description                                      |
 |---------------------|----------------------------------------------|--------------------------------------------------|
-| `OCRService`        | `_macOS/DocketMate/Services/OCRService.swift` | Handles OCR text recognition using Vision framework. Extracts line items from document images. |
-| `FileService`       | `_macOS/DocketMate/Services/FileService.swift` | Manages file import and type detection.         |
-| `DocumentService`   | `_macOS/DocketMate/Services/DocumentService.swift` | Handles document operations and storage.    |
+| `OCRService`        | `_macOS/FinanceMate/Services/OCRService.swift` | Handles OCR text recognition using Vision framework. Extracts line items from document images. |
+| `FileService`       | `_macOS/FinanceMate/Services/FileService.swift` | Manages file import and type detection.         |
+| `DocumentService`   | `_macOS/FinanceMate/Services/DocumentService.swift` | Handles document operations and storage.    |
 
 ## View Dependencies and Navigation Structure
 
 ```
-DocketMateApp
+FinanceMateApp
 └── ContentView
     └── MainContentView (TabView)
         ├── DashboardView

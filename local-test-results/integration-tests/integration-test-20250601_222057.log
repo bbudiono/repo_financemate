@@ -1,0 +1,588 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild test -workspace DocketMate.xcworkspace -scheme DocketMate -destination platform=macOS "-only-testing:DocketMateTests/VectorizationServiceTests" "-only-testing:DocketMateTests/RAGIntegrationServiceTests" -enableCodeCoverage YES -resultBundlePath "/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/local-test-results/integration-tests/integration-results-20250601_222057.xcresult"
+
+Resolve Package Graph
+
+
+Resolved source packages:
+  SQLite.swift: https://github.com/stephencelis/SQLite.swift @ 0.15.3
+
+Writing result bundle at path:
+	/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/local-test-results/integration-tests/integration-results-20250601_222057.xcresult
+
+--- xcodebuild: WARNING: Using the first of multiple matching destinations:
+{ platform:macOS, arch:arm64, id:00006041-000409643480801C, name:My Mac }
+{ platform:macOS, arch:x86_64, id:00006041-000409643480801C, name:My Mac }
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (4 targets)
+    Target 'DocketMateTests' in project 'DocketMate'
+        ➜ Explicit dependency on target 'DocketMate' in project 'DocketMate'
+    Target 'DocketMate' in project 'DocketMate'
+        ➜ Explicit dependency on target 'SQLite' in project 'SQLite.swift'
+    Target 'SQLite' in project 'SQLite.swift'
+        ➜ Explicit dependency on target 'SQLite' in project 'SQLite.swift'
+    Target 'SQLite' in project 'SQLite.swift' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc --version
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/usr/bin/actool --version --output-format xml1
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
+
+Build description signature: 6b9237cc5930fb0f4623c733757edbdb
+Build description path: /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/XCBuildData/6b9237cc5930fb0f4623c733757edbdb.xcbuilddata
+ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx15.5-24F74-8254517eb8b97d462ccbc072ba9094c9.sdkstatcache
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk -o /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx15.5-24F74-8254517eb8b97d462ccbc072ba9094c9.sdkstatcache
+
+MkDir /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks (in target 'DocketMate' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    /bin/mkdir -p /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks
+
+WriteAuxiliaryFile /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/Objects-normal/arm64/DocketMate.SwiftFileList (in target 'DocketMate' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    write-file /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/Objects-normal/arm64/DocketMate.SwiftFileList
+
+WriteAuxiliaryFile /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/Objects-normal/arm64/DocketMate.LinkFileList (in target 'DocketMate' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    write-file /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/Objects-normal/arm64/DocketMate.LinkFileList
+
+WriteAuxiliaryFile /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/Objects-normal/arm64/DocketMate.SwiftConstValuesFileList (in target 'DocketMate' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    write-file /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/Objects-normal/arm64/DocketMate.SwiftConstValuesFileList
+
+MkDir /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/PlugIns (in target 'DocketMate' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    /bin/mkdir -p /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/PlugIns
+
+WriteAuxiliaryFile /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/DocketMateTests.hmap (in target 'DocketMateTests' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    write-file /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/DocketMateTests.hmap
+
+WriteAuxiliaryFile /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/DocketMateTests-all-non-framework-target-headers.hmap (in target 'DocketMateTests' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    write-file /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/DocketMateTests-all-non-framework-target-headers.hmap
+
+WriteAuxiliaryFile /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/DocketMateTests-project-headers.hmap (in target 'DocketMateTests' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    write-file /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/DocketMateTests-project-headers.hmap
+
+WriteAuxiliaryFile /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/DocketMateTests-generated-files.hmap (in target 'DocketMateTests' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    write-file /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/DocketMateTests-generated-files.hmap
+
+WriteAuxiliaryFile /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/DocketMateTests-all-target-headers.hmap (in target 'DocketMateTests' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    write-file /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/DocketMateTests-all-target-headers.hmap
+
+WriteAuxiliaryFile /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/DocketMateTests-own-target-headers.hmap (in target 'DocketMateTests' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    write-file /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/DocketMateTests-own-target-headers.hmap
+
+WriteAuxiliaryFile /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/empty-DocketMateTests.plist (in target 'DocketMateTests' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    write-file /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/empty-DocketMateTests.plist
+
+WriteAuxiliaryFile /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/DocketMateTests.DependencyStaticMetadataFileList (in target 'DocketMateTests' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    write-file /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/DocketMateTests.DependencyStaticMetadataFileList
+
+WriteAuxiliaryFile /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/Objects-normal/arm64/DocketMateTests.SwiftConstValuesFileList (in target 'DocketMateTests' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    write-file /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/Objects-normal/arm64/DocketMateTests.SwiftConstValuesFileList
+
+WriteAuxiliaryFile /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/Objects-normal/arm64/DocketMateTests.LinkFileList (in target 'DocketMateTests' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    write-file /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/Objects-normal/arm64/DocketMateTests.LinkFileList
+
+WriteAuxiliaryFile /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/Objects-normal/arm64/DocketMateTests_const_extract_protocols.json (in target 'DocketMateTests' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    write-file /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/Objects-normal/arm64/DocketMateTests_const_extract_protocols.json
+
+WriteAuxiliaryFile /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/Objects-normal/arm64/DocketMateTests-OutputFileMap.json (in target 'DocketMateTests' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    write-file /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/Objects-normal/arm64/DocketMateTests-OutputFileMap.json
+
+WriteAuxiliaryFile /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/Objects-normal/arm64/DocketMateTests.SwiftFileList (in target 'DocketMateTests' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    write-file /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/Objects-normal/arm64/DocketMateTests.SwiftFileList
+
+WriteAuxiliaryFile /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/DocketMateTests.DependencyMetadataFileList (in target 'DocketMateTests' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    write-file /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/DocketMateTests.DependencyMetadataFileList
+
+MkDir /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/PlugIns/DocketMateTests.xctest/Contents (in target 'DocketMateTests' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    /bin/mkdir -p /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/PlugIns/DocketMateTests.xctest/Contents
+
+MkDir /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/PlugIns/DocketMateTests.xctest (in target 'DocketMateTests' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    /bin/mkdir -p /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/PlugIns/DocketMateTests.xctest
+
+MkDir /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/PlugIns/DocketMateTests.xctest/Contents/MacOS (in target 'DocketMateTests' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    /bin/mkdir -p /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/PlugIns/DocketMateTests.xctest/Contents/MacOS
+
+ProcessProductPackaging /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMate/DocketMate.entitlements /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/DocketMate.app.xcent (in target 'DocketMate' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    
+    Entitlements:
+    
+    {
+    "com.apple.application-identifier" = "7KV34995HH.com.ablankcanvas.docketmate";
+    "com.apple.developer.applesignin" =     (
+        Default
+    );
+    "com.apple.developer.team-identifier" = 7KV34995HH;
+    "com.apple.security.app-sandbox" = 1;
+    "com.apple.security.automation.apple-events" = 1;
+    "com.apple.security.cs.allow-dyld-environment-variables" = 1;
+    "com.apple.security.cs.allow-jit" = 1;
+    "com.apple.security.cs.allow-unsigned-executable-memory" = 1;
+    "com.apple.security.cs.debugger" = 1;
+    "com.apple.security.cs.disable-executable-page-protection" = 1;
+    "com.apple.security.cs.disable-library-validation" = 1;
+    "com.apple.security.device.audio-input" = 1;
+    "com.apple.security.device.bluetooth" = 1;
+    "com.apple.security.device.camera" = 1;
+    "com.apple.security.device.usb" = 1;
+    "com.apple.security.files.user-selected.read-only" = 1;
+    "com.apple.security.get-task-allow" = 1;
+    "com.apple.security.network.client" = 1;
+    "com.apple.security.network.server" = 1;
+    "com.apple.security.personal-information.addressbook" = 1;
+    "com.apple.security.personal-information.calendars" = 1;
+    "com.apple.security.personal-information.location" = 1;
+    "com.apple.security.personal-information.photos-library" = 1;
+    "com.apple.security.print" = 1;
+    "keychain-access-groups" =     (
+        "7KV34995HH.com.docketmate"
+    );
+}
+    
+    builtin-productPackagingUtility /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMate/DocketMate.entitlements -entitlements -format xml -o /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/DocketMate.app.xcent
+
+ProcessProductPackagingDER /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/DocketMate.app.xcent /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/DocketMate.app.xcent.der (in target 'DocketMate' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    /usr/bin/derq query -f xml -i /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/DocketMate.app.xcent -o /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/DocketMate.app.xcent.der --raw
+
+Copy /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks/libXCTestBundleInject.dylib /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/libXCTestBundleInject.dylib (in target 'DocketMate' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -exclude Headers -exclude PrivateHeaders -exclude Modules -exclude \*.tbd -resolve-src-symlinks /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/libXCTestBundleInject.dylib /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks
+
+Copy /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks/libXCTestSwiftSupport.dylib /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/libXCTestSwiftSupport.dylib (in target 'DocketMate' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -exclude Headers -exclude PrivateHeaders -exclude Modules -exclude \*.tbd -resolve-src-symlinks /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/libXCTestSwiftSupport.dylib /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks
+
+SwiftDriver DocketMate normal arm64 com.apple.xcode.tools.swift.compiler (in target 'DocketMate' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name DocketMate -Onone -enforce-exclusivity\=checked @/Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/Objects-normal/arm64/DocketMate.SwiftFileList -DDEBUG -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk -target arm64-apple-macos15.4 -g -module-cache-path /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Index.noindex/DataStore -swift-version 5 -I /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug -F /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/PackageFrameworks -F /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug -emit-localized-strings -emit-localized-strings-path /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/Objects-normal/arm64 -c -j16 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx15.5-24F74-8254517eb8b97d462ccbc072ba9094c9.sdkstatcache -output-file-map /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/Objects-normal/arm64/DocketMate-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/Objects-normal/arm64/DocketMate.swiftmodule -validate-clang-modules-once -clang-build-session-file /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -I/Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/Objects-normal/arm64/DocketMate_const_extract_protocols.json -Xcc -iquote -Xcc /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/DocketMate-generated-files.hmap -Xcc -I/Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/DocketMate-own-target-headers.hmap -Xcc -I/Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/DocketMate-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate-c82c2dbaf15510eafb27afa32746d9b0-VFS/all-product-headers.yaml -Xcc -iquote -Xcc /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/DocketMate-project-headers.hmap -Xcc -I/Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/include -Xcc -I/Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/DerivedSources-normal/arm64 -Xcc -I/Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/DerivedSources/arm64 -Xcc -I/Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/Objects-normal/arm64/DocketMate-Swift.h -working-directory /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate -experimental-emit-module-separately -disable-cmo
+
+Copy /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks/XCUnit.framework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks/XCUnit.framework (in target 'DocketMate' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -exclude Headers -exclude PrivateHeaders -exclude Modules -exclude \*.tbd -resolve-src-symlinks /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks/XCUnit.framework /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks
+
+Copy /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks/XCTest.framework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks/XCTest.framework (in target 'DocketMate' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -exclude Headers -exclude PrivateHeaders -exclude Modules -exclude \*.tbd -resolve-src-symlinks /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks/XCTest.framework /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks
+
+Copy /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks/XCTestSupport.framework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks/XCTestSupport.framework (in target 'DocketMate' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -exclude Headers -exclude PrivateHeaders -exclude Modules -exclude \*.tbd -resolve-src-symlinks /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks/XCTestSupport.framework /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks
+
+Copy /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks/XCTestCore.framework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks/XCTestCore.framework (in target 'DocketMate' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -exclude Headers -exclude PrivateHeaders -exclude Modules -exclude \*.tbd -resolve-src-symlinks /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks/XCTestCore.framework /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks
+
+Copy /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks/XCTAutomationSupport.framework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks/XCTAutomationSupport.framework (in target 'DocketMate' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -exclude Headers -exclude PrivateHeaders -exclude Modules -exclude \*.tbd -resolve-src-symlinks /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks/XCTAutomationSupport.framework /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks
+
+ProcessInfoPlistFile /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Info.plist /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/empty-DocketMate.plist (in target 'DocketMate' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    builtin-infoPlistUtility /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/empty-DocketMate.plist -producttype com.apple.product-type.application -genpkginfo /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/PkgInfo -expandbuildsettings -platform macosx -additionalcontentfile /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/assetcatalog_generated_info.plist -o /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Info.plist
+
+Copy /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks/XCUIAutomation.framework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks/XCUIAutomation.framework (in target 'DocketMate' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -exclude Headers -exclude PrivateHeaders -exclude Modules -exclude \*.tbd -resolve-src-symlinks /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks/XCUIAutomation.framework /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks
+
+Copy /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks/Testing.framework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks/Testing.framework (in target 'DocketMate' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -exclude Headers -exclude PrivateHeaders -exclude Modules -exclude \*.tbd -resolve-src-symlinks /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks/Testing.framework /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks
+
+CodeSign /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks/libXCTestBundleInject.dylib (in target 'DocketMate' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    
+    Signing Identity:     "Apple Development: BERNHARD JOSHUA BUDIONO (ZK86L2658W)"
+    Provisioning Profile: "Mac Team Provisioning Profile: com.ablankcanvas.docketmate"
+                          (0f74912d-e243-4692-ace7-fff3a6efdd63)
+    
+    /usr/bin/codesign --force --sign A8828E2953E86E04487E6F43ED714CC07A4C1525 -o runtime --timestamp\=none --preserve-metadata\=identifier,entitlements,flags --generate-entitlement-der /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks/libXCTestBundleInject.dylib
+/Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks/libXCTestBundleInject.dylib: replacing existing signature
+
+CodeSign /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks/XCUnit.framework (in target 'DocketMate' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    
+    Signing Identity:     "Apple Development: BERNHARD JOSHUA BUDIONO (ZK86L2658W)"
+    Provisioning Profile: "Mac Team Provisioning Profile: com.ablankcanvas.docketmate"
+                          (0f74912d-e243-4692-ace7-fff3a6efdd63)
+    
+    /usr/bin/codesign --force --sign A8828E2953E86E04487E6F43ED714CC07A4C1525 -o runtime --timestamp\=none --preserve-metadata\=identifier,entitlements,flags --generate-entitlement-der /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks/XCUnit.framework
+/Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks/XCUnit.framework: replacing existing signature
+
+CodeSign /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks/XCTest.framework (in target 'DocketMate' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    
+    Signing Identity:     "Apple Development: BERNHARD JOSHUA BUDIONO (ZK86L2658W)"
+    Provisioning Profile: "Mac Team Provisioning Profile: com.ablankcanvas.docketmate"
+                          (0f74912d-e243-4692-ace7-fff3a6efdd63)
+    
+    /usr/bin/codesign --force --sign A8828E2953E86E04487E6F43ED714CC07A4C1525 -o runtime --timestamp\=none --preserve-metadata\=identifier,entitlements,flags --generate-entitlement-der /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks/XCTest.framework
+/Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks/XCTest.framework: replacing existing signature
+
+CodeSign /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks/XCTestSupport.framework (in target 'DocketMate' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    
+    Signing Identity:     "Apple Development: BERNHARD JOSHUA BUDIONO (ZK86L2658W)"
+    Provisioning Profile: "Mac Team Provisioning Profile: com.ablankcanvas.docketmate"
+                          (0f74912d-e243-4692-ace7-fff3a6efdd63)
+    
+    /usr/bin/codesign --force --sign A8828E2953E86E04487E6F43ED714CC07A4C1525 -o runtime --timestamp\=none --preserve-metadata\=identifier,entitlements,flags --generate-entitlement-der /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks/XCTestSupport.framework
+/Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks/XCTestSupport.framework: replacing existing signature
+
+CodeSign /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks/libXCTestSwiftSupport.dylib (in target 'DocketMate' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    
+    Signing Identity:     "Apple Development: BERNHARD JOSHUA BUDIONO (ZK86L2658W)"
+    Provisioning Profile: "Mac Team Provisioning Profile: com.ablankcanvas.docketmate"
+                          (0f74912d-e243-4692-ace7-fff3a6efdd63)
+    
+    /usr/bin/codesign --force --sign A8828E2953E86E04487E6F43ED714CC07A4C1525 -o runtime --timestamp\=none --preserve-metadata\=identifier,entitlements,flags --generate-entitlement-der /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks/libXCTestSwiftSupport.dylib
+/Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks/libXCTestSwiftSupport.dylib: replacing existing signature
+
+CodeSign /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks/XCTAutomationSupport.framework (in target 'DocketMate' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    
+    Signing Identity:     "Apple Development: BERNHARD JOSHUA BUDIONO (ZK86L2658W)"
+    Provisioning Profile: "Mac Team Provisioning Profile: com.ablankcanvas.docketmate"
+                          (0f74912d-e243-4692-ace7-fff3a6efdd63)
+    
+    /usr/bin/codesign --force --sign A8828E2953E86E04487E6F43ED714CC07A4C1525 -o runtime --timestamp\=none --preserve-metadata\=identifier,entitlements,flags --generate-entitlement-der /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks/XCTAutomationSupport.framework
+/Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks/XCTAutomationSupport.framework: replacing existing signature
+
+CodeSign /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks/XCTestCore.framework (in target 'DocketMate' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    
+    Signing Identity:     "Apple Development: BERNHARD JOSHUA BUDIONO (ZK86L2658W)"
+    Provisioning Profile: "Mac Team Provisioning Profile: com.ablankcanvas.docketmate"
+                          (0f74912d-e243-4692-ace7-fff3a6efdd63)
+    
+    /usr/bin/codesign --force --sign A8828E2953E86E04487E6F43ED714CC07A4C1525 -o runtime --timestamp\=none --preserve-metadata\=identifier,entitlements,flags --generate-entitlement-der /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks/XCTestCore.framework
+/Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks/XCTestCore.framework: replacing existing signature
+
+CodeSign /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks/XCUIAutomation.framework (in target 'DocketMate' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    
+    Signing Identity:     "Apple Development: BERNHARD JOSHUA BUDIONO (ZK86L2658W)"
+    Provisioning Profile: "Mac Team Provisioning Profile: com.ablankcanvas.docketmate"
+                          (0f74912d-e243-4692-ace7-fff3a6efdd63)
+    
+    /usr/bin/codesign --force --sign A8828E2953E86E04487E6F43ED714CC07A4C1525 -o runtime --timestamp\=none --preserve-metadata\=identifier,entitlements,flags --generate-entitlement-der /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks/XCUIAutomation.framework
+/Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks/XCUIAutomation.framework: replacing existing signature
+
+CodeSign /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks/Testing.framework (in target 'DocketMate' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    
+    Signing Identity:     "Apple Development: BERNHARD JOSHUA BUDIONO (ZK86L2658W)"
+    Provisioning Profile: "Mac Team Provisioning Profile: com.ablankcanvas.docketmate"
+                          (0f74912d-e243-4692-ace7-fff3a6efdd63)
+    
+    /usr/bin/codesign --force --sign A8828E2953E86E04487E6F43ED714CC07A4C1525 -o runtime --timestamp\=none --preserve-metadata\=identifier,entitlements,flags --generate-entitlement-der /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks/Testing.framework
+/Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.app/Contents/Frameworks/Testing.framework: replacing existing signature
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ DocketMate (in target 'DocketMate' from project 'DocketMate')
+EmitSwiftModule normal arm64 (in target 'DocketMate' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMate/Services/EnhancedLLMService.swift:122:82: warning: main actor-isolated static property 'shared' can not be referenced from a nonisolated context; this is an error in the Swift 6 language mode
+        configService: LLMConfigurationServiceProtocol = LLMConfigurationService.shared
+                                                                                 ^
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMate/Services/LLMConfigurationService.swift:60:23: note: static property declared here
+    public static let shared = LLMConfigurationService()
+                      ^
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMate/Services/Validation/ValidationEngine.swift:222:10: warning: main actor-isolated instance method 'getRules(for:)' cannot be used to satisfy nonisolated requirement from protocol 'ValidationEngine'; this is an error in the Swift 6 language mode
+    func getRules(for type: ValidationType) -> [ValidationRule] {
+         ^
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMate/Services/Validation/ValidationEngine.swift:222:10: note: add 'nonisolated' to 'getRules(for:)' to make this instance method not isolated to the actor
+    func getRules(for type: ValidationType) -> [ValidationRule] {
+         ^
+    nonisolated 
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMate/Services/Validation/ValidationEngine.swift:121:53: note: add '@preconcurrency' to the 'ValidationEngine' conformance to defer isolation checking to run time
+class EnterpriseValidationEngine: ObservableObject, ValidationEngine {
+                                                    ^
+                                                    @preconcurrency 
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMate/Services/Validation/ValidationEngine.swift:21:10: note: mark the protocol requirement 'getRules(for:)' 'async' to allow actor-isolated conformances
+    func getRules(for type: ValidationType) -> [ValidationRule]
+         ^
+                                            async
+
+SwiftCompile normal arm64 Compiling\ CursorStyleMainView.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMate/Views/CursorStyleMainView.swift (in target 'DocketMate' from project 'DocketMate')
+
+SwiftCompile normal arm64 /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMate/Views/CursorStyleMainView.swift (in target 'DocketMate' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMate/Views/CursorStyleMainView.swift:39:14: warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead.
+            .onChange(of: geometry.size) { newSize in
+             ^
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMate/Views/CursorStyleMainView.swift:80:18: warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead.
+                .onChange(of: panelCoordinator.selectedDocument) { document in
+                 ^
+
+SwiftCompile normal arm64 Compiling\ EnhancedChatPanel.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMate/Views/CursorStyle/EnhancedChatPanel.swift (in target 'DocketMate' from project 'DocketMate')
+SwiftCompile normal arm64 /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMate/Views/CursorStyle/EnhancedChatPanel.swift (in target 'DocketMate' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    
+
+SwiftCompile normal arm64 Compiling\ DocumentEditorPanel.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMate/Views/CursorStyle/DocumentEditorPanel.swift (in target 'DocketMate' from project 'DocketMate')
+
+SwiftCompile normal arm64 /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMate/Views/CursorStyle/DocumentEditorPanel.swift (in target 'DocketMate' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    
+
+SwiftDriverJobDiscovery normal arm64 Compiling CursorStyleMainView.swift (in target 'DocketMate' from project 'DocketMate')
+
+SwiftDriverJobDiscovery normal arm64 Emitting module for DocketMate (in target 'DocketMate' from project 'DocketMate')
+
+SwiftDriver\ Compilation\ Requirements DocketMate normal arm64 com.apple.xcode.tools.swift.compiler (in target 'DocketMate' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name DocketMate -Onone -enforce-exclusivity\=checked @/Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/Objects-normal/arm64/DocketMate.SwiftFileList -DDEBUG -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk -target arm64-apple-macos15.4 -g -module-cache-path /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Index.noindex/DataStore -swift-version 5 -I /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug -F /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/PackageFrameworks -F /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug -emit-localized-strings -emit-localized-strings-path /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/Objects-normal/arm64 -c -j16 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx15.5-24F74-8254517eb8b97d462ccbc072ba9094c9.sdkstatcache -output-file-map /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/Objects-normal/arm64/DocketMate-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/Objects-normal/arm64/DocketMate.swiftmodule -validate-clang-modules-once -clang-build-session-file /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -I/Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/Objects-normal/arm64/DocketMate_const_extract_protocols.json -Xcc -iquote -Xcc /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/DocketMate-generated-files.hmap -Xcc -I/Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/DocketMate-own-target-headers.hmap -Xcc -I/Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/DocketMate-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate-c82c2dbaf15510eafb27afa32746d9b0-VFS/all-product-headers.yaml -Xcc -iquote -Xcc /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/DocketMate-project-headers.hmap -Xcc -I/Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/include -Xcc -I/Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/DerivedSources-normal/arm64 -Xcc -I/Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/DerivedSources/arm64 -Xcc -I/Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/Objects-normal/arm64/DocketMate-Swift.h -working-directory /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate -experimental-emit-module-separately -disable-cmo
+
+Copy /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/Objects-normal/arm64/DocketMate.swiftsourceinfo (in target 'DocketMate' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/Objects-normal/arm64/DocketMate.swiftsourceinfo /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo
+
+Copy /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.swiftmodule/arm64-apple-macos.swiftmodule /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/Objects-normal/arm64/DocketMate.swiftmodule (in target 'DocketMate' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/Objects-normal/arm64/DocketMate.swiftmodule /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.swiftmodule/arm64-apple-macos.swiftmodule
+
+Copy /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.swiftmodule/arm64-apple-macos.swiftdoc /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/Objects-normal/arm64/DocketMate.swiftdoc (in target 'DocketMate' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/Objects-normal/arm64/DocketMate.swiftdoc /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.swiftmodule/arm64-apple-macos.swiftdoc
+
+Copy /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.swiftmodule/arm64-apple-macos.abi.json /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/Objects-normal/arm64/DocketMate.abi.json (in target 'DocketMate' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate.build/Objects-normal/arm64/DocketMate.abi.json /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/DocketMate.swiftmodule/arm64-apple-macos.abi.json
+
+SwiftDriver DocketMateTests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'DocketMateTests' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name DocketMateTests -Onone -enforce-exclusivity\=checked @/Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/Objects-normal/arm64/DocketMateTests.SwiftFileList -DDEBUG -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk -target arm64-apple-macos15.4 -g -module-cache-path /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Index.noindex/DataStore -swift-version 5 -I /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug -I /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/PackageFrameworks -F /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -c -j16 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx15.5-24F74-8254517eb8b97d462ccbc072ba9094c9.sdkstatcache -output-file-map /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/Objects-normal/arm64/DocketMateTests-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/Objects-normal/arm64/DocketMateTests.swiftmodule -validate-clang-modules-once -clang-build-session-file /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -I/Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/Objects-normal/arm64/DocketMateTests_const_extract_protocols.json -Xcc -iquote -Xcc /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/DocketMateTests-generated-files.hmap -Xcc -I/Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/DocketMateTests-own-target-headers.hmap -Xcc -I/Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/DocketMateTests-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate-c82c2dbaf15510eafb27afa32746d9b0-VFS/all-product-headers.yaml -Xcc -iquote -Xcc /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/DocketMateTests-project-headers.hmap -Xcc -I/Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/include -Xcc -I/Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/DerivedSources-normal/arm64 -Xcc -I/Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/DerivedSources/arm64 -Xcc -I/Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/Objects-normal/arm64/DocketMateTests-Swift.h -working-directory /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate -experimental-emit-module-separately -disable-cmo
+
+SwiftCompile normal arm64 Compiling\ UIUXComplianceServiceTests.swift,\ SSOAuthServiceTests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/UIUXComplianceServiceTests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/SSOAuthServiceTests.swift (in target 'DocketMateTests' from project 'DocketMate')
+
+SwiftCompile normal arm64 /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/UIUXComplianceServiceTests.swift (in target 'DocketMateTests' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    
+
+SwiftCompile normal arm64 /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/SSOAuthServiceTests.swift (in target 'DocketMateTests' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    
+
+SwiftCompile normal arm64 Compiling\ PDFProcessingServiceTests.swift,\ ServiceContainerUIUXIntegrationTests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/PDFProcessingServiceTests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/ServiceContainerUIUXIntegrationTests.swift (in target 'DocketMateTests' from project 'DocketMate')
+
+SwiftCompile normal arm64 /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/PDFProcessingServiceTests.swift (in target 'DocketMateTests' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    
+
+SwiftCompile normal arm64 /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/ServiceContainerUIUXIntegrationTests.swift (in target 'DocketMateTests' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    
+
+SwiftCompile normal arm64 Compiling\ EmbeddingServiceTests.swift,\ RAGGenerationEngineTests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/EmbeddingServiceTests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/RAGGenerationEngineTests.swift (in target 'DocketMateTests' from project 'DocketMate')
+
+SwiftCompile normal arm64 /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/EmbeddingServiceTests.swift (in target 'DocketMateTests' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    
+
+SwiftCompile normal arm64 /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/RAGGenerationEngineTests.swift (in target 'DocketMateTests' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    
+
+SwiftCompile normal arm64 Compiling\ AppleAuthProviderTests.swift,\ EnterpriseOCRServiceTests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/AppleAuthProviderTests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/EnterpriseOCRServiceTests.swift (in target 'DocketMateTests' from project 'DocketMate')
+
+SwiftCompile normal arm64 /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/AppleAuthProviderTests.swift (in target 'DocketMateTests' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    
+
+SwiftCompile normal arm64 /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/EnterpriseOCRServiceTests.swift (in target 'DocketMateTests' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    
+
+SwiftCompile normal arm64 Compiling\ AccessibilityValidationTests.swift,\ SSO_Integration_Tests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/AccessibilityValidationTests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/SSO_Integration_Tests.swift (in target 'DocketMateTests' from project 'DocketMate')
+
+SwiftCompile normal arm64 /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/AccessibilityValidationTests.swift (in target 'DocketMateTests' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    
+
+SwiftCompile normal arm64 /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/SSO_Integration_Tests.swift (in target 'DocketMateTests' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    
+
+SwiftCompile normal arm64 Compiling\ UIUXSnapshotAutomationIntegrationTests.swift,\ ImageProcessingServiceTests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/UIUXSnapshotAutomationIntegrationTests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/ImageProcessingServiceTests.swift (in target 'DocketMateTests' from project 'DocketMate')
+
+SwiftCompile normal arm64 /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/UIUXSnapshotAutomationIntegrationTests.swift (in target 'DocketMateTests' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    
+
+SwiftCompile normal arm64 /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/ImageProcessingServiceTests.swift (in target 'DocketMateTests' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    
+
+SwiftCompile normal arm64 Compiling\ DocketMateTests.swift,\ RAGEvaluationFrameworkTests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/DocketMateTests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/RAGEvaluationFrameworkTests.swift (in target 'DocketMateTests' from project 'DocketMate')
+
+SwiftCompile normal arm64 /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/DocketMateTests.swift (in target 'DocketMateTests' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    
+
+SwiftCompile normal arm64 /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/RAGEvaluationFrameworkTests.swift (in target 'DocketMateTests' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    
+
+SwiftCompile normal arm64 Compiling\ RAGIntegrationServiceTests.swift,\ DocumentClusteringServiceTests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/RAGIntegrationServiceTests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/DocumentClusteringServiceTests.swift (in target 'DocketMateTests' from project 'DocketMate')
+
+SwiftCompile normal arm64 /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/RAGIntegrationServiceTests.swift (in target 'DocketMateTests' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    
+
+SwiftCompile normal arm64 /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/DocumentClusteringServiceTests.swift (in target 'DocketMateTests' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    
+
+SwiftCompile normal arm64 Compiling\ LangChainMLACSIntegrationTests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/LangChainMLACSIntegrationTests.swift (in target 'DocketMateTests' from project 'DocketMate')
+
+SwiftCompile normal arm64 /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/LangChainMLACSIntegrationTests.swift (in target 'DocketMateTests' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    
+
+SwiftCompile normal arm64 Compiling\ MLACSComprehensiveTestSuite.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/MLACSComprehensiveTestSuite.swift (in target 'DocketMateTests' from project 'DocketMate')
+
+SwiftCompile normal arm64 /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/MLACSComprehensiveTestSuite.swift (in target 'DocketMateTests' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    
+
+SwiftCompile normal arm64 Compiling\ RetrievalEngineServiceTests.swift,\ DocketMate-SandboxTests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/RetrievalEngineServiceTests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/DocketMate-SandboxTests.swift (in target 'DocketMateTests' from project 'DocketMate')
+
+SwiftCompile normal arm64 /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/RetrievalEngineServiceTests.swift (in target 'DocketMateTests' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    
+
+SwiftCompile normal arm64 /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/DocketMate-SandboxTests.swift (in target 'DocketMateTests' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    
+
+SwiftCompile normal arm64 Compiling\ RetrospectiveTestingIntegrationTests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/RetrospectiveTestingIntegrationTests.swift (in target 'DocketMateTests' from project 'DocketMate')
+
+SwiftCompile normal arm64 /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/RetrospectiveTestingIntegrationTests.swift (in target 'DocketMateTests' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    
+
+SwiftCompile normal arm64 Compiling\ VectorizationServiceTests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/VectorizationServiceTests.swift (in target 'DocketMateTests' from project 'DocketMate')
+
+SwiftCompile normal arm64 /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/VectorizationServiceTests.swift (in target 'DocketMateTests' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ DocketMateTests (in target 'DocketMateTests' from project 'DocketMate')
+Failed frontend command:
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift-frontend -frontend -emit-module -experimental-skip-non-inlinable-function-bodies-without-types /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/UIUXSnapshotAutomationIntegrationTests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/ImageProcessingServiceTests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/RAGIntegrationServiceTests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/DocumentClusteringServiceTests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/AppleAuthProviderTests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/EnterpriseOCRServiceTests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/UIUXComplianceServiceTests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/SSOAuthServiceTests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/AccessibilityValidationTests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/SSO_Integration_Tests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/DocketMateTests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/RAGEvaluationFrameworkTests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/EmbeddingServiceTests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/RAGGenerationEngineTests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/PDFProcessingServiceTests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/ServiceContainerUIUXIntegrationTests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/RetrievalEngineServiceTests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/DocketMate-SandboxTests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/LangChainMLACSIntegrationTests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/AsyncOptimizationServiceTests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/MLACSComprehensiveTestSuite.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/RetrospectiveTestingIntegrationTests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/VectorizationServiceTests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/ContextualMatchingServiceTests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/UnifiedRAGCoordinatorTests.swift -target arm64-apple-macos15.4 -Xllvm -aarch64-use-tbi -enable-objc-interop -stack-check -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk -I /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug -I /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/PackageFrameworks -F /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -no-color-diagnostics -enable-testing -g -debug-info-format\=dwarf -dwarf-version\=5 -module-cache-path /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -profile-generate -profile-coverage-mapping -swift-version 5 -enforce-exclusivity\=checked -Onone -D DEBUG -serialize-debugging-options -const-gather-protocols-file /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/Objects-normal/arm64/DocketMateTests_const_extract_protocols.json -enable-experimental-feature DebugDescriptionMacro -enable-bare-slash-regex -empty-abi-descriptor -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -validate-clang-modules-once -clang-build-session-file /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -working-directory -Xcc /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate -resource-dir /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift -enable-anonymous-context-mangled-names -file-compilation-dir /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate -Xcc -ivfsstatcache -Xcc /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx15.5-24F74-8254517eb8b97d462ccbc072ba9094c9.sdkstatcache -Xcc -I/Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/swift-overrides.hmap -Xcc -iquote -Xcc /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/DocketMateTests-generated-files.hmap -Xcc -I/Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/DocketMateTests-own-target-headers.hmap -Xcc -I/Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/DocketMateTests-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMate-c82c2dbaf15510eafb27afa32746d9b0-VFS/all-product-headers.yaml -Xcc -iquote -Xcc /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/DocketMateTests-project-headers.hmap -Xcc -I/Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Products/Debug/include -Xcc -I/Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/DerivedSources-normal/arm64 -Xcc -I/Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/DerivedSources/arm64 -Xcc -I/Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/DerivedSources -Xcc -DDEBUG\=1 -module-name DocketMateTests -frontend-parseable-output -disable-clang-spi -target-sdk-version 15.5 -target-sdk-name macosx15.5 -external-plugin-path /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/swift/host/plugins\#/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server -external-plugin-path /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/local/lib/swift/host/plugins\#/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server -in-process-plugin-server-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/libSwiftInProcPluginServer.dylib -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/local/lib/swift/host/plugins -emit-module-doc-path /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/Objects-normal/arm64/DocketMateTests.swiftdoc -emit-module-source-info-path /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/Objects-normal/arm64/DocketMateTests.swiftsourceinfo -emit-objc-header-path /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/Objects-normal/arm64/DocketMateTests-Swift.h -serialize-diagnostics-path /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/Objects-normal/arm64/DocketMateTests-master-emit-module.dia -emit-dependencies-path /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/Objects-normal/arm64/DocketMateTests-master-emit-module.d -o /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/Objects-normal/arm64/DocketMateTests.swiftmodule -emit-abi-descriptor-path /Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/DocketMate-gvejtanpznmxjybklhtpbcqcyrtb/Build/Intermediates.noindex/DocketMate.build/Debug/DocketMateTests.build/Objects-normal/arm64/DocketMateTests.abi.json
+
+EmitSwiftModule normal arm64 (in target 'DocketMateTests' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/RAGEvaluationFrameworkTests.swift:443:19: error: method does not override any method from its superclass
+    override func calculateRetrievalMetrics(
+                  ^
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMate/Services/RAGEvaluationFramework.swift:239:10: note: potential overridden instance method 'calculateRetrievalMetrics(query:retrievedDocuments:groundTruth:)' here
+    func calculateRetrievalMetrics(
+         ^
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/RAGEvaluationFrameworkTests.swift:462:19: error: overriding non-open instance method outside of its defining module
+    override func getCurrentThroughput() -> Double {
+                  ^
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/RAGEvaluationFrameworkTests.swift:462:19: error: instance method overrides a 'final' instance method
+    override func getCurrentThroughput() -> Double {
+                  ^
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMate/Services/AsyncOptimization/PerformanceMonitor.swift:128:10: note: overridden declaration is here
+    func getCurrentThroughput() -> Double {
+         ^
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/RAGEvaluationFrameworkTests.swift:459:7: error: inheritance from a final class 'PerformanceMonitor'
+class MockPerformanceMonitor: PerformanceMonitor {
+      ^
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/EmbeddingServiceTests.swift:523:7: error: type 'ProductionEmbeddingService' does not conform to protocol 'EmbeddingService'
+class ProductionEmbeddingService: EmbeddingService {
+      ^
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/EmbeddingServiceTests.swift:551:10: note: candidate has non-matching type '([DocumentChunk]) throws -> [Embedding]'
+    func generateEmbeddingsForChunks(chunks: [DocumentChunk]) throws -> [Embedding] {
+         ^
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/EmbeddingServiceTests.swift:523:7: note: add stubs for conformance
+class ProductionEmbeddingService: EmbeddingService {
+      ^
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMate/Services/EmbeddingService.swift:33:10: note: protocol requires function 'generateEmbeddingsForChunks(chunks:)' with type '([DocumentChunk]) throws -> [Embedding]'
+    func generateEmbeddingsForChunks(chunks: [DocumentChunk]) throws -> [Embedding]
+         ^
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/LangChainMLACSIntegrationTests.swift:745:7: warning: class 'MockLangChainBridge' must restate inherited '@unchecked Sendable' conformance
+class MockLangChainBridge: LangChainBridge {
+      ^
+                                          , @unchecked Sendable
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/MLACSComprehensiveTestSuite.swift:696:48: error: cannot find type 'MLACSLLMParameters' in scope
+    init(id: UUID, prompt: String, parameters: MLACSLLMParameters, timestamp: Date) {
+                                               ^~~~~~~~~~~~~~~~~~
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/MLACSComprehensiveTestSuite.swift:704:11: error: cannot find type 'MLACSLLMParameters' in scope
+extension MLACSLLMParameters {
+          ^~~~~~~~~~~~~~~~~~
+
+SwiftCompile normal arm64 Compiling\ AsyncOptimizationServiceTests.swift /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/AsyncOptimizationServiceTests.swift (in target 'DocketMateTests' from project 'DocketMate')
+
+SwiftCompile normal arm64 /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMateTests/AsyncOptimizationServiceTests.swift (in target 'DocketMateTests' from project 'DocketMate')
+    cd /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents\ -\ Apps\ \(Working\)/repos_github/Working/repo_docketmate/_macOS/DocketMate
+    
+
+SwiftDriverJobDiscovery normal arm64 Compiling DocumentEditorPanel.swift (in target 'DocketMate' from project 'DocketMate')
+
+
+Test session results, code coverage, and logs:
+	/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/local-test-results/integration-tests/integration-results-20250601_222057.xcresult
+
+Testing failed:
+	Method does not override any method from its superclass
+	Overriding non-open instance method outside of its defining module
+	Instance method overrides a 'final' instance method
+	Inheritance from a final class 'PerformanceMonitor'
+	Type 'ProductionEmbeddingService' does not conform to protocol 'EmbeddingService'
+	Cannot find type 'MLACSLLMParameters' in scope
+	Cannot find type 'MLACSLLMParameters' in scope
+	Testing cancelled because the build failed.
+
+** TEST FAILED **
+
+
+The following build commands failed:
+	SwiftEmitModule normal arm64 Emitting\ module\ for\ DocketMateTests (in target 'DocketMateTests' from project 'DocketMate')
+	EmitSwiftModule normal arm64 (in target 'DocketMateTests' from project 'DocketMate')
+	Testing workspace DocketMate with scheme DocketMate
+(3 failures)

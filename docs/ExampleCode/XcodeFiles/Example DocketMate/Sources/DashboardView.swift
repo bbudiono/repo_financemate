@@ -7,7 +7,7 @@ struct DashboardView: View {
                 .font(.largeTitle)
                 .fontWeight(.bold)
             
-            Text("Welcome to DocketMate")
+            Text("Welcome to FinanceMate")
                 .font(.title2)
             
             Text("This is the production version of the application")

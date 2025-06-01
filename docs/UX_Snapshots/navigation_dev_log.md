@@ -13,7 +13,7 @@ Launch the application.
 ### Expected UI Elements for Validation
 
 - Image with system name "globe"
-- Text: "Hello, DocketMate!"
+- Text: "Hello, FinanceMate!"
 - Text displaying the build environment (e.g., "Build environment: Production")
 
 ### Validation Results
@@ -51,7 +51,7 @@ Launch the application. (LandingView is the initial screen after app launch in S
 
 ### Expected UI Elements for Validation
 
-- Text: "Hello, Sandbox-DocketMate!"
+- Text: "Hello, Sandbox-FinanceMate!"
 - Text: "Get Started"
 - Text: "Welcome"
 - Text: "Feature Highlights"

@@ -3,8 +3,8 @@
 import Foundation
 
 // Configuration
-let projectName = "DocketMate"
-let organizationName = "DocketMate"
+let projectName = "FinanceMate"
+let organizationName = "FinanceMate"
 let bundleIdPrefix = "com.docketmate"
 let deploymentTarget = "14.0"
 

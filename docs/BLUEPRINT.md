@@ -1,19 +1,19 @@
 # BLUEPRINT.md
 
 ## Project Name
-DocketMate
+FinanceMate
 
 ## Project Configuration & Environment
-- **ProjectRoot**: "/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_DocketMate"
+- **ProjectRoot**: "/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_FinanceMate"
 - **PlatformDir**: "_macOS"
-- **ProjectNamePlaceholder**: "DocketMate"
+- **ProjectNamePlaceholder**: "FinanceMate"
 
 ---
 
 # Product Requirements Document (PRD)
 
 ## High-Level Objective
-**To develop DocketMate, a native macOS application that revolutionizes how small businesses, accountants, freelancers, and individuals manage financial documents by providing a seamless, intelligent, and automated solution for extracting, organizing, and integrating data from invoices, receipts, and dockets into their preferred spreadsheet and accounting workflows.**
+**To develop FinanceMate, a native macOS application that revolutionizes how small businesses, accountants, freelancers, and individuals manage financial documents by providing a seamless, intelligent, and automated solution for extracting, organizing, and integrating data from invoices, receipts, and dockets into their preferred spreadsheet and accounting workflows.**
 
 The project aims to deliver a polished, user-focused application that is:
 - **Efficient:** Drastically reduces manual data entry through advanced OCR and AI-powered data mapping.
@@ -55,7 +55,7 @@ The project aims to deliver a polished, user-focused application that is:
 ---
 
 ## GitHub Repository Information
-- **Repository Name (Placeholder):** `DocketMate-macOS` (To be confirmed or created)
+- **Repository Name (Placeholder):** `FinanceMate-macOS` (To be confirmed or created)
 - **Primary Branch:** `main`
 - **Development Branch:** `develop`
 - **Feature Branch Convention:** `feature/<task-id>-<short-description>` (e.g., `feature/28-enhance-ocr-accuracy`)
@@ -72,8 +72,8 @@ The project aims to deliver a polished, user-focused application that is:
 This section outlines the structure for comprehensive product documentation, which will reside primarily within the `/docs` directory and the application's Help menu.
 
 ### 1. User Guide
-    - **Introduction to DocketMate**
-        - What is DocketMate?
+    - **Introduction to FinanceMate**
+        - What is FinanceMate?
         - Key Benefits (Time-saving, Accuracy, Organization, Integration)
     - **Getting Started**
         - System Requirements (macOS version)
@@ -288,7 +288,7 @@ This section outlines the structure for comprehensive product documentation, whi
 ---
 
 ## Overview
-DocketMate is a macOS application that allows users to drag and drop or upload images, screenshots, PDFs, and other documents (such as invoices and dockets). The app uses OCR to extract line items from these documents and maps them to user-defined spreadsheet columns for tax and accounting purposes. It supports integration with Office365 Excel Online and Google Sheets (SSO/OAuth), and will support email integration (Gmail) for automatic invoice/receipt extraction in the future.
+FinanceMate is a macOS application that allows users to drag and drop or upload images, screenshots, PDFs, and other documents (such as invoices and dockets). The app uses OCR to extract line items from these documents and maps them to user-defined spreadsheet columns for tax and accounting purposes. It supports integration with Office365 Excel Online and Google Sheets (SSO/OAuth), and will support email integration (Gmail) for automatic invoice/receipt extraction in the future.
 
 ## Core Features
 - **Drag-and-drop/upload images, screenshots, PDFs, and documents**
@@ -423,20 +423,20 @@ DocketMate is a macOS application that allows users to drag and drop or upload i
 
 ## Project Configuration & Environment
 - PlatformDir: macOS
-- ProjectFileNamePlaceholder: DocketMate
-- PlatformSourceRoot: DocketMate
+- ProjectFileNamePlaceholder: FinanceMate
+- PlatformSourceRoot: FinanceMate
 - UnitTestSourceRoot: UnitTests
 - UITestSourceRoot: UITests
 - TestDataDirectoryPath: docs/TestData
-- XcodeSchemeName: DocketMate
+- XcodeSchemeName: FinanceMate
 - XcodeConfiguration: Debug
-- WorkspacePath: _macOS/DocketMate.xcodeproj/project.xcworkspace
+- WorkspacePath: _macOS/FinanceMate.xcodeproj/project.xcworkspace
 - BuildDestination: platform=macOS,arch=arm64
 - ToolingIntegration: sweetpad, xcodebuild
-- MainAppEntryPoint: DocketMateApp.swift
+- MainAppEntryPoint: FinanceMateApp.swift
 - ContentViewFile: ContentView.swift
-- ModelsDir: _macOS/DocketMate/Models
-- KeychainHelperFile: _macOS/DocketMate/Utilities/KeychainHelper.swift
+- ModelsDir: _macOS/FinanceMate/Models
+- KeychainHelperFile: _macOS/FinanceMate/Utilities/KeychainHelper.swift
 - ExternalDocs: [Microsoft Graph API, Google Sheets API, Gmail API]
 - PersistenceMechanism: UserDefaults, local file storage (for now)
 - CoreUIFramework: SwiftUI
@@ -452,7 +452,7 @@ The project includes a standard test data directory at `docs/TestData/` containi
 
 ## Spreadsheet Column Customization Requirements
 
-DocketMate allows users to fully customize the columns in their spreadsheet view. The following requirements define the scope for this feature:
+FinanceMate allows users to fully customize the columns in their spreadsheet view. The following requirements define the scope for this feature:
 
 - Users can add new columns, specifying a name and type (text, currency, date, number).
 - Users can remove existing columns.

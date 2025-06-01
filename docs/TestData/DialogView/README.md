@@ -1,6 +1,6 @@
 # DialogView Test Data
 
-This directory contains test data and screenshots for the `DialogView` component (`_macOS/DocketMate/Views/Common/DialogView.swift`).
+This directory contains test data and screenshots for the `DialogView` component (`_macOS/FinanceMate/Views/Common/DialogView.swift`).
 
 ## Contents
 

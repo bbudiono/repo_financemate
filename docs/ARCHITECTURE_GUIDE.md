@@ -1,6 +1,6 @@
 # ARCHITECTURE_GUIDE.md
 
-## Implementation Patterns for DocketMate
+## Implementation Patterns for FinanceMate
 
 ### MVVM Pattern
 - **Views**: SwiftUI views, stateless, bind to ViewModels
@@ -54,7 +54,7 @@
 
 ### Build Stability Architecture
 
-To maintain robust build stability, DocketMate's architecture includes specific considerations for preventing and resolving build failures:
+To maintain robust build stability, FinanceMate's architecture includes specific considerations for preventing and resolving build failures:
 
 #### Project Structure for Build Stability
 - **Modular Organization:**
@@ -123,4 +123,4 @@ To maintain robust build stability, DocketMate's architecture includes specific 
   - Document known patterns and their resolution strategies
   - Keep `COMMON_ERRORS.MD` synchronized with discovery of new error patterns
 
-This architecture ensures DocketMate maintains build stability while allowing for continuous development, by establishing structural preventions for common build issues. 
+This architecture ensures FinanceMate maintains build stability while allowing for continuous development, by establishing structural preventions for common build issues. 

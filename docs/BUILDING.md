@@ -2,7 +2,7 @@
 
 
 
-## Build Instructions for DocketMate
+## Build Instructions for FinanceMate
 
 ### Prerequisites
 - Xcode 14.3+
@@ -12,14 +12,14 @@
 
 ### Standard Build Command
 ```sh
-xcodebuild -scheme DocketMate -configuration Debug -workspace _macOS/DocketMate.xcodeproj/project.xcworkspace -destination platform=macOS,arch=arm64 -allowProvisioningUpdates build
+xcodebuild -scheme FinanceMate -configuration Debug -workspace _macOS/FinanceMate.xcodeproj/project.xcworkspace -destination platform=macOS,arch=arm64 -allowProvisioningUpdates build
 ```
 
 ### Run the App
 ```sh
 # First, find the built product path
-BUILD_DIR=$(xcodebuild -project _macOS/DocketMate.xcodeproj -configuration Debug -showBuildSettings | grep -m 1 'BUILT_PRODUCTS_DIR' | cut -d '=' -f2 | xargs)
-APP_PATH="$BUILD_DIR/DocketMate.app"
+BUILD_DIR=$(xcodebuild -project _macOS/FinanceMate.xcodeproj -configuration Debug -showBuildSettings | grep -m 1 'BUILT_PRODUCTS_DIR' | cut -d '=' -f2 | xargs)
+APP_PATH="$BUILD_DIR/FinanceMate.app"
 
 # Check if the app exists
 if [ -d "$APP_PATH" ]; then
@@ -38,11 +38,11 @@ fi
     ```
 2.  **Build Verification:** Ensure the project builds cleanly without errors.
     ```sh
-    xcodebuild -project _macOS/DocketMate.xcodeproj -scheme DocketMate clean build
+    xcodebuild -project _macOS/FinanceMate.xcodeproj -scheme FinanceMate clean build
     ```
 3.  **Test Verification:** Ensure all unit and UI tests pass.
     ```sh
-    ./scripts/verify-tests.sh # Or: xcodebuild -project _macOS/DocketMate.xcodeproj -scheme DocketMate test
+    ./scripts/verify-tests.sh # Or: xcodebuild -project _macOS/FinanceMate.xcodeproj -scheme FinanceMate test
     ```
 4.  **SweetPad Compatibility Check:** Ensure the build adheres to SweetPad requirements (this is implicitly covered by a successful build and test run using the correct scheme and configuration).
 
@@ -55,7 +55,7 @@ fi
 2.  **Staging/Release Branch:**
     *   Merge development changes.
     *   Run comprehensive verification steps again.
-    *   Build Release configuration: `xcodebuild -scheme DocketMate -configuration Release ... build`
+    *   Build Release configuration: `xcodebuild -scheme FinanceMate -configuration Release ... build`
     *   Perform manual QA/User Acceptance Testing (UAT) on the Release build.
     *   Tag the commit for release (e.g., `git tag v1.1.0`).
 3.  **Production Release:**

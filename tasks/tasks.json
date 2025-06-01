@@ -1417,8 +1417,8 @@
     },
     {
       "id": 22,
-      "title": "Enhance Apple Sign-In UX, Validation, and Accessibility in DocketMate",
-      "description": "Revamp the Apple Sign-In experience in DocketMate by improving visual design, UX, error handling, validation, accessibility, and adding a 'Remember Me' feature, ensuring all changes meet corporate style and code quality standards.",
+      "title": "Enhance Apple Sign-In UX, Validation, and Accessibility in FinanceMate",
+      "description": "Revamp the Apple Sign-In experience in FinanceMate by improving visual design, UX, error handling, validation, accessibility, and adding a 'Remember Me' feature, ensuring all changes meet corporate style and code quality standards.",
       "details": "Redesign the SignInView for Apple Sign-In to provide a visually appealing and user-friendly experience. Apply consistent spacing, padding, and dimensions according to corporate style guidelines. Incorporate smooth animations for transitions and button interactions to create a polished appearance. Implement robust error handling to display clear, user-friendly error messages for all authentication failures or data issues. Validate all user data received from Apple authentication, ensuring required fields (such as email and user identifier) are present and correctly formatted. Enhance accessibility by ensuring all UI elements are properly labeled, support VoiceOver, and are fully navigable via keyboard and assistive technologies. Add a 'Remember Me' option that securely persists the user's authentication state using best practices for sensitive data storage. Ensure all code changes achieve a >90% quality rating as measured by .cursorrules, including comprehensive documentation and adherence to project conventions.",
       "testStrategy": "1. Manually review the SignInView for visual improvements, spacing, and adherence to style guidelines on multiple device sizes. 2. Test all animations for smoothness and responsiveness. 3. Simulate authentication errors and verify that user-friendly error messages are displayed. 4. Validate that user data from Apple authentication is correctly checked and handled, including edge cases (missing or malformed data). 5. Use accessibility tools (e.g., VoiceOver, Accessibility Inspector) to confirm all elements are properly labeled and navigable. 6. Test the 'Remember Me' functionality by signing in, closing, and reopening the app to ensure authentication state persists securely. 7. Run .cursorrules code quality checks and confirm a score above 90%. 8. Conduct code review to ensure maintainability and adherence to project standards.",
       "status": "pending",
@@ -1484,8 +1484,8 @@
     {
       "id": 23,
       "title": "Audit and Refactor Low-Quality Code per .cursorrules Standards",
-      "description": "Identify, audit, and refactor all code in the DocketMate project rated below 70% by the .cursorrules system, raising quality to above 90% while ensuring documentation, testing, and adherence to the Canonical Swift Development Process.",
-      "details": "1. Perform a comprehensive code quality audit across the entire DocketMate codebase using the .cursorrules rating system, generating a detailed report of all files and code sections rated below 70%.\n2. Catalog each low-rated file/section, including location, current rating, and specific issues identified by .cursorrules.\n3. Develop a prioritized refactoring plan, ranking targets by severity, impact, and dependencies.\n4. Refactor each identified code section to achieve a quality rating above 90%, ensuring all changes strictly follow the Canonical Swift Development Process as outlined in Section 8.2 of .cursorrules.\n5. Update or add documentation and tests for all refactored code, ensuring code style, clarity, and maintainability.\n6. Validate that all refactored code maintains original functionality and passes all existing and new tests.\n7. Integrate changes incrementally, using code reviews and CI/CD checks to enforce .cursorrules compliance and prevent regressions.",
+      "description": "Identify, audit, and refactor all code in the FinanceMate project rated below 70% by the .cursorrules system, raising quality to above 90% while ensuring documentation, testing, and adherence to the Canonical Swift Development Process.",
+      "details": "1. Perform a comprehensive code quality audit across the entire FinanceMate codebase using the .cursorrules rating system, generating a detailed report of all files and code sections rated below 70%.\n2. Catalog each low-rated file/section, including location, current rating, and specific issues identified by .cursorrules.\n3. Develop a prioritized refactoring plan, ranking targets by severity, impact, and dependencies.\n4. Refactor each identified code section to achieve a quality rating above 90%, ensuring all changes strictly follow the Canonical Swift Development Process as outlined in Section 8.2 of .cursorrules.\n5. Update or add documentation and tests for all refactored code, ensuring code style, clarity, and maintainability.\n6. Validate that all refactored code maintains original functionality and passes all existing and new tests.\n7. Integrate changes incrementally, using code reviews and CI/CD checks to enforce .cursorrules compliance and prevent regressions.",
       "testStrategy": "- Run the .cursorrules code quality analysis before and after refactoring to confirm all previously low-rated code now exceeds 90%.\n- Review the audit report to ensure all <70% sections were addressed and refactored.\n- Verify that all refactored code is documented, tested, and adheres to the Canonical Swift Development Process (Section 8.2).\n- Ensure all unit, integration, and regression tests pass with no loss of functionality.\n- Conduct peer code reviews to confirm code style, clarity, and .cursorrules compliance.\n- Check CI/CD pipelines for successful builds and automated quality gate enforcement.",
       "status": "pending",
       "dependencies": [],
@@ -1494,7 +1494,7 @@
         {
           "id": 1,
           "title": "Audit Codebase Using .cursorrules and Generate Low-Quality Report",
-          "description": "Run the .cursorrules system across the entire DocketMate codebase to identify all files and code sections rated below 70%. Generate a detailed report listing each low-rated file/section, its location, current rating, and specific issues flagged by .cursorrules.",
+          "description": "Run the .cursorrules system across the entire FinanceMate codebase to identify all files and code sections rated below 70%. Generate a detailed report listing each low-rated file/section, its location, current rating, and specific issues flagged by .cursorrules.",
           "dependencies": [],
           "details": "Use the .cursorrules CLI or integration to scan the codebase. Export results to a structured format (e.g., CSV or JSON) capturing file paths, line numbers, ratings, and rule violations. Ensure the report is comprehensive and up to date.",
           "status": "pending",
@@ -1613,8 +1613,8 @@
     },
     {
       "id": 25,
-      "title": "Implement Google SSO in DocketMate-Sandbox macOS App with TDD and Modular Architecture",
-      "description": "Integrate Google Sign-In (SSO) into the DocketMate-Sandbox macOS app using a modular, reusable architecture and professional UI/UX, ensuring seamless integration with the existing authentication flow and profile view. All code must be developed with TDD, maintain >90% quality, comply with .cursorrules, and use .env values for credentials, referencing provided example code. The implementation must follow a clear subtask breakdown: SDK setup and configuration, a modular GoogleAuthProvider service, professional UI integration, secure URL/callback handling, and comprehensive TDD validation.",
+      "title": "Implement Google SSO in FinanceMate-Sandbox macOS App with TDD and Modular Architecture",
+      "description": "Integrate Google Sign-In (SSO) into the FinanceMate-Sandbox macOS app using a modular, reusable architecture and professional UI/UX, ensuring seamless integration with the existing authentication flow and profile view. All code must be developed with TDD, maintain >90% quality, comply with .cursorrules, and use .env values for credentials, referencing provided example code. The implementation must follow a clear subtask breakdown: SDK setup and configuration, a modular GoogleAuthProvider service, professional UI integration, secure URL/callback handling, and comprehensive TDD validation.",
       "status": "pending",
       "dependencies": [],
       "priority": "high",
@@ -1624,7 +1624,7 @@
         {
           "id": 1,
           "title": "Configure Google Sign-In SDK and Environment Setup",
-          "description": "Set up the Google Sign-In SDK in the DocketMate-Sandbox macOS app, configure OAuth credentials, and prepare the project environment for SSO integration.",
+          "description": "Set up the Google Sign-In SDK in the FinanceMate-Sandbox macOS app, configure OAuth credentials, and prepare the project environment for SSO integration.",
           "dependencies": [],
           "details": "1. Add GoogleSignIn and GoogleSignInSwift packages to the project using Swift Package Manager with the latest stable version.\n2. Configure Info.plist with the Reversed Client ID in URL schemes section.\n3. Set up .env file with Google OAuth client ID and secret.\n4. Update app entitlements for keychain access.\n5. Configure AppDelegate to handle authentication callbacks.",
           "status": "pending",
@@ -1682,7 +1682,7 @@
     {
       "id": 26,
       "title": "Refactor SignInView.swift for Code Quality, Modularity, Accessibility, and Compliance",
-      "description": "Refactor _macOS/DocketMate-Sandbox/Sources/Views/SignInView.swift to achieve over 90% code quality and problem rating, with enhanced modularity, accessibility, error handling, and comprehensive documentation per .cursorrules §6.4.1 and §8.2.",
+      "description": "Refactor _macOS/FinanceMate-Sandbox/Sources/Views/SignInView.swift to achieve over 90% code quality and problem rating, with enhanced modularity, accessibility, error handling, and comprehensive documentation per .cursorrules §6.4.1 and §8.2.",
       "details": "Begin by analyzing the current SignInView.swift file to identify code quality issues, large or monolithic functions, and areas lacking modularity. Refactor the code by extracting reusable components, adopting Swift best practices (such as using protocols, extensions, and smaller functions), and improving error handling with clear, user-friendly feedback. Enhance accessibility by ensuring all UI elements are accessible via VoiceOver and keyboard navigation, and by providing appropriate accessibility labels and traits. Add a full comment block at the top of the file and inline documentation for all public methods, properties, and complex logic, explaining the rationale for changes. Ensure all modifications comply with .cursorrules §6.4.1 (code quality, modularity) and §8.2 (documentation, accessibility). Document all changes and the reasoning behind them in a dedicated CHANGELOG section within the file or as an accompanying markdown file. Update or add unit and UI tests to cover new and refactored logic, aiming for comprehensive coverage. Use SwiftLint and other static analysis tools to enforce code quality and style guidelines, updating configurations as needed to prevent regressions.",
       "testStrategy": "Verify that the refactored SignInView.swift achieves over 90% code quality and problem rating using the project's code quality tools and .cursorrules evaluation. Review the code for modularity, ensuring components are reusable and functions are concise. Manually test accessibility features with VoiceOver and keyboard navigation, confirming all UI elements are accessible and properly labeled. Review all documentation for completeness and clarity, ensuring compliance with .cursorrules §8.2. Run the full suite of unit and UI tests to confirm no regressions and that all new logic is covered. Check the CHANGELOG or documentation for a clear summary of changes and rationale.",
       "status": "pending",
@@ -1749,7 +1749,7 @@
     {
       "id": 27,
       "title": "Refactor ProfileView.swift for Code Quality, Modularity, Accessibility, and Compliance",
-      "description": "Refactor _macOS/DocketMate-Sandbox/Sources/Views/ProfileView.swift to achieve over 90% code quality and problem rating, with enhanced modularity, accessibility, error handling, and comprehensive documentation per .cursorrules §6.4.1 and §8.2.",
+      "description": "Refactor _macOS/FinanceMate-Sandbox/Sources/Views/ProfileView.swift to achieve over 90% code quality and problem rating, with enhanced modularity, accessibility, error handling, and comprehensive documentation per .cursorrules §6.4.1 and §8.2.",
       "details": "Begin by analyzing ProfileView.swift for code smells, large functions, and tightly coupled logic. Break down monolithic methods into smaller, reusable components and extract logic into helper functions or view models where appropriate. Ensure all UI elements are accessible, providing appropriate accessibility labels, traits, and dynamic type support. Implement robust error handling for all user interactions and data flows, using Swift’s error handling best practices. Add a comprehensive comment block at the top of the file and inline documentation for complex logic, explaining design decisions and rationale. Ensure all changes comply with .cursorrules §6.4.1 (code quality, modularity, and maintainability) and §8.2 (accessibility and documentation). Document every change and the reasoning behind it in a dedicated changelog section within the file. Update or add relevant linter and formatter rules to enforce new standards and prevent regressions. Commit changes incrementally to maintain a clear history and facilitate code review.",
       "testStrategy": "Verify code quality and problem rating using automated tools (e.g., SwiftLint, SonarQube) to ensure >90% scores. Manually review the code for modularity, readability, and maintainability. Test all accessibility features using VoiceOver and accessibility inspector tools. Validate error handling by simulating failure scenarios and confirming graceful degradation. Review documentation for completeness and clarity, ensuring all changes and rationales are clearly recorded. Confirm compliance with .cursorrules §6.4.1 and §8.2 through peer review and checklist validation.",
       "status": "pending",
@@ -1814,7 +1814,7 @@
     {
       "id": 28,
       "title": "Refactor ContentView.swift for Code Quality, Modularity, Accessibility, and Compliance",
-      "description": "Refactor _macOS/DocketMate-Sandbox/Sources/App/ContentView.swift to achieve over 90% code quality and problem rating, with enhanced navigation, modularity, accessibility, and comprehensive documentation per .cursorrules §6.4.1 and §8.2.",
+      "description": "Refactor _macOS/FinanceMate-Sandbox/Sources/App/ContentView.swift to achieve over 90% code quality and problem rating, with enhanced navigation, modularity, accessibility, and comprehensive documentation per .cursorrules §6.4.1 and §8.2.",
       "details": "Analyze ContentView.swift for code smells, large or monolithic structures, and opportunities to extract reusable components or functions. Refactor the code to improve modularity by breaking down complex views or logic into smaller, testable SwiftUI views or helper classes. Enhance navigation by ensuring clear, accessible navigation flows and using SwiftUI best practices for navigation stacks or links. Improve accessibility by adding appropriate accessibility modifiers, labels, and traits to all interactive elements. Add a comprehensive comment block at the top of the file summarizing the file's purpose, main components, and any architectural decisions. Ensure all code and comments comply with .cursorrules §6.4.1 (documentation and clarity) and §8.2 (accessibility and modularity). Document all changes and the rationale for each significant refactor in a dedicated section at the end of the file or in a separate changelog, referencing specific rule compliance. Use SwiftLint or similar tools to enforce code quality standards and prevent regressions. Consider performance optimizations such as lazy loading and efficient state management where applicable.",
       "testStrategy": "Review the refactored ContentView.swift with automated code quality tools (e.g., SwiftLint, SonarQube) to confirm >90% code quality and problem rating. Manually inspect the code for modularity, clear navigation, and accessibility compliance, ensuring all interactive elements are accessible via VoiceOver and keyboard navigation. Validate that the comment block and documentation meet .cursorrules §6.4.1 and §8.2 requirements. Run the app and perform end-to-end navigation and accessibility checks. Review the documented rationale for each change to ensure clarity and traceability. Confirm no regressions or new issues are introduced by running the full test suite and performing regression testing on affected features.",
       "status": "pending",
@@ -1884,7 +1884,7 @@
     {
       "id": 29,
       "title": "Refactor User.swift for Code Quality, Structure, and Compliance",
-      "description": "Refactor _macOS/DocketMate-Sandbox/Sources/Models/User.swift to achieve over 90% code quality and problem rating, with improved data model structure, comprehensive documentation, and full compliance with .cursorrules §6.4.1 and §8.2.",
+      "description": "Refactor _macOS/FinanceMate-Sandbox/Sources/Models/User.swift to achieve over 90% code quality and problem rating, with improved data model structure, comprehensive documentation, and full compliance with .cursorrules §6.4.1 and §8.2.",
       "details": "Analyze the current implementation of User.swift and identify areas for improvement in code quality, such as reducing complexity, improving readability, and optimizing data structures. Refactor the data model to ensure clarity, maintainability, and scalability, following Swift best practices. Add a complete comment block at the top of the file and thorough inline documentation for all properties, methods, and logic, ensuring all documentation aligns with .cursorrules §6.4.1 (documentation standards) and §8.2 (data model requirements). Document all changes and the rationale behind each modification in a dedicated section at the end of the file or in a separate changelog. Ensure the refactored code passes static analysis tools (e.g., SwiftLint, Code Climate) and achieves over 90% in code quality and problem rating metrics, referencing tools such as Swift Code Metrics and SCMA for validation[1][5].",
       "testStrategy": "Run static analysis tools (SwiftLint, Code Climate, SCMA, or similar) to verify that the refactored User.swift achieves over 90% code quality and problem rating. Review the file to ensure all properties, methods, and logic are fully documented with clear, standards-compliant comments. Confirm that the data model structure is logical, maintainable, and adheres to .cursorrules §6.4.1 and §8.2. Validate that all changes and rationales are clearly documented. Conduct peer code review to ensure compliance, readability, and maintainability, and run all relevant unit and integration tests to confirm no regressions.",
       "status": "pending",
@@ -1949,7 +1949,7 @@
     {
       "id": 30,
       "title": "Refactor AppDelegate.swift and Main.swift for Code Quality, Lifecycle, and Compliance",
-      "description": "Refactor _macOS/DocketMate-Sandbox/Sources/App/AppDelegate.swift and Main.swift to achieve over 90% code quality and problem rating, with enhanced lifecycle management, comprehensive documentation, and full compliance with .cursorrules §6.4.1 and §8.2.",
+      "description": "Refactor _macOS/FinanceMate-Sandbox/Sources/App/AppDelegate.swift and Main.swift to achieve over 90% code quality and problem rating, with enhanced lifecycle management, comprehensive documentation, and full compliance with .cursorrules §6.4.1 and §8.2.",
       "details": "Analyze the current AppDelegate.swift and Main.swift for code quality issues, excessive responsibilities, and lifecycle handling gaps. Apply best practices such as the Composite or modular delegate pattern to break down large, monolithic logic into smaller, single-responsibility components, improving maintainability and testability[1][5]. Ensure all lifecycle events are handled robustly and edge cases are covered. Add full comment blocks to all classes, methods, and significant logic sections, following Swift documentation standards. Review and update code to comply strictly with .cursorrules §6.4.1 and §8.2, documenting every change and the rationale behind it in a dedicated changelog or inline comments. Ensure the refactor does not introduce regressions and that the codebase remains easy to extend and test[2].",
       "testStrategy": "1. Run the full test suite before and after refactoring to ensure no regressions. 2. Use static analysis tools (e.g., SwiftLint, SonarQube) to verify code quality exceeds 90%. 3. Manually review lifecycle event handling for correctness and completeness. 4. Check that all classes and methods have comprehensive comment blocks and that documentation is clear and accurate. 5. Validate compliance with .cursorrules §6.4.1 and §8.2 via code review. 6. Review the changelog or inline documentation to confirm all changes and rationales are thoroughly recorded.",
       "status": "pending",
@@ -2016,9 +2016,9 @@
     },
     {
       "id": 31,
-      "title": "Refactor DocketMateSandboxTests.swift for Code Quality, Coverage, and Compliance",
-      "description": "Refactor _macOS/DocketMate-Sandbox/Tests/DocketMateSandboxTests.swift to achieve over 90% code quality and problem rating, add comprehensive comment blocks, expand test coverage, and ensure full compliance with .cursorrules §6.4.1 and §8.2. Document all changes and rationale.",
-      "details": "Review the existing DocketMateSandboxTests.swift file for code quality issues, including naming conventions, test structure, and assertion clarity. Refactor test methods to ensure each verifies a single concern, uses descriptive names, and applies the most informative assertions (e.g., prefer XCTAssertEqual over generic XCTAssert). Expand test coverage to include all public interfaces and edge cases, aiming for over 90% code coverage as measured by Xcode's built-in tools. Add a comprehensive file-level comment block summarizing the file's purpose, authorship, and usage. Ensure all code and comments comply with .cursorrules §6.4.1 (documentation standards) and §8.2 (test structure and clarity). Document all changes and the rationale for each modification in a dedicated section at the end of the file or in a separate changelog. Avoid leaking test code into production and do not weaken encapsulation solely for testing purposes.",
+      "title": "Refactor FinanceMateSandboxTests.swift for Code Quality, Coverage, and Compliance",
+      "description": "Refactor _macOS/FinanceMate-Sandbox/Tests/FinanceMateSandboxTests.swift to achieve over 90% code quality and problem rating, add comprehensive comment blocks, expand test coverage, and ensure full compliance with .cursorrules §6.4.1 and §8.2. Document all changes and rationale.",
+      "details": "Review the existing FinanceMateSandboxTests.swift file for code quality issues, including naming conventions, test structure, and assertion clarity. Refactor test methods to ensure each verifies a single concern, uses descriptive names, and applies the most informative assertions (e.g., prefer XCTAssertEqual over generic XCTAssert). Expand test coverage to include all public interfaces and edge cases, aiming for over 90% code coverage as measured by Xcode's built-in tools. Add a comprehensive file-level comment block summarizing the file's purpose, authorship, and usage. Ensure all code and comments comply with .cursorrules §6.4.1 (documentation standards) and §8.2 (test structure and clarity). Document all changes and the rationale for each modification in a dedicated section at the end of the file or in a separate changelog. Avoid leaking test code into production and do not weaken encapsulation solely for testing purposes.",
       "testStrategy": "Run the full test suite and verify that code coverage exceeds 90% using Xcode's code coverage tools. Review all test methods to ensure each tests a single concern and uses clear, descriptive names. Confirm that all public interfaces and edge cases are covered by tests. Check that the file contains a comprehensive comment block and that all code and comments adhere to .cursorrules §6.4.1 and §8.2. Review the documented rationale for each change for completeness and clarity. Optionally, perform a peer review to validate code quality, coverage, and compliance.",
       "status": "pending",
       "dependencies": [],
@@ -2027,7 +2027,7 @@
         {
           "id": 1,
           "title": "Analyze Current Test Structure and Create Refactoring Plan",
-          "description": "Perform a comprehensive analysis of DocketMateSandboxTests.swift to identify code quality issues, test coverage gaps, and compliance violations with .cursorrules §6.4.1 and §8.2.",
+          "description": "Perform a comprehensive analysis of FinanceMateSandboxTests.swift to identify code quality issues, test coverage gaps, and compliance violations with .cursorrules §6.4.1 and §8.2.",
           "dependencies": [],
           "details": "Review the existing test file structure, focusing on naming conventions, test organization, and assertion usage. Document all identified issues in a structured format. Calculate current code coverage metrics using Xcode's built-in tools. Create a detailed refactoring plan with specific goals for each area of improvement. Reference the .cursorrules documentation to ensure full understanding of §6.4.1 and §8.2 requirements.",
           "status": "pending",
@@ -2085,7 +2085,7 @@
     {
       "id": 32,
       "title": "Refactor AuthenticationService.swift for Code Quality, Modularity, and Compliance",
-      "description": "Refactor _macOS/DocketMate-Sandbox/Sources/Services/AuthenticationService.swift to achieve over 90% code quality and problem rating, with enhanced modularity, robust error handling, comprehensive documentation, and full compliance with .cursorrules §6.4.1 and §8.2.",
+      "description": "Refactor _macOS/FinanceMate-Sandbox/Sources/Services/AuthenticationService.swift to achieve over 90% code quality and problem rating, with enhanced modularity, robust error handling, comprehensive documentation, and full compliance with .cursorrules §6.4.1 and §8.2.",
       "details": "Begin by thoroughly reviewing AuthenticationService.swift to identify areas of low code quality, tight coupling, or insufficient error handling. Refactor the code to improve modularity—extract reusable components, apply protocol-oriented design where appropriate, and ensure clear separation of concerns. Enhance error handling by introducing descriptive error types and ensuring all failure paths are handled gracefully. Add a full comment block at the top of the file and inline documentation for all public methods and complex logic, following Swift documentation standards. Ensure all changes comply with .cursorrules §6.4.1 (code structure and readability) and §8.2 (error handling and reporting). Document every change and the rationale in a dedicated changelog or as part of the pull request description. Use SwiftLint and other static analysis tools to enforce code quality standards and prevent regressions. Commit changes incrementally to maintain a clear history and facilitate code review.",
       "testStrategy": "Verify that the refactored AuthenticationService.swift passes all existing and new unit tests, with particular focus on error handling and modularity. Use code quality tools (e.g., SwiftLint, SonarQube) to confirm that the file achieves over 90% code quality and problem rating. Review the code for compliance with .cursorrules §6.4.1 and §8.2, ensuring all documentation requirements are met. Manually inspect the comment blocks and inline documentation for completeness and clarity. Confirm that all changes and rationales are clearly documented in the changelog or pull request. Conduct peer code reviews to validate maintainability and adherence to best practices.",
       "status": "pending",
@@ -2150,7 +2150,7 @@
     {
       "id": 33,
       "title": "Refactor AuthViewModel.swift for Code Quality, Modularity, and Compliance",
-      "description": "Refactor _macOS/DocketMate-Sandbox/Sources/ViewModels/AuthViewModel.swift to achieve over 90% code quality and problem rating, with enhanced modularity, robust error handling, comprehensive documentation, and full compliance with .cursorrules §6.4.1 and §8.2. Document all changes and rationale.",
+      "description": "Refactor _macOS/FinanceMate-Sandbox/Sources/ViewModels/AuthViewModel.swift to achieve over 90% code quality and problem rating, with enhanced modularity, robust error handling, comprehensive documentation, and full compliance with .cursorrules §6.4.1 and §8.2. Document all changes and rationale.",
       "details": "Begin by analyzing the current structure and identifying areas for improvement in code quality, modularity, and error handling. Refactor the code to break down large methods into smaller, reusable functions, and extract any repeated logic into helper methods or extensions where appropriate. Ensure all public methods and complex logic are fully documented with comment blocks, including parameter and return descriptions, usage examples, and rationale for design decisions. Implement robust error handling using Swift best practices, such as using Result types or custom error enums, and ensure all error paths are handled gracefully. Review and update the code to comply strictly with .cursorrules §6.4.1 (modularity, separation of concerns) and §8.2 (documentation standards). Maintain clean commit history with detailed messages explaining each change and the reasoning behind it. At the end, provide a summary document outlining all changes, improvements, and compliance checks.",
       "testStrategy": "1. Run static analysis tools (e.g., SwiftLint, SwiftFormat) to verify code quality exceeds 90% and that all linter rules are satisfied. 2. Review code coverage reports to ensure all new and refactored logic is covered by unit tests. 3. Manually inspect comment blocks for completeness and clarity, ensuring all public APIs and complex logic are documented per .cursorrules §8.2. 4. Validate that error handling covers all failure paths and produces meaningful errors. 5. Confirm modularity and separation of concerns by reviewing class and method responsibilities. 6. Review the summary document to ensure all changes and rationales are clearly explained and compliance with .cursorrules §6.4.1 and §8.2 is explicitly documented.",
       "status": "pending",
@@ -2215,7 +2215,7 @@
     {
       "id": 34,
       "title": "Refactor SignInView.swift for Code Quality, Modularity, Accessibility, and Compliance",
-      "description": "Refactor _macOS/DocketMate-Sandbox/Sources/Views/SignInView.swift to achieve over 90% code quality and problem rating, with improved modularity, accessibility, error handling, UI/UX polish, and full .cursorrules documentation. Ensure all changes are TDD-compliant and thoroughly documented as a P0 compliance task.",
+      "description": "Refactor _macOS/FinanceMate-Sandbox/Sources/Views/SignInView.swift to achieve over 90% code quality and problem rating, with improved modularity, accessibility, error handling, UI/UX polish, and full .cursorrules documentation. Ensure all changes are TDD-compliant and thoroughly documented as a P0 compliance task.",
       "details": "Analyze the current SignInView.swift implementation and identify areas for improvement in code structure, modularity, and maintainability. Refactor large or complex view bodies into smaller, reusable SwiftUI subviews using @ViewBuilder and View protocol conformances to enhance readability and testability. Integrate comprehensive error handling for all user interactions and authentication flows, ensuring robust feedback for failure cases. Enhance accessibility by adding appropriate accessibility modifiers, labels, and traits to all interactive elements. Polish the UI/UX by refining layout, spacing, and visual feedback, adhering to platform guidelines. Add a complete .cursorrules comment block at the top of the file, referencing all relevant sections. Ensure all changes are covered by TDD-compliant unit and UI tests, and document the rationale and approach for each significant change within the codebase and in accompanying documentation.",
       "testStrategy": "Develop and run comprehensive unit and UI tests to verify all refactored components, ensuring 100% coverage of new and modified code. Validate that the code quality and problem rating exceed 90% using the project's static analysis and code review tools. Manually test accessibility features with VoiceOver and keyboard navigation. Confirm robust error handling by simulating failure scenarios. Review the .cursorrules comment block for completeness and accuracy. Ensure all changes are documented and that the refactored view integrates seamlessly with the rest of the application.",
       "status": "pending",
@@ -2552,8 +2552,8 @@
     {
       "id": 39,
       "title": "Audit and Enforce .cursorrules Compliance for Sandbox Source Files (P0 Hygiene)",
-      "description": "Review all code files in _macOS/DocketMate-Sandbox/Sources/ for missing or incomplete .cursorrules-compliant comment blocks, code quality ratings, and complexity rankings. For any file below 70% compliance or missing required elements, create a P0 refactor task to achieve >90% compliance and log as a P0 hygiene issue.",
-      "details": "Conduct a thorough audit of every code file within _macOS/DocketMate-Sandbox/Sources/. For each file, verify the presence and completeness of .cursorrules-compliant comment blocks, including code quality ratings and complexity rankings as mandated by project standards. Use the latest .cursorrules definitions as reference for required comment structure and content. For files lacking these elements or scoring below 70% compliance, document the deficiencies and immediately create a P0 refactor task to bring the file to greater than 90% compliance. Ensure all findings and new hygiene tasks are logged in the project tracker, clearly referencing the affected files and specific compliance gaps. Maintain a clear audit trail for future reviews and team accountability.",
+      "description": "Review all code files in _macOS/FinanceMate-Sandbox/Sources/ for missing or incomplete .cursorrules-compliant comment blocks, code quality ratings, and complexity rankings. For any file below 70% compliance or missing required elements, create a P0 refactor task to achieve >90% compliance and log as a P0 hygiene issue.",
+      "details": "Conduct a thorough audit of every code file within _macOS/FinanceMate-Sandbox/Sources/. For each file, verify the presence and completeness of .cursorrules-compliant comment blocks, including code quality ratings and complexity rankings as mandated by project standards. Use the latest .cursorrules definitions as reference for required comment structure and content. For files lacking these elements or scoring below 70% compliance, document the deficiencies and immediately create a P0 refactor task to bring the file to greater than 90% compliance. Ensure all findings and new hygiene tasks are logged in the project tracker, clearly referencing the affected files and specific compliance gaps. Maintain a clear audit trail for future reviews and team accountability.",
       "testStrategy": "Randomly sample at least 30% of audited files to verify that .cursorrules-compliant comment blocks, code quality ratings, and complexity rankings are present and accurate. Confirm that all files previously below 70% compliance now meet or exceed 90% compliance after refactor tasks are completed. Review the project tracker to ensure all P0 hygiene tasks are logged with clear references to the original audit findings and that no files are missing required documentation or ratings.",
       "status": "pending",
       "dependencies": [],
@@ -2562,7 +2562,7 @@
         {
           "id": 1,
           "title": "Create .cursorrules Compliance Checker Script",
-          "description": "Develop an automated script to scan all code files in _macOS/DocketMate-Sandbox/Sources/ and evaluate their compliance with .cursorrules standards",
+          "description": "Develop an automated script to scan all code files in _macOS/FinanceMate-Sandbox/Sources/ and evaluate their compliance with .cursorrules standards",
           "dependencies": [],
           "details": "Write a script that recursively traverses the Sources directory, identifies all code files, and checks each file for the presence of required comment blocks, quality ratings, and complexity rankings as defined in the latest .cursorrules. The script should calculate a compliance percentage for each file based on the presence and completeness of required elements. Output should be a structured report listing all files with their compliance scores and specific missing elements.",
           "status": "pending",
@@ -2585,7 +2585,7 @@
             1,
             2
           ],
-          "details": "Run the compliance checker script on the entire _macOS/DocketMate-Sandbox/Sources/ directory. Generate a detailed report that identifies all files below 70% compliance, categorizing issues by type (missing comment blocks, incomplete quality ratings, missing complexity rankings, etc.). The report should include file paths, current compliance percentages, and specific missing elements for each file. Sort results by compliance percentage to prioritize the most critical files.",
+          "details": "Run the compliance checker script on the entire _macOS/FinanceMate-Sandbox/Sources/ directory. Generate a detailed report that identifies all files below 70% compliance, categorizing issues by type (missing comment blocks, incomplete quality ratings, missing complexity rankings, etc.). The report should include file paths, current compliance percentages, and specific missing elements for each file. Sort results by compliance percentage to prioritize the most critical files.",
           "status": "pending",
           "testStrategy": "Manually verify a random sample of 10% of the files to confirm the accuracy of the automated compliance scores."
         },
@@ -3554,8 +3554,8 @@
     {
       "id": 54,
       "title": "Refactor Low-Rated Swift Files for Code Quality and .cursorrules Compliance",
-      "description": "Refactor all DocketMate-Sandbox Swift files with a code/problem rating below 70% to achieve over 90%, ensuring full .cursorrules compliance, improved modularity, maintainability, and comprehensive documentation. Expand or add tests as needed and log all changes with updated documentation.",
-      "details": "Begin by auditing all Swift files in the DocketMate-Sandbox repository, identifying those with a code/problem rating below 70%. For each file, refactor code to improve readability, modularity, and maintainability, following Swift best practices such as extracting methods, reducing complexity, and enforcing strong typing. Ensure all code fully complies with .cursorrules and add or complete comment blocks for all public types, methods, and complex logic. Use Swift’s refactoring tools in Xcode (e.g., Rename, Extract Method) to streamline the process and prevent regressions. Update or create unit and integration tests to cover all refactored code, ensuring no loss of functionality. Maintain a detailed changelog of all modifications and update any relevant documentation to reflect the new code structure and usage. Commit changes frequently to preserve a clear history and facilitate code review.",
+      "description": "Refactor all FinanceMate-Sandbox Swift files with a code/problem rating below 70% to achieve over 90%, ensuring full .cursorrules compliance, improved modularity, maintainability, and comprehensive documentation. Expand or add tests as needed and log all changes with updated documentation.",
+      "details": "Begin by auditing all Swift files in the FinanceMate-Sandbox repository, identifying those with a code/problem rating below 70%. For each file, refactor code to improve readability, modularity, and maintainability, following Swift best practices such as extracting methods, reducing complexity, and enforcing strong typing. Ensure all code fully complies with .cursorrules and add or complete comment blocks for all public types, methods, and complex logic. Use Swift’s refactoring tools in Xcode (e.g., Rename, Extract Method) to streamline the process and prevent regressions. Update or create unit and integration tests to cover all refactored code, ensuring no loss of functionality. Maintain a detailed changelog of all modifications and update any relevant documentation to reflect the new code structure and usage. Commit changes frequently to preserve a clear history and facilitate code review.",
       "testStrategy": "For each refactored file, verify that the code/problem rating exceeds 90% using the project's established metrics. Run all existing and newly created unit and integration tests to confirm full coverage and correct behavior. Use static analysis and linter tools (including .cursorrules compliance checks) to ensure code quality and style adherence. Manually review comment blocks for completeness and clarity. Confirm that all changes are logged and that documentation accurately reflects the updated codebase. Conduct peer code reviews to validate maintainability and modularity improvements.",
       "status": "pending",
       "dependencies": [],
@@ -3564,7 +3564,7 @@
         {
           "id": 1,
           "title": "Audit Swift Files and Identify Low-Rated Candidates",
-          "description": "Scan all Swift files in the DocketMate-Sandbox repository to identify those with a code/problem rating below 70%. Document the list of files to be refactored.",
+          "description": "Scan all Swift files in the FinanceMate-Sandbox repository to identify those with a code/problem rating below 70%. Document the list of files to be refactored.",
           "dependencies": [],
           "details": "Use automated code analysis tools or scripts to assess each file's code/problem rating. Compile a list of files falling below the 70% threshold, noting key issues and areas for improvement.",
           "status": "pending",
@@ -4344,7 +4344,7 @@
     {
       "id": 66,
       "title": "Refactor AuthenticationService.swift",
-      "description": "Refactor _macOS/DocketMate-Sandbox/Sources/Services/AuthenticationService.swift to improve its code quality score to at least 90% as per .cursorrules. Focus on clarity, testability, error handling, and adherence to best practices for authentication services.",
+      "description": "Refactor _macOS/FinanceMate-Sandbox/Sources/Services/AuthenticationService.swift to improve its code quality score to at least 90% as per .cursorrules. Focus on clarity, testability, error handling, and adherence to best practices for authentication services.",
       "details": "",
       "testStrategy": "",
       "status": "pending",
@@ -4409,7 +4409,7 @@
     {
       "id": 67,
       "title": "Refactor ProfileView.swift",
-      "description": "Refactor _macOS/DocketMate-Sandbox/Sources/Views/ProfileView.swift to improve its code quality score to at least 90% as per .cursorrules. Focus on modularity, state management, validation, accessibility, UI/UX polish, and adherence to the Corporate Style Guide. Ensure the Sandbox watermark is appropriately handled if it's meant to be part of this view.",
+      "description": "Refactor _macOS/FinanceMate-Sandbox/Sources/Views/ProfileView.swift to improve its code quality score to at least 90% as per .cursorrules. Focus on modularity, state management, validation, accessibility, UI/UX polish, and adherence to the Corporate Style Guide. Ensure the Sandbox watermark is appropriately handled if it's meant to be part of this view.",
       "details": "",
       "testStrategy": "",
       "status": "pending",
@@ -4676,7 +4676,7 @@
     {
       "id": 72,
       "title": "Refactor AuthenticationService.swift for .cursorrules compliance and to fix build warnings",
-      "description": "Refactor _macOS/DocketMate/Sources/Services/AuthenticationService.swift to:\n1. Fix all build warnings (unreachable catch blocks, unused variables).\n2. Update the top comment block to fully comply with .cursorrules Section 6.4.1, including all required sub-sections (Pre-Coding Assessment, Key Complexity Drivers, AI Pre-Task Self-Assessment, Problem Estimate, Initial Code Complexity Estimate, Justification, Post-Implementation Update, Final Code Complexity, Overall Result Score, Key Variances/Learnings, Last Updated).\n3. Re-evaluate and update the Code and Problem complexity ratings after refactoring and comment update.\n4. Ensure the Overall Result Score is >90% after refactoring.",
+      "description": "Refactor _macOS/FinanceMate/Sources/Services/AuthenticationService.swift to:\n1. Fix all build warnings (unreachable catch blocks, unused variables).\n2. Update the top comment block to fully comply with .cursorrules Section 6.4.1, including all required sub-sections (Pre-Coding Assessment, Key Complexity Drivers, AI Pre-Task Self-Assessment, Problem Estimate, Initial Code Complexity Estimate, Justification, Post-Implementation Update, Final Code Complexity, Overall Result Score, Key Variances/Learnings, Last Updated).\n3. Re-evaluate and update the Code and Problem complexity ratings after refactoring and comment update.\n4. Ensure the Overall Result Score is >90% after refactoring.",
       "details": "",
       "testStrategy": "",
       "status": "pending",
@@ -4686,7 +4686,7 @@
         {
           "id": 1,
           "title": "Audit and Fix Build Warnings in AuthenticationService.swift",
-          "description": "Identify and resolve all build warnings in _macOS/DocketMate/Sources/Services/AuthenticationService.swift, including unreachable catch blocks and unused variables.",
+          "description": "Identify and resolve all build warnings in _macOS/FinanceMate/Sources/Services/AuthenticationService.swift, including unreachable catch blocks and unused variables.",
           "dependencies": [],
           "details": "Open the file in Xcode and review the build log for warnings. Remove or refactor unreachable catch blocks, eliminate unused variables, and ensure the code compiles cleanly without warnings. Use Swift's refactoring tools and static analysis to assist in identifying issues.",
           "status": "pending",
@@ -4740,10 +4740,10 @@
     },
     {
       "id": 73,
-      "title": "Review and Curate UI/UX Patterns for DocketMate Enhancement",
-      "description": "Analyze UI/UX patterns and components in docs/ExampleCode/ to identify advanced list views, dashboards, and modern UI elements suitable for DocketMate. Recommend integrations and improvements to existing views and components to elevate user experience and visual appeal.",
-      "details": "Conduct a thorough review of all UI/UX patterns and example components within docs/ExampleCode/. Focus on identifying elements such as advanced list views, dashboard layouts, interactive widgets, and modern UI components that align with DocketMate’s core features (docket management, user profiles). Evaluate each example for usability, visual hierarchy, and interaction design, referencing established UI/UX pattern libraries and best practices where appropriate[1][4]. Document which patterns are most relevant, providing rationale for their selection and clear suggestions for how they could be integrated or adapted to improve DocketMate’s current views or support new features. Consider enhancements that improve clarity, efficiency, and user delight, such as micro-animations, contextual feedback, and streamlined navigation[2][3][4]. Summarize findings and recommendations in a structured report, including annotated screenshots or sketches where helpful.",
-      "testStrategy": "Verify completion by reviewing the submitted report for: (1) a comprehensive inventory of reviewed patterns/components from docs/ExampleCode/; (2) clear identification and rationale for selected patterns relevant to DocketMate; (3) actionable recommendations for integration or improvement, mapped to specific DocketMate features or views; (4) evidence of referencing established UI/UX best practices; and (5) inclusion of annotated visuals or sketches supporting recommendations. Confirm that the report is detailed, well-organized, and actionable for design and development teams.",
+      "title": "Review and Curate UI/UX Patterns for FinanceMate Enhancement",
+      "description": "Analyze UI/UX patterns and components in docs/ExampleCode/ to identify advanced list views, dashboards, and modern UI elements suitable for FinanceMate. Recommend integrations and improvements to existing views and components to elevate user experience and visual appeal.",
+      "details": "Conduct a thorough review of all UI/UX patterns and example components within docs/ExampleCode/. Focus on identifying elements such as advanced list views, dashboard layouts, interactive widgets, and modern UI components that align with FinanceMate’s core features (docket management, user profiles). Evaluate each example for usability, visual hierarchy, and interaction design, referencing established UI/UX pattern libraries and best practices where appropriate[1][4]. Document which patterns are most relevant, providing rationale for their selection and clear suggestions for how they could be integrated or adapted to improve FinanceMate’s current views or support new features. Consider enhancements that improve clarity, efficiency, and user delight, such as micro-animations, contextual feedback, and streamlined navigation[2][3][4]. Summarize findings and recommendations in a structured report, including annotated screenshots or sketches where helpful.",
+      "testStrategy": "Verify completion by reviewing the submitted report for: (1) a comprehensive inventory of reviewed patterns/components from docs/ExampleCode/; (2) clear identification and rationale for selected patterns relevant to FinanceMate; (3) actionable recommendations for integration or improvement, mapped to specific FinanceMate features or views; (4) evidence of referencing established UI/UX best practices; and (5) inclusion of annotated visuals or sketches supporting recommendations. Confirm that the report is detailed, well-organized, and actionable for design and development teams.",
       "status": "pending",
       "dependencies": [],
       "priority": "medium",
@@ -4770,23 +4770,23 @@
         },
         {
           "id": 3,
-          "title": "Select and Rationalize Patterns for DocketMate Integration",
-          "description": "Identify which patterns are most relevant for DocketMate’s core features (docket management, user profiles), providing rationale for selection and noting potential adaptations.",
+          "title": "Select and Rationalize Patterns for FinanceMate Integration",
+          "description": "Identify which patterns are most relevant for FinanceMate’s core features (docket management, user profiles), providing rationale for selection and noting potential adaptations.",
           "dependencies": [
             2
           ],
-          "details": "Match evaluated patterns to DocketMate’s needs, prioritizing those that enhance clarity, efficiency, and user engagement. Document rationale for each selection, including notes on required modifications.",
+          "details": "Match evaluated patterns to FinanceMate’s needs, prioritizing those that enhance clarity, efficiency, and user engagement. Document rationale for each selection, including notes on required modifications.",
           "status": "pending",
-          "testStrategy": "Review selection rationale with stakeholders to ensure alignment with DocketMate’s goals."
+          "testStrategy": "Review selection rationale with stakeholders to ensure alignment with FinanceMate’s goals."
         },
         {
           "id": 4,
           "title": "Recommend Integrations and UI/UX Improvements",
-          "description": "Develop clear recommendations for integrating selected patterns into DocketMate, including suggestions for enhancements such as micro-animations, contextual feedback, and streamlined navigation.",
+          "description": "Develop clear recommendations for integrating selected patterns into FinanceMate, including suggestions for enhancements such as micro-animations, contextual feedback, and streamlined navigation.",
           "dependencies": [
             3
           ],
-          "details": "For each selected pattern, outline integration steps and propose improvements tailored to DocketMate’s context. Include sketches or annotated screenshots to illustrate recommendations.",
+          "details": "For each selected pattern, outline integration steps and propose improvements tailored to FinanceMate’s context. Include sketches or annotated screenshots to illustrate recommendations.",
           "status": "pending",
           "testStrategy": "Validate recommendations with design and development teams for feasibility and alignment with technical constraints."
         },
@@ -4806,8 +4806,8 @@
     {
       "id": 74,
       "title": "Add Unit Test for AuthenticationError Equality in AuthViewModel",
-      "description": "Create a unit test in _macOS/DocketMate/Tests/ to verify correct equality comparisons between AuthenticationError instances within AuthViewModel, covering all error cases and associated values.",
-      "details": "Implement a new unit test file (e.g., AuthViewModelAuthenticationErrorTests.swift) in the _macOS/DocketMate/Tests/ directory. The test should instantiate various AuthenticationError cases, including those with associated values, and assert their equality and inequality as appropriate. Ensure the test covers all defined error cases, especially those that previously caused regressions (such as PMBE-COMPILER-001). Use descriptive test method names and include comments explaining the intent of each scenario. If AuthenticationError conforms to Equatable, verify that both positive (equal) and negative (not equal) comparisons behave as expected. If necessary, mock or stub dependencies to isolate the error comparison logic within AuthViewModel.",
+      "description": "Create a unit test in _macOS/FinanceMate/Tests/ to verify correct equality comparisons between AuthenticationError instances within AuthViewModel, covering all error cases and associated values.",
+      "details": "Implement a new unit test file (e.g., AuthViewModelAuthenticationErrorTests.swift) in the _macOS/FinanceMate/Tests/ directory. The test should instantiate various AuthenticationError cases, including those with associated values, and assert their equality and inequality as appropriate. Ensure the test covers all defined error cases, especially those that previously caused regressions (such as PMBE-COMPILER-001). Use descriptive test method names and include comments explaining the intent of each scenario. If AuthenticationError conforms to Equatable, verify that both positive (equal) and negative (not equal) comparisons behave as expected. If necessary, mock or stub dependencies to isolate the error comparison logic within AuthViewModel.",
       "testStrategy": "Run the new unit test suite and confirm that all assertions regarding AuthenticationError equality and inequality pass. Deliberately introduce a failing case (e.g., compare two different error cases) to ensure the test fails as expected, then revert. Review test coverage to confirm all error cases and associated values are exercised. Validate that the test prevents regressions by running it after any future changes to AuthenticationError or AuthViewModel.",
       "status": "pending",
       "dependencies": [],
@@ -4825,7 +4825,7 @@
         {
           "id": 2,
           "title": "Set Up Unit Test File for AuthenticationError Equality",
-          "description": "Create a new unit test file named AuthViewModelAuthenticationErrorTests.swift in the _macOS/DocketMate/Tests/ directory, following project conventions.",
+          "description": "Create a new unit test file named AuthViewModelAuthenticationErrorTests.swift in the _macOS/FinanceMate/Tests/ directory, following project conventions.",
           "dependencies": [
             1
           ],
@@ -4871,7 +4871,7 @@
     {
       "id": 75,
       "title": "Implement Google SSO: SDK Initialization (Sandbox)",
-      "description": "Initialize the Google Sign-In SDK in the DocketMate-Sandbox macOS application. This includes adding the SDK dependency, configuring it with the Client ID, and setting up the initial handling for the authentication flow. This task is a prerequisite for the full Google SSO sign-in functionality.",
+      "description": "Initialize the Google Sign-In SDK in the FinanceMate-Sandbox macOS application. This includes adding the SDK dependency, configuring it with the Client ID, and setting up the initial handling for the authentication flow. This task is a prerequisite for the full Google SSO sign-in functionality.",
       "details": "1. Verify/add Google Sign-In SDK Swift Package. 2. Create AuthenticationService if not present. 3. Implement SDK initialization in AppDelegate or AuthenticationService using ClientID from Info.plist. 4. Write unit tests for initialization. 5. Ensure Sandbox build remains GREEN. Follow TDD and .cursorrules §8.2.",
       "testStrategy": "Unit tests will verify SDK initialization. Manual test of app launch to ensure no crashes. Sandbox build must succeed.",
       "status": "pending",
@@ -4881,7 +4881,7 @@
         {
           "id": 1,
           "title": "Add Google Sign-In SDK Dependency",
-          "description": "Integrate the Google Sign-In SDK into the DocketMate-Sandbox macOS project using Swift Package Manager.",
+          "description": "Integrate the Google Sign-In SDK into the FinanceMate-Sandbox macOS project using Swift Package Manager.",
           "dependencies": [],
           "details": "Open the Xcode project, navigate to File > Add Packages, and add the official Google Sign-In SDK package. Ensure the package is correctly resolved and appears in the project's dependencies. Commit the changes to version control.",
           "status": "pending",

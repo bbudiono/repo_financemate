@@ -1,0 +1,13 @@
+Starting xcworkspace cleanup at Fri May 23 21:37:16 AEST 2025
+==============================================
+[0;34m[STEP] 2025-05-23 21:37:16 Checking for main workspace...[0m
+[0;32m[SUCCESS] 2025-05-23 21:37:16 Main workspace exists[0m
+[0;34m[STEP] 2025-05-23 21:37:16 Backing up workspace...[0m
+[0;32m[SUCCESS] 2025-05-23 21:37:16 Workspace backed up to /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/tmp/backups/xcworkspace_2025-05-23_21-37-16[0m
+[0;34m[STEP] 2025-05-23 21:37:16 Cleaning up xcuserdata directories...[0m
+[0;32m[SUCCESS] 2025-05-23 21:37:16 No xcuserdata directories found[0m
+[0;34m[STEP] 2025-05-23 21:37:16 Verifying workspace contents...[0m
+[INFO] 2025-05-23 21:37:16 Workspace contents file exists. Checking for project references...
+[0;32m[SUCCESS] 2025-05-23 21:37:16 Workspace contains references to both Production and Sandbox projects[0m
+[0;34m[STEP] 2025-05-23 21:37:16 Updating DEVELOPMENT_LOG.md with workspace cleanup summary...[0m
+[0;32m[SUCCESS] 2025-05-23 21:37:16 DEVELOPMENT_LOG.md updated with workspace cleanup summary[0m
