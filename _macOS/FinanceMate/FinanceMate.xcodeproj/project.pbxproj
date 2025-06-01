@@ -29,18 +29,18 @@
 		A287CCF3077F77AF035FE4EE = {
 			isa = PBXGroup;
 			children = (
-				D5D10089FFAD4150861B279B /* Sources */,
+				D5D10089FFAD4150861B279B /* FinanceMate */,
 				411DBE5F53A298C126242F34 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		D5D10089FFAD4150861B279B /* Sources */ = {
+		D5D10089FFAD4150861B279B /* FinanceMate */ = {
 			isa = PBXGroup;
 			children = (
 				04F654E30EB3BB8388F98E94 /* ContentView.swift */,
 				CD23538CF257D51DBA226B97 /* FinanceMateApp.swift */,
 			);
-			path = Sources;
+			path = FinanceMate;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

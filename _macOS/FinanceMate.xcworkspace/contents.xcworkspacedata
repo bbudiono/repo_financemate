@@ -2,9 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:DocketMate/DocketMate.xcodeproj">
+      location = "group:FinanceMate/FinanceMate.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:DocketMate_Sandbox/DocketMate_Sandbox.xcodeproj">
+      location = "container:FinanceMate-Sandbox/FinanceMate-Sandbox.xcodeproj">
    </FileRef>
 </Workspace>
