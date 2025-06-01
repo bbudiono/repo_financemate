@@ -24,14 +24,6 @@
 	<string>public.app-category.productivity</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>$(MACOSX_DEPLOYMENT_TARGET)</string>
-	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2025 A Blank Canvas Inc. All rights reserved.</string>
-	<key>NSSupportsAutomaticTermination</key>
-	<true/>
-	<key>NSSupportsSuddenTermination</key>
-	<true/>
-	<key>NSHighResolutionCapable</key>
-	<true/>
 	<key>LSRequiresNativeExecution</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -49,5 +41,13 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSHighResolutionCapable</key>
+	<true/>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright © 2025 A Blank Canvas Inc. All rights reserved.</string>
+	<key>NSSupportsAutomaticTermination</key>
+	<true/>
+	<key>NSSupportsSuddenTermination</key>
+	<true/>
 </dict>
 </plist>
