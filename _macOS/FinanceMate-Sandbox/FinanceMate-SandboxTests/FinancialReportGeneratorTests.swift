@@ -300,20 +300,22 @@ final class FinancialReportGeneratorTests: XCTestCase {
         // Then: Performance should be within acceptable bounds (implicit in measure)
     }
     
-    func testMultipleReportGenerationPerformance() {
+    func testMultipleReportGenerationPerformance() async throws {
         // Given: Sample data
         let data = sampleFinancialData
         
-        // When: Generating multiple reports
-        measure {
-            Task {
-                _ = await reportGenerator.generateExpenseReport(from: data, period: .monthly)
-                _ = await reportGenerator.generateIncomeReport(from: data, period: .monthly)
-                _ = await reportGenerator.generateTaxReport(from: data, taxYear: 2025)
-            }
-        }
+        // When: Generating multiple reports with performance measurement
+        let startTime = Date()
         
-        // Then: Performance should be acceptable for multiple reports
+        _ = await reportGenerator.generateExpenseReport(from: data, period: .monthly)
+        _ = await reportGenerator.generateIncomeReport(from: data, period: .monthly)
+        _ = await reportGenerator.generateTaxReport(from: data, taxYear: 2025)
+        
+        let endTime = Date()
+        let duration = endTime.timeIntervalSince(startTime)
+        
+        // Then: Performance should be acceptable for multiple reports (under 5 seconds)
+        XCTAssertLessThan(duration, 5.0, "Multiple report generation should complete within 5 seconds")
     }
     
     // MARK: - Error Handling Tests

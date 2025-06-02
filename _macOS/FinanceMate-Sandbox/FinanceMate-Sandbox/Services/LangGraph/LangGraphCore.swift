@@ -239,7 +239,7 @@ public class LangGraphExecutionEngine: ObservableObject {
             let traversalOrder = try await topologicalSort(graph: graph)
             
             for nodeId in traversalOrder {
-                guard let node = graph.nodes.first(where: { $0.id == nodeId }) else {
+                guard let node = await graph.nodes.first(where: { $0.id == nodeId }) else {
                     throw LangGraphError.nodeNotFound(nodeId)
                 }
                 
@@ -273,6 +273,7 @@ public class LangGraphExecutionEngine: ObservableObject {
     
     // MARK: - Private Methods
     
+    @MainActor
     private func findEntryNodes(in graph: LangGraph) -> [LangGraphNode] {
         let targetNodeIds = Set(graph.edges.map { $0.targetNodeId })
         return graph.nodes.filter { !targetNodeIds.contains($0.id) }
@@ -283,12 +284,12 @@ public class LangGraphExecutionEngine: ObservableObject {
         var adjacencyList: [String: [String]] = [:]
         
         // Initialize in-degree and adjacency list
-        for node in graph.nodes {
+        for node in await graph.nodes {
             inDegree[node.id] = 0
             adjacencyList[node.id] = []
         }
         
-        for edge in graph.edges {
+        for edge in await graph.edges {
             adjacencyList[edge.sourceNodeId, default: []].append(edge.targetNodeId)
             inDegree[edge.targetNodeId, default: 0] += 1
         }
@@ -316,7 +317,7 @@ public class LangGraphExecutionEngine: ObservableObject {
             }
         }
         
-        if result.count != graph.nodes.count {
+        if result.count != await graph.nodes.count {
             throw LangGraphError.invalidGraphStructure("Cycle detected in graph")
         }
         

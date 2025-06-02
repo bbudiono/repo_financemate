@@ -1,9 +1,11 @@
 //
 //  LangGraphFramework.swift
-//  FinanceMate
+//  FinanceMate-Sandbox
 //
 //  Created by Assistant on 6/2/25.
 //
+
+// SANDBOX FILE: For testing/development. See .cursorrules.
 
 /*
 * Purpose: LangGraph framework implementation for multi-agent workflow orchestration and graph-based AI coordination
@@ -18,8 +20,8 @@
 * Problem Estimate (Inherent Problem Difficulty %): 88%
 * Initial Code Complexity Estimate %: 90%
 * Justification for Estimates: Advanced graph-based AI workflow management with complex multi-agent coordination
-* Final Code Complexity (Actual %): 90%
-* Overall Result Score (Success & Quality %): 92%
+* Final Code Complexity (Actual %): TBD - Implementation in progress
+* Overall Result Score (Success & Quality %): TBD - Framework development
 * Key Variances/Learnings: Building sophisticated graph-based multi-agent coordination system
 * Last Updated: 2025-06-02
 */
