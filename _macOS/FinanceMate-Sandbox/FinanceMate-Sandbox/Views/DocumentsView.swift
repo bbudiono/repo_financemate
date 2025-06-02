@@ -406,6 +406,44 @@ struct DocumentItem: Identifiable {
     var processingStatus: ProcessingStatus
 }
 
+enum ProcessingStatus: CaseIterable {
+    case pending
+    case processing
+    case completed
+    case failed
+    case cancelled
+    
+    var displayName: String {
+        switch self {
+        case .pending: return "Pending"
+        case .processing: return "Processing"
+        case .completed: return "Completed"
+        case .failed: return "Failed"
+        case .cancelled: return "Cancelled"
+        }
+    }
+    
+    var icon: String {
+        switch self {
+        case .pending: return "clock"
+        case .processing: return "arrow.triangle.2.circlepath"
+        case .completed: return "checkmark.circle.fill"
+        case .failed: return "exclamationmark.triangle.fill"
+        case .cancelled: return "xmark.circle.fill"
+        }
+    }
+    
+    var color: Color {
+        switch self {
+        case .pending: return .orange
+        case .processing: return .blue
+        case .completed: return .green
+        case .failed: return .red
+        case .cancelled: return .gray
+        }
+    }
+}
+
 
 enum DocumentFilter: CaseIterable {
     case all

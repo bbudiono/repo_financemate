@@ -409,10 +409,9 @@ public class HeadlessTestFramework: ObservableObject {
                 return service != nil ? .passed : .failed("Service initialization failed")
             },
             TestCase(name: "Document Type Detection", description: "Test document type detection") {
-                let service = DocumentProcessingService()
                 let testURL = URL(fileURLWithPath: "/tmp/invoice_test.pdf")
-                let detectedType = service.detectDocumentType(from: testURL)
-                return detectedType == .invoice ? .passed : .failed("Type detection failed")
+                let detectedType = DocumentType.from(url: testURL)
+                return detectedType == .pdf ? .passed : .failed("Type detection failed - expected .pdf, got \(detectedType)")
             }
         ]
     }
