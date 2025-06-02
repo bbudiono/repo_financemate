@@ -66,7 +66,7 @@ final class OCRServiceTests: XCTestCase {
         let testImageURL = URL(fileURLWithPath: "/tmp/test_image.jpg")
         
         // When: Extracting text from the image
-        let result = await ocrService.extractText(from: testImageURL)
+        let result = await ocrService.extractTextResult(from: testImageURL)
         
         // Then: Should return appropriate result
         switch result {
@@ -83,7 +83,7 @@ final class OCRServiceTests: XCTestCase {
         let invalidURL = URL(fileURLWithPath: "/nonexistent/image.jpg")
         
         // When: Extracting text from invalid URL
-        let result = await ocrService.extractText(from: invalidURL)
+        let result = await ocrService.extractTextResult(from: invalidURL)
         
         // Then: Should return failure
         switch result {
@@ -104,7 +104,7 @@ final class OCRServiceTests: XCTestCase {
         let unsupportedURL = URL(fileURLWithPath: "/tmp/document.txt")
         
         // When: Extracting text from unsupported format
-        let result = await ocrService.extractText(from: unsupportedURL)
+        let result = await ocrService.extractTextResult(from: unsupportedURL)
         
         // Then: Should return failure for unsupported format
         switch result {
@@ -187,13 +187,8 @@ final class OCRServiceTests: XCTestCase {
         measure {
             let expectation = XCTestExpectation(description: "OCR Performance")
             Task {
-                do {
-                    _ = try await ocrService.extractText(from: testURL)
-                    expectation.fulfill()
-                } catch {
-                    // Handle error gracefully in performance test
-                    expectation.fulfill()
-                }
+                _ = await ocrService.extractTextResult(from: testURL)
+                expectation.fulfill()
             }
             wait(for: [expectation], timeout: 5.0)
         }
@@ -212,12 +207,7 @@ final class OCRServiceTests: XCTestCase {
         
         // Create a concurrent task to test processing state
         let processingTask = Task {
-            do {
-                _ = try await ocrService.extractText(from: testURL)
-            } catch {
-                // Handle error gracefully
-                print("OCR processing failed: \(error)")
-            }
+            _ = await ocrService.extractTextResult(from: testURL)
         }
         
         // Small delay to allow state change
@@ -239,7 +229,7 @@ final class OCRServiceTests: XCTestCase {
         let corruptedURL = URL(fileURLWithPath: "/tmp/corrupted.jpg")
         
         // When: Processing the corrupted image
-        let result = await ocrService.extractText(from: corruptedURL)
+        let result = await ocrService.extractTextResult(from: corruptedURL)
         
         // Then: Should handle corruption gracefully
         switch result {

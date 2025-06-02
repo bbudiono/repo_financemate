@@ -184,7 +184,7 @@ public struct ProcessedDocument {
     }
 }
 
-public enum DocumentProcessingStatus: String, CaseIterable {
+public enum DocumentProcessingStatus: String, CaseIterable, Codable {
     case pending = "pending"
     case processing = "processing"
     case completed = "completed"
