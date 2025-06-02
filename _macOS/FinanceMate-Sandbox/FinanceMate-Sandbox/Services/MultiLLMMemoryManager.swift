@@ -42,7 +42,7 @@ public class MultiLLMMemoryManager: ObservableObject {
     
     // MARK: - Shared State
     
-    @Published public var memoryUsage: MemoryUsage = MemoryUsage()
+    @Published public var memoryUsage: LLMMemoryUsage = LLMMemoryUsage()
     private var sharedContexts: [String: MultiLLMContext] = [:]
     private var memoryMetrics: MemoryMetrics = MemoryMetrics()
     
@@ -233,7 +233,7 @@ public class MultiLLMMemoryManager: ObservableObject {
         Task {
             let longTermSize = await longTermMemory.totalEntries
             await MainActor.run {
-                self.memoryUsage = MemoryUsage(
+                self.memoryUsage = LLMMemoryUsage(
                     shortTermEntries: self.shortTermMemory.entryCount,
                     workingMemoryEntries: self.workingMemory.entryCount,
                     longTermEntries: longTermSize,
@@ -244,8 +244,8 @@ public class MultiLLMMemoryManager: ObservableObject {
         }
     }
     
-    private func calculateMemoryUsage() -> MemoryUsage {
-        return MemoryUsage(
+    private func calculateMemoryUsage() -> LLMMemoryUsage {
+        return LLMMemoryUsage(
             shortTermEntries: shortTermMemory.entryCount,
             workingMemoryEntries: workingMemory.entryCount,
             longTermEntries: 0, // Will be updated async
@@ -505,7 +505,7 @@ public struct TaskContext {
     }
 }
 
-public struct MemoryUsage {
+public struct LLMMemoryUsage {
     public let shortTermEntries: Int
     public let workingMemoryEntries: Int
     public let longTermEntries: Int
