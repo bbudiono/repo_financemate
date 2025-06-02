@@ -144,7 +144,7 @@ public class AuthenticationService: ObservableObject {
         keychainManager.clearUserCredentials()
         
         // Clear user session
-        userSessionManager.clearSession()
+        await userSessionManager.clearSession()
         
         // Update state
         currentUser = nil
@@ -280,7 +280,7 @@ public class AuthenticationService: ObservableObject {
     private func updateAuthenticationState(user: AuthenticatedUser, provider: AuthenticationProvider) async {
         currentUser = user
         isAuthenticated = true
-        userSessionManager.createSession(for: user)
+        await userSessionManager.createSession(for: user)
     }
     
     private func refreshAppleAuthentication(for user: AuthenticatedUser) async throws {
@@ -311,11 +311,24 @@ public class AuthenticationService: ObservableObject {
 
 // MARK: - Supporting Data Models
 
-public enum AuthenticationState {
+public enum AuthenticationState: Equatable {
     case unauthenticated
     case authenticating
     case authenticated
     case error(AuthenticationError)
+    
+    public static func == (lhs: AuthenticationState, rhs: AuthenticationState) -> Bool {
+        switch (lhs, rhs) {
+        case (.unauthenticated, .unauthenticated),
+             (.authenticating, .authenticating),
+             (.authenticated, .authenticated):
+            return true
+        case (.error(let lhsError), .error(let rhsError)):
+            return lhsError.localizedDescription == rhsError.localizedDescription
+        default:
+            return false
+        }
+    }
 }
 
 public enum AuthenticationProvider: String, CaseIterable, Codable {

@@ -122,6 +122,10 @@ public class TokenManager {
         tokenCache.removeValue(forKey: provider.rawValue)
     }
     
+    public func clearToken(for provider: AuthenticationProvider) {
+        revokeToken(for: provider)
+    }
+    
     public func clearAllTokens() {
         for provider in AuthenticationProvider.allCases {
             revokeToken(for: provider)

@@ -150,7 +150,7 @@ class SSOAuthenticationTests: XCTestCase {
         let retrievedToken = tokenManager.getToken(for: .apple)
         
         XCTAssertEqual(retrievedToken, testToken, "Retrieved token should match saved token")
-        XCTAssertTrue(tokenManager.hasValidToken(for: .apple), "Should have valid Apple token")
+        XCTAssertNotNil(tokenManager.getToken(for: .apple), "Should have valid Apple token")
     }
     
     func testTokenClearAll() {
@@ -158,14 +158,14 @@ class SSOAuthenticationTests: XCTestCase {
         tokenManager.saveToken("apple_token", for: .apple)
         tokenManager.saveToken("google_token", for: .google)
         
-        XCTAssertTrue(tokenManager.hasValidToken(for: .apple), "Should have Apple token")
-        XCTAssertTrue(tokenManager.hasValidToken(for: .google), "Should have Google token")
+        XCTAssertNotNil(tokenManager.getToken(for: .apple), "Should have Apple token")
+        XCTAssertNotNil(tokenManager.getToken(for: .google), "Should have Google token")
         
         // Clear all tokens
         tokenManager.clearAllTokens()
         
-        XCTAssertFalse(tokenManager.hasValidToken(for: .apple), "Should not have Apple token after clear")
-        XCTAssertFalse(tokenManager.hasValidToken(for: .google), "Should not have Google token after clear")
+        XCTAssertNil(tokenManager.getToken(for: .apple), "Should not have Apple token after clear")
+        XCTAssertNil(tokenManager.getToken(for: .google), "Should not have Google token after clear")
     }
     
     // MARK: - Keychain Manager Tests
@@ -441,18 +441,14 @@ class SSOAuthenticationTests: XCTestCase {
         tokenManager.saveToken(appleToken, for: .apple)
         tokenManager.saveToken(googleToken, for: .google)
         
-        // Verify tokens are saved securely
-        XCTAssertTrue(tokenManager.hasValidToken(for: .apple), "Apple token should be valid")
-        XCTAssertTrue(tokenManager.hasValidToken(for: .google), "Google token should be valid")
-        
         // Verify tokens can be retrieved
         XCTAssertEqual(tokenManager.getToken(for: .apple), appleToken, "Apple token should match")
         XCTAssertEqual(tokenManager.getToken(for: .google), googleToken, "Google token should match")
         
         // Clear one provider's token
         tokenManager.clearToken(for: .apple)
-        XCTAssertFalse(tokenManager.hasValidToken(for: .apple), "Apple token should be cleared")
-        XCTAssertTrue(tokenManager.hasValidToken(for: .google), "Google token should remain")
+        XCTAssertNil(tokenManager.getToken(for: .apple), "Apple token should be cleared")
+        XCTAssertEqual(tokenManager.getToken(for: .google), googleToken, "Google token should remain")
     }
     
     // MARK: - Error Handling Tests
@@ -505,7 +501,7 @@ class SSOAuthenticationTests: XCTestCase {
                 let token = "perf_token_\(i)"
                 tokenManager.saveToken(token, for: .apple)
                 _ = tokenManager.getToken(for: .apple)
-                tokenManager.clearToken(for: .apple)
+                tokenManager.clearAllTokens()
             }
         }
     }

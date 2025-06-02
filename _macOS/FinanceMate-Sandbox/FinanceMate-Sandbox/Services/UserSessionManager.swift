@@ -62,7 +62,7 @@ public class UserSessionManager: ObservableObject {
     
     // MARK: - Session Management
     
-    public func createSession(for user: AuthenticatedUser) {
+    public func createSession(for user: AuthenticatedUser) async {
         let session = UserSession(
             id: UUID().uuidString,
             user: user,
@@ -101,7 +101,7 @@ public class UserSessionManager: ObservableObject {
         }
     }
     
-    public func extendSession() {
+    public func extendSession() async {
         guard var session = currentSession else { return }
         
         let now = Date()
@@ -117,7 +117,7 @@ public class UserSessionManager: ObservableObject {
         logSessionEvent(.sessionExtended, for: session)
     }
     
-    public func clearSession() {
+    public func clearSession() async {
         if let session = currentSession {
             logSessionEvent(.sessionEnded, for: session)
         }
@@ -135,21 +135,21 @@ public class UserSessionManager: ObservableObject {
     
     // MARK: - Session Validation
     
-    public func validateSession() -> Bool {
+    public func validateSession() async -> Bool {
         guard let session = currentSession else { return false }
         
         let now = Date()
         let timeSinceLastActivity = now.timeIntervalSince(session.lastActivityTime)
         
         if timeSinceLastActivity > sessionTimeout {
-            expireSession()
+            await expireSession()
             return false
         }
         
         return session.isActive
     }
     
-    public func getRemainingSessionTime() -> TimeInterval {
+    public func getRemainingSessionTime() async -> TimeInterval {
         guard let session = currentSession else { return 0 }
         
         let timeSinceLastActivity = Date().timeIntervalSince(session.lastActivityTime)
@@ -163,7 +163,7 @@ public class UserSessionManager: ObservableObject {
     
     // MARK: - Session Analytics
     
-    public func getSessionAnalytics() -> SessionAnalytics? {
+    public func getSessionAnalytics() async -> SessionAnalytics? {
         guard let session = currentSession else { return nil }
         
         let duration = getSessionDuration()
@@ -229,7 +229,9 @@ public class UserSessionManager: ObservableObject {
         stopSessionTimer()
         
         sessionTimer = Timer.scheduledTimer(withTimeInterval: sessionTimeout, repeats: false) { [weak self] _ in
-            self?.expireSession()
+            Task { @MainActor in
+                await self?.expireSession()
+            }
         }
     }
     
@@ -246,7 +248,9 @@ public class UserSessionManager: ObservableObject {
         stopActivityMonitoring()
         
         activityTimer = Timer.scheduledTimer(withTimeInterval: activityCheckInterval, repeats: true) { [weak self] _ in
-            self?.checkForSessionWarning()
+            Task { @MainActor in
+                await self?.checkForSessionWarning()
+            }
         }
     }
     
@@ -261,8 +265,8 @@ public class UserSessionManager: ObservableObject {
         }
     }
     
-    private func checkForSessionWarning() {
-        let remainingTime = getRemainingSessionTime()
+    private func checkForSessionWarning() async {
+        let remainingTime = await getRemainingSessionTime()
         
         // Warn when 5 minutes remaining
         if remainingTime <= 300 && remainingTime > 240 {
@@ -270,17 +274,17 @@ public class UserSessionManager: ObservableObject {
         }
     }
     
-    private func expireSession() {
+    private func expireSession() async {
         if let session = currentSession {
             logSessionEvent(.sessionExpired, for: session)
         }
         
-        clearSession()
+        await clearSession()
         onSessionExpired?()
     }
     
     private func logSessionEvent(_ event: SessionEvent, for session: UserSession) {
-        let logEntry = SessionLogEntry(
+        _ = SessionLogEntry(
             event: event,
             sessionId: session.id,
             userId: session.user.id,

@@ -301,7 +301,9 @@ struct UserProfileView: View {
                 .disabled(authService.isLoading)
                 
                 Button(action: {
-                    sessionManager.extendSession()
+                    Task {
+                        await sessionManager.extendSession()
+                    }
                 }) {
                     HStack {
                         Image(systemName: "clock.arrow.circlepath")
@@ -340,35 +342,7 @@ struct UserProfileView: View {
     
     private var sessionDetailsSheet: some View {
         NavigationView {
-            VStack(spacing: 20) {
-                if let analytics = sessionManager.getSessionAnalytics() {
-                    VStack(spacing: 16) {
-                        Text("Session Analytics")
-                            .font(.title2)
-                            .fontWeight(.bold)
-                        
-                        VStack(spacing: 12) {
-                            analyticsRow("Session ID", analytics.sessionId)
-                            analyticsRow("Total Duration", formatDuration(analytics.totalDuration))
-                            analyticsRow("Activity Count", "\(analytics.activityCount)")
-                            analyticsRow("Extensions", "\(analytics.extensionCount)")
-                            analyticsRow("Avg Activity Interval", formatDuration(analytics.averageActivityInterval))
-                            analyticsRow("Status", analytics.isActive ? "Active" : "Inactive")
-                        }
-                    }
-                    .padding()
-                }
-                
-                Spacer()
-            }
-            .navigationTitle("Session Details")
-            .toolbar {
-                ToolbarItem(placement: .primaryAction) {
-                    Button("Close") {
-                        showingSessionInfo = false
-                    }
-                }
-            }
+            SessionDetailsView(sessionManager: sessionManager)
         }
     }
     
@@ -422,8 +396,7 @@ struct UserProfileView: View {
         HStack {
             Text(label)
                 .foregroundColor(.secondary)
-            
-            Spacer()
+                .frame(width: 100, alignment: .leading)
             
             Text(value)
                 .fontWeight(.medium)
@@ -484,6 +457,65 @@ struct UserProfileView: View {
         editingEmail = false
         if let user = authService.currentUser {
             emailText = user.email
+        }
+    }
+}
+
+struct SessionDetailsView: View {
+    let sessionManager: UserSessionManager
+    @State private var analytics: SessionAnalytics?
+    
+    var body: some View {
+        VStack(spacing: 20) {
+            if let analytics = analytics {
+                VStack(spacing: 16) {
+                    Text("Session Analytics")
+                        .font(.title2)
+                        .fontWeight(.bold)
+                    
+                    VStack(spacing: 12) {
+                        sessionAnalyticsRow("Session ID", analytics.sessionId)
+                        sessionAnalyticsRow("Total Duration", formatSessionDuration(analytics.totalDuration))
+                        sessionAnalyticsRow("Activity Count", "\(analytics.activityCount)")
+                        sessionAnalyticsRow("Extensions", "\(analytics.extensionCount)")
+                        sessionAnalyticsRow("Avg Activity Interval", formatSessionDuration(analytics.averageActivityInterval))
+                        sessionAnalyticsRow("Status", analytics.isActive ? "Active" : "Inactive")
+                    }
+                }
+                .padding()
+            } else {
+                Text("Loading session analytics...")
+                    .foregroundColor(.secondary)
+            }
+            
+            Spacer()
+        }
+        .navigationTitle("Session Details")
+        .task {
+            analytics = await sessionManager.getSessionAnalytics()
+        }
+    }
+    
+    private func sessionAnalyticsRow(_ label: String, _ value: String) -> some View {
+        HStack {
+            Text(label)
+                .foregroundColor(.secondary)
+                .frame(width: 150, alignment: .leading)
+            
+            Text(value)
+                .fontWeight(.medium)
+        }
+    }
+    
+    private func formatSessionDuration(_ duration: TimeInterval) -> String {
+        let hours = Int(duration) / 3600
+        let minutes = Int(duration) % 3600 / 60
+        let seconds = Int(duration) % 60
+        
+        if hours > 0 {
+            return String(format: "%d:%02d:%02d", hours, minutes, seconds)
+        } else {
+            return String(format: "%d:%02d", minutes, seconds)
         }
     }
 }
