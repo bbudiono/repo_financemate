@@ -1,8 +1,6 @@
 // SANDBOX FILE: For testing/development. See .cursorrules.
 
 import Foundation
-import XCTest
-import OSLog
 import Combine
 
 @available(macOS 13.0, *)
@@ -10,18 +8,17 @@ public class ComprehensiveHeadlessTestFramework: ObservableObject {
     
     // MARK: - Properties
     
-    private let logger = Logger(subsystem: "com.ablankcanvas.financemate.testing", category: "HeadlessFramework")
     private var cancellables = Set<AnyCancellable>()
     
     @Published public var isRunning = false
     @Published public var currentTest = ""
     @Published public var progress: Double = 0.0
-    @Published public var results: [TestResult] = []
+    @Published public var results: [HeadlessTestResult] = []
     @Published public var crashLogs: [CrashLog] = []
     
     // MARK: - Test Categories
     
-    private let testSuites: [TestSuite] = [
+    private let testSuites: [HeadlessTestSuite] = [
         PerformanceTestSuite(),
         StabilityTestSuite(),
         MemoryTestSuite(),
@@ -37,7 +34,7 @@ public class ComprehensiveHeadlessTestFramework: ObservableObject {
     // MARK: - Public Methods
     
     public func executeComprehensiveTestSuite() async {
-        logger.info("🚀 Starting Comprehensive Headless Test Framework")
+        print("🚀 Starting Comprehensive Headless Test Framework")
         
         await MainActor.run {
             isRunning = true
@@ -54,7 +51,7 @@ public class ComprehensiveHeadlessTestFramework: ObservableObject {
                 progress = Double(index) / Double(totalTests)
             }
             
-            logger.info("📋 Executing test suite: \\(testSuite.name)")
+            print("📋 Executing test suite: \\(testSuite.name)")
             
             do {
                 let suiteResults = try await testSuite.execute()
@@ -67,10 +64,10 @@ public class ComprehensiveHeadlessTestFramework: ObservableObject {
                 await collectCrashLogs()
                 
             } catch {
-                logger.error("❌ Test suite \\(testSuite.name) failed: \\(error.localizedDescription)")
+                print("❌ Test suite \\(testSuite.name) failed: \\(error.localizedDescription)")
                 
                 await MainActor.run {
-                    results.append(TestResult(
+                    results.append(HeadlessTestResult(
                         name: testSuite.name,
                         status: .failed,
                         message: error.localizedDescription,
@@ -88,7 +85,7 @@ public class ComprehensiveHeadlessTestFramework: ObservableObject {
         }
         
         await generateComprehensiveReport()
-        logger.info("✅ Comprehensive Testing Complete")
+        print("✅ Comprehensive Testing Complete")
     }
     
     // MARK: - Crash Log Collection
@@ -155,9 +152,9 @@ public class ComprehensiveHeadlessTestFramework: ObservableObject {
         
         do {
             try report.write(toFile: reportPath, atomically: true, encoding: .utf8)
-            logger.info("📊 Comprehensive test report saved to: \\(reportPath)")
+            print("📊 Comprehensive test report saved to: \\(reportPath)")
         } catch {
-            logger.error("❌ Failed to save test report: \\(error.localizedDescription)")
+            print("❌ Failed to save test report: \\(error.localizedDescription)")
         }
     }
     
@@ -168,20 +165,20 @@ public class ComprehensiveHeadlessTestFramework: ObservableObject {
 
 // MARK: - Supporting Types
 
-public struct TestResult {
+public enum HeadlessTestStatus {
+    case passed
+    case failed
+    case skipped
+    case warning
+}
+
+public struct HeadlessTestResult {
     public let name: String
-    public let status: TestStatus
+    public let status: HeadlessTestStatus
     public let message: String
     public let duration: TimeInterval
     public let crashCount: Int
     public let timestamp: Date = Date()
-    
-    public enum TestStatus {
-        case passed
-        case failed
-        case skipped
-        case warning
-    }
 }
 
 public struct CrashLog {
@@ -210,18 +207,18 @@ public struct CrashLog {
 
 // MARK: - Test Suite Protocol
 
-public protocol TestSuite {
+public protocol HeadlessTestSuite {
     var name: String { get }
-    func execute() async throws -> [TestResult]
+    func execute() async throws -> [HeadlessTestResult]
 }
 
 // MARK: - Performance Test Suite
 
-public class PerformanceTestSuite: TestSuite {
+public class PerformanceTestSuite: HeadlessTestSuite {
     public let name = "Performance Testing"
     
-    public func execute() async throws -> [TestResult] {
-        var results: [TestResult] = []
+    public func execute() async throws -> [HeadlessTestResult] {
+        var results: [HeadlessTestResult] = []
         
         // Memory usage test
         let startTime = Date()
@@ -236,7 +233,7 @@ public class PerformanceTestSuite: TestSuite {
         let memoryGrowth = finalMemory - initialMemory
         let duration = Date().timeIntervalSince(startTime)
         
-        results.append(TestResult(
+        results.append(HeadlessTestResult(
             name: "Memory Growth Test",
             status: memoryGrowth < 50_000_000 ? .passed : .warning, // 50MB threshold
             message: "Memory growth: \\(memoryGrowth / 1_000_000)MB",
@@ -249,10 +246,10 @@ public class PerformanceTestSuite: TestSuite {
         await performCPUIntensiveTask()
         let cpuDuration = Date().timeIntervalSince(cpuStartTime)
         
-        results.append(TestResult(
+        results.append(HeadlessTestResult(
             name: "CPU Performance Test",
             status: cpuDuration < 5.0 ? .passed : .warning, // 5 second threshold
-            message: "CPU task completed in \\(String(format: "%.2f", cpuDuration))s",
+            message: "CPU task completed in \(String(format: "%.2f", cpuDuration))s",
             duration: cpuDuration,
             crashCount: 0
         ))
@@ -299,12 +296,12 @@ public class PerformanceTestSuite: TestSuite {
 
 // MARK: - Additional Test Suites (Placeholder implementations)
 
-public class StabilityTestSuite: TestSuite {
+public class StabilityTestSuite: HeadlessTestSuite {
     public let name = "Stability Testing"
     
-    public func execute() async throws -> [TestResult] {
+    public func execute() async throws -> [HeadlessTestResult] {
         // Implement stability tests (rapid start/stop, stress testing)
-        return [TestResult(
+        return [HeadlessTestResult(
             name: "Stability Test",
             status: .passed,
             message: "Stability tests completed successfully",
@@ -314,12 +311,12 @@ public class StabilityTestSuite: TestSuite {
     }
 }
 
-public class MemoryTestSuite: TestSuite {
+public class MemoryTestSuite: HeadlessTestSuite {
     public let name = "Memory Management"
     
-    public func execute() async throws -> [TestResult] {
+    public func execute() async throws -> [HeadlessTestResult] {
         // Implement memory leak detection
-        return [TestResult(
+        return [HeadlessTestResult(
             name: "Memory Leak Test",
             status: .passed,
             message: "No memory leaks detected",
@@ -329,12 +326,12 @@ public class MemoryTestSuite: TestSuite {
     }
 }
 
-public class ConcurrencyTestSuite: TestSuite {
+public class ConcurrencyTestSuite: HeadlessTestSuite {
     public let name = "Concurrency Testing"
     
-    public func execute() async throws -> [TestResult] {
+    public func execute() async throws -> [HeadlessTestResult] {
         // Implement concurrent operations testing
-        return [TestResult(
+        return [HeadlessTestResult(
             name: "Concurrent Operations",
             status: .passed,
             message: "Concurrency tests passed",
@@ -344,12 +341,12 @@ public class ConcurrencyTestSuite: TestSuite {
     }
 }
 
-public class APIIntegrationTestSuite: TestSuite {
+public class APIIntegrationTestSuite: HeadlessTestSuite {
     public let name = "API Integration"
     
-    public func execute() async throws -> [TestResult] {
+    public func execute() async throws -> [HeadlessTestResult] {
         // Implement API testing
-        return [TestResult(
+        return [HeadlessTestResult(
             name: "API Integration Test",
             status: .passed,
             message: "API integration successful",
@@ -359,12 +356,12 @@ public class APIIntegrationTestSuite: TestSuite {
     }
 }
 
-public class UIAutomationTestSuite: TestSuite {
+public class UIAutomationTestSuite: HeadlessTestSuite {
     public let name = "UI Automation"
     
-    public func execute() async throws -> [TestResult] {
+    public func execute() async throws -> [HeadlessTestResult] {
         // Implement UI automation tests
-        return [TestResult(
+        return [HeadlessTestResult(
             name: "UI Automation Test",
             status: .passed,
             message: "UI automation completed",
@@ -374,12 +371,12 @@ public class UIAutomationTestSuite: TestSuite {
     }
 }
 
-public class DataPersistenceTestSuite: TestSuite {
+public class DataPersistenceTestSuite: HeadlessTestSuite {
     public let name = "Data Persistence"
     
-    public func execute() async throws -> [TestResult] {
+    public func execute() async throws -> [HeadlessTestResult] {
         // Implement data persistence testing
-        return [TestResult(
+        return [HeadlessTestResult(
             name: "Data Persistence Test",
             status: .passed,
             message: "Data persistence validated",
@@ -389,12 +386,12 @@ public class DataPersistenceTestSuite: TestSuite {
     }
 }
 
-public class SecurityTestSuite: TestSuite {
+public class SecurityTestSuite: HeadlessTestSuite {
     public let name = "Security Testing"
     
-    public func execute() async throws -> [TestResult] {
+    public func execute() async throws -> [HeadlessTestResult] {
         // Implement security tests
-        return [TestResult(
+        return [HeadlessTestResult(
             name: "Security Test",
             status: .passed,
             message: "Security validation passed",
@@ -404,12 +401,12 @@ public class SecurityTestSuite: TestSuite {
     }
 }
 
-public class AccessibilityTestSuite: TestSuite {
+public class AccessibilityTestSuite: HeadlessTestSuite {
     public let name = "Accessibility Testing"
     
-    public func execute() async throws -> [TestResult] {
+    public func execute() async throws -> [HeadlessTestResult] {
         // Implement accessibility tests
-        return [TestResult(
+        return [HeadlessTestResult(
             name: "Accessibility Test",
             status: .passed,
             message: "Accessibility compliance verified",
@@ -419,12 +416,12 @@ public class AccessibilityTestSuite: TestSuite {
     }
 }
 
-public class ErrorHandlingTestSuite: TestSuite {
+public class ErrorHandlingTestSuite: HeadlessTestSuite {
     public let name = "Error Handling"
     
-    public func execute() async throws -> [TestResult] {
+    public func execute() async throws -> [HeadlessTestResult] {
         // Implement error handling tests
-        return [TestResult(
+        return [HeadlessTestResult(
             name: "Error Handling Test",
             status: .passed,
             message: "Error handling robust",
@@ -438,7 +435,7 @@ public class ErrorHandlingTestSuite: TestSuite {
 
 public class TestReportGenerator {
     
-    public func generateReport(results: [TestResult], crashLogs: [CrashLog], testDuration: TimeInterval) async -> String {
+    public func generateReport(results: [HeadlessTestResult], crashLogs: [CrashLog], testDuration: TimeInterval) async -> String {
         let timestamp = DateFormatter.timestamp.string(from: Date())
         let passedTests = results.filter { $0.status == .passed }.count
         let failedTests = results.filter { $0.status == .failed }.count
@@ -448,7 +445,7 @@ public class TestReportGenerator {
         # Comprehensive Headless Test Report
         
         **Generated:** \\(timestamp)
-        **Total Duration:** \\(String(format: "%.2f", testDuration)) seconds
+        **Total Duration:** \(String(format: "%.2f", testDuration)) seconds
         **Environment:** Sandbox (Debug Configuration)
         
         ## Executive Summary
@@ -468,7 +465,7 @@ public class TestReportGenerator {
             report += """
             ### \\(statusIcon) \\(result.name)
             - **Status:** \\(result.status)
-            - **Duration:** \\(String(format: "%.2f", result.duration))s
+            - **Duration:** \(String(format: "%.2f", result.duration))s
             - **Message:** \\(result.message)
             - **Timestamp:** \\(DateFormatter.timestamp.string(from: result.timestamp))
             
@@ -499,7 +496,7 @@ public class TestReportGenerator {
         report += """
         ## Performance Metrics
         
-        - **Average Test Duration:** \\(String(format: "%.2f", testDuration / Double(results.count)))s
+        - **Average Test Duration:** \(String(format: "%.2f", testDuration / Double(results.count)))s
         - **Memory Usage:** Monitored throughout testing
         - **CPU Performance:** Within acceptable thresholds
         - **Stability:** \\(crashLogs.isEmpty ? "Stable" : "\\(crashLogs.count) crashes detected")
@@ -527,7 +524,7 @@ public class TestReportGenerator {
         return report
     }
     
-    private func statusIcon(for status: TestResult.TestStatus) -> String {
+    private func statusIcon(for status: HeadlessTestStatus) -> String {
         switch status {
         case .passed: return "✅"
         case .failed: return "❌"

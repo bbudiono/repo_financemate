@@ -229,7 +229,7 @@ public class LangGraphExecutionEngine: ObservableObject {
         
         do {
             // Find entry points (nodes with no incoming edges)
-            let entryNodes = findEntryNodes(in: graph)
+            let entryNodes = await findEntryNodes(in: graph)
             
             if entryNodes.isEmpty {
                 throw LangGraphError.invalidGraphStructure("No entry nodes found")
@@ -317,7 +317,8 @@ public class LangGraphExecutionEngine: ObservableObject {
             }
         }
         
-        if result.count != await graph.nodes.count {
+        let nodeCount = await graph.nodes.count
+        if result.count != nodeCount {
             throw LangGraphError.invalidGraphStructure("Cycle detected in graph")
         }
         

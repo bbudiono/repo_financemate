@@ -4,7 +4,6 @@ import Foundation
 import SwiftUI
 
 @available(macOS 13.0, *)
-@main
 public struct HeadlessTestRunner {
     
     public static func main() async {
@@ -87,9 +86,9 @@ public struct HeadlessTestRunner {
         }
         
         let totalDuration = results.reduce(0) { $0 + $1.duration }
-        print("\\n⏱️ Total Test Duration: \\(String(format: "%.2f", totalDuration)) seconds")
+        print("\n⏱️ Total Test Duration: \(String(format: "%.2f", totalDuration)) seconds")
         
         let overallStatus = failedTests == 0 && crashLogs.isEmpty ? "✅ READY FOR TESTFLIGHT" : "❌ ISSUES REQUIRE ATTENTION"
-        print("\\n🎯 Overall Status: \\(overallStatus)")
+        print("\n🎯 Overall Status: \(overallStatus)")
     }
 }
