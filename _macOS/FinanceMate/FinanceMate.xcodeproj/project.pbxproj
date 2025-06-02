@@ -34,14 +34,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		A287CCF3077F77AF035FE4EE = {
-			isa = PBXGroup;
-			children = (
-				D5D10089FFAD4150861B279B /* FinanceMate */,
-				411DBE5F53A298C126242F34 /* Products */,
-			);
-			sourceTree = "<group>";
-		};
 		5A3E0825B270488F84D0B970B9505899 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -52,6 +44,14 @@
 				ADE74DA56CA14FC99080F4D66630B464 /* SettingsView.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		A287CCF3077F77AF035FE4EE = {
+			isa = PBXGroup;
+			children = (
+				D5D10089FFAD4150861B279B /* FinanceMate */,
+				411DBE5F53A298C126242F34 /* Products */,
+			);
 			sourceTree = "<group>";
 		};
 		D5D10089FFAD4150861B279B /* FinanceMate */ = {
@@ -266,6 +266,7 @@
 				APP_CATEGORY = Productivity;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				BUILD = 1;
 				CODE_SIGN_ENTITLEMENTS = FinanceMate.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
@@ -274,6 +275,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				INFOPLIST_FILE = Resources/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = FinanceMate;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -294,6 +297,7 @@
 				APP_CATEGORY = Productivity;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				BUILD = 1;
 				CODE_SIGN_ENTITLEMENTS = FinanceMate.entitlements;
 				CODE_SIGN_STYLE = Automatic;
@@ -301,6 +305,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				INFOPLIST_FILE = Resources/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = FinanceMate;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",

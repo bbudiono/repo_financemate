@@ -29,6 +29,7 @@
 import Foundation
 import SwiftUI
 import Combine
+import Darwin.Mach
 
 // MARK: - Headless Test Framework
 
@@ -221,7 +222,7 @@ public class HeadlessTestFramework: ObservableObject {
         // OCR Performance
         let ocrBenchmark = await measurePerformance(name: "OCRProcessing") { [self] in
             let testURL = URL(fileURLWithPath: "/tmp/performance_test.jpg")
-            _ = await ocrService.extractText(from: testURL)
+            _ = try? await ocrService.extractText(from: testURL)
         }
         benchmarks.append(ocrBenchmark)
         
