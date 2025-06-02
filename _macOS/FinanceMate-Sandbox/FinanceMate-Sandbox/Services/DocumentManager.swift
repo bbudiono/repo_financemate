@@ -100,7 +100,7 @@ public class DocumentManager: ObservableObject {
                 // Step 2: OCR Processing (for image formats)
                 if isImageFormat(url: url) && workflowConfiguration.ocrEnabled {
                     workflowDocument.addProcessingStep(step: "OCR Text Extraction", status: .inProgress)
-                    let ocrResult = await ocrService.extractText(from: url)
+                    let ocrResult = await ocrService.extractTextResult(from: url)
                     
                     switch ocrResult {
                     case .success(let extractedText):
@@ -115,7 +115,8 @@ public class DocumentManager: ObservableObject {
                 if workflowConfiguration.financialExtractionEnabled {
                     workflowDocument.addProcessingStep(step: "Financial Data Extraction", status: .inProgress)
                     let textToAnalyze = workflowDocument.ocrResult ?? processedDoc.extractedText
-                    let financialResult = await financialDataExtractor.extractFinancialData(from: textToAnalyze, documentType: processedDoc.documentType)
+                    let financialDocumentType = mapToFinancialDocumentType(processedDoc.documentType)
+                    let financialResult = await financialDataExtractor.extractFinancialData(from: textToAnalyze, documentType: financialDocumentType)
                     
                     switch financialResult {
                     case .success(let financialData):
@@ -239,6 +240,21 @@ public class DocumentManager: ObservableObject {
     private func calculateOverallConfidence(steps: [ProcessingStep]) -> Double {
         let completedSteps = steps.filter { $0.status == .completed }
         return Double(completedSteps.count) / Double(steps.count)
+    }
+    
+    private func mapToFinancialDocumentType(_ documentType: DocumentType) -> FinancialDocumentType {
+        switch documentType {
+        case .invoice:
+            return .invoice
+        case .receipt:
+            return .receipt
+        case .statement:
+            return .statement
+        case .contract:
+            return .contract
+        default:
+            return .other
+        }
     }
 }
 

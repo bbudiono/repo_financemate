@@ -56,7 +56,7 @@ public class OCRService: ObservableObject {
     
     // MARK: - Public Methods
     
-    public func extractText(from url: URL) async -> Result<String, Error> {
+    public func extractTextResult(from url: URL) async -> Result<String, Error> {
         isProcessing = true
         
         defer {
@@ -98,12 +98,23 @@ public class OCRService: ObservableObject {
         }
     }
     
+    // Standard throwing method for tests
+    public func extractText(from url: URL) async throws -> String {
+        let result = await extractTextResult(from: url)
+        switch result {
+        case .success(let text):
+            return text
+        case .failure(let error):
+            throw error
+        }
+    }
+    
     public func extractTextFromMultiple(urls: [URL]) async -> [Result<String, Error>] {
         // TDD: Initial failing implementation
         var results: [Result<String, Error>] = []
         
         for url in urls {
-            let result = await extractText(from: url)
+            let result = await extractTextResult(from: url)
             results.append(result)
         }
         

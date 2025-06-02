@@ -56,7 +56,7 @@ public class FinancialDataExtractor: ObservableObject {
     
     // MARK: - Public Methods
     
-    public func extractFinancialData(from text: String, documentType: DocumentType) async -> Result<FinancialData, Error> {
+    public func extractFinancialData(from text: String, documentType: FinancialDocumentType) async -> Result<FinancialData, Error> {
         isProcessing = true
         
         defer {
@@ -394,7 +394,7 @@ public class FinancialDataExtractor: ObservableObject {
         return Double(cleanString) ?? 0.0
     }
     
-    private func calculateExtractionConfidence(amounts: [String], vendor: String?, dates: [String], documentType: DocumentType) -> Double {
+    private func calculateExtractionConfidence(amounts: [String], vendor: String?, dates: [String], documentType: FinancialDocumentType) -> Double {
         var confidence: Double = 0.3 // Base confidence
         
         // Increase confidence based on extracted data quality
@@ -431,7 +431,7 @@ public class FinancialDataExtractor: ObservableObject {
 // MARK: - Supporting Data Models
 
 public struct FinancialData {
-    public let documentType: DocumentType
+    public let documentType: FinancialDocumentType
     public let amounts: [String]
     public let totalAmount: String?
     public let currency: Currency
@@ -442,7 +442,7 @@ public struct FinancialData {
     public let transactions: [FinancialTransaction]
     public let confidence: Double
     
-    public init(documentType: DocumentType, amounts: [String], totalAmount: String?, currency: Currency, category: ExpenseCategory, vendor: String?, documentDate: String?, accountNumber: String?, transactions: [FinancialTransaction], confidence: Double) {
+    public init(documentType: FinancialDocumentType, amounts: [String], totalAmount: String?, currency: Currency, category: ExpenseCategory, vendor: String?, documentDate: String?, accountNumber: String?, transactions: [FinancialTransaction], confidence: Double) {
         self.documentType = documentType
         self.amounts = amounts
         self.totalAmount = totalAmount
@@ -502,6 +502,9 @@ public enum ExpenseCategory: String, CaseIterable {
     case entertainment = "Entertainment"
     case shopping = "Shopping"
     case travel = "Travel"
+    case officeExpenses = "Office Expenses"
+    case software = "Software"
+    case consulting = "Consulting"
     case other = "Other"
     
     public var icon: String {
@@ -515,6 +518,9 @@ public enum ExpenseCategory: String, CaseIterable {
         case .entertainment: return "tv"
         case .shopping: return "bag"
         case .travel: return "airplane"
+        case .officeExpenses: return "building.2"
+        case .software: return "app.badge"
+        case .consulting: return "person.badge.plus"
         case .other: return "questionmark.circle"
         }
     }
@@ -530,6 +536,9 @@ public enum ExpenseCategory: String, CaseIterable {
         case .entertainment: return .pink
         case .shopping: return .indigo
         case .travel: return .teal
+        case .officeExpenses: return .brown
+        case .software: return .cyan
+        case .consulting: return .mint
         case .other: return .gray
         }
     }
@@ -545,6 +554,24 @@ public enum Currency: String, CaseIterable {
         case .usd: return "$"
         case .eur: return "€"
         case .gbp: return "£"
+        }
+    }
+}
+
+public enum FinancialDocumentType: String, CaseIterable {
+    case invoice = "invoice"
+    case receipt = "receipt"
+    case statement = "statement"
+    case contract = "contract"
+    case other = "other"
+    
+    public var displayName: String {
+        switch self {
+        case .invoice: return "Invoice"
+        case .receipt: return "Receipt"
+        case .statement: return "Statement"
+        case .contract: return "Contract"
+        case .other: return "Other"
         }
     }
 }
