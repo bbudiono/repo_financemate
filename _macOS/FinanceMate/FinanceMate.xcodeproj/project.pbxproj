@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		12A34567890123456789012A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 23B45678901234567890123B /* Assets.xcassets */; };
 		38052FED7CC349B19F28B2AEE12FDDE4 /* DocumentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 221AF239D0C640B3876CEFC1891317A7 /* DocumentsView.swift */; };
 		84629DFC41CD9C40E5C712E6 /* FinanceMateApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD23538CF257D51DBA226B97 /* FinanceMateApp.swift */; };
 		9092D5A7400F9B0CB893874C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F654E30EB3BB8388F98E94 /* ContentView.swift */; };
@@ -18,6 +19,7 @@
 /* Begin PBXFileReference section */
 		04F654E30EB3BB8388F98E94 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		221AF239D0C640B3876CEFC1891317A7 /* DocumentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentsView.swift; sourceTree = "<group>"; };
+		23B45678901234567890123B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		ADE74DA56CA14FC99080F4D66630B464 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		CD23538CF257D51DBA226B97 /* FinanceMateApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinanceMateApp.swift; sourceTree = "<group>"; };
 		D3F78B08CDBB4B74973C660565BCDABE /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
@@ -59,6 +61,7 @@
 			children = (
 				CD23538CF257D51DBA226B97 /* FinanceMateApp.swift */,
 				5A3E0825B270488F84D0B970B9505899 /* Views */,
+				23B45678901234567890123B /* Assets.xcassets */,
 			);
 			path = FinanceMate;
 			sourceTree = "<group>";
@@ -71,6 +74,7 @@
 			buildConfigurationList = 435707CA1503CC15628E92D7 /* Build configuration list for PBXNativeTarget "FinanceMate" */;
 			buildPhases = (
 				D2B194BACCAE2FCF7AD52E55 /* Sources */,
+				34C56789012345678901234C /* Resources */,
 			);
 			buildRules = (
 			);
@@ -131,6 +135,17 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXResourcesBuildPhase section */
+		34C56789012345678901234C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				12A34567890123456789012A /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
 		01BAE5A01430C22B21F22343 /* Release */ = {

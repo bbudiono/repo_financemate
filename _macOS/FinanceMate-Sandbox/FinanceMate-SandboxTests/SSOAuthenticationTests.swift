@@ -41,6 +41,7 @@ class SSOAuthenticationTests: XCTestCase {
     
     // MARK: - Setup & Teardown
     
+    @MainActor
     override func setUp() {
         super.setUp()
         authService = AuthenticationService()
@@ -50,13 +51,18 @@ class SSOAuthenticationTests: XCTestCase {
         
         // Clear any existing test data
         keychainManager.clearAllKeychainData()
-        sessionManager.clearSession()
+        Task {
+            await sessionManager.clearSession()
+        }
     }
     
+    @MainActor
     override func tearDown() {
         // Clean up test data
         keychainManager.clearAllKeychainData()
-        sessionManager.clearSession()
+        Task {
+            await sessionManager.clearSession()
+        }
         
         authService = nil
         tokenManager = nil
@@ -68,6 +74,7 @@ class SSOAuthenticationTests: XCTestCase {
     
     // MARK: - Authentication Service Tests
     
+    @MainActor
     func testAuthenticationServiceInitialization() {
         XCTAssertNotNil(authService, "AuthenticationService should initialize")
         XCTAssertFalse(authService.isAuthenticated, "Should start unauthenticated")
@@ -77,6 +84,7 @@ class SSOAuthenticationTests: XCTestCase {
         XCTAssertNil(authService.errorMessage, "Should have no error message initially")
     }
     
+    @MainActor
     func testGoogleSignInSimulation() async {
         do {
             let result = try await authService.signInWithGoogle()
@@ -96,6 +104,7 @@ class SSOAuthenticationTests: XCTestCase {
         }
     }
     
+    @MainActor
     func testSignOut() async {
         // First sign in with Google
         do {
@@ -115,6 +124,7 @@ class SSOAuthenticationTests: XCTestCase {
         }
     }
     
+    @MainActor
     func testUserProfileUpdate() async {
         // First sign in
         do {
@@ -260,6 +270,7 @@ class SSOAuthenticationTests: XCTestCase {
     
     // MARK: - User Session Manager Tests
     
+    @MainActor
     func testSessionManagerInitialization() {
         XCTAssertNotNil(sessionManager, "UserSessionManager should initialize")
         XCTAssertNil(sessionManager.currentSession, "Should have no current session initially")
@@ -268,7 +279,8 @@ class SSOAuthenticationTests: XCTestCase {
         XCTAssertEqual(sessionManager.sessionDuration, 0, "Session duration should be 0 initially")
     }
     
-    func testSessionCreation() {
+    @MainActor
+    func testSessionCreation() async {
         let testUser = AuthenticatedUser(
             id: "test_user_session",
             email: "session@test.com",
@@ -278,7 +290,7 @@ class SSOAuthenticationTests: XCTestCase {
         )
         
         // Create session
-        sessionManager.createSession(for: testUser)
+        await sessionManager.createSession(for: testUser)
         
         XCTAssertNotNil(sessionManager.currentSession, "Should have current session")
         XCTAssertTrue(sessionManager.isSessionActive, "Session should be active")
@@ -286,7 +298,8 @@ class SSOAuthenticationTests: XCTestCase {
         XCTAssertEqual(sessionManager.currentSession?.user.id, testUser.id, "Session user should match")
     }
     
-    func testSessionValidation() {
+    @MainActor
+    func testSessionValidation() async {
         let testUser = AuthenticatedUser(
             id: "test_user_validation",
             email: "validation@test.com",
@@ -296,18 +309,19 @@ class SSOAuthenticationTests: XCTestCase {
         )
         
         // Create session
-        sessionManager.createSession(for: testUser)
+        await sessionManager.createSession(for: testUser)
         
         // Validate session
-        let isValid = sessionManager.validateSession()
+        let isValid = await sessionManager.validateSession()
         XCTAssertTrue(isValid, "Fresh session should be valid")
         
         // Check remaining time
-        let remainingTime = sessionManager.getRemainingSessionTime()
+        let remainingTime = await sessionManager.getRemainingSessionTime()
         XCTAssertGreaterThan(remainingTime, 0, "Should have remaining session time")
     }
     
-    func testSessionExtension() {
+    @MainActor
+    func testSessionExtension() async {
         let testUser = AuthenticatedUser(
             id: "test_user_extension",
             email: "extension@test.com",
@@ -317,18 +331,19 @@ class SSOAuthenticationTests: XCTestCase {
         )
         
         // Create session
-        sessionManager.createSession(for: testUser)
+        await sessionManager.createSession(for: testUser)
         
         let initialExtensionCount = sessionManager.currentSession?.extensionCount ?? 0
         
         // Extend session
-        sessionManager.extendSession()
+        await sessionManager.extendSession()
         
         let newExtensionCount = sessionManager.currentSession?.extensionCount ?? 0
         XCTAssertEqual(newExtensionCount, initialExtensionCount + 1, "Extension count should increase")
     }
     
-    func testSessionAnalytics() {
+    @MainActor
+    func testSessionAnalytics() async {
         let testUser = AuthenticatedUser(
             id: "test_user_analytics",
             email: "analytics@test.com",
@@ -338,10 +353,10 @@ class SSOAuthenticationTests: XCTestCase {
         )
         
         // Create session
-        sessionManager.createSession(for: testUser)
+        await sessionManager.createSession(for: testUser)
         
         // Get analytics
-        let analytics = sessionManager.getSessionAnalytics()
+        let analytics = await sessionManager.getSessionAnalytics()
         
         XCTAssertNotNil(analytics, "Should have session analytics")
         XCTAssertEqual(analytics?.sessionId, sessionManager.currentSession?.id, "Session ID should match")
@@ -349,7 +364,8 @@ class SSOAuthenticationTests: XCTestCase {
         XCTAssertTrue(analytics?.isActive ?? false, "Session should be active")
     }
     
-    func testSessionClear() {
+    @MainActor
+    func testSessionClear() async {
         let testUser = AuthenticatedUser(
             id: "test_user_clear",
             email: "clear@test.com",
@@ -359,11 +375,11 @@ class SSOAuthenticationTests: XCTestCase {
         )
         
         // Create session
-        sessionManager.createSession(for: testUser)
+        await sessionManager.createSession(for: testUser)
         XCTAssertTrue(sessionManager.isSessionActive, "Session should be active")
         
         // Clear session
-        sessionManager.clearSession()
+        await sessionManager.clearSession()
         
         XCTAssertNil(sessionManager.currentSession, "Should have no current session after clear")
         XCTAssertFalse(sessionManager.isSessionActive, "Should not be active after clear")
@@ -373,6 +389,7 @@ class SSOAuthenticationTests: XCTestCase {
     
     // MARK: - Integration Tests
     
+    @MainActor
     func testFullAuthenticationFlow() async {
         do {
             // Sign in with Google
@@ -464,6 +481,7 @@ class SSOAuthenticationTests: XCTestCase {
         }
     }
     
+    @MainActor
     func testUserProfileUpdateErrorHandling() async {
         // Try to update profile without being signed in
         let update = UserProfileUpdate(displayName: "New Name")
