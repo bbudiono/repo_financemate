@@ -29,13 +29,17 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 struct DocumentsView: View {
+    @StateObject private var financialProcessor = FinancialDocumentProcessor()
     @State private var documents: [DocumentItem] = []
+    @State private var processedDocuments: [ProcessedFinancialDocument] = []
     @State private var searchText = ""
     @State private var selectedFilter: DocumentFilter = .all
     @State private var isDragOver = false
     @State private var showingFileImporter = false
     @State private var selectedDocument: DocumentItem?
     @State private var isProcessing = false
+    @State private var processingProgress: Double = 0.0
+    @State private var processingError: String?
     
     var filteredDocuments: [DocumentItem] {
         let filtered = documents.filter { document in
@@ -135,17 +139,40 @@ struct DocumentsView: View {
                 }
             }
             
-            // Processing indicator
-            if isProcessing {
-                HStack {
-                    ProgressView()
-                        .scaleEffect(0.8)
-                    Text("Processing documents... (SANDBOX)")
-                        .font(.caption)
-                        .foregroundColor(.orange)
+            // Enhanced processing indicator with financial processor integration
+            if isProcessing || financialProcessor.isProcessing {
+                VStack(spacing: 8) {
+                    HStack {
+                        ProgressView(value: financialProcessor.processingProgress)
+                            .progressViewStyle(LinearProgressViewStyle())
+                            .frame(maxWidth: .infinity)
+                        
+                        Text("\(Int(financialProcessor.processingProgress * 100))%")
+                            .font(.caption)
+                            .foregroundColor(.orange)
+                            .frame(width: 40)
+                    }
+                    
+                    HStack {
+                        Image(systemName: "doc.text.magnifyingglass")
+                            .foregroundColor(.orange)
+                        Text("🤖 SANDBOX: AI-Powered Financial Document Processing...")
+                            .font(.caption)
+                            .foregroundColor(.orange)
+                    }
+                    
+                    if let error = processingError {
+                        HStack {
+                            Image(systemName: "exclamationmark.triangle")
+                                .foregroundColor(.red)
+                            Text("Error: \(error)")
+                                .font(.caption2)
+                                .foregroundColor(.red)
+                        }
+                    }
                 }
                 .padding()
-                .background(Color.gray.opacity(0.1))
+                .background(Color.orange.opacity(0.1))
                 .cornerRadius(8)
                 .padding()
             }
@@ -200,25 +227,71 @@ struct DocumentsView: View {
     }
     
     private func processDocument(url: URL) {
-        // Create document item
+        // Create document item with pending status
         let document = DocumentItem(
             name: url.lastPathComponent,
             url: url,
             type: DocumentType.from(url: url),
             dateAdded: Date(),
-            extractedText: "Processing... (SANDBOX MODE)", // Would be processed by AI service
-            processingStatus: .pending
+            extractedText: "🔄 SANDBOX: Processing with AI-Powered OCR...",
+            processingStatus: .processing
         )
         
         documents.append(document)
         
-        // Simulate AI processing
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            if let index = documents.firstIndex(where: { $0.id == document.id }) {
-                documents[index].extractedText = "SANDBOX: Sample extracted text for \(document.name)"
-                documents[index].processingStatus = .completed
+        // Process with FinancialDocumentProcessor
+        Task {
+            do {
+                let result = await financialProcessor.processFinancialDocument(url: url)
+                
+                await MainActor.run {
+                    if let index = documents.firstIndex(where: { $0.id == document.id }) {
+                        switch result {
+                        case .success(let processedDoc):
+                            // Update with processed financial data
+                            let financialSummary = createFinancialSummary(from: processedDoc.financialData)
+                            documents[index].extractedText = "✅ SANDBOX: \(financialSummary)"
+                            documents[index].processingStatus = .completed
+                            
+                            // Store processed document for detailed view
+                            processedDocuments.append(processedDoc)
+                            
+                        case .failure(let error):
+                            documents[index].extractedText = "❌ SANDBOX: Processing failed - \(error.localizedDescription)"
+                            documents[index].processingStatus = .failed
+                            processingError = error.localizedDescription
+                        }
+                    }
+                }
             }
         }
+    }
+    
+    private func createFinancialSummary(from financialData: ExtractedFinancialData) -> String {
+        var summary = ""
+        
+        if let totalAmount = financialData.totalAmount {
+            summary += "💰 Total: \(totalAmount.formattedString)"
+        }
+        
+        if let vendor = financialData.vendor {
+            summary += summary.isEmpty ? "" : " | "
+            summary += "🏢 Vendor: \(vendor.name)"
+        }
+        
+        if let invoiceNumber = financialData.invoiceNumber {
+            summary += summary.isEmpty ? "" : " | "
+            summary += "📄 Invoice: \(invoiceNumber)"
+        }
+        
+        if !financialData.categories.isEmpty {
+            summary += summary.isEmpty ? "" : " | "
+            summary += "🏷️ Categories: \(financialData.categories.map { $0.rawValue }.joined(separator: ", "))"
+        }
+        
+        summary += " | 🎯 Confidence: \(Int(financialData.confidence * 100))%"
+        
+        return summary.isEmpty ? "Document processed successfully" : summary
     }
     
     private func deleteDocument(_ document: DocumentItem) {

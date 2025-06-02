@@ -120,7 +120,7 @@ class FinancialDocumentProcessorTests: XCTestCase {
         switch result {
         case .success(let document):
             XCTAssertNotNil(document.financialData.totalAmount, "Should extract total amount")
-            XCTAssertEqual(document.financialData.totalAmount?.value, 1358.01, accuracy: 0.01, "Should extract correct total amount")
+            XCTAssertEqual(document.financialData.totalAmount?.value ?? 0.0, 1358.01, accuracy: 0.01, "Should extract correct total amount")
             XCTAssertEqual(document.financialData.totalAmount?.currency, "USD", "Should detect USD currency")
         case .failure(let error):
             XCTFail("Processing should succeed: \(error)")
@@ -399,7 +399,7 @@ class FinancialDocumentProcessorTests: XCTestCase {
         case .success(let document):
             // Validate extracted data
             XCTAssertNotNil(document.financialData.totalAmount, "Should extract total amount")
-            XCTAssertEqual(document.financialData.totalAmount?.value, 2976.88, accuracy: 0.01, "Should extract correct total")
+            XCTAssertEqual(document.financialData.totalAmount?.value ?? 0.0, 2976.88, accuracy: 0.01, "Should extract correct total")
             
             XCTAssertNotNil(document.financialData.invoiceNumber, "Should extract invoice number")
             XCTAssertEqual(document.financialData.invoiceNumber, "INV-2024-0001", "Should extract correct invoice number")
