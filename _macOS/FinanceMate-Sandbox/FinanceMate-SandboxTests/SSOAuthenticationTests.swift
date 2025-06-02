@@ -34,10 +34,10 @@ class SSOAuthenticationTests: XCTestCase {
     
     // MARK: - Test Properties
     
-    var authService: AuthenticationService!
-    var tokenManager: TokenManager!
-    var keychainManager: KeychainManager!
-    var sessionManager: UserSessionManager!
+    @MainActor var authService: AuthenticationService!
+    @MainActor var tokenManager: TokenManager!
+    @MainActor var keychainManager: KeychainManager!
+    @MainActor var sessionManager: UserSessionManager!
     
     // MARK: - Setup & Teardown
     
@@ -51,7 +51,7 @@ class SSOAuthenticationTests: XCTestCase {
         
         // Clear any existing test data
         keychainManager.clearAllKeychainData()
-        Task {
+        Task { @MainActor in
             await sessionManager.clearSession()
         }
     }
@@ -60,7 +60,7 @@ class SSOAuthenticationTests: XCTestCase {
     override func tearDown() {
         // Clean up test data
         keychainManager.clearAllKeychainData()
-        Task {
+        Task { @MainActor in
             await sessionManager.clearSession()
         }
         
