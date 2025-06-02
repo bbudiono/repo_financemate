@@ -1,11 +1,10 @@
 //
 //  DocumentManager.swift
-//  FinanceMate-Sandbox
+//  FinanceMate
 //
 //  Created by Assistant on 6/2/25.
 //
 
-// SANDBOX FILE: For testing/development. See .cursorrules.
 
 /*
 * Purpose: Document workflow orchestration service coordinating all document processing services in Sandbox
