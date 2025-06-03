@@ -1,24 +1,30 @@
 #!/bin/bash
 
-# Comprehensive Headless Testing Script for FinanceMate
-# Executes complete test suite with crash log analysis and retrospective
+# Comprehensive Headless Testing Script for FinanceMate TDD Implementation
+# Covers TDD implementation, UI verification, build testing, and retrospective analysis
 
-set -e  # Exit on any error
+set -e
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+PROJECT_ROOT="/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate"
+SANDBOX_PATH="$PROJECT_ROOT/_macOS/FinanceMate-Sandbox"
+PRODUCTION_PATH="$PROJECT_ROOT/_macOS/FinanceMate"
+LOG_DIR="$PROJECT_ROOT/logs"
 TIMESTAMP=$(date '+%Y%m%d_%H%M%S')
-LOG_FILE="$PROJECT_ROOT/logs/comprehensive_headless_testing_$TIMESTAMP.log"
+LOG_FILE="$LOG_DIR/comprehensive_headless_testing_$TIMESTAMP.log"
 
-# Ensure logs directory exists
-mkdir -p "$PROJECT_ROOT/logs"
+# Ensure log directory exists
+mkdir -p "$LOG_DIR"
 
-echo "🚀 COMPREHENSIVE HEADLESS TESTING FRAMEWORK" | tee "$LOG_FILE"
-echo "=============================================" | tee -a "$LOG_FILE"
-echo "Timestamp: $(date)" | tee -a "$LOG_FILE"
-echo "Project Root: $PROJECT_ROOT" | tee -a "$LOG_FILE"
-echo "Log File: $LOG_FILE" | tee -a "$LOG_FILE"
-echo "" | tee -a "$LOG_FILE"
+# Initialize logging
+exec > >(tee -a "$LOG_FILE")
+exec 2>&1
+
+echo "🧪 COMPREHENSIVE HEADLESS TESTING - FinanceMate TDD Implementation"
+echo "=================================================="
+echo "Timestamp: $(date)"
+echo "Project Root: $PROJECT_ROOT"
+echo "Log File: $LOG_FILE"
+echo ""
 
 # Function to log with timestamp
 log_with_timestamp() {
