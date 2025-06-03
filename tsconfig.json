@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+
+    /* Path mapping */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./copilotkit-ui/client/src/*"],
+      "@/components/*": ["./copilotkit-ui/client/src/components/*"],
+      "@/hooks/*": ["./copilotkit-ui/client/src/hooks/*"],
+      "@/services/*": ["./copilotkit-ui/client/src/services/*"],
+      "@/types/*": ["./copilotkit-ui/client/src/types/*"],
+      "@/utils/*": ["./copilotkit-ui/client/src/utils/*"]
+    }
+  },
+  "include": [
+    "copilotkit-ui/client/src/**/*",
+    "copilotkit-ui/server/**/*"
+  ],
+  "references": [{ "path": "./tsconfig.node.json" }]
+}

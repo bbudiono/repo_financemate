@@ -1,0 +1,263 @@
+/* Error Boundary Styles */
+
+.error-boundary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  min-height: 200px;
+  background: #fef2f2;
+  border: 2px solid #fecaca;
+  border-radius: 12px;
+  margin: 1rem 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+}
+
+.error-boundary-app {
+  min-height: 100vh;
+  margin: 0;
+  background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
+  border: none;
+  border-radius: 0;
+}
+
+.error-boundary-page {
+  min-height: 400px;
+  background: #fef7f7;
+  border-color: #f5c6c6;
+}
+
+.error-boundary-component {
+  min-height: 150px;
+  background: #fefefe;
+  border-color: #e5e7eb;
+}
+
+.error-content {
+  text-align: center;
+  max-width: 600px;
+  width: 100%;
+}
+
+.error-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  line-height: 1;
+}
+
+.error-message h2 {
+  color: #dc2626;
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0 0 1rem 0;
+}
+
+.error-message p {
+  color: #6b7280;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin: 0 0 1rem 0;
+}
+
+.retry-info {
+  color: #f59e0b !important;
+  font-weight: 600;
+  font-size: 0.95rem !important;
+}
+
+.error-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin: 2rem 0;
+  flex-wrap: wrap;
+}
+
+.error-button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 120px;
+}
+
+.error-button.primary {
+  background: #dc2626;
+  color: white;
+}
+
+.error-button.primary:hover {
+  background: #b91c1c;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(220, 38, 38, 0.3);
+}
+
+.error-button.secondary {
+  background: #f3f4f6;
+  color: #374151;
+  border: 1px solid #d1d5db;
+}
+
+.error-button.secondary:hover {
+  background: #e5e7eb;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.error-button:active {
+  transform: translateY(0);
+}
+
+.error-details {
+  margin: 2rem 0 1rem 0;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: white;
+  text-align: left;
+}
+
+.error-details summary {
+  padding: 1rem;
+  cursor: pointer;
+  font-weight: 600;
+  color: #374151;
+  background: #f9fafb;
+  border-radius: 8px 8px 0 0;
+  user-select: none;
+}
+
+.error-details summary:hover {
+  background: #f3f4f6;
+}
+
+.error-details[open] summary {
+  border-bottom: 1px solid #d1d5db;
+}
+
+.error-details .error-content {
+  padding: 1rem;
+  max-width: none;
+  text-align: left;
+}
+
+.error-section {
+  margin-bottom: 1.5rem;
+}
+
+.error-section:last-child {
+  margin-bottom: 0;
+}
+
+.error-section h4 {
+  color: #374151;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.error-section code {
+  display: inline-block;
+  background: #f3f4f6;
+  color: #dc2626;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.85rem;
+  word-break: break-all;
+}
+
+.error-stack {
+  background: #1f2937;
+  color: #f9fafb;
+  padding: 1rem;
+  border-radius: 6px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 200px;
+  overflow-y: auto;
+  margin: 0;
+}
+
+.error-support {
+  margin-top: 2rem;
+  padding: 1rem;
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-radius: 8px;
+  color: #0c4a6e;
+  font-size: 0.9rem;
+}
+
+.error-support strong {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  background: #dbeafe;
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .error-boundary {
+    padding: 1rem;
+    margin: 0.5rem 0;
+  }
+
+  .error-icon {
+    font-size: 3rem;
+  }
+
+  .error-message h2 {
+    font-size: 1.5rem;
+  }
+
+  .error-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .error-button {
+    width: 100%;
+    max-width: 200px;
+  }
+
+  .error-stack {
+    font-size: 0.7rem;
+    padding: 0.75rem;
+  }
+}
+
+/* Animation for error appearance */
+.error-boundary {
+  animation: errorSlideIn 0.3s ease-out;
+}
+
+@keyframes errorSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Loading state for retry */
+.error-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.error-button:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
