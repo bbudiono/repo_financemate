@@ -336,7 +336,7 @@ struct DashboardView: View {
         .navigationTitle("Dashboard")
         .onAppear {
             loadRealDashboardData()
-            createTestDataIfNeeded()
+            // REMOVED: createTestDataIfNeeded() - NO AUTOMATIC FAKE DATA GENERATION
         }
         .sheet(isPresented: $showingAddTransaction) {
             AddTransactionView()
@@ -383,54 +383,8 @@ struct DashboardView: View {
         chartData.reverse() // Show oldest to newest
     }
     
-    private func createTestDataIfNeeded() {
-        // Only create test data if there's no existing data
-        if allFinancialData.isEmpty {
-            let calendar = Calendar.current
-            let today = Date()
-            
-            // Create sample financial data for the last 3 months
-            for monthOffset in 0..<3 {
-                guard let monthDate = calendar.date(byAdding: .month, value: -monthOffset, to: today) else { continue }
-                
-                // Create 3-5 transactions per month
-                for _ in 0..<Int.random(in: 3...5) {
-                    let financialData = FinancialData(context: viewContext)
-                    financialData.id = UUID()
-                    
-                    // Random date within the month
-                    let dayOffset = Int.random(in: 1...28)
-                    financialData.invoiceDate = calendar.date(byAdding: .day, value: -dayOffset, to: monthDate)
-                    
-                    // Mix of income (positive) and expenses (negative)
-                    let isIncome = Bool.random()
-                    let amount = isIncome ? 
-                        Double.random(in: 500...3000) : // Income
-                        -Double.random(in: 50...800)    // Expenses (negative)
-                    
-                    financialData.totalAmount = NSDecimalNumber(value: amount)
-                    financialData.currency = "USD"
-                    financialData.extractionConfidence = 0.95
-                    
-                    // Sample descriptions
-                    let incomeDescriptions = ["Consulting Payment", "Project Invoice", "Service Fee", "Monthly Retainer"]
-                    let expenseDescriptions = ["Office Supplies", "Internet Bill", "Software License", "Business Lunch", "Equipment Purchase"]
-                    
-                    financialData.vendorName = isIncome ? 
-                        incomeDescriptions.randomElement() : 
-                        expenseDescriptions.randomElement()
-                }
-            }
-            
-            // Save the context
-            do {
-                try viewContext.save()
-                print("✅ Created sample financial data for dashboard")
-            } catch {
-                print("❌ Error creating sample data: \\(error)")
-            }
-        }
-    }
+    // REMOVED: createTestDataIfNeeded() function
+    // NO AUTOMATIC FAKE DATA GENERATION - Dashboard shows real data only
     
     private func calculateBalanceTrend() -> String {
         // Calculate trend based on last month's balance
