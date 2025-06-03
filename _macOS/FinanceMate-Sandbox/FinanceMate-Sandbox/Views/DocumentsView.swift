@@ -299,25 +299,12 @@ struct DocumentsView: View {
     }
     
     private func loadSampleDocuments() {
-        // Load sample documents for demo
-        documents = [
-            DocumentItem(
-                name: "SANDBOX_Invoice_2025_001.pdf",
-                url: URL(string: "file://sample1.pdf")!,
-                type: .invoice,
-                dateAdded: Date().addingTimeInterval(-86400),
-                extractedText: "SANDBOX: Invoice from ABC Company for $1,250.00",
-                processingStatus: .completed
-            ),
-            DocumentItem(
-                name: "SANDBOX_Receipt_Grocery.jpg",
-                url: URL(string: "file://sample2.jpg")!,
-                type: .receipt,
-                dateAdded: Date().addingTimeInterval(-172800),
-                extractedText: "SANDBOX: Grocery receipt for $87.45",
-                processingStatus: .completed
-            )
-        ]
+        // REMOVED: No more fake data for TestFlight readiness
+        // Starting with empty state to show real document upload functionality
+        documents = []
+        
+        // Log for development tracking
+        print("📱 SANDBOX: DocumentsView initialized with empty state - ready for real document uploads")
     }
 }
 

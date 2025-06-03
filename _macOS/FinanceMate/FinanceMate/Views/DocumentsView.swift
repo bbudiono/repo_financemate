@@ -195,7 +195,7 @@ struct DocumentsView: View {
         let document = DocumentItem(
             name: url.lastPathComponent,
             url: url,
-            type: DocumentType.from(url: url),
+            type: UIDocumentType.from(url: url),
             dateAdded: Date(),
             extractedText: "Processing...", // Would be processed by AI service
             processingStatus: .pending
@@ -217,25 +217,12 @@ struct DocumentsView: View {
     }
     
     private func loadSampleDocuments() {
-        // Load sample documents for demo
-        documents = [
-            DocumentItem(
-                name: "Invoice_2025_001.pdf",
-                url: URL(string: "file://sample1.pdf")!,
-                type: .invoice,
-                dateAdded: Date().addingTimeInterval(-86400),
-                extractedText: "Invoice from ABC Company for $1,250.00",
-                processingStatus: .completed
-            ),
-            DocumentItem(
-                name: "Receipt_Grocery.jpg",
-                url: URL(string: "file://sample2.jpg")!,
-                type: .receipt,
-                dateAdded: Date().addingTimeInterval(-172800),
-                extractedText: "Grocery receipt for $87.45",
-                processingStatus: .completed
-            )
-        ]
+        // REMOVED: No more fake data for TestFlight readiness
+        // Starting with empty state to show real document upload functionality
+        documents = []
+        
+        // Log for production tracking
+        print("📱 PRODUCTION: DocumentsView initialized with empty state - ready for real document uploads")
     }
 }
 
@@ -349,7 +336,7 @@ struct DocumentRow: View {
 }
 
 struct StatusBadge: View {
-    let status: ProcessingStatus
+    let status: UIProcessingStatus
     
     var body: some View {
         HStack(spacing: 4) {
@@ -391,13 +378,13 @@ struct DocumentItem: Identifiable {
     let id = UUID()
     let name: String
     let url: URL
-    let type: DocumentType
+    let type: UIDocumentType
     let dateAdded: Date
     var extractedText: String
-    var processingStatus: ProcessingStatus
+    var processingStatus: UIProcessingStatus
 }
 
-enum DocumentType: CaseIterable {
+enum UIDocumentType: CaseIterable {
     case invoice
     case receipt
     case statement
@@ -434,7 +421,7 @@ enum DocumentType: CaseIterable {
         }
     }
     
-    static func from(url: URL) -> DocumentType {
+    static func from(url: URL) -> UIDocumentType {
         let filename = url.lastPathComponent.lowercased()
         if filename.contains("invoice") { return .invoice }
         if filename.contains("receipt") { return .receipt }
@@ -444,7 +431,7 @@ enum DocumentType: CaseIterable {
     }
 }
 
-enum ProcessingStatus {
+enum UIProcessingStatus {
     case pending
     case processing
     case completed
@@ -495,7 +482,7 @@ enum DocumentFilter: CaseIterable {
         }
     }
     
-    var documentType: DocumentType? {
+    var documentType: UIDocumentType? {
         switch self {
         case .all: return nil
         case .invoices: return .invoice
