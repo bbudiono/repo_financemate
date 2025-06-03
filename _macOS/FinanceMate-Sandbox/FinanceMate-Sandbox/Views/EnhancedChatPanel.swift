@@ -39,23 +39,14 @@ struct EnhancedChatPanel: View {
     @State private var isProcessing: Bool = false
     @State private var isStreaming: Bool = false
     
-    // MARK: - MLACS Integration
-    @StateObject private var mlacsCoordinationEngine = MLACSCoordinationEngine()
-    @StateObject private var mlacsLearningEngine = MLACSLearningEngine()
-    @StateObject private var mcpCoordinationService = MCPCoordinationService()
-    @State private var enableMLACS: Bool = false
-    @State private var enableMCPIntegration: Bool = false
-    @State private var mlacsCoordinationMode: MLACSCoordinationMode = .hybrid
-    @State private var mcpDistributionStrategy: MCPDistributionStrategy = .loadBalanced
-    @State private var mlacsMaxLLMs: Int = 3
-    @State private var mlacsQualityThreshold: Double = 0.8
+    // MARK: - Simplified Chat Configuration
+    @State private var enableAdvancedFeatures: Bool = false
+    @State private var maxResponseTime: Double = 30.0
+    @State private var qualityThreshold: Double = 0.8
     
-    // MARK: - Learning and Optimization
-    @State private var showingLearningInsights: Bool = false
-    @State private var showingOptimizationRecommendations: Bool = false
-    @State private var enableAdaptiveLearning: Bool = true
-    @State private var currentOptimizedParameters: MLACSOptimizedParameters?
-    @State private var lastResponsePatternId: UUID?
+    // MARK: - Basic UI State
+    @State private var showingAdvancedSettings: Bool = false
+    @State private var enableBasicAnalytics: Bool = true
     
     // MARK: - UI State
     @State private var showingSettings: Bool = false
@@ -64,11 +55,10 @@ struct EnhancedChatPanel: View {
     @State private var userFeedbackText: String = ""
     
     // MARK: - Persistence
-    @AppStorage("chat_enable_mlacs") private var persistedEnableMLACS: Bool = false
-    @AppStorage("chat_enable_mcp") private var persistedEnableMCP: Bool = false
-    @AppStorage("chat_adaptive_learning") private var persistedAdaptiveLearning: Bool = true
-    @AppStorage("chat_mlacs_mode") private var persistedMLACSMode: String = "hybrid"
-    @AppStorage("chat_mcp_strategy") private var persistedMCPStrategy: String = "loadBalanced"
+    @AppStorage("chat_enable_advanced") private var persistedEnableAdvanced: Bool = false
+    @AppStorage("chat_enable_analytics") private var persistedEnableAnalytics: Bool = true
+    @AppStorage("chat_quality_threshold") private var persistedQualityThreshold: Double = 0.8
+    @AppStorage("chat_max_response_time") private var persistedMaxResponseTime: Double = 30.0
     
     var body: some View {
         VStack(spacing: 0) {
@@ -82,9 +72,9 @@ struct EnhancedChatPanel: View {
             
             Divider()
             
-            // Learning Insights Bar (when enabled)
-            if enableAdaptiveLearning && !mlacsLearningEngine.optimizationRecommendations.isEmpty {
-                learningInsightsBar
+            // Advanced Features Bar (when enabled)
+            if enableAdvancedFeatures && enableBasicAnalytics {
+                advancedFeaturesBar
                 Divider()
             }
             
@@ -94,11 +84,8 @@ struct EnhancedChatPanel: View {
         .sheet(isPresented: $showingSettings) {
             chatSettingsSheet
         }
-        .sheet(isPresented: $showingLearningInsights) {
-            learningInsightsSheet
-        }
-        .sheet(isPresented: $showingOptimizationRecommendations) {
-            optimizationRecommendationsSheet
+        .sheet(isPresented: $showingAdvancedSettings) {
+            advancedSettingsSheet
         }
         .sheet(isPresented: $showingFeedbackSheet) {
             feedbackSheet
@@ -127,48 +114,29 @@ struct EnhancedChatPanel: View {
             
             Spacer()
             
-            // MLACS Status Indicators
-            if enableMLACS {
+            // Basic Status Indicators
+            if enableAdvancedFeatures {
                 HStack(spacing: 8) {
-                    // Coordination Status
+                    // Advanced Features Status
                     HStack(spacing: 4) {
-                        Image(systemName: "network.badge.shield.half.filled")
-                            .foregroundColor(.purple)
-                        Text("MLACS")
+                        Image(systemName: "gear.badge.checkmark")
+                            .foregroundColor(.green)
+                        Text("Enhanced")
                             .font(.caption)
-                            .foregroundColor(.purple)
-                        Text(mlacsCoordinationMode.displayName)
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(.green)
                     }
                     
-                    // MCP Integration Status
-                    if enableMCPIntegration {
+                    // Analytics Status
+                    if enableBasicAnalytics {
                         HStack(spacing: 4) {
-                            Image(systemName: mcpCoordinationService.isConnected ? "server.rack" : "server.rack.fill")
-                                .foregroundColor(mcpCoordinationService.isConnected ? .green : .orange)
-                            Text("MCP")
+                            Image(systemName: "chart.bar.fill")
+                                .foregroundColor(.blue)
+                            Text("Analytics")
                                 .font(.caption)
-                                .foregroundColor(mcpCoordinationService.isConnected ? .green : .orange)
-                            Text("\(mcpCoordinationService.activeServers.count)")
+                                .foregroundColor(.blue)
+                            Text("\(Int(qualityThreshold * 100))%")
                                 .font(.caption2)
                                 .foregroundColor(.secondary)
-                        }
-                    }
-                    
-                    // Learning Status
-                    if enableAdaptiveLearning {
-                        HStack(spacing: 4) {
-                            Image(systemName: "brain.head.profile")
-                                .foregroundColor(.blue)
-                            Text("Learning")
-                                .font(.caption)
-                                .foregroundColor(.blue)
-                            if let confidence = currentOptimizedParameters?.confidence {
-                                Text("\(Int(confidence * 100))%")
-                                    .font(.caption2)
-                                    .foregroundColor(.secondary)
-                            }
                         }
                     }
                 }
@@ -221,8 +189,8 @@ struct EnhancedChatPanel: View {
     
     private var processingIndicator: some View {
         HStack {
-            if enableMLACS {
-                Text("🤖 [SANDBOX] Coordinating \(mlacsMaxLLMs) AI models...")
+            if enableAdvancedFeatures {
+                Text("🤖 [SANDBOX] Enhanced processing...")
             } else {
                 Text("🤔 [SANDBOX] Thinking...")
             }
@@ -235,43 +203,43 @@ struct EnhancedChatPanel: View {
         .cornerRadius(8)
     }
     
-    // MARK: - Learning Insights Bar
+    // MARK: - Advanced Features Bar
     
-    private var learningInsightsBar: some View {
+    private var advancedFeaturesBar: some View {
         HStack {
-            Image(systemName: "lightbulb.fill")
-                .foregroundColor(.orange)
+            Image(systemName: "sparkles")
+                .foregroundColor(.purple)
             
-            Text("Learning insights available (SANDBOX)")
+            Text("Advanced features enabled (SANDBOX)")
                 .font(.caption)
                 .foregroundColor(.secondary)
             
             Spacer()
             
-            Button("View Insights") {
-                showingLearningInsights = true
+            Button("Settings") {
+                showingAdvancedSettings = true
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.small)
             
-            Button("Recommendations") {
-                showingOptimizationRecommendations = true
+            Button("Analytics") {
+                showingSettings = true
             }
             .buttonStyle(.bordered)
             .controlSize(.small)
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 8)
-        .background(Color.orange.opacity(0.1))
+        .background(Color.purple.opacity(0.1))
     }
     
     // MARK: - Chat Input Area
     
     private var chatInputArea: some View {
         VStack(spacing: 8) {
-            // Optimization Status (when available)
-            if let optimized = currentOptimizedParameters {
-                optimizationStatusBar(optimized)
+            // Advanced Status (when available)
+            if enableAdvancedFeatures {
+                advancedStatusBar
             }
             
             // Input Field and Send Button
@@ -297,19 +265,19 @@ struct EnhancedChatPanel: View {
         .background(Color(NSColor.controlBackgroundColor))
     }
     
-    private func optimizationStatusBar(_ optimized: MLACSOptimizedParameters) -> some View {
+    private var advancedStatusBar: some View {
         HStack {
             Image(systemName: "wand.and.stars")
                 .foregroundColor(.purple)
                 .font(.caption)
             
-            Text("SANDBOX Optimized: \(optimized.coordinationMode.displayName) • \(optimized.maxLLMs) LLMs • \(Int(optimized.confidence * 100))% confidence")
+            Text("SANDBOX Enhanced Mode • Quality: \(Int(qualityThreshold * 100))% • Timeout: \(String(format: "%.1fs", maxResponseTime))")
                 .font(.caption)
                 .foregroundColor(.secondary)
             
             Spacer()
             
-            Text("~\(String(format: "%.1fs", optimized.estimatedResponseTime))")
+            Text("🧪")
                 .font(.caption2)
                 .foregroundColor(.secondary)
         }
@@ -339,74 +307,26 @@ struct EnhancedChatPanel: View {
     @MainActor
     private func processMessage(query: String) async {
         do {
-            // Get optimized parameters if learning is enabled
-            if enableAdaptiveLearning {
-                currentOptimizedParameters = mlacsLearningEngine.getOptimizedCoordinationParameters(for: query)
-                
-                // Apply optimized parameters
-                if let optimized = currentOptimizedParameters {
-                    mlacsCoordinationMode = optimized.coordinationMode
-                    mlacsMaxLLMs = optimized.maxLLMs
-                    mlacsQualityThreshold = optimized.qualityThreshold
-                }
-            }
-            
             let startTime = Date()
             let aiResponse: ChatMessage
             
-            if enableMLACS {
-                // Create MLACS request
-                let mlacsRequest = MLACSRequest(
-                    userQuery: query,
-                    context: "Enhanced chat session - SANDBOX",
-                    requirements: MLACSRequirements(
-                        coordinationMode: mlacsCoordinationMode,
-                        maxLLMs: mlacsMaxLLMs,
-                        qualityThreshold: mlacsQualityThreshold,
-                        timeoutInterval: 30.0,
-                        prioritizeSpeed: false,
-                        prioritizeQuality: true,
-                        prioritizeCost: false,
-                        requiredCapabilities: [.reasoning, .analysis]
-                    )
+            // Simulate processing delay
+            try await Task.sleep(nanoseconds: UInt64(1_000_000_000 * min(maxResponseTime / 3, 2.0)))
+            
+            if enableAdvancedFeatures {
+                // Enhanced processing with quality simulation
+                let qualityScore = Int(qualityThreshold * 100)
+                let responseTime = Date().timeIntervalSince(startTime)
+                
+                aiResponse = ChatMessage(
+                    content: "🧪 SANDBOX Enhanced Response: \"\(query)\"\n\n" +
+                    "---\n🚀 **SANDBOX Advanced Processing:**\n" +
+                    "• Quality Score: \(qualityScore)%\n" +
+                    "• Processing Time: \(String(format: \"%.1fs\", responseTime))\n" +
+                    "• Mode: Enhanced Features\n" +
+                    "• Analytics: \(enableBasicAnalytics ? "Enabled" : "Disabled")",
+                    isUser: false
                 )
-                
-                if enableMCPIntegration && mcpCoordinationService.isConnected {
-                    // Use distributed MCP coordination
-                    let distributedResponse = try await mcpCoordinationService.distributeCoordination(
-                        request: mlacsRequest,
-                        strategy: mcpDistributionStrategy
-                    )
-                    
-                    aiResponse = ChatMessage(
-                        content: formatDistributedResponse(distributedResponse),
-                        isUser: false
-                    )
-                } else {
-                    // Use local MLACS coordination
-                    let mlacsResponse = try await mlacsCoordinationEngine.coordinateTask(mlacsRequest)
-                    aiResponse = ChatMessage(
-                        content: formatMLACSResponse(mlacsResponse),
-                        isUser: false
-                    )
-                }
-                
-                // Record learning pattern
-                if enableAdaptiveLearning {
-                    let responseTime = Date().timeIntervalSince(startTime)
-                    let pattern = MLACSLearningPattern(
-                        queryType: classifyQuery(query),
-                        coordinationMode: mlacsCoordinationMode,
-                        participantCount: mlacsMaxLLMs,
-                        qualityScore: mlacsResponse.qualityMetrics.overallQuality,
-                        responseTime: responseTime,
-                        contextFactors: extractContextFactors(from: query)
-                    )
-                    
-                    mlacsLearningEngine.recordLearningPattern(pattern)
-                    lastResponsePatternId = pattern.id
-                }
-                
             } else {
                 // Standard response with sandbox indication
                 aiResponse = ChatMessage(
@@ -431,7 +351,7 @@ struct EnhancedChatPanel: View {
     // MARK: - Feedback Collection
     
     private func requestFeedback(for message: ChatMessage) {
-        guard !message.isUser, let patternId = lastResponsePatternId else { return }
+        guard !message.isUser else { return }
         showingFeedbackSheet = true
     }
     
@@ -486,13 +406,8 @@ struct EnhancedChatPanel: View {
     }
     
     private func submitFeedback() {
-        guard let patternId = lastResponsePatternId else { return }
-        
-        mlacsLearningEngine.recordUserFeedback(
-            for: patternId,
-            satisfaction: userFeedbackSatisfaction / 5.0,
-            feedback: userFeedbackText.isEmpty ? nil : userFeedbackText
-        )
+        // Store feedback locally in SANDBOX mode
+        print("🧪 SANDBOX Feedback: Rating \(userFeedbackSatisfaction)/5 - \(userFeedbackText)")
         
         // Reset feedback state
         userFeedbackSatisfaction = 4.0
@@ -505,78 +420,44 @@ struct EnhancedChatPanel: View {
     private var chatSettingsSheet: some View {
         NavigationView {
             Form {
-                Section("SANDBOX MLACS Configuration") {
-                    Toggle("Enable MLACS Coordination", isOn: $enableMLACS)
+                Section("SANDBOX Advanced Configuration") {
+                    Toggle("Enable Advanced Features", isOn: $enableAdvancedFeatures)
                     
-                    if enableMLACS {
-                        Picker("Coordination Mode", selection: $mlacsCoordinationMode) {
-                            ForEach(MLACSCoordinationMode.allCases, id: \.self) { mode in
-                                Text(mode.displayName).tag(mode)
-                            }
-                        }
-                        
-                        HStack {
-                            Text("Max LLMs: \(mlacsMaxLLMs)")
-                            Spacer()
-                            Stepper("", value: $mlacsMaxLLMs, in: 2...6)
+                    if enableAdvancedFeatures {
+                        VStack(alignment: .leading) {
+                            Text("Quality Threshold: \(Int(qualityThreshold * 100))%")
+                            Slider(value: $qualityThreshold, in: 0.5...1.0, step: 0.05)
                         }
                         
                         VStack(alignment: .leading) {
-                            Text("Quality Threshold: \(Int(mlacsQualityThreshold * 100))%")
-                            Slider(value: $mlacsQualityThreshold, in: 0.5...1.0, step: 0.05)
+                            Text("Max Response Time: \(String(format: "%.1fs", maxResponseTime))")
+                            Slider(value: $maxResponseTime, in: 5.0...60.0, step: 5.0)
                         }
                     }
                 }
                 
-                Section("SANDBOX MCP Integration") {
-                    Toggle("Enable MCP Servers", isOn: $enableMCPIntegration)
+                Section("SANDBOX Analytics & Monitoring") {
+                    Toggle("Enable Basic Analytics", isOn: $enableBasicAnalytics)
                     
-                    if enableMCPIntegration {
+                    if enableBasicAnalytics {
                         HStack {
-                            Text("Connected Servers:")
+                            Text("Session Messages:")
                             Spacer()
-                            Text("\(mcpCoordinationService.activeServers.count)")
-                                .foregroundColor(mcpCoordinationService.isConnected ? .green : .orange)
-                        }
-                        
-                        HStack {
-                            Text("Connection Status:")
-                            Spacer()
-                            Text(mcpCoordinationService.isConnected ? "Connected" : "Disconnected")
-                                .foregroundColor(mcpCoordinationService.isConnected ? .green : .red)
-                        }
-                        
-                        Picker("Distribution Strategy", selection: $mcpDistributionStrategy) {
-                            Text("Load Balanced").tag(MCPDistributionStrategy.loadBalanced)
-                            Text("Redundant").tag(MCPDistributionStrategy.redundant)
-                            Text("Specialized").tag(MCPDistributionStrategy.specialized)
-                            Text("Fastest").tag(MCPDistributionStrategy.fastest)
-                        }
-                    }
-                }
-                
-                Section("SANDBOX Learning & Optimization") {
-                    Toggle("Enable Adaptive Learning", isOn: $enableAdaptiveLearning)
-                    
-                    if enableAdaptiveLearning {
-                        HStack {
-                            Text("Patterns Recorded:")
-                            Spacer()
-                            Text("\(mlacsLearningEngine.learningPatterns.count)")
+                            Text("\(messages.count)")
                                 .foregroundColor(.secondary)
                         }
                         
                         HStack {
-                            Text("User Feedback:")
+                            Text("Processing Mode:")
                             Spacer()
-                            Text("\(mlacsLearningEngine.learningMetrics.userFeedbackCount)")
-                                .foregroundColor(.secondary)
+                            Text(enableAdvancedFeatures ? "Enhanced" : "Standard")
+                                .foregroundColor(enableAdvancedFeatures ? .green : .blue)
                         }
                         
                         HStack {
-                            Text("Avg Satisfaction:")
+                            Text("Quality Setting:")
                             Spacer()
-                            Text(String(format: "%.1f%%", mlacsLearningEngine.learningMetrics.averageUserSatisfaction * 100))
+                            Text("\(Int(qualityThreshold * 100))%")
                                 .foregroundColor(.secondary)
                         }
                     }
@@ -595,233 +476,75 @@ struct EnhancedChatPanel: View {
         .frame(width: 500, height: 400)
     }
     
-    // MARK: - Learning Insights Sheet
+    // MARK: - Advanced Settings Sheet
     
-    private var learningInsightsSheet: some View {
+    private var advancedSettingsSheet: some View {
         NavigationView {
             VStack(alignment: .leading, spacing: 16) {
-                Text("SANDBOX Learning Insights")
+                Text("SANDBOX Advanced Settings")
                     .font(.title2)
                     .fontWeight(.semibold)
                 
-                // Metrics Overview
-                metricsOverview
-                
-                // Recent Patterns
-                recentPatternsSection
+                // Basic Information
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Session Information")
+                        .font(.headline)
+                    
+                    HStack {
+                        Text("Messages Exchanged:")
+                        Spacer()
+                        Text("\(messages.count)")
+                            .foregroundColor(.secondary)
+                    }
+                    
+                    HStack {
+                        Text("Advanced Mode:")
+                        Spacer()
+                        Text(enableAdvancedFeatures ? "Enabled" : "Disabled")
+                            .foregroundColor(enableAdvancedFeatures ? .green : .gray)
+                    }
+                    
+                    HStack {
+                        Text("Quality Threshold:")
+                        Spacer()
+                        Text("\(Int(qualityThreshold * 100))%")
+                            .foregroundColor(.secondary)
+                    }
+                }
+                .padding()
+                .background(Color.gray.opacity(0.1))
+                .cornerRadius(8)
                 
                 Spacer()
             }
             .padding()
-            .navigationTitle("SANDBOX Learning Analytics")
+            .navigationTitle("SANDBOX Advanced Config")
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Button("Done") {
-                        showingLearningInsights = false
+                        showingAdvancedSettings = false
                     }
                 }
             }
         }
-        .frame(width: 600, height: 500)
+        .frame(width: 500, height: 400)
     }
     
-    private var metricsOverview: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Performance Metrics (SANDBOX)")
-                .font(.headline)
-            
-            HStack {
-                MetricCard(
-                    title: "Patterns",
-                    value: "\(mlacsLearningEngine.learningPatterns.count)",
-                    subtitle: "Recorded"
-                )
-                
-                MetricCard(
-                    title: "Satisfaction",
-                    value: String(format: "%.1f%%", mlacsLearningEngine.learningMetrics.averageUserSatisfaction * 100),
-                    subtitle: "Average"
-                )
-                
-                MetricCard(
-                    title: "Feedback",
-                    value: "\(mlacsLearningEngine.learningMetrics.userFeedbackCount)",
-                    subtitle: "Responses"
-                )
-            }
-        }
-    }
-    
-    private var recentPatternsSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Recent Learning Patterns (SANDBOX)")
-                .font(.headline)
-            
-            ScrollView {
-                LazyVStack(spacing: 4) {
-                    ForEach(mlacsLearningEngine.learningPatterns.suffix(5).reversed(), id: \.id) { pattern in
-                        PatternRow(pattern: pattern)
-                    }
-                }
-            }
-            .frame(maxHeight: 200)
-        }
-    }
-    
-    // MARK: - Optimization Recommendations Sheet
-    
-    private var optimizationRecommendationsSheet: some View {
-        NavigationView {
-            VStack(alignment: .leading, spacing: 16) {
-                Text("SANDBOX Optimization Recommendations")
-                    .font(.title2)
-                    .fontWeight(.semibold)
-                
-                if mlacsLearningEngine.optimizationRecommendations.isEmpty {
-                    VStack {
-                        Image(systemName: "chart.line.uptrend.xyaxis")
-                            .font(.system(size: 48))
-                            .foregroundColor(.gray)
-                        
-                        Text("No recommendations yet (SANDBOX)")
-                            .font(.headline)
-                            .foregroundColor(.secondary)
-                        
-                        Text("Continue using MLACS to generate optimization insights in this SANDBOX environment")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                            .multilineTextAlignment(.center)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 40)
-                } else {
-                    ScrollView {
-                        LazyVStack(spacing: 12) {
-                            ForEach(mlacsLearningEngine.optimizationRecommendations.prefix(10), id: \.id) { recommendation in
-                                RecommendationCard(recommendation: recommendation)
-                            }
-                        }
-                    }
-                }
-                
-                Spacer()
-            }
-            .padding()
-            .navigationTitle("SANDBOX Optimization")
-            .toolbar {
-                ToolbarItem(placement: .primaryAction) {
-                    Button("Done") {
-                        showingOptimizationRecommendations = false
-                    }
-                }
-            }
-        }
-        .frame(width: 600, height: 500)
-    }
     
     // MARK: - Helper Methods
     
     private func restorePersistedState() {
-        enableMLACS = persistedEnableMLACS
-        enableMCPIntegration = persistedEnableMCP
-        enableAdaptiveLearning = persistedAdaptiveLearning
-        
-        if let mode = MLACSCoordinationMode(rawValue: persistedMLACSMode) {
-            mlacsCoordinationMode = mode
-        }
-        
-        if let strategy = mcpDistributionStrategyFromString(persistedMCPStrategy) {
-            mcpDistributionStrategy = strategy
-        }
+        enableAdvancedFeatures = persistedEnableAdvanced
+        enableBasicAnalytics = persistedEnableAnalytics
+        qualityThreshold = persistedQualityThreshold
+        maxResponseTime = persistedMaxResponseTime
     }
     
     private func saveSettings() {
-        persistedEnableMLACS = enableMLACS
-        persistedEnableMCP = enableMCPIntegration
-        persistedAdaptiveLearning = enableAdaptiveLearning
-        persistedMLACSMode = mlacsCoordinationMode.rawValue
-        persistedMCPStrategy = mcpDistributionStrategyToString(mcpDistributionStrategy)
-    }
-    
-    private func formatMLACSResponse(_ response: MLACSResponse) -> String {
-        var formatted = "🧪 SANDBOX: " + response.coordinatedResponse
-        
-        // Add learning insights
-        if enableAdaptiveLearning {
-            formatted += "\n\n---\n🧠 **SANDBOX Learning Insights:**\n"
-            formatted += "• Quality Score: \(Int(response.qualityMetrics.overallQuality * 100))%\n"
-            formatted += "• Coordination: \(response.coordinationMetrics.coordinationMode.displayName)\n"
-            formatted += "• LLMs: \(response.participatingLLMs.count)\n"
-            formatted += "• Processing: \(String(format: "%.1fs", response.processingTime))\n"
-        }
-        
-        return formatted
-    }
-    
-    private func classifyQuery(_ query: String) -> String {
-        let lowercased = query.lowercased()
-        
-        if lowercased.contains("analyze") || lowercased.contains("analysis") {
-            return "analysis"
-        } else if lowercased.contains("create") || lowercased.contains("generate") {
-            return "creative"
-        } else if lowercased.contains("explain") || lowercased.contains("what") {
-            return "explanation"
-        } else if lowercased.contains("code") || lowercased.contains("program") {
-            return "coding"
-        } else {
-            return "general"
-        }
-    }
-    
-    private func extractContextFactors(from query: String) -> [String: Double] {
-        var factors: [String: Double] = [:]
-        
-        factors["query_length"] = Double(query.count) / 100.0
-        factors["complexity"] = query.split(separator: " ").count > 10 ? 1.0 : 0.5
-        factors["technical"] = query.lowercased().contains("technical") ? 1.0 : 0.0
-        
-        return factors
-    }
-    
-    // MARK: - MCP Helper Methods
-    
-    private func formatDistributedResponse(_ response: MCPDistributedResponse) -> String {
-        var formatted = "🌐 **SANDBOX Distributed AI Coordination Response**\n\n"
-        
-        // Add main content (would extract from aggregated results)
-        formatted += "🧪 SANDBOX: Response coordinated across \(response.serversUsed.count) MCP servers with \(String(format: "%.1f%%", response.qualityScore * 100)) quality.\n\n"
-        
-        // Add distributed coordination insights
-        if enableAdaptiveLearning {
-            formatted += "---\n🚀 **SANDBOX Distributed Coordination Insights:**\n"
-            formatted += "• Servers Used: \(response.serversUsed.joined(separator: ", "))\n"
-            formatted += "• Overall Quality: \(Int(response.qualityScore * 100))%\n"
-            formatted += "• Confidence: \(Int(response.confidence * 100))%\n"
-            formatted += "• Processing Time: \(String(format: "%.1fs", response.processingTime))\n"
-            formatted += "• Distribution Strategy: \(mcpDistributionStrategyToString(mcpDistributionStrategy))\n"
-        }
-        
-        return formatted
-    }
-    
-    private func mcpDistributionStrategyFromString(_ string: String) -> MCPDistributionStrategy? {
-        switch string {
-        case "loadBalanced": return .loadBalanced
-        case "redundant": return .redundant
-        case "specialized": return .specialized
-        case "fastest": return .fastest
-        default: return nil
-        }
-    }
-    
-    private func mcpDistributionStrategyToString(_ strategy: MCPDistributionStrategy) -> String {
-        switch strategy {
-        case .loadBalanced: return "loadBalanced"
-        case .redundant: return "redundant"
-        case .specialized: return "specialized"
-        case .fastest: return "fastest"
-        }
+        persistedEnableAdvanced = enableAdvancedFeatures
+        persistedEnableAnalytics = enableBasicAnalytics
+        persistedQualityThreshold = qualityThreshold
+        persistedMaxResponseTime = maxResponseTime
     }
 }
 

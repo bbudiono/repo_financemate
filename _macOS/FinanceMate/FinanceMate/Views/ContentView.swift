@@ -67,6 +67,18 @@ struct DetailView: View {
                 DocumentsView()
             case .analytics:
                 AnalyticsView()
+            case .enhancedAnalytics:
+                Text("Enhanced Analytics View")
+                    .font(.largeTitle)
+                    .foregroundColor(.blue)
+            case .crashAnalysis:
+                Text("Crash Analysis Dashboard")
+                    .font(.largeTitle)
+                    .foregroundColor(.red)
+            case .llmBenchmark:
+                Text("LLM Benchmark View")
+                    .font(.largeTitle)
+                    .foregroundColor(.green)
             case .settings:
                 SettingsView()
             }
@@ -79,6 +91,9 @@ enum NavigationItem: String, CaseIterable {
     case dashboard = "dashboard"
     case documents = "documents"
     case analytics = "analytics"
+    case enhancedAnalytics = "enhancedAnalytics"
+    case crashAnalysis = "crashAnalysis"
+    case llmBenchmark = "llmBenchmark"
     case settings = "settings"
     
     var title: String {
@@ -86,6 +101,9 @@ enum NavigationItem: String, CaseIterable {
         case .dashboard: return "Dashboard"
         case .documents: return "Documents"
         case .analytics: return "Analytics"
+        case .enhancedAnalytics: return "Enhanced Analytics"
+        case .crashAnalysis: return "Crash Analysis"
+        case .llmBenchmark: return "LLM Benchmark"
         case .settings: return "Settings"
         }
     }
@@ -95,6 +113,9 @@ enum NavigationItem: String, CaseIterable {
         case .dashboard: return "chart.line.uptrend.xyaxis"
         case .documents: return "doc.fill"
         case .analytics: return "chart.bar.fill"
+        case .enhancedAnalytics: return "chart.bar.doc.horizontal.fill"
+        case .crashAnalysis: return "exclamationmark.triangle.fill"
+        case .llmBenchmark: return "cpu.fill"
         case .settings: return "gear"
         }
     }

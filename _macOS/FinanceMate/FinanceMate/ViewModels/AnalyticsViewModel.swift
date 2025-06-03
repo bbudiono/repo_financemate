@@ -1,14 +1,12 @@
 //
 //  AnalyticsViewModel.swift
-//  FinanceMate-Sandbox
+//  FinanceMate
 //
 //  Created by Assistant on 6/2/25.
 //
 
-// SANDBOX FILE: For testing/development. See .cursorrules.
-
 /*
-* Purpose: Analytics view model for real-time financial insights and data visualization in Sandbox
+* Purpose: Analytics view model for real-time financial insights and data visualization in Production
 * Issues & Complexity Summary: Initial TDD implementation - will fail tests to drive development
 * Key Complexity Drivers:
   - Logic Scope (Est. LoC): ~350

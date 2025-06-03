@@ -34,6 +34,10 @@ import Combine
 @MainActor
 public class DocumentManager: ObservableObject {
     
+    // MARK: - Shared Instance
+    
+    public static let shared = DocumentManager()
+    
     // MARK: - Published Properties
     
     @Published public var isProcessing: Bool = false
