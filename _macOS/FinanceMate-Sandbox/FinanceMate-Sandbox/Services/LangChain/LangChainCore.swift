@@ -167,7 +167,7 @@ public class LangChainExecutionEngine: ObservableObject {
         
         do {
             // Execute steps sequentially
-            for step in chain.steps {
+            for step in await chain.steps {
                 let stepResult = try await executeStep(step, data: currentData, context: input.context)
                 stepResults[step.id] = stepResult
                 

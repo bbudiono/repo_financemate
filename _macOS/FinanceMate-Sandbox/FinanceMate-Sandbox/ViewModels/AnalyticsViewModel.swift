@@ -98,7 +98,7 @@ public class AnalyticsViewModel: ObservableObject {
         for document in documents {
             guard let financialData = document.financialData,
                   let totalAmountStr = financialData.totalAmount,
-                  let amount = Double(totalAmountStr.replacingOccurrences(of: "[^0-9.]", with: "", options: .regularExpression)) else {
+                  let amount = Double(totalAmountStr.replacingOccurrences(of: "[^0-9.]", with: "", options: String.CompareOptions.regularExpression)) else {
                 continue
             }
             
@@ -124,7 +124,7 @@ public class AnalyticsViewModel: ObservableObject {
         for document in documents {
             guard let financialData = document.financialData,
                   let totalAmountStr = financialData.totalAmount,
-                  let amount = Double(totalAmountStr.replacingOccurrences(of: "[^0-9.]", with: "", options: .regularExpression)) else {
+                  let amount = Double(totalAmountStr.replacingOccurrences(of: "[^0-9.]", with: "", options: String.CompareOptions.regularExpression)) else {
                 continue
             }
             
@@ -153,7 +153,7 @@ public class AnalyticsViewModel: ObservableObject {
         for document in documents {
             guard let financialData = document.financialData,
                   let totalAmountStr = financialData.totalAmount,
-                  let amount = Double(totalAmountStr.replacingOccurrences(of: "[^0-9.]", with: "", options: .regularExpression)) else {
+                  let amount = Double(totalAmountStr.replacingOccurrences(of: "[^0-9.]", with: "", options: String.CompareOptions.regularExpression)) else {
                 continue
             }
             

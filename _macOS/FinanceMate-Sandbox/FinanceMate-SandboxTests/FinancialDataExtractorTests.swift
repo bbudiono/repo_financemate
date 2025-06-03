@@ -371,4 +371,236 @@ final class FinancialDataExtractorTests: XCTestCase {
         // Then: Should manage processing state correctly
         XCTAssertNotNil(financialExtractor.isProcessing)
     }
+    
+    // MARK: - ENHANCED VALIDATION TESTS (TDD Driven)
+    
+    func testValidateExtractedFinancialData() async throws {
+        // Given: Valid financial data
+        let validText = """
+        ACME Corp Invoice #123
+        Date: 01/15/2025
+        Amount: $1,500.00
+        Tax (8%): $120.00
+        Total: $1,620.00
+        """
+        
+        // When: Extracting and validating data
+        let result = await financialExtractor.extractFinancialData(from: validText, documentType: .invoice)
+        
+        // Then: Should extract valid data that passes validation
+        switch result {
+        case .success(let data):
+            let validationResult = await financialExtractor.validateExtractedData(data)
+            XCTAssertTrue(validationResult.isValid)
+            XCTAssertTrue(validationResult.validationErrors.isEmpty)
+            XCTAssertTrue(data.confidence > 0.7) // High confidence for well-structured data
+        case .failure(let error):
+            XCTFail("Extraction should succeed: \(error)")
+        }
+    }
+    
+    func testValidateInconsistentFinancialData() async throws {
+        // Given: Inconsistent financial data (amounts don't add up)
+        let inconsistentText = """
+        Invoice #456
+        Subtotal: $100.00
+        Tax: $50.00
+        Total: $120.00
+        """
+        
+        // When: Extracting and validating inconsistent data
+        let result = await financialExtractor.extractFinancialData(from: inconsistentText, documentType: .invoice)
+        
+        // Then: Should detect validation issues
+        switch result {
+        case .success(let data):
+            let validationResult = await financialExtractor.validateExtractedData(data)
+            XCTAssertFalse(validationResult.isValid)
+            XCTAssertTrue(validationResult.validationErrors.contains(.inconsistentAmounts))
+        case .failure(let error):
+            XCTFail("Extraction should succeed but validation should catch issues: \(error)")
+        }
+    }
+    
+    func testAdvancedPatternRecognition() async throws {
+        // Given: Complex invoice with multiple line items
+        let complexInvoiceText = """
+        PROFESSIONAL SERVICES INVOICE
+        Invoice #: PSI-2025-0123
+        Date: January 15, 2025
+        
+        Bill To:
+        Client Company Inc.
+        
+        Description                    Qty    Rate      Amount
+        Consulting Services            40     $150.00   $6,000.00
+        Project Management             20     $125.00   $2,500.00
+        Technical Documentation        10     $100.00   $1,000.00
+        
+        Subtotal:                                       $9,500.00
+        Discount (5%):                                   -$475.00
+        Adjusted Subtotal:                               $9,025.00
+        Tax (CA Sales Tax 7.25%):                        $654.31
+        
+        TOTAL DUE:                                      $9,679.31
+        
+        Terms: Net 30 Days
+        """
+        
+        // When: Processing complex invoice
+        let result = await financialExtractor.extractFinancialData(from: complexInvoiceText, documentType: .invoice)
+        
+        // Then: Should handle complex patterns
+        switch result {
+        case .success(let data):
+            XCTAssertTrue(data.amounts.count >= 5) // Multiple line items + subtotals
+            XCTAssertNotNil(data.totalAmount)
+            XCTAssertEqual(data.category, .consulting)
+            
+            let lineItemResults = await financialExtractor.extractLineItems(from: complexInvoiceText)
+            XCTAssertTrue(lineItemResults.count >= 3) // Three service line items
+        case .failure(let error):
+            XCTFail("Complex invoice processing should succeed: \(error)")
+        }
+    }
+    
+    func testEnhancedConfidenceScoring() async throws {
+        // Given: High-quality vs low-quality financial data
+        let highQualityText = """
+        INVOICE #INV-2025-001
+        ABC Professional Services
+        123 Business Ave, Suite 100
+        Phone: (555) 123-4567
+        
+        Date: January 15, 2025
+        Due Date: February 14, 2025
+        
+        Consulting Services: $2,500.00
+        Tax (8.25%): $206.25
+        Total: $2,706.25
+        """
+        
+        let lowQualityText = "some amount maybe $100"
+        
+        // When: Processing both texts
+        let highQualityResult = await financialExtractor.extractFinancialData(from: highQualityText, documentType: .invoice)
+        let lowQualityResult = await financialExtractor.extractFinancialData(from: lowQualityText, documentType: .other)
+        
+        // Then: Should have significantly different confidence scores
+        switch (highQualityResult, lowQualityResult) {
+        case (.success(let highQualityData), .success(let lowQualityData)):
+            XCTAssertTrue(highQualityData.confidence > 0.8)
+            XCTAssertTrue(lowQualityData.confidence < 0.5)
+            XCTAssertTrue(highQualityData.confidence > lowQualityData.confidence + 0.3)
+        default:
+            XCTFail("Both extractions should succeed")
+        }
+    }
+    
+    func testRecurringTransactionDetection() async throws {
+        // Given: Bank statement with recurring patterns
+        let statementText = """
+        BANK STATEMENT
+        
+        01/01 RENT PAYMENT APARTMENTS LLC    -$1,800.00
+        01/02 PACIFIC GAS ELECTRIC AUTOPAY   -$125.50
+        01/15 NETFLIX SUBSCRIPTION           -$15.99
+        02/01 RENT PAYMENT APARTMENTS LLC    -$1,800.00
+        02/02 PACIFIC GAS ELECTRIC AUTOPAY   -$130.25
+        02/15 NETFLIX SUBSCRIPTION           -$15.99
+        """
+        
+        // When: Processing statement for recurring patterns
+        let result = await financialExtractor.extractFinancialData(from: statementText, documentType: .statement)
+        
+        // Then: Should detect recurring transactions
+        switch result {
+        case .success(let data):
+            let recurringAnalysis = await financialExtractor.analyzeRecurringTransactions(data.transactions)
+            XCTAssertTrue(recurringAnalysis.recurringPatterns.count >= 3) // Rent, Utilities, Subscription
+            
+            let rentPattern = recurringAnalysis.recurringPatterns.first { $0.description.contains("RENT") }
+            XCTAssertNotNil(rentPattern)
+            XCTAssertEqual(rentPattern?.frequency, .monthly)
+        case .failure(let error):
+            XCTFail("Statement processing should succeed: \(error)")
+        }
+    }
+    
+    func testDataSanitizationAndNormalization() {
+        // Given: Text with various amount formats needing normalization
+        let messyText = """
+        Amount1: $1,234.56
+        Amount2: $ 2,500.00
+        Amount3: $3,000
+        Amount4: USD 4,500.50
+        Amount5: 5000.00 USD
+        Amount6: $6,789.123 (invalid precision)
+        """
+        
+        // When: Extracting and normalizing amounts
+        let amounts = financialExtractor.extractAmounts(from: messyText)
+        let normalizedAmounts = financialExtractor.normalizeAmounts(amounts)
+        
+        // Then: Should normalize all amounts to consistent format
+        XCTAssertTrue(normalizedAmounts.count >= 5)
+        for amount in normalizedAmounts {
+            let normalizedAmount = financialExtractor.sanitizeAmount(amount)
+            XCTAssertTrue(normalizedAmount.starts(with: "$"))
+            
+            // Should have proper decimal precision (0 or 2 decimal places)
+            let components = normalizedAmount.replacingOccurrences(of: "$", with: "").components(separatedBy: ".")
+            if components.count == 2 {
+                XCTAssertTrue(components[1].count <= 2)
+            }
+        }
+    }
+    
+    func testAdvancedCurrencyDetection() {
+        // Given: Mixed currency document
+        let multiCurrencyText = """
+        International Invoice
+        
+        Base Amount: $1,000.00 USD
+        European Tax: €85.00 EUR
+        UK Shipping: £25.00 GBP
+        Total USD Equivalent: $1,200.00
+        """
+        
+        // When: Detecting multiple currencies
+        let currencies = financialExtractor.detectAllCurrencies(from: multiCurrencyText)
+        let primaryCurrency = financialExtractor.detectCurrency(from: multiCurrencyText)
+        
+        // Then: Should detect all currencies with USD as primary
+        XCTAssertTrue(currencies.contains(.usd))
+        XCTAssertTrue(currencies.contains(.eur))
+        XCTAssertTrue(currencies.contains(.gbp))
+        XCTAssertEqual(primaryCurrency, .usd)
+    }
+    
+    func testFraudDetectionPatterns() async throws {
+        // Given: Potentially fraudulent document patterns
+        let suspiciousText = """
+        URGENT INVOICE - PAY IMMEDIATELY
+        
+        MEGA CORP LTD (DEFINITELY REAL COMPANY)
+        AMOUNT DUE: $999,999.99
+        WIRE TRANSFER TO: [SUSPICIOUS ACCOUNT]
+        PAY WITHIN 24 HOURS OR LEGAL ACTION
+        """
+        
+        // When: Processing suspicious document
+        let result = await financialExtractor.extractFinancialData(from: suspiciousText, documentType: .invoice)
+        
+        // Then: Should flag potential fraud indicators
+        switch result {
+        case .success(let data):
+            let fraudAnalysis = await financialExtractor.analyzeFraudRisk(from: suspiciousText, extractedData: data)
+            XCTAssertTrue(fraudAnalysis.riskScore > 0.7)
+            XCTAssertTrue(fraudAnalysis.riskFactors.contains(.urgencyLanguage))
+            XCTAssertTrue(fraudAnalysis.riskFactors.contains(.unusualAmount))
+        case .failure(let error):
+            XCTFail("Extraction should succeed but flag risks: \(error)")
+        }
+    }
 }

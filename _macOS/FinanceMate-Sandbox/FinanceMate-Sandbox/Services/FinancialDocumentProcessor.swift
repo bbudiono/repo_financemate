@@ -202,7 +202,7 @@ public class FinancialDocumentProcessor: ObservableObject {
     
     // MARK: - Financial Data Classification
     
-    private func classifyFinancialData(text: String, documentType: ProcessedDocumentType) async -> ExtractedFinancialData {
+    private func classifyFinancialData(text: String, documentType: ProcessedDocumentType) async -> ProcessedFinancialData {
         let amounts = extractAmounts(from: text)
         let dates = extractDates(from: text)
         let vendors = extractVendors(from: text, documentType: documentType)
@@ -210,7 +210,7 @@ public class FinancialDocumentProcessor: ObservableObject {
         let lineItems = extractLineItems(from: text)
         let taxInfo = extractTaxInformation(from: text)
         
-        return ExtractedFinancialData(
+        return ProcessedFinancialData(
             totalAmount: amounts.first,
             subTotal: findSubTotal(in: amounts),
             taxAmount: taxInfo.taxAmount,
@@ -592,7 +592,7 @@ public class FinancialDocumentProcessor: ObservableObject {
         url: URL,
         documentType: ProcessedDocumentType,
         extractedText: String,
-        financialData: ExtractedFinancialData
+        financialData: ProcessedFinancialData
     ) async -> ProcessedFinancialDocument {
         return ProcessedFinancialDocument(
             id: UUID(),
@@ -620,12 +620,12 @@ public struct ProcessedFinancialDocument: Identifiable, Codable {
     public let originalURL: URL
     public let documentType: ProcessedDocumentType
     public let extractedText: String
-    public let financialData: ExtractedFinancialData
+    public let financialData: ProcessedFinancialData
     public let processingStatus: DocumentProcessingStatus
     public let processedDate: Date
     public let lastModified: Date
     
-    public init(id: UUID, originalURL: URL, documentType: ProcessedDocumentType, extractedText: String, financialData: ExtractedFinancialData, processingStatus: DocumentProcessingStatus, processedDate: Date, lastModified: Date) {
+    public init(id: UUID, originalURL: URL, documentType: ProcessedDocumentType, extractedText: String, financialData: ProcessedFinancialData, processingStatus: DocumentProcessingStatus, processedDate: Date, lastModified: Date) {
         self.id = id
         self.originalURL = originalURL
         self.documentType = documentType
@@ -671,7 +671,7 @@ public enum ProcessedDocumentType: String, CaseIterable, Codable {
     }
 }
 
-public struct ExtractedFinancialData: Codable {
+public struct ProcessedFinancialData: Codable {
     public let totalAmount: ExtractedAmount?
     public let subTotal: ExtractedAmount?
     public let taxAmount: ExtractedAmount?

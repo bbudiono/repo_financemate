@@ -29,7 +29,7 @@
 import Foundation
 import SwiftUI
 
-public struct PerformanceMetrics {
+public struct MultiLLMPerformanceMetrics {
     public let taskCompletionTime: TimeInterval
     public let memoryAccessCount: Int
     public let supervisorInterventions: Int
@@ -53,12 +53,12 @@ public struct PerformanceMetrics {
 
 public struct PerformanceTestResult {
     public let testName: String
-    public let baselineMetrics: PerformanceMetrics
-    public let enhancedMetrics: PerformanceMetrics
+    public let baselineMetrics: MultiLLMPerformanceMetrics
+    public let enhancedMetrics: MultiLLMPerformanceMetrics
     public let improvementPercentage: Double
     public let detailedAnalysis: String
     
-    public init(testName: String, baselineMetrics: PerformanceMetrics, enhancedMetrics: PerformanceMetrics, improvementPercentage: Double, detailedAnalysis: String) {
+    public init(testName: String, baselineMetrics: MultiLLMPerformanceMetrics, enhancedMetrics: MultiLLMPerformanceMetrics, improvementPercentage: Double, detailedAnalysis: String) {
         self.testName = testName
         self.baselineMetrics = baselineMetrics
         self.enhancedMetrics = enhancedMetrics
@@ -148,7 +148,7 @@ public class MultiLLMPerformanceTestSuite: ObservableObject {
     
     // MARK: - Baseline Test (Without Enhancements)
     
-    private func runBaselineTest(testName: String) async -> PerformanceMetrics {
+    private func runBaselineTest(testName: String) async -> MultiLLMPerformanceMetrics {
         let startTime = Date()
         
         // Simulate baseline performance without 3-tier memory, supervisor-worker, LangGraph, LangChain
@@ -157,7 +157,7 @@ public class MultiLLMPerformanceTestSuite: ObservableObject {
         
         let completionTime = Date().timeIntervalSince(startTime)
         
-        return PerformanceMetrics(
+        return MultiLLMPerformanceMetrics(
             taskCompletionTime: completionTime,
             memoryAccessCount: result.memoryAccesses,
             supervisorInterventions: 0, // No supervisor in baseline
@@ -171,7 +171,7 @@ public class MultiLLMPerformanceTestSuite: ObservableObject {
     
     // MARK: - Enhanced Test (With Full Multi-LLM Framework)
     
-    private func runEnhancedTest(testName: String) async -> PerformanceMetrics {
+    private func runEnhancedTest(testName: String) async -> MultiLLMPerformanceMetrics {
         let startTime = Date()
         
         // Execute with full Multi-LLM framework including 3-tier memory and supervisor-worker
@@ -190,7 +190,7 @@ public class MultiLLMPerformanceTestSuite: ObservableObject {
             "ValidationAgent": Int.random(in: 3...5)
         ]
         
-        return PerformanceMetrics(
+        return MultiLLMPerformanceMetrics(
             taskCompletionTime: completionTime,
             memoryAccessCount: memoryAccessCount,
             supervisorInterventions: supervisorInterventions,
@@ -287,7 +287,7 @@ public class MultiLLMPerformanceTestSuite: ObservableObject {
     
     // MARK: - Performance Analysis
     
-    private func calculateImprovement(baseline: PerformanceMetrics, enhanced: PerformanceMetrics) -> Double {
+    private func calculateImprovement(baseline: MultiLLMPerformanceMetrics, enhanced: MultiLLMPerformanceMetrics) -> Double {
         // Calculate weighted improvement across multiple metrics
         let timeImprovement = (baseline.taskCompletionTime - enhanced.taskCompletionTime) / baseline.taskCompletionTime * 100
         let accuracyImprovement = (enhanced.accuracyScore - baseline.accuracyScore) / baseline.accuracyScore * 100
@@ -300,7 +300,7 @@ public class MultiLLMPerformanceTestSuite: ObservableObject {
         return max(0, weightedImprovement) // Ensure non-negative
     }
     
-    private func generateDetailedAnalysis(testName: String, baseline: PerformanceMetrics, enhanced: PerformanceMetrics) -> String {
+    private func generateDetailedAnalysis(testName: String, baseline: MultiLLMPerformanceMetrics, enhanced: MultiLLMPerformanceMetrics) -> String {
         var analysis = "📊 DETAILED PERFORMANCE ANALYSIS: \(testName)\n"
         analysis += String(repeating: "-", count: 50) + "\n\n"
         

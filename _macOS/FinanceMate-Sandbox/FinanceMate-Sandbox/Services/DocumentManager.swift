@@ -95,7 +95,7 @@ public class DocumentManager: ObservableObject {
             switch documentResult {
             case .success(let processedDoc):
                 workflowDocument.addProcessingStep(step: "Document Analysis", status: .completed)
-                workflowDocument.documentType = processedDoc.documentType
+                workflowDocument.documentType = mapFileTypeToDocumentType(processedDoc.fileType)
                 
                 // Step 2: OCR Processing (for image formats)
                 if isImageFormat(url: url) && workflowConfiguration.ocrEnabled {
@@ -115,7 +115,7 @@ public class DocumentManager: ObservableObject {
                 if workflowConfiguration.financialExtractionEnabled {
                     workflowDocument.addProcessingStep(step: "Financial Data Extraction", status: .inProgress)
                     let textToAnalyze = workflowDocument.ocrResult ?? processedDoc.extractedText
-                    let financialDocumentType = mapToFinancialDocumentType(processedDoc.documentType)
+                    let financialDocumentType = mapToFinancialDocumentType(processedDoc.fileType)
                     let financialResult = await financialDataExtractor.extractFinancialData(from: textToAnalyze, documentType: financialDocumentType)
                     
                     switch financialResult {
@@ -242,8 +242,21 @@ public class DocumentManager: ObservableObject {
         return Double(completedSteps.count) / Double(steps.count)
     }
     
-    private func mapToFinancialDocumentType(_ documentType: DocumentType) -> FinancialDocumentType {
-        switch documentType {
+    private func mapFileTypeToDocumentType(_ fileType: FileType) -> DocumentType {
+        switch fileType {
+        case .invoice:
+            return .invoice
+        case .receipt:
+            return .receipt
+        case .statement:
+            return .statement
+        default:
+            return .other
+        }
+    }
+    
+    private func mapToFinancialDocumentType(_ fileType: FileType) -> FinancialDocumentType {
+        switch fileType {
         case .invoice:
             return .invoice
         case .receipt:
@@ -263,16 +276,16 @@ public class DocumentManager: ObservableObject {
 public struct WorkflowDocument {
     public let id: UUID
     public let originalURL: URL
-    public var workflowStatus: WorkflowStatus
+    public var workflowStatus: DocumentWorkflowStatus
     public let startTime: Date
     public var endTime: Date?
     public var documentType: DocumentType
     public var ocrResult: String?
-    public var financialData: FinancialData?
+    public var financialData: ExtractedFinancialData?
     public var confidence: Double
     public var processingSteps: [ProcessingStep]
     
-    public init(id: UUID, originalURL: URL, workflowStatus: WorkflowStatus, startTime: Date, documentType: DocumentType, ocrResult: String?, financialData: FinancialData?, confidence: Double, processingSteps: [ProcessingStep]) {
+    public init(id: UUID, originalURL: URL, workflowStatus: DocumentWorkflowStatus, startTime: Date, documentType: DocumentType, ocrResult: String?, financialData: ExtractedFinancialData?, confidence: Double, processingSteps: [ProcessingStep]) {
         self.id = id
         self.originalURL = originalURL
         self.workflowStatus = workflowStatus
@@ -341,7 +354,7 @@ public struct WorkflowConfiguration {
     public init() {}
 }
 
-public enum WorkflowStatus {
+public enum DocumentWorkflowStatus {
     case queued
     case processing
     case completed

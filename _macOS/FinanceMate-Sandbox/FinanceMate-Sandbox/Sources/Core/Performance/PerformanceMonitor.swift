@@ -142,6 +142,20 @@ public enum MemoryPressure: String, Codable, CaseIterable {
     }
 }
 
+public struct MemoryUsageInfo {
+    public let totalMemory: UInt64
+    public let usedMemory: UInt64
+    public let freeMemory: UInt64
+    public let memoryPressure: String
+    
+    public init(totalMemory: UInt64, usedMemory: UInt64, freeMemory: UInt64, memoryPressure: String) {
+        self.totalMemory = totalMemory
+        self.usedMemory = usedMemory
+        self.freeMemory = freeMemory
+        self.memoryPressure = memoryPressure
+    }
+}
+
 public struct DiskUsage: Codable {
     public let totalSpace: UInt64
     public let freeSpace: UInt64

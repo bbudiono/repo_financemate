@@ -267,7 +267,7 @@ struct DocumentsView: View {
         }
     }
     
-    private func createFinancialSummary(from financialData: ExtractedFinancialData) -> String {
+    private func createFinancialSummary(from financialData: ProcessedFinancialData) -> String {
         var summary = ""
         
         if let totalAmount = financialData.totalAmount {
@@ -365,73 +365,42 @@ struct DocumentList: View {
     
     var body: some View {
         List(documents) { document in
-            DocumentRow(
-                document: document,
-                isSelected: selectedDocument?.id == document.id,
-                onSelect: { selectedDocument = document },
-                onDelete: { onDelete(document) }
-            )
+            HStack {
+                Image(systemName: document.type.iconName)
+                    .foregroundColor(.blue)
+                    .frame(width: 32)
+                
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(document.name)
+                        .font(.headline)
+                    
+                    Text(document.extractedText)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .lineLimit(2)
+                }
+                
+                Spacer()
+                
+                Button(action: { onDelete(document) }) {
+                    Image(systemName: "trash")
+                        .foregroundColor(.red)
+                }
+                .buttonStyle(.plain)
+            }
+            .padding(.vertical, 4)
+            .background(selectedDocument?.id == document.id ? Color.blue.opacity(0.1) : Color.clear)
+            .onTapGesture {
+                selectedDocument = document
+            }
         }
         .listStyle(.inset)
     }
 }
 
-struct DocumentRow: View {
-    let document: DocumentItem
-    let isSelected: Bool
-    let onSelect: () -> Void
-    let onDelete: () -> Void
-    
-    var body: some View {
-        HStack(spacing: 12) {
-            // Document type icon
-            Image(systemName: document.type.icon)
-                .font(.title2)
-                .foregroundColor(document.type.color)
-                .frame(width: 32, height: 32)
-            
-            // Document info
-            VStack(alignment: .leading, spacing: 4) {
-                Text(document.name)
-                    .font(.headline)
-                    .lineLimit(1)
-                
-                Text(document.extractedText)
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                    .lineLimit(2)
-                
-                HStack {
-                    Text(document.dateAdded, style: .date)
-                        .font(.caption2)
-                        .foregroundColor(.secondary)
-                    
-                    Spacer()
-                    
-                    StatusBadge(status: document.processingStatus)
-                }
-            }
-            
-            Spacer()
-            
-            // Actions
-            Button(action: onDelete) {
-                Image(systemName: "trash")
-                    .foregroundColor(.red)
-            }
-            .buttonStyle(.plain)
-        }
-        .padding(.vertical, 4)
-        .background(isSelected ? Color.blue.opacity(0.1) : Color.clear)
-        .cornerRadius(8)
-        .onTapGesture {
-            onSelect()
-        }
-    }
-}
 
 struct StatusBadge: View {
-    let status: ProcessingStatus
+    let status: ViewProcessingStatus
     
     var body: some View {
         HStack(spacing: 4) {
@@ -476,10 +445,10 @@ struct DocumentItem: Identifiable {
     let type: DocumentType
     let dateAdded: Date
     var extractedText: String
-    var processingStatus: ProcessingStatus
+    var processingStatus: ViewProcessingStatus
 }
 
-enum ProcessingStatus: CaseIterable {
+enum ViewProcessingStatus: CaseIterable {
     case pending
     case processing
     case completed
@@ -541,7 +510,7 @@ enum DocumentFilter: CaseIterable {
         case .invoices: return .invoice
         case .receipts: return .receipt
         case .statements: return .statement
-        case .contracts: return .contract
+        case .contracts: return .other
         }
     }
 }

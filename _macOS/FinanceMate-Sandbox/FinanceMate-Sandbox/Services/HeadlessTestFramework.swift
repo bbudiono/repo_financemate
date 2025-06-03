@@ -412,7 +412,7 @@ public class HeadlessTestFramework: ObservableObject {
             TestCase(name: "Document Type Detection", description: "Test document type detection") {
                 let testURL = URL(fileURLWithPath: "/tmp/invoice_test.pdf")
                 let detectedType = DocumentType.from(url: testURL)
-                return detectedType == .pdf ? .passed : .failed("Type detection failed - expected .pdf, got \(detectedType)")
+                return detectedType == .invoice ? .passed : .failed("Type detection failed - expected .invoice, got \(detectedType)")
             }
         ]
     }

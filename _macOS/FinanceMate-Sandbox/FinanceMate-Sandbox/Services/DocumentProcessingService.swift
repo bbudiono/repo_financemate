@@ -59,13 +59,13 @@ public class DocumentProcessingService: ObservableObject {
         }
         
         do {
-            // Detect document type
-            let documentType = DocumentType.from(url: url)
+            // Detect file type
+            let fileType = FileType.from(url: url)
             
-            // Extract text content based on document type
+            // Extract text content based on file type
             var extractedText = ""
             
-            switch documentType {
+            switch fileType {
             case .pdf:
                 extractedText = extractTextFromPDF(url: url)
             case .image:
@@ -79,12 +79,12 @@ public class DocumentProcessingService: ObservableObject {
             let processedDocument = ProcessedDocument(
                 id: UUID(),
                 originalURL: url,
-                documentType: documentType,
+                fileType: fileType,
                 extractedText: extractedText,
                 extractedData: [:],
                 processingStatus: .completed,
                 processedDate: Date(),
-                confidence: calculateProcessingConfidence(text: extractedText, type: documentType)
+                confidence: calculateProcessingConfidence(text: extractedText, type: fileType)
             )
             
             processedDocuments.append(processedDocument)
@@ -126,7 +126,7 @@ public class DocumentProcessingService: ObservableObject {
         return results
     }
     
-    public func detectDocumentType(from url: URL) -> DocumentType {
+    public func detectFileType(from url: URL) -> FileType {
         let fileName = url.lastPathComponent.lowercased()
         
         if fileName.contains("invoice") {
@@ -138,11 +138,11 @@ public class DocumentProcessingService: ObservableObject {
         } else if fileName.contains("contract") || fileName.contains("lease") {
             return .contract
         } else {
-            return DocumentType.from(url: url)
+            return FileType.from(url: url)
         }
     }
     
-    private func calculateProcessingConfidence(text: String, type: DocumentType) -> Double {
+    private func calculateProcessingConfidence(text: String, type: FileType) -> Double {
         if text.isEmpty {
             return 0.1
         }
@@ -165,17 +165,17 @@ public class DocumentProcessingService: ObservableObject {
 public struct ProcessedDocument {
     public let id: UUID
     public let originalURL: URL
-    public let documentType: DocumentType
+    public let fileType: FileType
     public let extractedText: String
     public let extractedData: [String: Any]
     public let processingStatus: DocumentProcessingStatus
     public let processedDate: Date
     public let confidence: Double
     
-    public init(id: UUID, originalURL: URL, documentType: DocumentType, extractedText: String, extractedData: [String: Any], processingStatus: DocumentProcessingStatus, processedDate: Date, confidence: Double) {
+    public init(id: UUID, originalURL: URL, fileType: FileType, extractedText: String, extractedData: [String: Any], processingStatus: DocumentProcessingStatus, processedDate: Date, confidence: Double) {
         self.id = id
         self.originalURL = originalURL
-        self.documentType = documentType
+        self.fileType = fileType
         self.extractedText = extractedText
         self.extractedData = extractedData
         self.processingStatus = processingStatus
@@ -212,7 +212,7 @@ public enum DocumentProcessingStatus: String, CaseIterable, Codable {
     }
 }
 
-public enum DocumentType: String, CaseIterable {
+public enum FileType: String, CaseIterable {
     case pdf = "PDF"
     case image = "Image"
     case text = "Text"
@@ -222,7 +222,7 @@ public enum DocumentType: String, CaseIterable {
     case contract = "Contract"
     case other = "Other"
     
-    public static func from(url: URL) -> DocumentType {
+    public static func from(url: URL) -> FileType {
         let pathExtension = url.pathExtension.lowercased()
         
         switch pathExtension {
