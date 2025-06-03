@@ -31,6 +31,17 @@ import SwiftUI
 import Combine
 import os.log
 
+// MARK: - Storage Protocol
+
+public protocol CrashStorageProtocol {
+    func saveCrashReport(_ report: CrashReport) async throws
+    func getCrashReports(limit: Int?, since: Date?) async throws -> [CrashReport]
+    func deleteCrashReport(id: UUID) async throws
+    func clearAllCrashReports() async throws
+    func getCrashReportsByType(_ type: CrashType) async throws -> [CrashReport]
+    func getCrashReportsBySeverity(_ severity: CrashSeverity) async throws -> [CrashReport]
+}
+
 // MARK: - Crash Analysis Core Engine
 
 @MainActor

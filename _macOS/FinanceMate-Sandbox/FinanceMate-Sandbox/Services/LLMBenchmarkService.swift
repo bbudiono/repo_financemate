@@ -167,15 +167,9 @@ class LLMBenchmarkService: ObservableObject {
                 progress = Double(index) / Double(totalTests)
             }
             
-            do {
-                let result = await testLLMEndpoint(endpoint)
-                await MainActor.run {
-                    results.append(result)
-                }
-            } catch {
-                await MainActor.run {
-                    errorMessage = "Error testing \(endpoint.name): \(error.localizedDescription)"
-                }
+            let result = await testLLMEndpoint(endpoint)
+            await MainActor.run {
+                results.append(result)
             }
             
             // Small delay between tests to avoid rate limiting
@@ -453,7 +447,7 @@ extension LLMBenchmarkService {
             // Speed Analysis
             let sortedBySpeed = successfulResults.sorted { $0.responseTime < $1.responseTime }
             let fastestLLM = sortedBySpeed.first!
-            let slowestLLM = sortedBySpeed.last!
+            let _ = sortedBySpeed.last!
             
             report += """
             

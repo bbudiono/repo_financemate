@@ -522,6 +522,13 @@ class MockCrashStorage: CrashStorageProtocol {
         }
         return savedReports.filter { $0.severity == severity }
     }
+    
+    func clearAllCrashReports() async throws {
+        if shouldThrowError {
+            throw TestError.mockError
+        }
+        savedReports.removeAll()
+    }
 }
 
 enum TestError: Error {

@@ -322,7 +322,7 @@ struct EnhancedChatPanel: View {
                     content: "🧪 SANDBOX Enhanced Response: \"\(query)\"\n\n" +
                     "---\n🚀 **SANDBOX Advanced Processing:**\n" +
                     "• Quality Score: \(qualityScore)%\n" +
-                    "• Processing Time: \(String(format: \"%.1fs\", responseTime))\n" +
+                    "• Processing Time: \(String(format: "%.1fs", responseTime))\n" +
                     "• Mode: Enhanced Features\n" +
                     "• Analytics: \(enableBasicAnalytics ? "Enabled" : "Disabled")",
                     isUser: false
@@ -549,3 +549,77 @@ struct EnhancedChatPanel: View {
 }
 
 // MARK: - Supporting Views (SANDBOX implementations use same structures as Production)
+
+struct ChatMessageRow: View {
+    let message: ChatMessage
+    let onFeedbackRequest: () -> Void
+    
+    var body: some View {
+        HStack(alignment: .top, spacing: 12) {
+            if message.isUser {
+                Spacer()
+                
+                VStack(alignment: .trailing, spacing: 4) {
+                    Text(message.content)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(12)
+                        .frame(maxWidth: 300, alignment: .trailing)
+                    
+                    Text(DateFormatter.timeFormatter.string(from: message.timestamp))
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                }
+                
+                Image(systemName: "person.circle.fill")
+                    .font(.system(size: 24))
+                    .foregroundColor(.blue)
+            } else {
+                Image(systemName: "brain.head.profile")
+                    .font(.system(size: 24))
+                    .foregroundColor(.purple)
+                
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(message.content)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .background(Color(NSColor.controlBackgroundColor))
+                        .cornerRadius(12)
+                        .frame(maxWidth: 300, alignment: .leading)
+                    
+                    HStack {
+                        Text(DateFormatter.timeFormatter.string(from: message.timestamp))
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                        
+                        Spacer()
+                        
+                        Button("👍") {
+                            onFeedbackRequest()
+                        }
+                        .buttonStyle(.plain)
+                        .font(.caption)
+                    }
+                }
+                
+                Spacer()
+            }
+        }
+    }
+}
+
+extension DateFormatter {
+    static let timeFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.timeStyle = .short
+        return formatter
+    }()
+    
+    static let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        return formatter
+    }()
+}
