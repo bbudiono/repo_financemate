@@ -67,6 +67,8 @@ struct DetailView: View {
                 DocumentsView()
             case .analytics:
                 AnalyticsView()
+            case .export:
+                FinancialExportView()
             case .enhancedAnalytics:
                 Text("Enhanced Analytics View")
                     .font(.largeTitle)
@@ -91,6 +93,7 @@ enum NavigationItem: String, CaseIterable {
     case dashboard = "dashboard"
     case documents = "documents"
     case analytics = "analytics"
+    case export = "export"
     case enhancedAnalytics = "enhancedAnalytics"
     case crashAnalysis = "crashAnalysis"
     case llmBenchmark = "llmBenchmark"
@@ -101,6 +104,7 @@ enum NavigationItem: String, CaseIterable {
         case .dashboard: return "Dashboard"
         case .documents: return "Documents"
         case .analytics: return "Analytics"
+        case .export: return "Financial Export"
         case .enhancedAnalytics: return "Enhanced Analytics"
         case .crashAnalysis: return "Crash Analysis"
         case .llmBenchmark: return "LLM Benchmark"
@@ -113,6 +117,7 @@ enum NavigationItem: String, CaseIterable {
         case .dashboard: return "chart.line.uptrend.xyaxis"
         case .documents: return "doc.fill"
         case .analytics: return "chart.bar.fill"
+        case .export: return "square.and.arrow.up.fill"
         case .enhancedAnalytics: return "chart.bar.doc.horizontal.fill"
         case .crashAnalysis: return "exclamationmark.triangle.fill"
         case .llmBenchmark: return "cpu.fill"

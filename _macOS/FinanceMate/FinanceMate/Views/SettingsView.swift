@@ -474,7 +474,7 @@ struct FeatureRow: View {
 
 struct DataExportView: View {
     @Environment(\.dismiss) private var dismiss
-    @State private var selectedFormat: ExportFormat = .pdf
+    @State private var selectedFormat: SettingsExportFormat = .pdf
     @State private var includeCharts = true
     @State private var includeTransactions = true
     @State private var includeAnalytics = true
@@ -509,7 +509,7 @@ struct DataExportView: View {
                             .fontWeight(.semibold)
                         
                         Picker("Format", selection: $selectedFormat) {
-                            ForEach(ExportFormat.allCases, id: \.self) { format in
+                            ForEach(SettingsExportFormat.allCases, id: \.self) { format in
                                 Text(format.displayName).tag(format)
                             }
                         }
@@ -576,7 +576,7 @@ struct DataExportView: View {
     }
 }
 
-enum ExportFormat: CaseIterable {
+enum SettingsExportFormat: CaseIterable {
     case pdf
     case csv
     case excel

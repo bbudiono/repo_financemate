@@ -543,6 +543,8 @@ struct AddTransactionView: View {
     @State private var description: String = ""
     @State private var isIncome: Bool = true
     @State private var selectedDate = Date()
+    @State private var safeFinancialDataCount: Int = 0
+    @State private var safeDocumentCount: Int = 0
     
     var body: some View {
         NavigationView {
@@ -580,8 +582,8 @@ struct AddTransactionView: View {
                 }
                 
                 Section(header: Text("Current Data")) {
-                    Text("• \(fetchFinancialDataCount()) FinancialData records")
-                    Text("• \(fetchDocumentCount()) Document records")
+                    Text("• \(safeFinancialDataCount) FinancialData records")
+                    Text("• \(safeDocumentCount) Document records")
                     Text("• Real Core Data integration active")
                 }
             }
@@ -593,17 +595,42 @@ struct AddTransactionView: View {
                     }
                 }
             }
+            .onAppear {
+                refreshDataCounts()
+            }
         }
     }
     
-    private func fetchFinancialDataCount() -> Int {
-        let request: NSFetchRequest<FinancialData> = FinancialData.fetchRequest()
-        return (try? viewContext.count(for: request)) ?? 0
-    }
-    
-    private func fetchDocumentCount() -> Int {
-        let request: NSFetchRequest<Document> = Document.fetchRequest()
-        return (try? viewContext.count(for: request)) ?? 0
+    private func refreshDataCounts() {
+        // Safely fetch data counts in background to avoid UI thread crashes
+        DispatchQueue.global(qos: .userInitiated).async {
+            var financialCount = 0
+            var documentCount = 0
+            
+            // Safely attempt to fetch financial data count
+            do {
+                let financialRequest: NSFetchRequest<FinancialData> = FinancialData.fetchRequest()
+                financialCount = try viewContext.count(for: financialRequest)
+            } catch {
+                print("⚠️ Safe fetch: Could not count FinancialData - \(error.localizedDescription)")
+                financialCount = 0
+            }
+            
+            // Safely attempt to fetch document count
+            do {
+                let documentRequest: NSFetchRequest<Document> = Document.fetchRequest()
+                documentCount = try viewContext.count(for: documentRequest)
+            } catch {
+                print("⚠️ Safe fetch: Could not count Documents - \(error.localizedDescription)")
+                documentCount = 0
+            }
+            
+            // Update UI on main thread
+            DispatchQueue.main.async {
+                safeFinancialDataCount = financialCount
+                safeDocumentCount = documentCount
+            }
+        }
     }
     
     private func saveTransaction() {
@@ -620,6 +647,7 @@ struct AddTransactionView: View {
         do {
             try viewContext.save()
             print("✅ Saved transaction: \(description) - \(isIncome ? "+" : "-")$\(amountValue)")
+            refreshDataCounts() // Refresh counts after successful save
             dismiss()
         } catch {
             print("❌ Error saving transaction: \(error)")

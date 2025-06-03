@@ -25,6 +25,8 @@
 		B197F5CBA06343C5ABDD46CE6738CBFC /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE74DA56CA14FC99080F4D66630B464 /* SettingsView.swift */; };
 		BE8F6A2B1234567890ABCDEF /* Project+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF9E8B3C1234567890ABCDEF /* Project+CoreDataProperties.swift */; };
 		D62D0351A2F14CD8816B3337F0FE5F6A /* AnalyticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2AAC89D21EB40AABC6461CF42C85165 /* AnalyticsView.swift */; };
+		E1234567890ABCDEF1234567 /* FinancialExportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1234567890ABCDEF1234567 /* FinancialExportView.swift */; };
+		E2345678901BCDEF23456789 /* BasicExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2345678901BCDEF23456789 /* BasicExportService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,6 +48,8 @@
 		CF9E8B3C1234567890ABCDEF /* Project+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Project+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		D3F78B08CDBB4B74973C660565BCDABE /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		F2AAC89D21EB40AABC6461CF42C85165 /* AnalyticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsView.swift; sourceTree = "<group>"; };
+		F1234567890ABCDEF1234567 /* FinancialExportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinancialExportView.swift; sourceTree = "<group>"; };
+		F2345678901BCDEF23456789 /* BasicExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicExportService.swift; sourceTree = "<group>"; };
 		F74A98781F1B874D7128CEE5 /* FinanceMate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FinanceMate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -66,6 +70,7 @@
 				F2AAC89D21EB40AABC6461CF42C85165 /* AnalyticsView.swift */,
 				221AF239D0C640B3876CEFC1891317A7 /* DocumentsView.swift */,
 				ADE74DA56CA14FC99080F4D66630B464 /* SettingsView.swift */,
+				F1234567890ABCDEF1234567 /* FinancialExportView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -112,12 +117,21 @@
 			);
 			sourceTree = "<group>";
 		};
+		A1B2C3D4E5F6789012345678 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				F2345678901BCDEF23456789 /* BasicExportService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
 		D5D10089FFAD4150861B279B /* FinanceMate */ = {
 			isa = PBXGroup;
 			children = (
 				CD23538CF257D51DBA226B97 /* FinanceMateApp.swift */,
 				78E9ABC1234567890DEFABCD /* Sources */,
 				5A3E0825B270488F84D0B970B9505899 /* Views */,
+				A1B2C3D4E5F6789012345678 /* Services */,
 				23B45678901234567890123B /* Assets.xcassets */,
 			);
 			path = FinanceMate;
@@ -199,6 +213,8 @@
 				9E8F6A2B1234567890ABCDEF /* FinancialData+CoreDataProperties.swift in Sources */,
 				AE8F6A2B1234567890ABCDEF /* Project+CoreDataClass.swift in Sources */,
 				BE8F6A2B1234567890ABCDEF /* Project+CoreDataProperties.swift in Sources */,
+				E1234567890ABCDEF1234567 /* FinancialExportView.swift in Sources */,
+				E2345678901BCDEF23456789 /* BasicExportService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
