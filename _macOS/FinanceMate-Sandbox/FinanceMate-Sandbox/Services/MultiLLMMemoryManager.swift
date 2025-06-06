@@ -578,7 +578,7 @@ public struct TaskPattern {
 
 public struct WorkflowExecution {
     public let workflowId: String
-    public let steps: [WorkflowStep]
+    public let steps: [MultiLLMWorkflowStep]
     public let result: WorkflowResult
     public let timestamp: Date
 }

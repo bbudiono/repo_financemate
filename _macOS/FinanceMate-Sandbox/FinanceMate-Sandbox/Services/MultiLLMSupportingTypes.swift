@@ -476,15 +476,15 @@ public struct AgentFailure {
 
 public struct MultiLLMWorkflow {
     public let id: String
-    public let steps: [WorkflowStep]
+    public let steps: [MultiLLMWorkflowStep]
     
-    public init(id: String, steps: [WorkflowStep]) {
+    public init(id: String, steps: [MultiLLMWorkflowStep]) {
         self.id = id
         self.steps = steps
     }
 }
 
-public enum WorkflowStep {
+public enum MultiLLMWorkflowStep {
     case research(prompt: String)
     case analysis(prompt: String)
     case synthesis(prompt: String)
