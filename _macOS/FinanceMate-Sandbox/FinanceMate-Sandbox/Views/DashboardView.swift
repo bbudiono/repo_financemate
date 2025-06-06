@@ -127,6 +127,10 @@ struct DashboardView: View {
                 DashboardMetricsGrid(allFinancialData: allFinancialData)
                     .padding(.horizontal)
                 
+                // NEW: Real-Time Financial Insights Preview - NO MOCK DATA
+                DashboardInsightsPreview()
+                    .padding(.horizontal)
+                
                 // Modular Spending Chart Component
                 DashboardSpendingChart(
                     allFinancialData: allFinancialData,
