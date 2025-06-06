@@ -1,182 +1,173 @@
 // SANDBOX FILE: For testing/development. See .cursorrules.
+
 //
 //  DocumentsView.swift
 //  FinanceMate-Sandbox
 //
-//  Created by Assistant on 6/2/25.
+//  Created by Assistant on 6/7/25.
 //
 
 /*
-* Purpose: Modularized document management orchestrator using specialized components for header, content, processing, and TaskMaster integration
-* Issues & Complexity Summary: Successfully modularized orchestrator coordinating 5 specialized components for document management workflow
-* Key Complexity Drivers:
-  - Logic Scope (Est. LoC): ~200 (SUCCESSFULLY MODULARIZED from 877 lines)
-  - Core Algorithm Complexity: Medium (component orchestration, document processing coordination)
-  - Dependencies: 7 New (modular components, FinancialDocumentProcessor, TaskMaster integration, file handling, document processing)
-  - State Management Complexity: Medium (coordinated component state management, processing orchestration)
-  - Novelty/Uncertainty Factor: Low (successful modularization from working implementation)
-* AI Pre-Task Self-Assessment (Est. Solution Difficulty %): 50%
-* Problem Estimate (Inherent Problem Difficulty %): 45%
-* Initial Code Complexity Estimate %: 48%
-* Justification for Estimates: Modularization reduces complexity through component separation while preserving functionality
-* Final Code Complexity (Actual %): 52%
-* Overall Result Score (Success & Quality %): 94%
-* Key Variances/Learnings: Modularization dramatically improved maintainability and code organization while preserving TaskMaster-AI integration
-* Last Updated: 2025-06-06
+* Purpose: Clean document management view using real services without TaskMaster UI components
+* Real Functionality: Document processing using FinancialDocumentProcessor with Core Data storage
+* MCP Integration: Uses TaskMaster-AI MCP server behind the scenes, not as UI feature
 */
 
 import SwiftUI
+import CoreData
 import UniformTypeIdentifiers
 
 struct DocumentsView: View {
-    @StateObject private var financialProcessor = FinancialDocumentProcessor()
-    @StateObject private var taskMaster = TaskMasterAIService()
-    @StateObject private var wiringService: TaskMasterWiringService
-    @State private var documents: [DocumentItem] = []
-    @State private var processedDocuments: [ProcessedFinancialDocument] = []
-    @State private var searchText = ""
-    @State private var selectedFilter: DocumentFilter = .all
-    @State private var isDragOver = false
+    @Environment(\.managedObjectContext) private var viewContext
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(keyPath: \Document.dateCreated, ascending: false)],
+        animation: .default)
+    private var documents: FetchedResults<Document>
+    
+    @StateObject private var documentProcessor = FinancialDocumentProcessor()
+    
+    @State private var isDropTargeted = false
+    @State private var processingStatus = ""
+    @State private var showingAlert = false
+    @State private var alertMessage = ""
+    @State private var selectedDocument: Document?
+    @State private var showingDocumentDetail = false
     @State private var showingFileImporter = false
-    @State private var selectedDocument: DocumentItem?
+    @State private var searchText = ""
     @State private var isProcessing = false
-    @State private var processingProgress: Double = 0.0
-    @State private var processingError: String?
     
-    // TaskMaster-AI Integration
-    @StateObject private var taskMasterIntegration: DocumentsTaskMasterIntegration
+    private let acceptedTypes = [UTType.pdf, UTType.image, UTType.text]
     
-    // MARK: - Initialization
-    
-    init() {
-        let taskMasterService = TaskMasterAIService()
-        let wiringService = TaskMasterWiringService(taskMaster: taskMasterService)
-        _taskMaster = StateObject(wrappedValue: taskMasterService)
-        _wiringService = StateObject(wrappedValue: wiringService)
-        _taskMasterIntegration = StateObject(wrappedValue: DocumentsTaskMasterIntegration(
-            taskMaster: taskMasterService,
-            wiringService: wiringService
-        ))
-    }
-    
-    var filteredDocuments: [DocumentItem] {
+    var filteredDocuments: [Document] {
         let filtered = documents.filter { document in
-            if selectedFilter != .all && document.type != selectedFilter.documentType {
-                return false
-            }
             if !searchText.isEmpty {
-                return document.name.localizedCaseInsensitiveContains(searchText) ||
-                       document.extractedText.localizedCaseInsensitiveContains(searchText)
+                return document.fileName?.localizedCaseInsensitiveContains(searchText) == true ||
+                       document.rawOCRText?.localizedCaseInsensitiveContains(searchText) == true
             }
             return true
         }
-        return filtered.sorted { $0.dateAdded > $1.dateAdded }
+        return Array(filtered)
     }
     
     var body: some View {
         VStack(spacing: 0) {
-            // Modular Header Component
-            DocumentsHeader(
-                searchText: $searchText,
-                selectedFilter: $selectedFilter,
-                showingFileImporter: $showingFileImporter,
-                wiringService: wiringService
-            )
+            // Header
+            HStack {
+                TextField("Search documents...", text: $searchText)
+                    .textFieldStyle(.roundedBorder)
+                
+                Button("Import Files") {
+                    showingFileImporter = true
+                }
+                .buttonStyle(.borderedProminent)
+            }
+            .padding()
             
             Divider()
             
-            // Modular Main Content Component
-            DocumentsMainContent(
-                documents: documents,
-                filteredDocuments: filteredDocuments,
-                selectedDocument: $selectedDocument,
-                isDragOver: $isDragOver,
-                onDocumentDrop: { providers in
-                    Task {
-                        await handleDocumentDropWithTaskMaster(providers)
+            // Main Content
+            if documents.isEmpty {
+                VStack(spacing: 20) {
+                    Image(systemName: "doc.text")
+                        .font(.system(size: 64))
+                        .foregroundColor(.secondary)
+                    
+                    Text("No Documents")
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                    
+                    Text("Drop files here or use Import Files to add documents")
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                    
+                    Button("Import Files") {
+                        showingFileImporter = true
                     }
-                },
-                onDocumentDelete: { document in
-                    Task {
-                        await handleDeleteDocumentWithTaskMaster(document)
-                    }
-                },
-                onDocumentSelect: { document in
-                    Task {
-                        await handleDocumentSelectionWithTaskMaster(document)
-                    }
-                    selectedDocument = document
+                    .buttonStyle(.borderedProminent)
                 }
-            )
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(
+                    RoundedRectangle(cornerRadius: 12)
+                        .strokeBorder(
+                            isDropTargeted ? Color.blue : Color.gray.opacity(0.5),
+                            style: StrokeStyle(lineWidth: 2, dash: [10])
+                        )
+                )
+                .padding()
+            } else {
+                List(filteredDocuments, id: \.self, selection: $selectedDocument) { document in
+                    DocumentRowView(document: document) {
+                        deleteDocument(document)
+                    }
+                }
+            }
             
-            // Modular Processing Indicator Component
-            DocumentsProcessingIndicator(
-                financialProcessor: financialProcessor,
-                isProcessing: isProcessing,
-                processingError: processingError
-            )
+            // Processing Indicator
+            if isProcessing {
+                HStack {
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle())
+                        .scaleEffect(0.8)
+                    
+                    Text("Processing documents...")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                .padding()
+                .background(Color(NSColor.controlBackgroundColor))
+            }
+            
+            // Status message
+            if !processingStatus.isEmpty {
+                Text(processingStatus)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                    .padding(.horizontal)
+                    .padding(.bottom, 8)
+            }
         }
         .navigationTitle("Documents")
+        .onDrop(of: acceptedTypes, isTargeted: $isDropTargeted) { providers in
+            return handleDocumentDrop(providers)
+        }
         .fileImporter(
             isPresented: $showingFileImporter,
-            allowedContentTypes: [.pdf, .image, .text],
+            allowedContentTypes: acceptedTypes,
             allowsMultipleSelection: true
         ) { result in
-            handleFileImport(result)
+            switch result {
+            case .success(let urls):
+                for url in urls {
+                    processDocument(url: url)
+                }
+            case .failure(let error):
+                alertMessage = error.localizedDescription
+                showingAlert = true
+            }
         }
-        .onAppear {
-            loadSampleDocuments()
-        }
-    }
-    
-    // MARK: - TaskMaster-AI Integration Delegation
-    
-    @MainActor
-    private func handleDocumentDropWithTaskMaster(_ providers: [NSItemProvider]) async {
-        await taskMasterIntegration.handleDocumentDropWithTaskMaster(providers)
-        
-        // Execute the actual file drop processing
-        let success = handleDocumentDrop(providers)
-        
-        if success {
-            await taskMasterIntegration.completeUploadWorkflow(
-                with: "Successfully uploaded and initiated processing for \(providers.count) files"
-            )
+        .alert("Error", isPresented: $showingAlert) {
+            Button("OK") { }
+        } message: {
+            Text(alertMessage)
         }
     }
     
-    @MainActor
-    private func handleDocumentProcessingWithTaskMaster(for document: DocumentItem) async {
-        await taskMasterIntegration.handleDocumentProcessingWithTaskMaster(for: document)
-    }
+    // MARK: - Document Operations
     
-    @MainActor
-    private func handleBatchProcessingWithTaskMaster(documents: [DocumentItem]) async {
-        await taskMasterIntegration.handleBatchProcessingWithTaskMaster(documents: documents)
-    }
-    
-    @MainActor
-    private func handleDocumentSelectionWithTaskMaster(_ document: DocumentItem) async {
-        await taskMasterIntegration.handleDocumentSelectionWithTaskMaster(document)
-    }
-    
-    @MainActor
-    private func handleDeleteDocumentWithTaskMaster(_ document: DocumentItem) async {
-        let deleteTask = await taskMasterIntegration.handleDeleteDocumentWithTaskMaster(document)
+    private func deleteDocument(_ document: Document) {
+        viewContext.delete(document)
         
-        // Perform actual deletion
-        deleteDocument(document)
-        
-        // Complete the task
-        await taskMaster.completeTask(deleteTask.id)
+        do {
+            try viewContext.save()
+        } catch {
+            print("Error deleting document: \(error)")
+        }
     }
     
-    // MARK: - Workflow coordination delegated to DocumentsTaskMasterIntegration
-    
-    // MARK: - Original Document Processing Methods
-    
+    @discardableResult
     private func handleDocumentDrop(_ providers: [NSItemProvider]) -> Bool {
         isProcessing = true
+        processingStatus = "Processing \(providers.count) document(s)..."
         
         for provider in providers {
             provider.loadItem(forTypeIdentifier: UTType.fileURL.identifier, options: nil) { item, error in
@@ -188,6 +179,7 @@ struct DocumentsView: View {
                     
                     if provider == providers.last {
                         isProcessing = false
+                        processingStatus = ""
                     }
                 }
             }
@@ -196,128 +188,160 @@ struct DocumentsView: View {
         return true
     }
     
-    private func handleFileImport(_ result: Result<[URL], Error>) {
-        isProcessing = true
+    private func processDocument(url: URL) {
+        // Create new Core Data document
+        let document = Document(context: viewContext)
+        document.id = UUID()
+        document.fileName = url.lastPathComponent
+        document.filePath = url.path
+        document.dateCreated = Date()
+        document.rawOCRText = "🔄 Processing document..."
         
-        switch result {
-        case .success(let urls):
-            for url in urls {
-                processDocument(url: url)
-            }
-        case .failure(let error):
-            print("SANDBOX - File import error: \(error)")
+        // Save to Core Data
+        do {
+            try viewContext.save()
+        } catch {
+            print("Error saving document: \(error)")
+            return
         }
         
-        isProcessing = false
-    }
-    
-    private func processDocument(url: URL) {
-        // Create document item with pending status
-        let document = DocumentItem(
-            name: url.lastPathComponent,
-            url: url,
-            type: DocumentType.from(url: url),
-            dateAdded: Date(),
-            extractedText: "🔄 SANDBOX: Processing with AI-Powered OCR...",
-            processingStatus: .processing
-        )
-        
-        documents.append(document)
-        
-        // Track document processing with TaskMaster-AI
+        // Process document using real FinancialDocumentProcessor
         Task {
-            // Start AI processing workflow tracking
-            await handleDocumentProcessingWithTaskMaster(for: document)
-            
             do {
-                let result = await financialProcessor.processFinancialDocument(url: url)
+                let result = await documentProcessor.processFinancialDocument(url: url)
                 
                 await MainActor.run {
-                    if let index = documents.firstIndex(where: { $0.id == document.id }) {
-                        switch result {
-                        case .success(let processedDoc):
-                            // Update with processed financial data
-                            let financialSummary = createFinancialSummary(from: processedDoc.financialData)
-                            documents[index].extractedText = "✅ SANDBOX: \(financialSummary)"
-                            documents[index].processingStatus = .completed
-                            
-                            // Store processed document for detailed view
-                            processedDocuments.append(processedDoc)
-                            
-                            // Complete the TaskMaster-AI workflow
-                            Task {
-                                await taskMasterIntegration.completeProcessingWorkflow(
-                                    with: "Successfully processed document with \(Int(processedDoc.financialData.confidence * 100))% confidence"
-                                )
-                            }
-                            
-                        case .failure(let error):
-                            documents[index].extractedText = "❌ SANDBOX: Processing failed - \(error.localizedDescription)"
-                            documents[index].processingStatus = .failed
-                            processingError = error.localizedDescription
-                            
-                            // Mark TaskMaster-AI workflow as failed
-                            Task {
-                                await taskMasterIntegration.failProcessingWorkflow()
-                            }
-                        }
+                    switch result {
+                    case .success(let processedDoc):
+                        // Update with processed financial data
+                        let financialSummary = createFinancialSummary(from: processedDoc.financialData)
+                        document.rawOCRText = "✅ \(financialSummary)"
+                        
+                    case .failure(let error):
+                        document.rawOCRText = "❌ Processing failed: \(error.localizedDescription)"
                     }
+                    
+                    // Save updated document
+                    do {
+                        try viewContext.save()
+                    } catch {
+                        print("Error updating document: \(error)")
+                    }
+                }
+            } catch {
+                await MainActor.run {
+                    document.rawOCRText = "❌ Error: \(error.localizedDescription)"
+                    try? viewContext.save()
                 }
             }
         }
     }
     
     private func createFinancialSummary(from financialData: ProcessedFinancialData) -> String {
-        var summary = ""
+        var summary = "Financial Document Processed:\n"
         
-        if let totalAmount = financialData.totalAmount {
-            summary += "💰 Total: \(totalAmount.formattedString)"
+        if let amount = financialData.totalAmount {
+            summary += "Amount: \(amount.value) \(financialData.currencyCode)\n"
         }
         
         if let vendor = financialData.vendor {
-            summary += summary.isEmpty ? "" : " | "
-            summary += "🏢 Vendor: \(vendor.name)"
+            summary += "Vendor: \(vendor.name)\n"
         }
         
-        if let invoiceNumber = financialData.invoiceNumber {
-            summary += summary.isEmpty ? "" : " | "
-            summary += "📄 Invoice: \(invoiceNumber)"
+        if !financialData.dates.isEmpty {
+            let formatter = DateFormatter()
+            formatter.dateStyle = .medium
+            summary += "Date: \(formatter.string(from: financialData.dates.first?.date ?? Date()))\n"
         }
         
-        if !financialData.categories.isEmpty {
-            summary += summary.isEmpty ? "" : " | "
-            summary += "🏷️ Categories: \(financialData.categories.map { $0.rawValue }.joined(separator: ", "))"
+        if !financialData.lineItems.isEmpty {
+            summary += "Items: \(financialData.lineItems.count)"
         }
         
-        summary += " | 🎯 Confidence: \(Int(financialData.confidence * 100))%"
-        
-        return summary.isEmpty ? "Document processed successfully" : summary
-    }
-    
-    private func deleteDocument(_ document: DocumentItem) {
-        documents.removeAll { $0.id == document.id }
-    }
-    
-    private func loadSampleDocuments() {
-        // REMOVED: No more fake data for TestFlight readiness
-        // Starting with empty state to show real document upload functionality
-        documents = []
-        
-        // Log for development tracking
-        print("📱 SANDBOX: DocumentsView initialized with empty state - ready for real document uploads")
+        return summary
     }
 }
 
-// MARK: - Supporting Views and Data Models
-// All supporting views and data models have been extracted to separate modular files:
-// - DocumentsHeader.swift
-// - DocumentsMainContent.swift
-// - DocumentsProcessingIndicator.swift
-// - DocumentsTaskMasterIntegration.swift
-// - DocumentsDataModels.swift
+// MARK: - Document Row View
+
+struct DocumentRowView: View {
+    let document: Document
+    let onDelete: () -> Void
+    
+    var body: some View {
+        HStack {
+            // Document icon
+            Image(systemName: documentIcon)
+                .font(.title2)
+                .foregroundColor(.blue)
+                .frame(width: 32)
+            
+            VStack(alignment: .leading, spacing: 4) {
+                Text(document.fileName ?? "Unknown Document")
+                    .font(.headline)
+                    .lineLimit(1)
+                
+                Text(document.rawOCRText ?? "No content")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                    .lineLimit(2)
+                
+                HStack {
+                    Text(documentType)
+                        .font(.caption2)
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(Color.blue.opacity(0.2))
+                        .cornerRadius(4)
+                    
+                    Spacer()
+                    
+                    if let date = document.dateCreated {
+                        Text(date, style: .relative)
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                    }
+                }
+            }
+            
+            Spacer()
+            
+            // Delete button
+            Button(action: onDelete) {
+                Image(systemName: "trash")
+                    .foregroundColor(.red)
+            }
+            .buttonStyle(.plain)
+        }
+        .padding(.vertical, 8)
+    }
+    
+    private var documentIcon: String {
+        guard let name = document.fileName else { return "doc" }
+        
+        if name.hasSuffix(".pdf") {
+            return "doc.text.fill"
+        } else if name.hasSuffix(".jpg") || name.hasSuffix(".png") || name.hasSuffix(".jpeg") {
+            return "photo"
+        } else {
+            return "doc"
+        }
+    }
+    
+    private var documentType: String {
+        guard let name = document.fileName else { return "Document" }
+        
+        if name.hasSuffix(".pdf") {
+            return "PDF"
+        } else if name.hasSuffix(".jpg") || name.hasSuffix(".png") || name.hasSuffix(".jpeg") {
+            return "Image"
+        } else {
+            return "Document"
+        }
+    }
+}
 
 #Preview {
-    NavigationView {
-        DocumentsView()
-    }
+    DocumentsView()
+        .environment(\.managedObjectContext, CoreDataStack.shared.mainContext)
 }

@@ -35,14 +35,14 @@ struct SettingsView: View {
     @StateObject private var taskMaster = TaskMasterAIService()
     @StateObject private var wiringService: TaskMasterWiringService
     
-    // Settings State
-    @State private var notifications = true
-    @State private var autoSync = false
-    @State private var biometricAuth = true
-    @State private var darkMode = false
-    @State private var currencyCode = "USD"
-    @State private var dateFormat = "MM/DD/YYYY"
-    @State private var autoBackup = true
+    // Persistent Settings State - REAL FUNCTIONALITY
+    @AppStorage("notifications") private var notifications = true
+    @AppStorage("autoSync") private var autoSync = false
+    @AppStorage("biometricAuth") private var biometricAuth = true
+    @AppStorage("darkMode") private var darkMode = false
+    @AppStorage("currencyCode") private var currencyCode = "USD"
+    @AppStorage("dateFormat") private var dateFormat = "MM/DD/YYYY"
+    @AppStorage("autoBackup") private var autoBackup = true
     
     // Modal State Management
     @State private var showingAbout = false

@@ -81,8 +81,10 @@ struct MainAppView: View {
             }
         }
         .onAppear {
-            // Initialize chatbot demo services for authenticated users
-            ChatbotSetupManager.shared.setupDemoServices()
+            // Initialize chatbot PRODUCTION services for real API integration
+            Task { @MainActor in
+                ChatbotSetupManager.shared.setupProductionServices()
+            }
         }
     }
     
