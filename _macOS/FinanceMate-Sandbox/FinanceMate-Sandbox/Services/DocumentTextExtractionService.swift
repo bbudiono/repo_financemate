@@ -21,6 +21,7 @@ import Vision
 
 // MARK: - Document Text Extraction Service
 
+@MainActor
 public class DocumentTextExtractionService {
     
     // MARK: - Properties
@@ -136,7 +137,7 @@ public class DocumentTextExtractionService {
         }
         
         // Validate that we extracted meaningful content
-        let cleanedText = extractedText.trimmingCharacters(in: .whitespacesAndNewlines)
+        let cleanedText = extractedText.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
         guard !cleanedText.isEmpty else {
             throw DocumentExtractionError.noTextExtracted
         }
@@ -154,7 +155,7 @@ public class DocumentTextExtractionService {
             let text = try await ocrService.extractText(from: url)
             
             // Validate OCR results
-            let cleanedText = text.trimmingCharacters(in: .whitespacesAndNewlines)
+            let cleanedText = text.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
             guard !cleanedText.isEmpty else {
                 throw DocumentExtractionError.ocrNoTextFound
             }
@@ -175,7 +176,7 @@ public class DocumentTextExtractionService {
             let text = try String(contentsOf: url, encoding: .utf8)
             
             // Validate file has content
-            let cleanedText = text.trimmingCharacters(in: .whitespacesAndNewlines)
+            let cleanedText = text.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
             guard !cleanedText.isEmpty else {
                 throw DocumentExtractionError.emptyDocument
             }

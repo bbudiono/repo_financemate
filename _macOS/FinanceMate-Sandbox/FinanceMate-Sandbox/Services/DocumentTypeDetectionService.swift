@@ -118,8 +118,8 @@ public class DocumentTypeDetectionService {
         return .unknown
     }
     
-    private func analyzeFileExtension(extension: String) -> ProcessedDocumentType {
-        switch extension {
+    private func analyzeFileExtension(extension fileExtension: String) -> ProcessedDocumentType {
+        switch fileExtension {
         case "pdf":
             return .invoice // Most common financial PDF type
         case "jpg", "jpeg", "png", "heic", "tiff":
@@ -217,14 +217,3 @@ public class DocumentTypeDetectionService {
     }
 }
 
-// MARK: - Supporting Types (if not already defined elsewhere)
-
-public enum ProcessedDocumentType: String, CaseIterable, Codable {
-    case invoice = "Invoice"
-    case receipt = "Receipt"
-    case bankStatement = "Bank Statement"
-    case taxDocument = "Tax Document"
-    case expenseReport = "Expense Report"
-    case contract = "Contract"
-    case unknown = "Unknown"
-}

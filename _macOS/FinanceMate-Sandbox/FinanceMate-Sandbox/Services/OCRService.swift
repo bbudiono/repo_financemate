@@ -50,7 +50,7 @@ public class OCRService: ObservableObject {
     
     // MARK: - Initialization
     
-    public init() {
+    nonisolated public init() {
         // Initialize OCR service
     }
     
