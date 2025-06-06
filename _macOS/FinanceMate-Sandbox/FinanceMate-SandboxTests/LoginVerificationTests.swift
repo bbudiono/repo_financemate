@@ -199,7 +199,7 @@ final class LoginVerificationTests: XCTestCase {
         
         // When - Authentication fails
         authService.errorMessage = "Authentication failed"
-        authService.authenticationState = .error(AuthenticationError.signInFailed)
+        authService.authenticationState = .failed("Authentication failed")
         authService.isLoading = false
         
         // Then - Should handle error properly
@@ -213,7 +213,7 @@ final class LoginVerificationTests: XCTestCase {
     func testErrorRecovery() {
         // Given - Authentication service in error state
         authService.errorMessage = "Previous error"
-        authService.authenticationState = .error(AuthenticationError.signInFailed)
+        authService.authenticationState = .failed("Authentication failed")
         
         // When - Clearing error and retrying
         authService.errorMessage = nil

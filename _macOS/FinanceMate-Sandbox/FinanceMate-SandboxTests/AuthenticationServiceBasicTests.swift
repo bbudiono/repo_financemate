@@ -103,12 +103,12 @@ final class AuthenticationServiceBasicTests: XCTestCase {
         XCTAssertEqual(AuthenticationState.authenticating, .authenticating)
         XCTAssertEqual(AuthenticationState.authenticated, .authenticated)
         
-        // Test error state creation
-        let errorState = AuthenticationState.error(AuthenticationError.noCurrentUser)
-        if case .error = errorState {
+        // Test failed state creation
+        let errorState = AuthenticationState.failed("Authentication failed")
+        if case .failed = errorState {
             XCTAssertTrue(true)
         } else {
-            XCTFail("Error state not created correctly")
+            XCTFail("Failed state not created correctly")
         }
     }
     

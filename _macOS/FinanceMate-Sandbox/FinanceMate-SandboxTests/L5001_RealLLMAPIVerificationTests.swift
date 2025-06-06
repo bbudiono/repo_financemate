@@ -218,7 +218,7 @@ final class L5001_RealLLMAPIVerificationTests: XCTestCase {
             let keyName = provider.apiKeyEnvironmentVariable
             
             for line in lines {
-                if line.hasPrefix("\\(keyName)=") {
+                if line.hasPrefix("\(keyName)=") {
                     let key = String(line.dropFirst(keyName.count + 1))
                     if !key.contains("placeholder") && key.count > 10 {
                         environmentAPIKeys[provider] = key
@@ -231,7 +231,8 @@ final class L5001_RealLLMAPIVerificationTests: XCTestCase {
     private func getProjectRootPath() -> String {
         let currentPath = FileManager.default.currentDirectoryPath
         if currentPath.contains("/_macOS/") {
-            return String(currentPath.prefix(while: { !currentPath.hasSuffix("/_macOS") })).dropLast(7)
+            let prefixPath = String(currentPath.prefix(while: { _ in !currentPath.hasSuffix("/_macOS") }))
+            return String(prefixPath.dropLast(7))
         }
         return currentPath
     }
@@ -240,10 +241,10 @@ final class L5001_RealLLMAPIVerificationTests: XCTestCase {
         let url = URL(string: "https://api.openai.com/v1/chat/completions")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-        request.setValue("Bearer \\(apiKey)", forHTTPHeaderField: "Authorization")
+        request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
-        let body = [
+        let body: [String: Any] = [
             "model": "gpt-3.5-turbo",
             "messages": [["role": "user", "content": prompt]],
             "max_tokens": 50
@@ -270,7 +271,7 @@ final class L5001_RealLLMAPIVerificationTests: XCTestCase {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue("2023-06-01", forHTTPHeaderField: "anthropic-version")
         
-        let body = [
+        let body: [String: Any] = [
             "model": "claude-3-haiku-20240307",
             "max_tokens": 50,
             "messages": [["role": "user", "content": prompt]]
@@ -290,12 +291,12 @@ final class L5001_RealLLMAPIVerificationTests: XCTestCase {
     }
     
     private func makeGoogleAIAPIRequest(apiKey: String, prompt: String) async throws -> String {
-        let url = URL(string: "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=\\(apiKey)")!
+        let url = URL(string: "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=\(apiKey)")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
-        let body = [
+        let body: [String: Any] = [
             "contents": [
                 ["parts": [["text": prompt]]]
             ]
@@ -344,7 +345,7 @@ final class L5001_RealLLMAPIVerificationTests: XCTestCase {
                 return try await makeGoogleAIAPIRequest(apiKey: invalidKey, prompt: "Test")
             }
         } catch {
-            return "error: \\(error.localizedDescription)"
+            return "error: \(error.localizedDescription)"
         }
     }
     
@@ -359,11 +360,11 @@ final class L5001_RealLLMAPIVerificationTests: XCTestCase {
             do {
                 switch provider {
                 case .openai:
-                    _ = try await makeOpenAIAPIRequest(apiKey: apiKey, prompt: "Rate limit test \\(i)")
+                    _ = try await makeOpenAIAPIRequest(apiKey: apiKey, prompt: "Rate limit test \(i)")
                 case .anthropic:
-                    _ = try await makeAnthropicAPIRequest(apiKey: apiKey, prompt: "Rate limit test \\(i)")
+                    _ = try await makeAnthropicAPIRequest(apiKey: apiKey, prompt: "Rate limit test \(i)")
                 case .googleai:
-                    _ = try await makeGoogleAIAPIRequest(apiKey: apiKey, prompt: "Rate limit test \\(i)")
+                    _ = try await makeGoogleAIAPIRequest(apiKey: apiKey, prompt: "Rate limit test \(i)")
                 }
                 
                 responseTimes.append(Date().timeIntervalSince(requestStart))
