@@ -795,14 +795,4 @@ public enum PerformanceAlertSeverity: String, Codable {
     case critical = "critical"
 }
 
-extension ProcessInfo.ThermalState {
-    var description: String {
-        switch self {
-        case .nominal: return "Nominal"
-        case .fair: return "Fair"
-        case .serious: return "Serious"
-        case .critical: return "Critical"
-        @unknown default: return "Unknown"
-        }
-    }
-}
+// ProcessInfo.ThermalState extension moved to SpeculativeDecodingEngine.swift to avoid duplication

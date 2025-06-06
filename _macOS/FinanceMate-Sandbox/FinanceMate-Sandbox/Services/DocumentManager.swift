@@ -67,86 +67,82 @@ public class DocumentManager: ObservableObject {
         
         defer {
             Task { @MainActor in
-                isProcessing = false
+            isProcessing = false
             }
         }
         
         let workflowId = UUID()
         let startTime = Date()
         
-        do {
-            // Create workflow document
-            var workflowDocument = WorkflowDocument(
-                id: workflowId,
-                originalURL: url,
-                workflowStatus: .processing,
-                startTime: startTime,
-                documentType: DocumentType.from(url: url),
-                ocrResult: nil,
-                financialData: nil,
-                confidence: 0.0,
-                processingSteps: []
-            )
+        // Create workflow document
+        var workflowDocument = WorkflowDocument(
+            id: workflowId,
+            originalURL: url,
+            workflowStatus: .processing,
+            startTime: startTime,
+            documentType: DocumentType.from(url: url),
+            ocrResult: nil,
+            financialData: nil,
+            confidence: 0.0,
+            processingSteps: []
+        )
+        
+        // Step 1: Document Processing Service
+        workflowDocument.addProcessingStep(step: "Document Analysis", status: .inProgress)
+        let documentResult = await documentProcessingService.processDocument(url: url)
+        
+        switch documentResult {
+        case .success(let processedDoc):
+            workflowDocument.addProcessingStep(step: "Document Analysis", status: .completed)
+            workflowDocument.documentType = mapFileTypeToDocumentType(processedDoc.fileType)
             
-            // Step 1: Document Processing Service
-            workflowDocument.addProcessingStep(step: "Document Analysis", status: .inProgress)
-            let documentResult = await documentProcessingService.processDocument(url: url)
-            
-            switch documentResult {
-            case .success(let processedDoc):
-                workflowDocument.addProcessingStep(step: "Document Analysis", status: .completed)
-                workflowDocument.documentType = mapFileTypeToDocumentType(processedDoc.fileType)
+            // Step 2: OCR Processing (for image formats)
+            if isImageFormat(url: url) && workflowConfiguration.ocrEnabled {
+                workflowDocument.addProcessingStep(step: "OCR Text Extraction", status: .inProgress)
+                let ocrResult = await ocrService.extractTextResult(from: url)
                 
-                // Step 2: OCR Processing (for image formats)
-                if isImageFormat(url: url) && workflowConfiguration.ocrEnabled {
-                    workflowDocument.addProcessingStep(step: "OCR Text Extraction", status: .inProgress)
-                    let ocrResult = await ocrService.extractTextResult(from: url)
-                    
-                    switch ocrResult {
-                    case .success(let extractedText):
-                        workflowDocument.ocrResult = extractedText
-                        workflowDocument.addProcessingStep(step: "OCR Text Extraction", status: .completed)
-                    case .failure:
-                        workflowDocument.addProcessingStep(step: "OCR Text Extraction", status: .failed)
-                    }
+                switch ocrResult {
+                case .success(let extractedText):
+                    workflowDocument.ocrResult = extractedText
+                    workflowDocument.addProcessingStep(step: "OCR Text Extraction", status: .completed)
+                case .failure:
+                    workflowDocument.addProcessingStep(step: "OCR Text Extraction", status: .failed)
                 }
-                
-                // Step 3: Financial Data Extraction
-                if workflowConfiguration.financialExtractionEnabled {
-                    workflowDocument.addProcessingStep(step: "Financial Data Extraction", status: .inProgress)
-                    let textToAnalyze = workflowDocument.ocrResult ?? processedDoc.extractedText
-                    let financialDocumentType = mapToFinancialDocumentType(processedDoc.fileType)
-                    let financialResult = await financialDataExtractor.extractFinancialData(from: textToAnalyze, documentType: financialDocumentType)
-                    
-                    switch financialResult {
-                    case .success(let financialData):
-                        workflowDocument.financialData = financialData
-                        workflowDocument.confidence = financialData.confidence
-                        workflowDocument.addProcessingStep(step: "Financial Data Extraction", status: .completed)
-                    case .failure:
-                        workflowDocument.addProcessingStep(step: "Financial Data Extraction", status: .failed)
-                    }
-                }
-                
-                // Complete workflow
-                workflowDocument.workflowStatus = .completed
-                workflowDocument.endTime = Date()
-                
-                // Add to processed documents
-                processedDocuments.append(workflowDocument)
-                
-                return .success(workflowDocument)
-                
-            case .failure(let error):
-                workflowDocument.workflowStatus = .failed
-                workflowDocument.endTime = Date()
-                workflowDocument.addProcessingStep(step: "Document Analysis", status: .failed)
-                return .failure(DocumentWorkflowError.documentProcessingFailed(error))
             }
             
-        } catch {
-            return .failure(DocumentWorkflowError.workflowFailed(error))
-        }
+            // Step 3: Financial Data Extraction
+            if workflowConfiguration.financialExtractionEnabled {
+                workflowDocument.addProcessingStep(step: "Financial Data Extraction", status: .inProgress)
+                let textToAnalyze = workflowDocument.ocrResult ?? processedDoc.extractedText
+                let financialDocumentType = mapToFinancialDocumentType(processedDoc.fileType)
+                let financialResult = await financialDataExtractor.extractFinancialData(from: textToAnalyze, documentType: financialDocumentType)
+                
+                switch financialResult {
+                case .success(let financialData):
+                    workflowDocument.financialData = financialData
+                    workflowDocument.confidence = financialData.confidence
+                    workflowDocument.addProcessingStep(step: "Financial Data Extraction", status: .completed)
+                case .failure:
+                    workflowDocument.addProcessingStep(step: "Financial Data Extraction", status: .failed)
+                }
+            }
+            
+            // Complete workflow
+            workflowDocument.workflowStatus = .completed
+            workflowDocument.endTime = Date()
+            
+            // Add to processed documents
+            processedDocuments.append(workflowDocument)
+            
+            return .success(workflowDocument)
+            
+            case .failure(let error):
+            workflowDocument.workflowStatus = .failed
+            workflowDocument.endTime = Date()
+            workflowDocument.addProcessingStep(step: "Document Analysis", status: .failed)
+            return .failure(DocumentWorkflowError.documentProcessingFailed(error))
+            }
+            
     }
     
     public func processBatchDocuments(urls: [URL]) async -> [Result<WorkflowDocument, Error>] {
@@ -157,19 +153,19 @@ public class DocumentManager: ObservableObject {
         
         for batch in batches {
             let batchResults = await withTaskGroup(of: Result<WorkflowDocument, Error>.self) { group in
-                var batchResults: [Result<WorkflowDocument, Error>] = []
-                
-                for url in batch {
-                    group.addTask {
-                        await self.processDocument(url: url)
-                    }
+            var batchResults: [Result<WorkflowDocument, Error>] = []
+            
+            for url in batch {
+                group.addTask {
+                    await self.processDocument(url: url)
                 }
-                
-                for await result in group {
-                    batchResults.append(result)
-                }
-                
-                return batchResults
+            }
+            
+            for await result in group {
+                batchResults.append(result)
+            }
+            
+            return batchResults
             }
             
             results.append(contentsOf: batchResults)
@@ -303,10 +299,10 @@ public struct WorkflowDocument {
             processingSteps[existingStepIndex].completedAt = status == .completed ? Date() : nil
         } else {
             let newStep = ProcessingStep(
-                stepName: step,
-                status: status,
-                startedAt: Date(),
-                completedAt: status == .completed ? Date() : nil
+            stepName: step,
+            status: status,
+            startedAt: Date(),
+            completedAt: status == .completed ? Date() : nil
             )
             processingSteps.append(newStep)
         }
@@ -443,11 +439,4 @@ public enum DocumentWorkflowError: Error, LocalizedError {
 }
 
 // MARK: - Array Extension for Chunking
-
-extension Array {
-    func chunked(into size: Int) -> [[Element]] {
-        return stride(from: 0, to: count, by: size).map {
-            Array(self[$0..<Swift.min($0 + size, count)])
-        }
-    }
-}
+// Extension moved to SpeculativeDecodingEngine.swift to avoid duplication

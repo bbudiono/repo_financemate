@@ -32,21 +32,29 @@ struct ContentView: View {
     @State private var columnVisibility: NavigationSplitViewVisibility = .all
     
     var body: some View {
-        NavigationSplitView(columnVisibility: $columnVisibility) {
-            SidebarView(selectedView: $selectedView)
-        } detail: {
-            DetailView(selectedView: selectedView)
+        ChatbotIntegrationView {
+            NavigationSplitView(columnVisibility: $columnVisibility) {
+                SidebarView(selectedView: $selectedView)
+            } detail: {
+                DetailView(selectedView: selectedView)
+            }
+            .overlay(alignment: .bottomTrailing) {
+                // SANDBOX WATERMARK - MANDATORY
+                Text("🧪 SANDBOX")
+                    .font(.caption)
+                    .fontWeight(.bold)
+                    .foregroundColor(.orange)
+                    .padding(8)
+                    .background(Color.orange.opacity(0.1))
+                    .cornerRadius(8)
+                    .padding()
+            }
         }
-        .overlay(alignment: .bottomTrailing) {
-            // SANDBOX WATERMARK - MANDATORY
-            Text("🧪 SANDBOX")
-                .font(.caption)
-                .fontWeight(.bold)
-                .foregroundColor(.orange)
-                .padding(8)
-                .background(Color.orange.opacity(0.1))
-                .cornerRadius(8)
-                .padding()
+        .onAppear {
+            // Initialize chatbot PRODUCTION services for real API integration
+            Task { @MainActor in
+                ChatbotSetupManager.shared.setupProductionServices()
+            }
         }
     }
 }
@@ -79,6 +87,12 @@ struct DetailView: View {
                 AnalyticsView()
             case .export:
                 FinancialExportView()
+            case .taskMaster:
+                TaskMasterIntegrationView()
+            case .speculativeDecoding:
+                SpeculativeDecodingControlView()
+            case .chatbotTesting:
+                ComprehensiveChatbotTestView()
             case .settings:
                 SettingsView()
             }
@@ -92,6 +106,9 @@ enum NavigationItem: String, CaseIterable {
     case documents = "Documents"
     case analytics = "Analytics"
     case export = "Financial Export"
+    case taskMaster = "TaskMaster AI"
+    case speculativeDecoding = "Speculative Decoding"
+    case chatbotTesting = "Chatbot Testing"
     case settings = "Settings"
     
     var title: String {
@@ -104,6 +121,9 @@ enum NavigationItem: String, CaseIterable {
         case .documents: return "doc.fill"
         case .analytics: return "chart.bar.fill"
         case .export: return "square.and.arrow.up.fill"
+        case .taskMaster: return "list.bullet.clipboard.fill"
+        case .speculativeDecoding: return "cpu.fill"
+        case .chatbotTesting: return "brain.head.profile"
         case .settings: return "gearshape.fill"
         }
     }

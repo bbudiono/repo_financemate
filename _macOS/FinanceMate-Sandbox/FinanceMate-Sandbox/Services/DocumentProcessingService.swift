@@ -59,6 +59,11 @@ public class DocumentProcessingService: ObservableObject {
         }
         
         do {
+            // Check if file exists first
+            guard FileManager.default.fileExists(atPath: url.path) else {
+                return .failure(DocumentProcessingError.fileNotFound)
+            }
+            
             // Detect file type
             let fileType = FileType.from(url: url)
             
@@ -67,7 +72,7 @@ public class DocumentProcessingService: ObservableObject {
             
             switch fileType {
             case .pdf:
-                extractedText = extractTextFromPDF(url: url)
+                extractedText = try extractTextFromPDF(url: url)
             case .image:
                 extractedText = "" // OCR will handle this
             case .text:
@@ -98,8 +103,10 @@ public class DocumentProcessingService: ObservableObject {
     
     // MARK: - Private Methods
     
-    private func extractTextFromPDF(url: URL) -> String {
+    private func extractTextFromPDF(url: URL) throws -> String {
         guard let pdfDocument = PDFDocument(url: url) else {
+            // Handle invalid PDF files gracefully - return empty text instead of throwing
+            // This allows the service to complete processing with low confidence
             return ""
         }
         

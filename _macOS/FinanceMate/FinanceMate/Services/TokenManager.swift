@@ -1,8 +1,8 @@
-// SANDBOX FILE: For testing/development. See .cursorrules.
+
 
 //
 //  TokenManager.swift
-//  FinanceMate-Sandbox
+//  FinanceMate
 //
 //  Created by Assistant on 6/2/25.
 //
@@ -28,6 +28,18 @@
 
 import Foundation
 import Security
+
+// MARK: - Supporting Types
+
+public enum AuthenticationProvider: String, CaseIterable, Codable {
+    case apple = "apple"
+    case google = "google"
+    case microsoft = "microsoft"
+    case github = "github"
+    case linkedin = "linkedin"
+    case facebook = "facebook"
+    case demo = "demo"
+}
 
 // MARK: - Token Manager
 
@@ -111,6 +123,22 @@ public class TokenManager {
             // In a real implementation, this would use Google's refresh token flow
             // For sandbox, we'll simulate this
             let newToken = "refreshed_google_token_\(Date().timeIntervalSince1970)"
+            saveToken(newToken, for: provider)
+            return newToken
+            
+        case .demo:
+            // Demo tokens are always valid and don't need refresh
+            if let existingToken = getToken(for: provider) {
+                return existingToken
+            }
+            // Create a new demo token if none exists
+            let newToken = "demo_token_\(Date().timeIntervalSince1970)"
+            saveToken(newToken, for: provider)
+            return newToken
+            
+        case .microsoft, .github, .linkedin, .facebook:
+            // For other providers, use a similar pattern to Google
+            let newToken = "\(provider.rawValue)_token_\(Date().timeIntervalSince1970)"
             saveToken(newToken, for: provider)
             return newToken
         }

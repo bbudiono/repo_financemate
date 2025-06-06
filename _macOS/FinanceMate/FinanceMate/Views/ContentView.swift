@@ -38,6 +38,10 @@ struct ContentView: View {
                 }
         }
         .navigationSplitViewStyle(.balanced)
+        .onAppear {
+            // TODO: Initialize chatbot services with PRODUCTION API integration once chatbot panel is properly integrated
+            print("🤖 Production ContentView loaded - Chatbot service integration pending")
+        }
     }
 }
 
@@ -70,17 +74,45 @@ struct DetailView: View {
             case .export:
                 FinancialExportView()
             case .enhancedAnalytics:
-                Text("Enhanced Analytics View")
-                    .font(.largeTitle)
-                    .foregroundColor(.blue)
+                VStack {
+                    Text("Enhanced Analytics")
+                        .font(.largeTitle)
+                        .foregroundColor(.blue)
+                    Text("Advanced financial analytics view coming soon")
+                        .foregroundColor(.secondary)
+                }
+            case .speculativeDecoding:
+                VStack {
+                    Text("Speculative Decoding")
+                        .font(.largeTitle)
+                        .foregroundColor(.purple)
+                    Text("AI performance optimization controls coming soon")
+                        .foregroundColor(.secondary)
+                }
+            case .chatbotTesting:
+                VStack {
+                    Text("🤖 Chatbot Testing")
+                        .font(.largeTitle)
+                        .foregroundColor(.blue)
+                    Text("Chatbot testing and validation suite coming soon")
+                        .foregroundColor(.secondary)
+                }
             case .crashAnalysis:
-                Text("Crash Analysis Dashboard")
-                    .font(.largeTitle)
-                    .foregroundColor(.red)
+                VStack {
+                    Text("Crash Analysis Dashboard")
+                        .font(.largeTitle)
+                        .foregroundColor(.red)
+                    Text("System stability monitoring dashboard coming soon")
+                        .foregroundColor(.secondary)
+                }
             case .llmBenchmark:
-                Text("LLM Benchmark View")
-                    .font(.largeTitle)
-                    .foregroundColor(.green)
+                VStack {
+                    Text("LLM Benchmark")
+                        .font(.largeTitle)
+                        .foregroundColor(.green)
+                    Text("AI model performance benchmarking coming soon")
+                        .foregroundColor(.secondary)
+                }
             case .settings:
                 SettingsView()
             }
@@ -95,6 +127,8 @@ enum NavigationItem: String, CaseIterable {
     case analytics = "analytics"
     case export = "export"
     case enhancedAnalytics = "enhancedAnalytics"
+    case speculativeDecoding = "speculativeDecoding"
+    case chatbotTesting = "chatbotTesting"
     case crashAnalysis = "crashAnalysis"
     case llmBenchmark = "llmBenchmark"
     case settings = "settings"
@@ -106,6 +140,8 @@ enum NavigationItem: String, CaseIterable {
         case .analytics: return "Analytics"
         case .export: return "Financial Export"
         case .enhancedAnalytics: return "Enhanced Analytics"
+        case .speculativeDecoding: return "Speculative Decoding"
+        case .chatbotTesting: return "Chatbot Testing"
         case .crashAnalysis: return "Crash Analysis"
         case .llmBenchmark: return "LLM Benchmark"
         case .settings: return "Settings"
@@ -119,8 +155,10 @@ enum NavigationItem: String, CaseIterable {
         case .analytics: return "chart.bar.fill"
         case .export: return "square.and.arrow.up.fill"
         case .enhancedAnalytics: return "chart.bar.doc.horizontal.fill"
+        case .speculativeDecoding: return "cpu.fill"
+        case .chatbotTesting: return "brain.head.profile"
         case .crashAnalysis: return "exclamationmark.triangle.fill"
-        case .llmBenchmark: return "cpu.fill"
+        case .llmBenchmark: return "speedometer"
         case .settings: return "gear"
         }
     }

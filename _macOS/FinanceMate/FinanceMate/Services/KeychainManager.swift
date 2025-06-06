@@ -1,8 +1,8 @@
-// SANDBOX FILE: For testing/development. See .cursorrules.
+
 
 //
 //  KeychainManager.swift
-//  FinanceMate-Sandbox
+//  FinanceMate
 //
 //  Created by Assistant on 6/2/25.
 //

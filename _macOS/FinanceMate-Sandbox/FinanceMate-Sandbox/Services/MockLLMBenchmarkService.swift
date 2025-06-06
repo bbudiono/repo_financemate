@@ -45,7 +45,7 @@ class MockLLMBenchmarkService: ObservableObject {
     private let mockLLMCharacteristics = [
         MockLLMCharacteristic(
             name: "Gemini 2.5",
-            provider: .gemini,
+            provider: .googleai,
             baseResponseTime: 2.8,
             qualityRange: 85...92,
             tokensPerSecond: 45...60,
@@ -53,7 +53,7 @@ class MockLLMBenchmarkService: ObservableObject {
         ),
         MockLLMCharacteristic(
             name: "Claude-4-Sonnet",
-            provider: .claude,
+            provider: .anthropic,
             baseResponseTime: 3.2,
             qualityRange: 90...96,
             tokensPerSecond: 35...50,
@@ -251,7 +251,7 @@ class MockLLMBenchmarkService: ObservableObject {
     
     private func generateProviderSpecificContent(for characteristic: MockLLMCharacteristic) -> String {
         switch characteristic.provider {
-        case .gemini:
+        case .googleai:
             return """
             ## ADDITIONAL GEMINI INSIGHTS
             **Industry Benchmarking:** Compared to technology sector median:
@@ -262,7 +262,7 @@ class MockLLMBenchmarkService: ObservableObject {
             **Recommendation:** Focus on margin improvement through operational efficiency.
             """
             
-        case .claude:
+        case .anthropic:
             return """
             ## DETAILED ANALYTICAL FRAMEWORK
             **Methodological Approach:** This analysis employs a comprehensive financial health framework examining:
@@ -488,9 +488,9 @@ extension MockLLMBenchmarkService {
         // Estimated costs per 1K tokens (approximate)
         let costPer1KTokens: Double
         switch result.provider {
-        case .gemini:
+        case .googleai:
             costPer1KTokens = 0.00025 // Gemini Pro pricing
-        case .claude:
+        case .anthropic:
             costPer1KTokens = 0.003 // Claude Sonnet pricing
         case .openai:
             costPer1KTokens = 0.01 // GPT-4 pricing

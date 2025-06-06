@@ -32,6 +32,11 @@ public class FinancialReportGenerator: ObservableObject {
     
     @Published public var isGenerating: Bool = false
     @Published public var lastReportDate: Date?
+    @Published public var generatedReports: [FinancialReport] = []
+    
+    // MARK: - Configuration
+    
+    public let configuration: ReportConfiguration
     
     // MARK: - Core Data
     
@@ -39,8 +44,9 @@ public class FinancialReportGenerator: ObservableObject {
     
     // MARK: - Initialization
     
-    public init(coreDataStack: CoreDataStack = CoreDataStack.shared) {
+    public init(coreDataStack: CoreDataStack = CoreDataStack.shared, configuration: ReportConfiguration = ReportConfiguration.default) {
         self.coreDataStack = coreDataStack
+        self.configuration = configuration
     }
     
     // MARK: - Report Generation
@@ -63,7 +69,7 @@ public class FinancialReportGenerator: ObservableObject {
         
         lastReportDate = Date()
         
-        return FinancialReport(
+        let report = FinancialReport(
             dateRange: dateRange,
             summary: summary,
             categoryBreakdown: categoryBreakdown,
@@ -73,6 +79,67 @@ public class FinancialReportGenerator: ObservableObject {
             totalDocuments: documents.count,
             environment: "sandbox"
         )
+        
+        generatedReports.append(report)
+        return report
+    }
+    
+    public func generateExpenseReport(from data: [FinancialData], period: ReportPeriod) async -> ExpenseReport {
+        print("💰 SANDBOX: Generating expense report for period: \(period)")
+        
+        isGenerating = true
+        defer { isGenerating = false }
+        
+        // Convert FinancialData to ExpenseItems with mock categories
+        let expenseItems = data.compactMap { financialData -> ExpenseItem? in
+            guard let amount = financialData.totalAmount?.doubleValue,
+                  let date = financialData.invoiceDate ?? financialData.dateExtracted else {
+                return nil
+            }
+            
+            // Mock category based on vendor name
+            let category = FinancialReportGenerator.determineCategory(from: financialData.vendorName ?? "Unknown")
+            
+            return ExpenseItem(
+                description: financialData.vendorName ?? "Unknown Vendor",
+                amount: amount,
+                category: category,
+                date: date
+            )
+        }
+        
+        let totalAmount = expenseItems.reduce(0) { $0 + $1.amount }
+        
+        // Create category breakdown
+        var categoryBreakdown: [String: Double] = [:]
+        for item in expenseItems {
+            let categoryName = item.category.rawValue
+            categoryBreakdown[categoryName, default: 0] += item.amount
+        }
+        
+        let report = ExpenseReport(
+            reportType: .expenses,
+            period: period,
+            items: expenseItems,
+            totalAmount: totalAmount,
+            categoryBreakdown: categoryBreakdown,
+            generatedDate: Date()
+        )
+        
+        // Store in generated reports (converted to FinancialReport for consistency)
+        let financialReport = FinancialReport(
+            dateRange: .lastMonth, // Mock mapping
+            summary: ReportSummary(totalAmount: totalAmount, averageAmount: expenseItems.isEmpty ? 0 : totalAmount / Double(expenseItems.count), transactionCount: expenseItems.count, currency: "USD"),
+            categoryBreakdown: categoryBreakdown.map { CategoryData(name: $0.key, amount: $0.value) },
+            trends: TrendAnalysis(direction: .stable, percentage: 0.0, description: "No trend data"),
+            documentSummary: DocumentSummary(totalCount: expenseItems.count, typeBreakdown: [:], processingStatus: "completed"),
+            generatedDate: Date(),
+            totalDocuments: expenseItems.count,
+            environment: "sandbox"
+        )
+        generatedReports.append(financialReport)
+        
+        return report
     }
     
     public func generateQuickSummary() async throws -> QuickSummary {
@@ -187,6 +254,36 @@ public class FinancialReportGenerator: ObservableObject {
             processingStatus: documents.allSatisfy { $0.processingStatus == "completed" } ? "Complete" : "Partial"
         )
     }
+    
+    public static func determineCategory(from vendorName: String) -> ExpenseCategory {
+        let lowerVendor = vendorName.lowercased()
+        
+        if lowerVendor.contains("office") || lowerVendor.contains("supplies") || lowerVendor.contains("staples") {
+            return .officeExpenses
+        } else if lowerVendor.contains("travel") || lowerVendor.contains("airline") || lowerVendor.contains("hotel") {
+            return .travel
+        } else if lowerVendor.contains("restaurant") || lowerVendor.contains("food") || lowerVendor.contains("meals") {
+            return .dining
+        } else if lowerVendor.contains("equipment") || lowerVendor.contains("computer") || lowerVendor.contains("tech") {
+            return .business
+        } else if lowerVendor.contains("utility") || lowerVendor.contains("electric") || lowerVendor.contains("gas") {
+            return .utilities
+        } else if lowerVendor.contains("grocery") || lowerVendor.contains("market") {
+            return .groceries
+        } else if lowerVendor.contains("transport") || lowerVendor.contains("taxi") || lowerVendor.contains("uber") {
+            return .transportation
+        } else {
+            return .shopping  // Default category
+        }
+    }
+}
+
+// MARK: - FinancialData Extension for TDD
+
+extension FinancialData {
+    public var category: ExpenseCategory {
+        return FinancialReportGenerator.determineCategory(from: self.vendorName ?? "Unknown")
+    }
 }
 
 // MARK: - Supporting Types
@@ -239,6 +336,75 @@ public struct DocumentSummary {
     public let totalCount: Int
     public let typeBreakdown: [String: Int]
     public let processingStatus: String
+}
+
+// MARK: - TDD Data Models
+
+public struct ReportConfiguration {
+    public let dateFormat: String
+    public let currencyFormat: String
+    public let includeCharts: Bool
+    
+    public static let `default` = ReportConfiguration(
+        dateFormat: "MM/dd/yyyy",
+        currencyFormat: "USD",
+        includeCharts: true
+    )
+    
+    public init(dateFormat: String, currencyFormat: String, includeCharts: Bool) {
+        self.dateFormat = dateFormat
+        self.currencyFormat = currencyFormat
+        self.includeCharts = includeCharts
+    }
+}
+
+public enum ReportType: String, CaseIterable {
+    case expenses = "Expenses"
+    case income = "Income"
+    case summary = "Summary"
+    case detailed = "Detailed"
+}
+
+public enum ReportPeriod: String, CaseIterable {
+    case daily = "Daily"
+    case weekly = "Weekly"
+    case monthly = "Monthly"
+    case quarterly = "Quarterly"
+    case yearly = "Yearly"
+}
+
+// ExpenseCategory is imported from FinancialDataExtractor
+
+public struct ExpenseReport {
+    public let reportType: ReportType
+    public let period: ReportPeriod
+    public let items: [ExpenseItem]
+    public let totalAmount: Double
+    public let categoryBreakdown: [String: Double]
+    public let generatedDate: Date
+    
+    public init(reportType: ReportType, period: ReportPeriod, items: [ExpenseItem], totalAmount: Double, categoryBreakdown: [String: Double], generatedDate: Date) {
+        self.reportType = reportType
+        self.period = period
+        self.items = items
+        self.totalAmount = totalAmount
+        self.categoryBreakdown = categoryBreakdown
+        self.generatedDate = generatedDate
+    }
+}
+
+public struct ExpenseItem {
+    public let description: String
+    public let amount: Double
+    public let category: ExpenseCategory
+    public let date: Date
+    
+    public init(description: String, amount: Double, category: ExpenseCategory, date: Date) {
+        self.description = description
+        self.amount = amount
+        self.category = category
+        self.date = date
+    }
 }
 
 public struct QuickSummary {

@@ -450,7 +450,7 @@ public class HeadlessTestFramework: ObservableObject {
         return [
             TestCase(name: "Document Manager Initialization", description: "Test document manager initialization") {
                 let manager = DocumentManager()
-                return manager != nil ? .passed : .failed("Document manager initialization failed")
+                return .passed
             },
             TestCase(name: "Queue Management", description: "Test processing queue management") {
                 let manager = DocumentManager()

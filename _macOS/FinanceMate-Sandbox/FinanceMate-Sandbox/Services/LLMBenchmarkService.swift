@@ -43,8 +43,8 @@ class LLMBenchmarkService: ObservableObject {
     // MARK: - Test Configuration
     
     private let llmEndpoints = [
-        LLMEndpoint(name: "Gemini 2.5", provider: .gemini, endpoint: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent"),
-        LLMEndpoint(name: "Claude-4-Sonnet", provider: .claude, endpoint: "https://api.anthropic.com/v1/messages"),
+        LLMEndpoint(name: "Gemini 2.5", provider: .googleai, endpoint: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent"),
+        LLMEndpoint(name: "Claude-4-Sonnet", provider: .anthropic, endpoint: "https://api.anthropic.com/v1/messages"),
         LLMEndpoint(name: "GPT-4.1", provider: .openai, endpoint: "https://api.openai.com/v1/chat/completions")
     ]
     
@@ -244,7 +244,7 @@ class LLMBenchmarkService: ObservableObject {
         let requestBody: [String: Any]
         
         switch endpoint.provider {
-        case .gemini:
+        case .googleai:
             // Note: In production, use proper API key from environment
             request.setValue("Bearer YOUR_GEMINI_API_KEY", forHTTPHeaderField: "Authorization")
             requestBody = [
@@ -261,7 +261,7 @@ class LLMBenchmarkService: ObservableObject {
                 ]
             ]
             
-        case .claude:
+        case .anthropic:
             // Note: In production, use proper API key from environment
             request.setValue("YOUR_CLAUDE_API_KEY", forHTTPHeaderField: "x-api-key")
             request.setValue("2023-06-01", forHTTPHeaderField: "anthropic-version")
@@ -303,7 +303,7 @@ class LLMBenchmarkService: ObservableObject {
         }
         
         switch provider {
-        case .gemini:
+        case .googleai:
             if let candidates = json["candidates"] as? [[String: Any]],
                let firstCandidate = candidates.first,
                let content = firstCandidate["content"] as? [String: Any],
@@ -313,7 +313,7 @@ class LLMBenchmarkService: ObservableObject {
                 return text
             }
             
-        case .claude:
+        case .anthropic:
             if let content = json["content"] as? [[String: Any]],
                let firstContent = content.first,
                let text = firstContent["text"] as? String {
@@ -373,20 +373,18 @@ class LLMBenchmarkService: ObservableObject {
 
 struct LLMEndpoint {
     let name: String
-    let provider: LLMProvider
+    let provider: BenchmarkLLMProvider
     let endpoint: String
 }
 
-enum LLMProvider: String, CaseIterable {
-    case gemini = "Gemini"
-    case claude = "Claude"
-    case openai = "OpenAI"
-}
+// LLMProvider enum moved to CommonTypes.swift
+// Local aliases for benchmark-specific naming
+typealias BenchmarkLLMProvider = LLMProvider
 
 struct BenchmarkResult: Identifiable {
     let id = UUID()
     let llmName: String
-    let provider: LLMProvider
+    let provider: BenchmarkLLMProvider
     let responseTime: TimeInterval
     let statusCode: Int
     let responseLength: Int

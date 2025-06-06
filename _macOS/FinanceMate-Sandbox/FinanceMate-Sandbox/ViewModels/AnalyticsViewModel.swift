@@ -119,11 +119,15 @@ public class AnalyticsViewModel: ObservableObject {
     @Published public var categoryData: [CategoryAnalytics] = []
     @Published public var totalSpending: Double?
     @Published public var averageSpending: Double?
+    @Published public var lastAdvancedReport: AdvancedAnalyticsReport?
+    @Published public var currentAnomalies: [FinancialAnomaly] = []
+    @Published public var currentTrends: RealTimeTrendAnalysis?
     
     // MARK: - Private Properties
     
     private let documentManager: DocumentManager
     private var cancellables = Set<AnyCancellable>()
+    private let advancedAnalyticsEngine = AdvancedFinancialAnalyticsEngine()
     
     // MARK: - Initialization
     
@@ -301,5 +305,49 @@ public class AnalyticsViewModel: ObservableObject {
         monthlyData = []
         totalSpending = 0.0
         averageSpending = 0.0
+    }
+    
+    // MARK: - Advanced Analytics Integration
+    
+    public func generateAdvancedAnalyticsReport() async {
+        isLoading = true
+        
+        do {
+            let financialData = try await fetchFinancialData()
+            let report = try await advancedAnalyticsEngine.generateAdvancedReport(from: financialData)
+            lastAdvancedReport = report
+        } catch {
+            print("Error generating advanced analytics report: \(error)")
+        }
+        
+        isLoading = false
+    }
+    
+    public func detectFinancialAnomalies() async {
+        isLoading = true
+        
+        do {
+            let financialData = try await fetchFinancialData()
+            let anomalies = try await advancedAnalyticsEngine.detectAnomalies(from: financialData)
+            currentAnomalies = anomalies
+        } catch {
+            print("Error detecting financial anomalies: \(error)")
+        }
+        
+        isLoading = false
+    }
+    
+    public func performRealTimeTrendAnalysis() async {
+        isLoading = true
+        
+        do {
+            let financialData = try await fetchFinancialData()
+            let trends = try await advancedAnalyticsEngine.calculateRealTimeTrends(from: financialData)
+            currentTrends = trends
+        } catch {
+            print("Error performing real-time trend analysis: \(error)")
+        }
+        
+        isLoading = false
     }
 }

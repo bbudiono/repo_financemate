@@ -1,0 +1,542 @@
+// SANDBOX FILE: For testing/development. See .cursorrules.
+//
+// FinancialExportServices.swift
+// FinanceMate-Sandbox
+//
+// Purpose: Comprehensive financial export services for CSV, PDF, and JSON formats with real Core Data integration
+// Issues & Complexity Summary: Multi-format export engine with data validation, progress tracking, and error handling
+// Key Complexity Drivers:
+//   - Logic Scope (Est. LoC): ~600
+//   - Core Algorithm Complexity: High (multiple export formats, data processing, file generation)
+//   - Dependencies: 6 New (Core Data, Foundation, Combine, PDFKit, File Management, Progress tracking)
+//   - State Management Complexity: High (export progress, file handling, memory management)
+//   - Novelty/Uncertainty Factor: Medium (PDF generation, large dataset handling)
+// AI Pre-Task Self-Assessment (Est. Solution Difficulty %): 80%
+// Problem Estimate (Inherent Problem Difficulty %): 78%
+// Initial Code Complexity Estimate %: 79%
+// Justification for Estimates: Multiple export formats require different processing approaches, real data integration adds complexity
+// Final Code Complexity (Actual %): TBD
+// Overall Result Score (Success & Quality %): TBD
+// Key Variances/Learnings: TBD
+// Last Updated: 2025-06-04
+
+import Foundation
+import SwiftUI
+import Combine
+import CoreData
+import PDFKit
+
+// MARK: - Export Format Enum
+
+public enum ExportFormat: String, CaseIterable, Identifiable {
+    case csv = "CSV"
+    case pdf = "PDF"
+    case json = "JSON"
+    
+    public var id: String { rawValue }
+    
+    var fileExtension: String {
+        switch self {
+        case .csv: return "csv"
+        case .pdf: return "pdf"
+        case .json: return "json"
+        }
+    }
+    
+    var mimeType: String {
+        switch self {
+        case .csv: return "text/csv"
+        case .pdf: return "application/pdf"
+        case .json: return "application/json"
+        }
+    }
+}
+
+// MARK: - Export Error Types
+
+public enum ExportError: Error, Equatable {
+    case invalidData
+    case fileWriteError
+    case memoryLimitExceeded
+    case networkError
+    case unsupportedFormat
+    case dataProcessingError(String)
+    
+    var localizedDescription: String {
+        switch self {
+        case .invalidData:
+            return "Invalid or corrupted financial data"
+        case .fileWriteError:
+            return "Failed to write export file"
+        case .memoryLimitExceeded:
+            return "Dataset too large for export"
+        case .networkError:
+            return "Network error during export"
+        case .unsupportedFormat:
+            return "Unsupported export format"
+        case .dataProcessingError(let message):
+            return "Data processing error: \(message)"
+        }
+    }
+}
+
+// MARK: - CSV Export Service
+
+@MainActor
+public class CSVExportService: ObservableObject {
+    
+    @Published public var isExporting: Bool = false
+    @Published public var exportProgress: Double = 0.0
+    
+    private let progressSubject = PassthroughSubject<Double, Never>()
+    public var progressPublisher: AnyPublisher<Double, Never> {
+        progressSubject.eraseToAnyPublisher()
+    }
+    
+    public init() {}
+    
+    public func exportFinancialData(_ data: [FinancialData]) throws -> String {
+        guard !data.isEmpty else {
+            return generateCSVHeader()
+        }
+        
+        // Validate data integrity
+        try validateFinancialData(data)
+        
+        var csvContent = generateCSVHeader()
+        
+        for financialRecord in data {
+            let csvRow = try generateCSVRow(from: financialRecord)
+            csvContent += csvRow + "\n"
+        }
+        
+        return csvContent
+    }
+    
+    public func exportFinancialDataWithProgress(_ data: [FinancialData]) async throws -> String {
+        isExporting = true
+        exportProgress = 0.0
+        progressSubject.send(0.0)
+        
+        defer {
+            isExporting = false
+            exportProgress = 1.0
+            progressSubject.send(1.0)
+        }
+        
+        guard !data.isEmpty else {
+            return generateCSVHeader()
+        }
+        
+        try validateFinancialData(data)
+        
+        var csvContent = generateCSVHeader()
+        let totalRecords = data.count
+        
+        for (index, financialRecord) in data.enumerated() {
+            let csvRow = try generateCSVRow(from: financialRecord)
+            csvContent += csvRow + "\n"
+            
+            // Update progress
+            let progress = Double(index + 1) / Double(totalRecords)
+            exportProgress = progress
+            progressSubject.send(progress)
+            
+            // Simulate processing time for large datasets
+            if data.count > 50 {
+                try await Task.sleep(nanoseconds: 10_000_000) // 10ms
+            }
+        }
+        
+        return csvContent
+    }
+    
+    private func generateCSVHeader() -> String {
+        return "Date,Description,Amount,Category,Type,Vendor\n"
+    }
+    
+    private func generateCSVRow(from data: FinancialData) throws -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        
+        let date = data.invoiceDate.map { dateFormatter.string(from: $0) } ?? ""
+        let description = escapeCSVField(data.invoiceNumber ?? "")
+        let amount = data.totalAmount?.doubleValue ?? 0.0
+        let category = escapeCSVField("General") // Default category since not in Core Data model
+        let type = amount >= 0 ? "Income" : "Expense"
+        let vendor = escapeCSVField(data.vendorName ?? "")
+        
+        return "\(date),\(description),\(amount),\(category),\(type),\(vendor)"
+    }
+    
+    private func escapeCSVField(_ field: String) -> String {
+        if field.contains(",") || field.contains("\"") || field.contains("\n") {
+            let escapedField = field.replacingOccurrences(of: "\"", with: "\"\"")
+            return "\"\(escapedField)\""
+        }
+        return field
+    }
+    
+    private func validateFinancialData(_ data: [FinancialData]) throws {
+        for record in data {
+            if record.id == nil || record.invoiceNumber?.isEmpty == true {
+                throw ExportError.invalidData
+            }
+        }
+    }
+}
+
+// MARK: - PDF Export Service
+
+@MainActor
+public class PDFExportService: ObservableObject {
+    
+    @Published public var isGenerating: Bool = false
+    
+    public init() {}
+    
+    public func generateFinancialReport(from data: [FinancialData], configuration: ReportConfiguration = ReportConfiguration()) throws -> Data {
+        isGenerating = true
+        defer { isGenerating = false }
+        
+        // Create simplified PDF content as text-based for Sandbox testing
+        let reportText = generatePDFTextContent(from: data, configuration: configuration)
+        
+        // For simplicity in Sandbox, return the report as plain text formatted as PDF-style
+        return reportText.data(using: .utf8) ?? Data()
+    }
+    
+    private func generatePDFTextContent(from data: [FinancialData], configuration: ReportConfiguration) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .medium
+        
+        let totalIncome = data.compactMap { $0.totalAmount?.doubleValue }.filter { $0 > 0 }.reduce(0, +)
+        let totalExpenses = abs(data.compactMap { $0.totalAmount?.doubleValue }.filter { $0 < 0 }.reduce(0, +))
+        let netAmount = totalIncome - totalExpenses
+        
+        var reportText = """
+        🧪 SANDBOX FINANCIAL REPORT
+        =====================================
+        
+        \(configuration.title)
+        Report Period: \(dateFormatter.string(from: configuration.dateRange.start)) - \(dateFormatter.string(from: configuration.dateRange.end))
+        Generated: \(dateFormatter.string(from: Date()))
+        
+        FINANCIAL SUMMARY
+        -----------------
+        Total Income:     $\(String(format: "%,.2f", totalIncome))
+        Total Expenses:   $\(String(format: "%,.2f", totalExpenses))
+        Net Amount:       $\(String(format: "%,.2f", netAmount))
+        Total Records:    \(data.count)
+        
+        TRANSACTION DETAILS
+        -------------------
+        Date       | Description              | Amount      | Category
+        -----------|--------------------------|-------------|-------------
+        """
+        
+        let transactionFormatter = DateFormatter()
+        transactionFormatter.dateFormat = "MM/dd/yyyy"
+        
+        for record in data.prefix(50) { // Limit to first 50 records
+            let date = record.invoiceDate.map { transactionFormatter.string(from: $0) } ?? "Unknown"
+            let description = String((record.invoiceNumber ?? "N/A").padding(toLength: 24, withPad: " ", startingAt: 0).prefix(24))
+            let amount = String(format: "$%,.2f", record.totalAmount?.doubleValue ?? 0.0).padding(toLength: 11, withPad: " ", startingAt: 0)
+            let category = String("General".padding(toLength: 12, withPad: " ", startingAt: 0).prefix(12))
+            
+            reportText += "\n\(date) | \(description) | \(amount) | \(category)"
+        }
+        
+        if data.count > 50 {
+            reportText += "\n\n... and \(data.count - 50) more records"
+        }
+        
+        reportText += "\n\n=====================================\nGenerated by FinanceMate Sandbox\n"
+        
+        return reportText
+    }
+}
+
+// MARK: - JSON Export Service
+
+@MainActor
+public class JSONExportService: ObservableObject {
+    
+    @Published public var isExporting: Bool = false
+    
+    public init() {}
+    
+    public func exportFinancialData(_ data: [FinancialData]) throws -> Data {
+        isExporting = true
+        defer { isExporting = false }
+        
+        let exportData = JSONExportData(
+            exportDate: Date(),
+            financialData: data.map { convertToJSONRecord($0) },
+            summary: calculateSummary(from: data),
+            metadata: ExportMetadata(
+                version: "1.0",
+                exportedBy: "FinanceMate Sandbox",
+                recordCount: data.count
+            )
+        )
+        
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        encoder.outputFormatting = [.prettyPrinted]
+        
+        return try encoder.encode(exportData)
+    }
+    
+    private func convertToJSONRecord(_ data: FinancialData) -> JSONFinancialRecord {
+        return JSONFinancialRecord(
+            id: data.id?.uuidString ?? UUID().uuidString,
+            date: data.invoiceDate ?? Date(),
+            description: data.invoiceNumber ?? "",
+            amount: data.totalAmount?.doubleValue ?? 0.0,
+            category: "General", // Default category
+            vendor: data.vendorName ?? "",
+            currency: data.currency ?? "USD"
+        )
+    }
+    
+    private func calculateSummary(from data: [FinancialData]) -> JSONSummary {
+        let amounts = data.compactMap { $0.totalAmount?.doubleValue }
+        let income = amounts.filter { $0 > 0 }.reduce(0, +)
+        let expenses = abs(amounts.filter { $0 < 0 }.reduce(0, +))
+        
+        return JSONSummary(
+            totalIncome: income,
+            totalExpenses: expenses,
+            netAmount: income - expenses,
+            recordCount: data.count,
+            dateRange: JSONDateRange(
+                start: data.compactMap { $0.invoiceDate }.min() ?? Date(),
+                end: data.compactMap { $0.invoiceDate }.max() ?? Date()
+            )
+        )
+    }
+}
+
+// MARK: - Export Filter Service
+
+public class ExportFilterService {
+    
+    public init() {}
+    
+    public func filterByDateRange(_ data: [FinancialData], start: Date, end: Date) -> [FinancialData] {
+        return data.filter { record in
+            guard let invoiceDate = record.invoiceDate else { return false }
+            return invoiceDate >= start && invoiceDate <= end
+        }
+    }
+    
+    public func filterByCategories(_ data: [FinancialData], categories: [String]) -> [FinancialData] {
+        // Since categories aren't in the Core Data model, return all data for now
+        // In production, this would be implemented with a proper category system
+        return data
+    }
+    
+    public func filterByAmountRange(_ data: [FinancialData], min: Double, max: Double) -> [FinancialData] {
+        return data.filter { record in
+            guard let amount = record.totalAmount?.doubleValue else { return false }
+            let absoluteAmount = abs(amount)
+            return absoluteAmount >= min && absoluteAmount <= max
+        }
+    }
+    
+    public func filterByType(_ data: [FinancialData], type: TransactionType) -> [FinancialData] {
+        return data.filter { record in
+            guard let amount = record.totalAmount?.doubleValue else { return false }
+            switch type {
+            case .income:
+                return amount > 0
+            case .expense:
+                return amount < 0
+            case .all:
+                return true
+            }
+        }
+    }
+}
+
+// MARK: - Financial Export Manager
+
+@MainActor
+public class FinancialExportManager: ObservableObject {
+    
+    @Published public var isExporting: Bool = false
+    @Published public var exportProgress: Double = 0.0
+    
+    private var managedObjectContext: NSManagedObjectContext?
+    
+    private let csvService = CSVExportService()
+    private let pdfService = PDFExportService()
+    private let jsonService = JSONExportService()
+    private let filterService = ExportFilterService()
+    
+    public init() {}
+    
+    public func setContext(_ context: NSManagedObjectContext) {
+        self.managedObjectContext = context
+    }
+    
+    public func performExport(request: ExportRequest) async throws -> ExportResult {
+        guard let context = managedObjectContext else {
+            throw ExportError.dataProcessingError("No Core Data context available")
+        }
+        
+        isExporting = true
+        exportProgress = 0.0
+        
+        defer {
+            isExporting = false
+            exportProgress = 1.0
+        }
+        
+        // Fetch financial data from Core Data
+        let fetchRequest: NSFetchRequest<FinancialData> = FinancialData.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \FinancialData.invoiceDate, ascending: true)]
+        
+        let allData = try context.fetch(fetchRequest)
+        exportProgress = 0.2
+        
+        // Apply filters
+        var filteredData = filterService.filterByDateRange(allData, start: request.dateRange.start, end: request.dateRange.end)
+        exportProgress = 0.4
+        
+        if let categories = request.categories {
+            filteredData = filterService.filterByCategories(filteredData, categories: categories)
+        }
+        
+        if let amountRange = request.amountRange {
+            filteredData = filterService.filterByAmountRange(filteredData, min: amountRange.min, max: amountRange.max)
+        }
+        
+        exportProgress = 0.6
+        
+        // Perform export based on format
+        var fileURL: URL?
+        let fileManager = FileManager.default
+        let documentsPath = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
+        
+        switch request.format {
+        case .csv:
+            let csvContent = try csvService.exportFinancialData(filteredData)
+            let fileName = "financial_export_\(Int(Date().timeIntervalSince1970)).csv"
+            fileURL = documentsPath.appendingPathComponent(fileName)
+            try csvContent.write(to: fileURL!, atomically: true, encoding: .utf8)
+            
+        case .pdf:
+            let pdfData = try pdfService.generateFinancialReport(from: filteredData, configuration: request.reportConfiguration)
+            let fileName = "financial_report_\(Int(Date().timeIntervalSince1970)).pdf"
+            fileURL = documentsPath.appendingPathComponent(fileName)
+            try pdfData.write(to: fileURL!)
+            
+        case .json:
+            let jsonData = try jsonService.exportFinancialData(filteredData)
+            let fileName = "financial_data_\(Int(Date().timeIntervalSince1970)).json"
+            fileURL = documentsPath.appendingPathComponent(fileName)
+            try jsonData.write(to: fileURL!)
+        }
+        
+        exportProgress = 1.0
+        
+        return ExportResult(
+            fileURL: fileURL,
+            success: true,
+            recordCount: filteredData.count,
+            errorMessage: nil
+        )
+    }
+}
+
+// MARK: - Supporting Data Structures
+
+public struct ReportConfiguration {
+    let title: String
+    let dateRange: DateInterval
+    let includeCharts: Bool
+    
+    public init(title: String = "Financial Report", dateRange: DateInterval = DateInterval(start: Date().addingTimeInterval(-86400), end: Date()), includeCharts: Bool = false) {
+        self.title = title
+        self.dateRange = dateRange
+        self.includeCharts = includeCharts
+    }
+}
+
+public struct ExportRequest {
+    let format: ExportFormat
+    let dateRange: DateInterval
+    let includeCategories: Bool
+    let includeMetadata: Bool
+    let categories: [String]?
+    let amountRange: AmountRange?
+    let reportConfiguration: ReportConfiguration
+    
+    public init(format: ExportFormat, dateRange: DateInterval, includeCategories: Bool = true, includeMetadata: Bool = true, categories: [String]? = nil, amountRange: AmountRange? = nil, reportConfiguration: ReportConfiguration = ReportConfiguration()) {
+        self.format = format
+        self.dateRange = dateRange
+        self.includeCategories = includeCategories
+        self.includeMetadata = includeMetadata
+        self.categories = categories
+        self.amountRange = amountRange
+        self.reportConfiguration = reportConfiguration
+    }
+}
+
+public struct ExportResult {
+    let fileURL: URL?
+    let success: Bool
+    let recordCount: Int
+    let errorMessage: String?
+}
+
+public struct AmountRange {
+    let min: Double
+    let max: Double
+}
+
+public enum TransactionType: CaseIterable {
+    case income
+    case expense
+    case all
+}
+
+// MARK: - JSON Export Data Structures
+
+private struct JSONExportData: Codable {
+    let exportDate: Date
+    let financialData: [JSONFinancialRecord]
+    let summary: JSONSummary
+    let metadata: ExportMetadata
+}
+
+private struct JSONFinancialRecord: Codable {
+    let id: String
+    let date: Date
+    let description: String
+    let amount: Double
+    let category: String
+    let vendor: String
+    let currency: String
+}
+
+private struct JSONSummary: Codable {
+    let totalIncome: Double
+    let totalExpenses: Double
+    let netAmount: Double
+    let recordCount: Int
+    let dateRange: JSONDateRange
+}
+
+private struct JSONDateRange: Codable {
+    let start: Date
+    let end: Date
+}
+
+private struct ExportMetadata: Codable {
+    let version: String
+    let exportedBy: String
+    let recordCount: Int
+}

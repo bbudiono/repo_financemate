@@ -32,6 +32,17 @@ import CoreData
 struct DashboardView: View {
     @Environment(\.managedObjectContext) private var viewContext
     
+    // TaskMaster-AI Wiring Integration
+    @StateObject private var taskMaster = TaskMasterAIService()
+    @StateObject private var wiringService: TaskMasterWiringService
+    
+    init() {
+        let taskMasterService = TaskMasterAIService()
+        let wiring = TaskMasterWiringService(taskMaster: taskMasterService)
+        _taskMaster = StateObject(wrappedValue: taskMasterService)
+        _wiringService = StateObject(wrappedValue: wiring)
+    }
+    
     // Core Data fetch requests for ALL data (not just recent)
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \FinancialData.invoiceDate, ascending: false)],
@@ -187,6 +198,19 @@ struct DashboardView: View {
                         Spacer()
                         
                         Button("View Details") {
+                            Task {
+                                _ = await wiringService.trackButtonAction(
+                                    buttonId: "dashboard-view-details-btn",
+                                    viewName: "DashboardView",
+                                    actionDescription: "View Spending Trends Details",
+                                    expectedOutcome: "Navigate to AnalyticsView with detailed spending trends",
+                                    metadata: [
+                                        "chart_data_points": "\(chartData.count)",
+                                        "has_data": "\(!chartData.isEmpty)",
+                                        "navigation_target": "AnalyticsView"
+                                    ]
+                                )
+                            }
                             // Navigate to analytics
                         }
                         .font(.caption)
@@ -239,6 +263,19 @@ struct DashboardView: View {
                         Spacer()
                         
                         Button("View All") {
+                            Task {
+                                _ = await wiringService.trackButtonAction(
+                                    buttonId: "dashboard-view-all-btn",
+                                    viewName: "DashboardView",
+                                    actionDescription: "View All Recent Activity",
+                                    expectedOutcome: "Navigate to DocumentsView with all documents",
+                                    metadata: [
+                                        "total_documents": "\(allDocuments.count)",
+                                        "recent_documents_shown": "\(Array(allDocuments.prefix(5)).count)",
+                                        "navigation_target": "DocumentsView"
+                                    ]
+                                )
+                            }
                             // Navigate to documents
                         }
                         .font(.caption)
@@ -290,6 +327,19 @@ struct DashboardView: View {
                             icon: "plus.circle.fill",
                             color: .blue
                         ) {
+                            Task {
+                                _ = await wiringService.trackButtonAction(
+                                    buttonId: "dashboard-upload-document-btn",
+                                    viewName: "DashboardView",
+                                    actionDescription: "Upload Financial Document",
+                                    expectedOutcome: "Navigate to document upload interface",
+                                    metadata: [
+                                        "current_documents": "\(allDocuments.count)",
+                                        "quick_action": "upload",
+                                        "navigation_target": "DocumentUploadView"
+                                    ]
+                                )
+                            }
                             // Navigate to document upload
                         }
                         
@@ -298,6 +348,55 @@ struct DashboardView: View {
                             icon: "plus.square.fill",
                             color: .green
                         ) {
+                            Task {
+                                _ = await wiringService.trackModalWorkflow(
+                                    modalId: "dashboard-add-transaction-modal",
+                                    viewName: "DashboardView",
+                                    workflowDescription: "Add New Financial Transaction",
+                                    expectedSteps: [
+                                        TaskMasterWorkflowStep(
+                                            title: "Select Transaction Type",
+                                            description: "Choose between Income or Expense",
+                                            elementType: .form,
+                                            estimatedDuration: 10,
+                                            validationCriteria: ["Transaction type selected"]
+                                        ),
+                                        TaskMasterWorkflowStep(
+                                            title: "Enter Amount",
+                                            description: "Input transaction amount",
+                                            elementType: .form,
+                                            estimatedDuration: 15,
+                                            validationCriteria: ["Valid amount entered", "Amount > 0"]
+                                        ),
+                                        TaskMasterWorkflowStep(
+                                            title: "Enter Description",
+                                            description: "Provide transaction description",
+                                            elementType: .form,
+                                            estimatedDuration: 20,
+                                            validationCriteria: ["Description provided", "Description not empty"]
+                                        ),
+                                        TaskMasterWorkflowStep(
+                                            title: "Select Date",
+                                            description: "Choose transaction date",
+                                            elementType: .form,
+                                            estimatedDuration: 10,
+                                            validationCriteria: ["Valid date selected"]
+                                        ),
+                                        TaskMasterWorkflowStep(
+                                            title: "Save Transaction",
+                                            description: "Persist transaction to Core Data",
+                                            elementType: .action,
+                                            estimatedDuration: 5,
+                                            validationCriteria: ["Transaction saved", "Core Data updated"]
+                                        )
+                                    ],
+                                    metadata: [
+                                        "current_balance": "\(totalBalance)",
+                                        "monthly_income": "\(monthlyIncome)",
+                                        "modal_type": "transaction_entry"
+                                    ]
+                                )
+                            }
                             showingAddTransaction = true
                         }
                         
@@ -306,6 +405,21 @@ struct DashboardView: View {
                             icon: "chart.bar.fill",
                             color: .purple
                         ) {
+                            Task {
+                                _ = await wiringService.trackButtonAction(
+                                    buttonId: "dashboard-view-reports-btn",
+                                    viewName: "DashboardView",
+                                    actionDescription: "View Financial Reports",
+                                    expectedOutcome: "Navigate to AnalyticsView with comprehensive reports",
+                                    metadata: [
+                                        "total_balance": "\(totalBalance)",
+                                        "monthly_income": "\(monthlyIncome)",
+                                        "monthly_expenses": "\(monthlyExpenses)",
+                                        "goal_achievement": "\(goalAchievementPercentage)",
+                                        "navigation_target": "AnalyticsView"
+                                    ]
+                                )
+                            }
                             // Navigate to analytics
                         }
                     }
@@ -337,6 +451,25 @@ struct DashboardView: View {
         .onAppear {
             loadRealDashboardData()
             // REMOVED: createTestDataIfNeeded() - NO AUTOMATIC FAKE DATA GENERATION
+            
+            // Track dashboard view appearance
+            Task {
+                _ = await wiringService.trackNavigationAction(
+                    navigationId: "dashboard-view-appeared",
+                    fromView: "Previous View",
+                    toView: "DashboardView",
+                    navigationAction: "Dashboard Appeared",
+                    metadata: [
+                        "total_balance": "\(totalBalance)",
+                        "monthly_income": "\(monthlyIncome)",
+                        "monthly_expenses": "\(monthlyExpenses)",
+                        "total_documents": "\(allDocuments.count)",
+                        "total_financial_data": "\(allFinancialData.count)",
+                        "goal_achievement": "\(goalAchievementPercentage)",
+                        "has_chart_data": "\(!chartData.isEmpty)"
+                    ]
+                )
+            }
         }
         .sheet(isPresented: $showingAddTransaction) {
             AddTransactionView()
@@ -591,6 +724,17 @@ struct AddTransactionView: View {
     @State private var isIncome: Bool = true
     @State private var selectedDate = Date()
     
+    // TaskMaster-AI Wiring Integration
+    @StateObject private var taskMaster = TaskMasterAIService()
+    @StateObject private var wiringService: TaskMasterWiringService
+    
+    init() {
+        let taskMasterService = TaskMasterAIService()
+        let wiring = TaskMasterWiringService(taskMaster: taskMasterService)
+        _taskMaster = StateObject(wrappedValue: taskMasterService)
+        _wiringService = StateObject(wrappedValue: wiring)
+    }
+    
     var body: some View {
         NavigationView {
             Form {
@@ -621,6 +765,21 @@ struct AddTransactionView: View {
                 
                 Section {
                     Button("Save Transaction") {
+                        Task {
+                            _ = await wiringService.trackButtonAction(
+                                buttonId: "add-transaction-save-btn",
+                                viewName: "AddTransactionView",
+                                actionDescription: "Save New Transaction",
+                                expectedOutcome: "Save transaction to Core Data and close modal",
+                                metadata: [
+                                    "transaction_type": isIncome ? "income" : "expense",
+                                    "amount": amount,
+                                    "description": description,
+                                    "date": selectedDate.description,
+                                    "form_valid": "\(!amount.isEmpty && !description.isEmpty)"
+                                ]
+                            )
+                        }
                         saveTransaction()
                     }
                     .disabled(amount.isEmpty || description.isEmpty)
@@ -636,6 +795,20 @@ struct AddTransactionView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") {
+                        Task {
+                            _ = await wiringService.trackButtonAction(
+                                buttonId: "add-transaction-cancel-btn",
+                                viewName: "AddTransactionView",
+                                actionDescription: "Cancel Transaction Entry",
+                                expectedOutcome: "Close modal without saving",
+                                metadata: [
+                                    "had_amount": "\(!amount.isEmpty)",
+                                    "had_description": "\(!description.isEmpty)",
+                                    "transaction_type": isIncome ? "income" : "expense",
+                                    "form_completion": "\((!amount.isEmpty && !description.isEmpty) ? "complete" : "incomplete")"
+                                ]
+                            )
+                        }
                         dismiss()
                     }
                 }
@@ -667,9 +840,43 @@ struct AddTransactionView: View {
         do {
             try viewContext.save()
             print("✅ Saved transaction: \(description) - \(isIncome ? "+" : "-")$\(amountValue)")
+            
+            // Complete the workflow if this was triggered from dashboard modal workflow
+            Task {
+                _ = await wiringService.trackButtonAction(
+                    buttonId: "transaction-saved-success",
+                    viewName: "AddTransactionView",
+                    actionDescription: "Transaction Saved Successfully",
+                    expectedOutcome: "Transaction persisted to Core Data",
+                    metadata: [
+                        "saved_amount": "\(amountValue)",
+                        "transaction_type": isIncome ? "income" : "expense",
+                        "vendor_name": description,
+                        "extraction_confidence": "1.0",
+                        "core_data_save": "success"
+                    ]
+                )
+            }
+            
             dismiss()
         } catch {
             print("❌ Error saving transaction: \(error)")
+            
+            // Track the error
+            Task {
+                _ = await wiringService.trackButtonAction(
+                    buttonId: "transaction-save-error",
+                    viewName: "AddTransactionView",
+                    actionDescription: "Transaction Save Failed",
+                    expectedOutcome: "Error persisting to Core Data",
+                    metadata: [
+                        "error_description": error.localizedDescription,
+                        "attempted_amount": "\(amountValue)",
+                        "transaction_type": isIncome ? "income" : "expense",
+                        "core_data_save": "failed"
+                    ]
+                )
+            }
         }
     }
 }

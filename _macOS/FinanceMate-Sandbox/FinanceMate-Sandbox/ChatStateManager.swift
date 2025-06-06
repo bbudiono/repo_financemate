@@ -4,13 +4,14 @@ import SwiftUI
 import Combine
 
 /**
- * Minimal ChatStateManager for Sandbox environment
+ * Legacy ChatStateManager for backward compatibility
+ * Now uses the comprehensive chatbot system from ChatbotPanel
  * 
- * Purpose: Basic chat state management for sandbox testing
+ * Purpose: Provides backward compatibility while using new chatbot infrastructure
  */
 
 class ChatStateManager: ObservableObject {
-    @Published var messages: [ChatMessage] = []
+    @Published var messages: [LegacyChatMessage] = []
     @Published var isProcessing: Bool = false
     
     static let shared = ChatStateManager()
@@ -18,12 +19,12 @@ class ChatStateManager: ObservableObject {
     private init() {}
     
     func sendMessage(text: String) {
-        let message = ChatMessage(content: text, isUser: true)
+        let message = LegacyChatMessage(content: text, isUser: true)
         messages.append(message)
         
         // Simulate AI response for sandbox
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            let response = ChatMessage(
+            let response = LegacyChatMessage(
                 content: "Sandbox AI response to: \(text)",
                 isUser: false
             )
@@ -32,7 +33,7 @@ class ChatStateManager: ObservableObject {
     }
 }
 
-struct ChatMessage: Identifiable {
+struct LegacyChatMessage: Identifiable {
     let id = UUID()
     let content: String
     let isUser: Bool

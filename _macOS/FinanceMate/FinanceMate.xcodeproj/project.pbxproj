@@ -27,6 +27,9 @@
 		D62D0351A2F14CD8816B3337F0FE5F6A /* AnalyticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2AAC89D21EB40AABC6461CF42C85165 /* AnalyticsView.swift */; };
 		E1234567890ABCDEF1234567 /* FinancialExportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1234567890ABCDEF1234567 /* FinancialExportView.swift */; };
 		E2345678901BCDEF23456789 /* BasicExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2345678901BCDEF23456789 /* BasicExportService.swift */; };
+		6EC6AD87195C426EAEB30A5E /* KeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD83D43E3A470D869D3D96 /* KeychainManager.swift */; };
+		4066900159D6459DBF9CC355 /* UserSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFEA0A41404442ABF32EB70 /* UserSessionManager.swift */; };
+		C76704F73B3D454E8963D3B7 /* TokenManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8364F6BBEC35411F9A95BBD8 /* TokenManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -51,6 +54,9 @@
 		F1234567890ABCDEF1234567 /* FinancialExportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinancialExportView.swift; sourceTree = "<group>"; };
 		F2345678901BCDEF23456789 /* BasicExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicExportService.swift; sourceTree = "<group>"; };
 		F74A98781F1B874D7128CEE5 /* FinanceMate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FinanceMate.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		07FD83D43E3A470D869D3D96 /* KeychainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainManager.swift; sourceTree = "<group>"; };
+		CEFEA0A41404442ABF32EB70 /* UserSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSessionManager.swift; sourceTree = "<group>"; };
+		8364F6BBEC35411F9A95BBD8 /* TokenManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -121,6 +127,9 @@
 			isa = PBXGroup;
 			children = (
 				F2345678901BCDEF23456789 /* BasicExportService.swift */,
+				07FD83D43E3A470D869D3D96 /* KeychainManager.swift */,
+				CEFEA0A41404442ABF32EB70 /* UserSessionManager.swift */,
+				8364F6BBEC35411F9A95BBD8 /* TokenManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -215,6 +224,9 @@
 				BE8F6A2B1234567890ABCDEF /* Project+CoreDataProperties.swift in Sources */,
 				E1234567890ABCDEF1234567 /* FinancialExportView.swift in Sources */,
 				E2345678901BCDEF23456789 /* BasicExportService.swift in Sources */,
+				6EC6AD87195C426EAEB30A5E /* KeychainManager.swift in Sources */,
+				4066900159D6459DBF9CC355 /* UserSessionManager.swift in Sources */,
+				C76704F73B3D454E8963D3B7 /* TokenManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

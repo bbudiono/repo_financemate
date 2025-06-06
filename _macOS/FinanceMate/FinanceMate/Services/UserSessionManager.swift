@@ -1,8 +1,8 @@
-// SANDBOX FILE: For testing/development. See .cursorrules.
+
 
 //
 //  UserSessionManager.swift
-//  FinanceMate-Sandbox
+//  FinanceMate
 //
 //  Created by Assistant on 6/2/25.
 //
@@ -28,6 +28,26 @@
 
 import Foundation
 import Combine
+
+// MARK: - Supporting Types
+
+public struct AuthenticatedUser: Codable {
+    public let id: String
+    public var email: String
+    public var displayName: String
+    public let provider: String
+    public let isEmailVerified: Bool
+    public let createdAt: Date
+    
+    public init(id: String, email: String, displayName: String, provider: String, isEmailVerified: Bool) {
+        self.id = id
+        self.email = email
+        self.displayName = displayName
+        self.provider = provider
+        self.isEmailVerified = isEmailVerified
+        self.createdAt = Date()
+    }
+}
 
 // MARK: - User Session Manager
 

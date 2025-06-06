@@ -14,11 +14,44 @@ To develop FinanceMate, a native macOS application that revolutionizes how small
 - TDD-008: Test both Sandbox and Production builds for TestFlight (COMPLETED)
 - GIT-001: Push validated changes to main branch (COMPLETED)
 
-### NEW PRIORITY TASKS (Current Session)
-- SYNC-001: Synchronize tasks across ~/tasks/tasks.json, ~/scripts/prd.txt, ~/docs/TASKS.md, ~/docs/BLUEPRINT.md (IN PROGRESS)
-- ALIGN-001: Conduct comprehensive codebase alignment verification between Production and Sandbox (PENDING)
-- TEST-001: Execute comprehensive headless testing retrospective with crash log analysis (PENDING)
-- TESTFLIGHT-001: Validate TestFlight deployment readiness for both builds (PENDING)
+### 🚀 TASKMASTER-AI MCP COMPREHENSIVE SPRINT PLAN: 125+ TASKS (Generated 2025-06-05)
+
+**INTEGRATION COMPLETE:** TaskMaster-AI MCP server successfully integrated with multi-model coordination
+
+**CRITICAL DISCOVERY:** RealLLMAPIService.swift works perfectly with OpenAI API, but ChatbotIntegrationView not connected!
+
+### TASKMASTER-AI MCP INTEGRATION STATUS
+✅ **Multi-Model Support**: Anthropic, OpenAI, Perplexity, Google, Mistral, OpenRouter, XAI
+✅ **Advanced Task Orchestration**: Complex task breakdown and dependency management
+✅ **JSON Task Format**: Structured task representation with metadata
+✅ **Hierarchical Dependencies**: Parent/child relationships with dependency tracking
+✅ **Level 5-6 Task Tracking**: Granular task decomposition with 125+ actionable items
+🔄 **Cross-File Synchronization**: Tasks synchronized across all project documentation
+
+### IMMEDIATE PRIORITY TASKS (P0 Critical)
+- UI-001: Connect RealLLMAPIService to ChatbotIntegrationView (P0 - Live chat functionality missing)
+- UI-002: Wire ChatbotPanelView to use RealLLMAPIService instead of DemoChatbotService (P0 - Backend works, frontend broken)
+- UI-009: Audit all buttons in sidebar navigation for functionality (P0 - Many buttons non-functional)
+- TEST-059: Implement headless testing orchestrator (P0 - No automated testing framework)
+
+### TASKMASTER-AI SPRINT PHASES (5-Week Production Timeline)
+- **Phase 1 (Week 1)**: Critical UI/UX Completion - Tasks 1-25 (Live chat integration, button wiring, accessibility)
+- **Phase 2 (Week 2)**: Backend Integration & API Validation - Tasks 26-50 (Multi-LLM support, auth, data management)
+- **Phase 3 (Week 3)**: Testing & Quality Assurance - Tasks 51-75 (TDD implementation, headless testing, quality metrics)
+- **Phase 4 (Week 4)**: Production Deployment - Tasks 76-100 (Build automation, App Store prep, performance optimization)
+- **Phase 5 (Week 5+)**: Enhancement & Polish - Tasks 101-125 (Advanced features, system enhancements, UX polish)
+
+### TASKMASTER-AI SUCCESS METRICS
+- **Task Structure Compliance**: All tasks follow TaskMaster-AI JSON format
+- **Hierarchical Dependencies**: Clear parent-child and dependency relationships
+- **Multi-Model Coordination**: Tasks designed for Anthropic, OpenAI, Perplexity collaboration
+- **Test Coverage**: >95% for critical paths
+- **Performance**: <2s app launch, <500ms response times
+- **User Experience**: >95% task completion rate
+- **Quality Score**: >90% average code quality
+- **Production Ready**: App Store submission in 5 weeks
+
+**Complete Details:** See `/temp/TASKMASTER_AI_INTEGRATION_TEST_REPORT_20250605.md`
 
 ## Core Features & Implementation Status
 
