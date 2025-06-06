@@ -164,15 +164,29 @@ struct FinancialExportView: View {
             }
             
             Button(action: performTDDExport) {
-                HStack {
-                    Image(systemName: isExporting ? "arrow.down.circle" : "square.and.arrow.up")
+                HStack(spacing: 8) {
+                    if isExporting {
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                            .scaleEffect(0.8)
+                    } else {
+                        Image(systemName: "square.and.arrow.up")
+                            .font(.title3)
+                    }
                     Text(isExporting ? "Exporting..." : "Export \(selectedFormat.rawValue)")
+                        .font(.headline)
                 }
                 .frame(maxWidth: .infinity)
-                .padding()
-                .background(isExporting ? Color.gray : Color.blue)
+                .padding(.vertical, 12)
+                .padding(.horizontal, 20)
+                .background(
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(isExporting ? Color.gray.opacity(0.7) : Color.blue)
+                        .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
+                )
                 .foregroundColor(.white)
-                .cornerRadius(10)
+                .scaleEffect(isExporting ? 0.98 : 1.0)
+                .animation(.easeInOut(duration: 0.2), value: isExporting)
             }
             .disabled(isExporting)
             .buttonStyle(.plain)

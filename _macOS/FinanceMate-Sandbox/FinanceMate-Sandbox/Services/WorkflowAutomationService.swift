@@ -480,7 +480,7 @@ public class WorkflowAutomationService: ObservableObject {
             print("🔤 Processing OCR...")
         case .extraction:
             print("🎯 Extracting data...")
-        case .import:
+        case .dataImport:
             print("📂 Importing data...")
         case .validation:
             print("✅ Validating quality...")
@@ -497,7 +497,7 @@ public class WorkflowAutomationService: ObservableObject {
         taskMaster: TaskMasterAIService
     ) async {
         execution.endTime = Date()
-        execution.status = .completed
+        execution.status = WorkflowExecutionStatus.completed
         
         await taskMaster.completeTask(execution.workflowTask.id)
         
@@ -574,9 +574,9 @@ public class WorkflowAutomationService: ObservableObject {
     }
     
     /// Get execution status for active workflows
-    public func getActiveWorkflowStatus() -> [WorkflowExecutionStatus] {
+    public func getActiveWorkflowStatus() -> [WorkflowExecutionInfo] {
         return activeWorkflows.values.map { execution in
-            WorkflowExecutionStatus(
+            WorkflowExecutionInfo(
                 id: execution.id,
                 templateName: execution.template.name,
                 status: execution.status,
@@ -778,7 +778,7 @@ public struct WorkflowAnalytics {
     public let availableTemplatesCount: Int
 }
 
-public struct WorkflowExecutionStatus {
+public struct WorkflowExecutionInfo {
     public let id: String
     public let templateName: String
     public let status: WorkflowExecutionStatus

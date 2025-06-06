@@ -36,6 +36,8 @@ struct MainAppView: View {
     @StateObject private var apiKeysService = APIKeysIntegrationService(userEmail: "bernhardbudiono@gmail.com")
     @Environment(\.colorScheme) private var colorScheme
     @State private var showingAPIKeysPanel = false
+    @State private var selectedView: NavigationItem = .dashboard
+    @State private var columnVisibility: NavigationSplitViewVisibility = .all
     
     // MARK: - Body
     
@@ -59,12 +61,12 @@ struct MainAppView: View {
     
     private var authenticatedContent: some View {
         ChatbotIntegrationView {
-            NavigationSplitView {
-                // Sidebar with user profile
+            NavigationSplitView(columnVisibility: $columnVisibility) {
+                // Sidebar with user profile and navigation
                 authenticatedSidebar
             } detail: {
-                // Main content area
-                DetailView(selectedView: .dashboard)
+                // Main content area with proper navigation
+                DetailView(selectedView: selectedView)
             }
             .overlay(alignment: .bottomTrailing) {
                 // SANDBOX WATERMARK - MANDATORY
@@ -259,17 +261,19 @@ struct MainAppView: View {
                 .fontWeight(.bold)
                 .padding(.bottom, 8)
             
-            navigationButton("Dashboard", systemImage: "chart.bar", isSelected: true)
-            navigationButton("Documents", systemImage: "doc.text", isSelected: false)
-            navigationButton("Analytics", systemImage: "chart.pie", isSelected: false)
-            navigationButton("Settings", systemImage: "gearshape", isSelected: false)
+            ForEach(NavigationItem.allCases, id: \.self) { item in
+                navigationButton(
+                    item.title,
+                    systemImage: item.icon,
+                    isSelected: selectedView == item,
+                    action: { selectedView = item }
+                )
+            }
         }
     }
     
-    private func navigationButton(_ title: String, systemImage: String, isSelected: Bool) -> some View {
-        Button(action: {
-            // Navigation action would go here
-        }) {
+    private func navigationButton(_ title: String, systemImage: String, isSelected: Bool, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
             HStack {
                 Image(systemName: systemImage)
                     .frame(width: 16)

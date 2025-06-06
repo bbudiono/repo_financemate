@@ -271,12 +271,13 @@ public class ChatAnalyticsService: ObservableObject {
         let analytics = taskService.getCreationAnalytics()
         
         return TaskCreationAnalytics(
+            totalCreationRequests: analytics.totalTasksCreated,
             totalTasksCreated: analytics.totalTasksCreated,
-            totalCreationRequests: 1, // Will be updated by actual task creation analytics
-            averageTasksPerRequest: analytics.averageTasksPerCreation,
+            averageTasksPerCreation: analytics.averageTasksPerCreation,
             autoStartRate: analytics.autoStartRate,
             highConfidenceCreationRate: analytics.highConfidenceCreationRate,
-            queuedRequestsCount: analytics.queuedRequestsCount
+            queuedRequestsCount: analytics.queuedRequestsCount,
+            currentQueueSize: analytics.queuedRequestsCount
         )
     }
     
@@ -289,12 +290,13 @@ public class ChatAnalyticsService: ObservableObject {
         
         return WorkflowAnalytics(
             totalWorkflowExecutions: analytics.totalWorkflowExecutions,
-            activeWorkflows: analytics.activeWorkflowsCount,
-            completedWorkflows: analytics.completedWorkflowsCount,
+            activeWorkflowsCount: analytics.activeWorkflowsCount,
+            completedWorkflowsCount: analytics.completedWorkflowsCount,
             successRate: analytics.successRate,
             averageExecutionTime: analytics.averageExecutionTime,
+            totalStepsExecuted: analytics.totalStepsExecuted,
             averageStepsPerWorkflow: analytics.averageStepsPerWorkflow,
-            workflowTypeDistribution: getWorkflowTypeDistribution()
+            availableTemplatesCount: analytics.availableTemplatesCount
         )
     }
     
@@ -304,7 +306,7 @@ public class ChatAnalyticsService: ObservableObject {
                 totalCoordinations: 0,
                 activeCoordinations: 0,
                 successRate: 0,
-                responseTime: 0,
+                averageResponseTime: 0,
                 averageQualityScore: 0,
                 averageProvidersUsed: 0,
                 providerMetrics: [:],
@@ -383,12 +385,10 @@ public class ChatAnalyticsService: ObservableObject {
     
     private func calculatePerformanceMetrics() -> PerformanceMetrics {
         return PerformanceMetrics(
+            cpuUsage: calculateResourceUtilization(),
+            memoryUsagePercentage: calculateResourceUtilization(),
             responseTime: calculateAverageResponseTime(),
-            throughput: calculateSystemThroughput(),
-            resourceUtilization: calculateResourceUtilization(),
-            cacheEfficiency: calculateOverallCacheEfficiency(),
-            errorRate: calculateSystemErrorRate(),
-            scalabilityScore: calculateScalabilityScore()
+            throughput: calculateSystemThroughput()
         )
     }
     
@@ -769,10 +769,10 @@ public struct ComprehensiveChatAnalytics {
         generatedAt: Date = Date(),
         aiEventAnalytics: AIEventAnalytics = AIEventAnalytics(),
         intentRecognitionAnalytics: IntentRecognitionAnalytics = IntentRecognitionAnalytics(),
-        taskCreationAnalytics: TaskCreationAnalytics,
-        workflowAnalytics: WorkflowAnalytics,
-        multiLLMAnalytics: MultiLLMAnalytics,
-        conversationAnalytics: ConversationAnalytics,
+        taskCreationAnalytics: TaskCreationAnalytics = TaskCreationAnalytics(),
+        workflowAnalytics: WorkflowAnalytics = WorkflowAnalytics(),
+        multiLLMAnalytics: MultiLLMAnalytics = MultiLLMAnalytics(),
+        conversationAnalytics: ConversationAnalytics = ConversationAnalytics(),
         crossServiceMetrics: CrossServiceMetrics = CrossServiceMetrics(),
         performanceMetrics: PerformanceMetrics = PerformanceMetrics(),
         userExperienceMetrics: UserExperienceMetrics = UserExperienceMetrics()
@@ -955,3 +955,66 @@ private enum MultiLLMMetricType {
 private enum ConversationMetricType {
     case averageSessionDuration, turnsPerSession, intentConfidence, taskCreationRate
 }
+
+// MARK: - Default Initializers for Analytics Types
+
+extension TaskCreationAnalytics {
+    public init() {
+        self.init(
+            totalCreationRequests: 0,
+            totalTasksCreated: 0,
+            averageTasksPerCreation: 0.0,
+            autoStartRate: 0.0,
+            highConfidenceCreationRate: 0.0,
+            queuedRequestsCount: 0,
+            currentQueueSize: 0
+        )
+    }
+}
+
+extension WorkflowAnalytics {
+    public init() {
+        self.init(
+            totalWorkflowExecutions: 0,
+            activeWorkflowsCount: 0,
+            completedWorkflowsCount: 0,
+            successRate: 0.0,
+            averageExecutionTime: 0.0,
+            totalStepsExecuted: 0,
+            averageStepsPerWorkflow: 0.0,
+            availableTemplatesCount: 0
+        )
+    }
+}
+
+extension MultiLLMAnalytics {
+    public init() {
+        self.init(
+            totalCoordinations: 0,
+            activeCoordinations: 0,
+            successRate: 0.0,
+            averageResponseTime: 0.0,
+            averageQualityScore: 0.0,
+            averageProvidersUsed: 0.0,
+            providerMetrics: [:],
+            cacheHitRate: 0.0
+        )
+    }
+}
+
+extension ConversationAnalytics {
+    public init() {
+        self.init(
+            totalConversations: 0,
+            activeConversations: 0,
+            totalTurns: 0,
+            averageSessionDuration: 0.0,
+            averageTurnsPerSession: 0.0,
+            averageIntentConfidence: 0.0,
+            intentDistribution: [:],
+            taskCreationRate: 0.0,
+            contextCacheSize: 0
+        )
+    }
+}
+

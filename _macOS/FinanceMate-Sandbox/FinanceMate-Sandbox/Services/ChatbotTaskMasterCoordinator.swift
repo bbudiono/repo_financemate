@@ -400,7 +400,7 @@ public class ChatbotTaskMasterCoordinator: ObservableObject {
         // Convert to legacy format for compatibility
         let legacyAnalytics = AICoordinationAnalytics(
             totalCoordinationEvents: comprehensiveAnalytics.aiEventAnalytics.totalEvents,
-            averageResponseTime: comprehensiveAnalytics.performanceMetrics.averageResponseTime,
+            averageResponseTime: comprehensiveAnalytics.performanceMetrics.responseTime,
             taskCreationRate: Double(comprehensiveAnalytics.taskCreationAnalytics.totalTasksCreated) / max(Double(comprehensiveAnalytics.conversationAnalytics.totalTurns), 1.0),
             workflowAutomationRate: comprehensiveAnalytics.workflowAnalytics.successRate,
             intentRecognitionAccuracy: comprehensiveAnalytics.intentRecognitionAnalytics.averageConfidence,

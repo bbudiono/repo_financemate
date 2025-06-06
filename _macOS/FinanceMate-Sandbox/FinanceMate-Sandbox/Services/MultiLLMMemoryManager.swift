@@ -124,7 +124,7 @@ public class MultiLLMMemoryManager: ObservableObject {
     }
     
     public func storeWorkflowExecution(_ workflow: MultiLLMWorkflow, result: WorkflowResult) async {
-        let execution = WorkflowExecution(
+        let execution = MultiLLMWorkflowExecution(
             workflowId: workflow.id,
             steps: workflow.steps,
             result: result,
@@ -408,7 +408,7 @@ private class WorkingMemory {
 
 private actor LongTermMemory {
     private var executions: [TaskExecution] = []
-    private var workflowExecutions: [WorkflowExecution] = []
+    private var workflowExecutions: [MultiLLMWorkflowExecution] = []
     private var graphExecutions: [GraphExecution] = []
     private var aggregatedResults: [AggregatedResult] = []
     private var archivedContexts: [MultiLLMContext] = []
@@ -417,7 +417,7 @@ private actor LongTermMemory {
         executions.append(execution)
     }
     
-    func storeWorkflowExecution(_ execution: WorkflowExecution) {
+    func storeWorkflowExecution(_ execution: MultiLLMWorkflowExecution) {
         workflowExecutions.append(execution)
     }
     
@@ -576,7 +576,7 @@ public struct TaskPattern {
     public let successRate: Double
 }
 
-public struct WorkflowExecution {
+public struct MultiLLMWorkflowExecution {
     public let workflowId: String
     public let steps: [MultiLLMWorkflowStep]
     public let result: WorkflowResult
