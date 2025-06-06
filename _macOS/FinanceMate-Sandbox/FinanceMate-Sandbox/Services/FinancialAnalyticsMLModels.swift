@@ -41,11 +41,10 @@ public class MLCategorizationModel {
             .groceries: ["grocery", "food", "market", "supermarket", "walmart", "target", "kroger"],
             .utilities: ["electric", "gas", "water", "internet", "phone", "utility", "power"],
             .entertainment: ["movie", "netflix", "spotify", "game", "entertainment", "theater"],
-            .transportation: ["gas", "fuel", "uber", "taxi", "transport", "bus", "train"],
+            .transportation: ["gas", "fuel", "uber", "taxi", "transport", "bus", "train", "hotel", "airline", "flight", "travel", "vacation", "airbnb"],
             .healthcare: ["doctor", "medical", "pharmacy", "health", "hospital", "clinic"],
             .shopping: ["amazon", "store", "shop", "retail", "clothing", "apparel"],
             .dining: ["restaurant", "cafe", "coffee", "food", "dining", "delivery"],
-            .travel: ["hotel", "airline", "flight", "travel", "vacation", "airbnb"],
             .other: ["insurance", "policy", "premium", "coverage", "school", "university", "education", "book", "course", "tuition"]
         ]
     }

@@ -100,7 +100,7 @@ public class FinancialDataExtractor: ObservableObject {
             }
             
             // Determine total amount
-            let totalAmount = determineTotalAmount(from: amounts, text: text)
+            let totalAmount = AmountExtractionModule.determineTotalAmount(from: amounts, text: text)
             
             // Calculate confidence based on extracted data quality
             let confidence = calculateExtractionConfidence(
@@ -131,32 +131,7 @@ public class FinancialDataExtractor: ObservableObject {
     }
     
     public func extractAmounts(from text: String) -> [String] {
-        // Extract monetary amounts using regex patterns
-        let patterns = [
-            #"\$[\d,]+\.\d{2}"#,           // $1,234.56
-            #"\$[\d,]+"#,                  // $1,234
-            #"USD\s*[\d,]+\.\d{2}"#,       // USD 1234.56
-            #"[\d,]+\.\d{2}\s*USD"#,       // 1234.56 USD
-        ]
-        
-        var amounts: [String] = []
-        
-        for pattern in patterns {
-            if let regex = try? NSRegularExpression(pattern: pattern, options: []) {
-                let matches = regex.matches(in: text, options: [], range: NSRange(text.startIndex..., in: text))
-                
-                for match in matches {
-                    if let range = Range(match.range, in: text) {
-                        let amount = String(text[range]).trimmingCharacters(in: .whitespacesAndNewlines)
-                        if !amounts.contains(amount) {
-                            amounts.append(amount)
-                        }
-                    }
-                }
-            }
-        }
-        
-        return amounts
+        return AmountExtractionModule.extractAmounts(from: text)
     }
     
     public func categorizeExpense(from text: String) -> ExpenseCategory {
@@ -196,15 +171,7 @@ public class FinancialDataExtractor: ObservableObject {
     }
     
     public func detectCurrency(from text: String) -> Currency {
-        let lowercaseText = text.lowercased()
-        
-        if lowercaseText.contains("eur") || lowercaseText.contains("€") {
-            return .eur
-        } else if lowercaseText.contains("gbp") || lowercaseText.contains("£") {
-            return .gbp
-        } else {
-            return .usd // Default to USD
-        }
+        return CurrencyDetectionModule.detectCurrency(from: text)
     }
     
     public func extractDates(from text: String) -> [String] {
@@ -363,35 +330,9 @@ public class FinancialDataExtractor: ObservableObject {
         return nil
     }
     
-    private func determineTotalAmount(from amounts: [String], text: String) -> String? {
-        // Look for explicit "total" indicators
-        let totalPattern = #"[Tt]otal:?\s*(\$[\d,]+\.\d{2})"#
-        
-        if let regex = try? NSRegularExpression(pattern: totalPattern) {
-            let matches = regex.matches(in: text, range: NSRange(text.startIndex..., in: text))
-            
-            if let match = matches.first, match.numberOfRanges >= 2 {
-                if let range = Range(match.range(at: 1), in: text) {
-                    return String(text[range])
-                }
-            }
-        }
-        
-        // If no explicit total found, return the largest amount
-        return amounts.max { amount1, amount2 in
-            let value1 = extractNumericValue(from: amount1)
-            let value2 = extractNumericValue(from: amount2)
-            return value1 < value2
-        }
-    }
     
     private func extractNumericValue(from amountString: String) -> Double {
-        let cleanString = amountString.replacingOccurrences(of: "$", with: "")
-            .replacingOccurrences(of: ",", with: "")
-            .replacingOccurrences(of: "USD", with: "")
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-        
-        return Double(cleanString) ?? 0.0
+        return AmountExtractionModule.extractNumericValue(from: amountString) ?? 0.0
     }
     
     private func calculateExtractionConfidence(amounts: [String], vendor: String?, dates: [String], documentType: FinancialDocumentType) -> Double {
@@ -459,7 +400,7 @@ public class FinancialDataExtractor: ObservableObject {
             }
         }
         
-        return ValidationResult(isValid: isValid, validationErrors: validationErrors)
+        return ValidationResult(isValid: isValid, errors: validationErrors)
     }
     
     public func extractLineItems(from text: String) async -> [LineItem] {
@@ -486,9 +427,9 @@ public class FinancialDataExtractor: ObservableObject {
                             
                             let lineItem = LineItem(
                                 description: description.trimmingCharacters(in: .whitespacesAndNewlines),
+                                amount: String(amount),
                                 quantity: quantity,
-                                rate: rate,
-                                amount: amount
+                                unitPrice: String(rate)
                             )
                             lineItems.append(lineItem)
                         }
@@ -515,63 +456,31 @@ public class FinancialDataExtractor: ObservableObject {
                 let frequency = analyzeTransactionFrequency(transactionGroup)
                 
                 let pattern = RecurringPattern(
-                    description: normalizedDescription,
-                    frequency: frequency,
+                    vendorName: normalizedDescription,
+                    transactions: transactionGroup,
                     averageAmount: calculateAverageAmount(transactionGroup),
-                    occurrences: transactionGroup.count
+                    frequency: frequency,
+                    confidence: 0.8
                 )
                 recurringPatterns.append(pattern)
             }
         }
         
-        return RecurringAnalysis(recurringPatterns: recurringPatterns)
+        let totalAmount = recurringPatterns.reduce(0) { $0 + $1.averageAmount }
+        return RecurringAnalysis(patterns: recurringPatterns, confidence: 0.8, totalRecurringAmount: totalAmount)
     }
     
     public func normalizeAmounts(_ amounts: [String]) -> [String] {
-        return amounts.compactMap { amount in
-            let sanitized = sanitizeAmount(amount)
-            return isValidAmount(sanitized) ? sanitized : nil
-        }
+        return AmountExtractionModule.normalizeAmounts(amounts)
     }
     
     public func sanitizeAmount(_ amount: String) -> String {
-        var cleanAmount = amount
-            .replacingOccurrences(of: "USD", with: "")
-            .replacingOccurrences(of: "$", with: "")
-            .replacingOccurrences(of: ",", with: "")
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-        
-        // Handle decimal precision (max 2 decimal places)
-        if let decimalIndex = cleanAmount.firstIndex(of: ".") {
-            let integerPart = String(cleanAmount[..<decimalIndex])
-            let decimalPart = String(cleanAmount[cleanAmount.index(after: decimalIndex)...])
-            
-            let truncatedDecimal = String(decimalPart.prefix(2)).padding(toLength: 2, withPad: "0", startingAt: 0)
-            cleanAmount = integerPart + "." + truncatedDecimal
-        } else {
-            cleanAmount += ".00"
-        }
-        
-        return "$" + cleanAmount
+        return AmountExtractionModule.normalizeAmounts([amount]).first ?? amount
     }
     
     public func detectAllCurrencies(from text: String) -> Set<Currency> {
-        var detectedCurrencies: Set<Currency> = []
-        let lowercaseText = text.lowercased()
-        
-        if lowercaseText.contains("usd") || lowercaseText.contains("$") {
-            detectedCurrencies.insert(.usd)
-        }
-        
-        if lowercaseText.contains("eur") || lowercaseText.contains("€") {
-            detectedCurrencies.insert(.eur)
-        }
-        
-        if lowercaseText.contains("gbp") || lowercaseText.contains("£") {
-            detectedCurrencies.insert(.gbp)
-        }
-        
-        return detectedCurrencies
+        let detectionResults = CurrencyDetectionModule.detectAllCurrencies(from: text)
+        return Set(detectionResults.map { $0.currency })
     }
     
     public func analyzeFraudRisk(from text: String, extractedData: ExtractedFinancialData) async -> FraudAnalysis {
@@ -583,7 +492,7 @@ public class FinancialDataExtractor: ObservableObject {
         // Check for urgency language
         let urgencyKeywords = ["urgent", "immediately", "within 24 hours", "legal action", "pay now"]
         if urgencyKeywords.contains(where: { lowercaseText.contains($0) }) {
-            riskFactors.append(.urgencyLanguage)
+            riskFactors.append(.unusualAmount)
             riskScore += 0.3
         }
         
@@ -605,11 +514,12 @@ public class FinancialDataExtractor: ObservableObject {
         
         // Check for wire transfer requests
         if lowercaseText.contains("wire transfer") || lowercaseText.contains("bitcoin") {
-            riskFactors.append(.suspiciousPaymentMethod)
+            riskFactors.append(.unusualLocation)
             riskScore += 0.3
         }
         
-        return FraudAnalysis(riskScore: min(riskScore, 1.0), riskFactors: riskFactors)
+        let isHighRisk = riskScore > 0.6
+        return FraudAnalysis(riskScore: min(riskScore, 1.0), riskFactors: riskFactors, isHighRisk: isHighRisk, confidence: 0.8)
     }
     
     // MARK: - Private Validation Helper Methods
@@ -622,7 +532,7 @@ public class FinancialDataExtractor: ObservableObject {
         let expectedTotal = extractNumericValue(from: totalAmountStr)
         
         // Check if line items add up to total (allowing for tax/fees)
-        let numericAmounts = amounts.map { extractNumericValue(from: $0) }
+        let numericAmounts = amounts.compactMap { AmountExtractionModule.extractNumericValue(from: $0) }
         let calculatedTotal = numericAmounts.reduce(0, +)
         
         // Allow 20% variance for taxes and fees
@@ -658,7 +568,7 @@ public class FinancialDataExtractor: ObservableObject {
         
         // Check for minimum length and valid characters
         if vendorName.trimmingCharacters(in: .whitespacesAndNewlines).count < 2 {
-            return .invalidVendorInfo
+            return .missingVendorInfo
         }
         
         return nil
@@ -667,7 +577,8 @@ public class FinancialDataExtractor: ObservableObject {
     private func validateTransactionConsistency(_ transactions: [FinancialTransaction]) -> FinancialValidationError? {
         // Validate that transaction amounts are consistent with categories
         for transaction in transactions {
-            if transaction.category == .business && extractNumericValue(from: transaction.amount) ?? 0 < 0 {
+            let amountValue = extractNumericValue(from: transaction.amount)
+            if transaction.category == .business && amountValue < 0 {
                 // Business expenses should typically be negative in statements
                 continue
             }
@@ -705,262 +616,20 @@ public class FinancialDataExtractor: ObservableObject {
     }
     
     private func calculateAverageAmount(_ transactions: [FinancialTransaction]) -> Double {
-        let amounts = transactions.compactMap { extractNumericValue(from: $0.amount) }
-        guard !amounts.isEmpty else { return 0.0 }
-        return amounts.reduce(0, +) / Double(amounts.count)
+        let amountStrings = transactions.map { $0.amount }
+        return AmountExtractionModule.calculateAverageAmount(from: amountStrings)
     }
     
-    private func isValidAmount(_ amount: String) -> Bool {
-        let pattern = #"^\$\d+\.\d{2}$"#
-        return amount.range(of: pattern, options: .regularExpression) != nil
-    }
 }
 
-// MARK: - Supporting Data Models
 
-public struct ExtractedFinancialData {
-    public let documentType: FinancialDocumentType
-    public let amounts: [String]
-    public let totalAmount: String?
-    public let currency: Currency
-    public let category: ExpenseCategory
-    public let vendor: String?
-    public let documentDate: String?
-    public let accountNumber: String?
-    public let transactions: [FinancialTransaction]
-    public let confidence: Double
-    
-    public init(documentType: FinancialDocumentType, amounts: [String], totalAmount: String?, currency: Currency, category: ExpenseCategory, vendor: String?, documentDate: String?, accountNumber: String?, transactions: [FinancialTransaction], confidence: Double) {
-        self.documentType = documentType
-        self.amounts = amounts
-        self.totalAmount = totalAmount
-        self.currency = currency
-        self.category = category
-        self.vendor = vendor
-        self.documentDate = documentDate
-        self.accountNumber = accountNumber
-        self.transactions = transactions
-        self.confidence = confidence
-    }
-}
 
-public struct FinancialTransaction {
-    public let date: String
-    public let description: String
-    public let amount: String
-    public let category: ExpenseCategory
-    
-    public init(date: String, description: String, amount: String, category: ExpenseCategory) {
-        self.date = date
-        self.description = description
-        self.amount = amount
-        self.category = category
-    }
-}
 
-public struct VendorInfo {
-    public let name: String
-    public let address: String?
-    public let phone: String?
-    
-    public init(name: String, address: String?, phone: String?) {
-        self.name = name
-        self.address = address
-        self.phone = phone
-    }
-}
 
-public struct TaxInfo {
-    public let rate: Double
-    public let amount: String
-    
-    public init(rate: Double, amount: String) {
-        self.rate = rate
-        self.amount = amount
-    }
-}
 
-public enum ExpenseCategory: String, CaseIterable, Codable {
-    case groceries = "Groceries"
-    case dining = "Dining"
-    case transportation = "Transportation"
-    case utilities = "Utilities"
-    case business = "Business"
-    case healthcare = "Healthcare"
-    case entertainment = "Entertainment"
-    case shopping = "Shopping"
-    case travel = "Travel"
-    case officeExpenses = "Office Expenses"
-    case software = "Software"
-    case consulting = "Consulting"
-    case other = "Other"
-    
-    public var icon: String {
-        switch self {
-        case .groceries: return "cart"
-        case .dining: return "fork.knife"
-        case .transportation: return "car"
-        case .utilities: return "bolt"
-        case .business: return "briefcase"
-        case .healthcare: return "cross.case"
-        case .entertainment: return "tv"
-        case .shopping: return "bag"
-        case .travel: return "airplane"
-        case .officeExpenses: return "building.2"
-        case .software: return "app.badge"
-        case .consulting: return "person.badge.plus"
-        case .other: return "questionmark.circle"
-        }
-    }
-    
-    public var color: Color {
-        switch self {
-        case .groceries: return .green
-        case .dining: return .orange
-        case .transportation: return .blue
-        case .utilities: return .yellow
-        case .business: return .purple
-        case .healthcare: return .red
-        case .entertainment: return .pink
-        case .shopping: return .indigo
-        case .travel: return .teal
-        case .officeExpenses: return .brown
-        case .software: return .cyan
-        case .consulting: return .mint
-        case .other: return .gray
-        }
-    }
-}
 
-public enum Currency: String, CaseIterable {
-    case usd = "USD"
-    case eur = "EUR"
-    case gbp = "GBP"
-    
-    public var symbol: String {
-        switch self {
-        case .usd: return "$"
-        case .eur: return "€"
-        case .gbp: return "£"
-        }
-    }
-}
 
-public enum FinancialDocumentType: String, CaseIterable {
-    case invoice = "invoice"
-    case receipt = "receipt"
-    case statement = "statement"
-    case contract = "contract"
-    case other = "other"
-    
-    public var displayName: String {
-        switch self {
-        case .invoice: return "Invoice"
-        case .receipt: return "Receipt"
-        case .statement: return "Statement"
-        case .contract: return "Contract"
-        case .other: return "Other"
-        }
-    }
-}
 
-public enum FinancialExtractionError: Error, LocalizedError {
-    case emptyText
-    case processingFailed
-    case invalidFormat
-    case noFinancialDataFound
-    
-    public var errorDescription: String? {
-        switch self {
-        case .emptyText:
-            return "No text provided for extraction"
-        case .processingFailed:
-            return "Financial data extraction failed"
-        case .invalidFormat:
-            return "Invalid document format for financial extraction"
-        case .noFinancialDataFound:
-            return "No financial data found in document"
-        }
-    }
-}
-
-// MARK: - Enhanced Validation Data Models
-
-public struct ValidationResult {
-    public let isValid: Bool
-    public let validationErrors: [FinancialValidationError]
-    
-    public init(isValid: Bool, validationErrors: [FinancialValidationError]) {
-        self.isValid = isValid
-        self.validationErrors = validationErrors
-    }
-}
-
-public enum FinancialValidationError {
-    case inconsistentAmounts
-    case invalidDateFormat
-    case invalidVendorInfo
-    case invalidTransactionData
-}
-
-public struct LineItem {
-    public let description: String
-    public let quantity: Int
-    public let rate: Double
-    public let amount: Double
-    
-    public init(description: String, quantity: Int, rate: Double, amount: Double) {
-        self.description = description
-        self.quantity = quantity
-        self.rate = rate
-        self.amount = amount
-    }
-}
-
-public struct RecurringAnalysis {
-    public let recurringPatterns: [RecurringPattern]
-    
-    public init(recurringPatterns: [RecurringPattern]) {
-        self.recurringPatterns = recurringPatterns
-    }
-}
-
-public struct RecurringPattern {
-    public let description: String
-    public let frequency: TransactionFrequency
-    public let averageAmount: Double
-    public let occurrences: Int
-    
-    public init(description: String, frequency: TransactionFrequency, averageAmount: Double, occurrences: Int) {
-        self.description = description
-        self.frequency = frequency
-        self.averageAmount = averageAmount
-        self.occurrences = occurrences
-    }
-}
-
-public enum TransactionFrequency {
-    case monthly
-    case quarterly
-    case irregular
-}
-
-public struct FraudAnalysis {
-    public let riskScore: Double
-    public let riskFactors: [FraudRiskFactor]
-    
-    public init(riskScore: Double, riskFactors: [FraudRiskFactor]) {
-        self.riskScore = riskScore
-        self.riskFactors = riskFactors
-    }
-}
-
-public enum FraudRiskFactor {
-    case urgencyLanguage
-    case unusualAmount
-    case suspiciousVendor
-    case suspiciousPaymentMethod
-}
 
 // MARK: - DateFormatter Extensions
 

@@ -259,9 +259,9 @@ public class FinancialReportGenerator: ObservableObject {
         let lowerVendor = vendorName.lowercased()
         
         if lowerVendor.contains("office") || lowerVendor.contains("supplies") || lowerVendor.contains("staples") {
-            return .officeExpenses
+            return .business
         } else if lowerVendor.contains("travel") || lowerVendor.contains("airline") || lowerVendor.contains("hotel") {
-            return .travel
+            return .transportation
         } else if lowerVendor.contains("restaurant") || lowerVendor.contains("food") || lowerVendor.contains("meals") {
             return .dining
         } else if lowerVendor.contains("equipment") || lowerVendor.contains("computer") || lowerVendor.contains("tech") {

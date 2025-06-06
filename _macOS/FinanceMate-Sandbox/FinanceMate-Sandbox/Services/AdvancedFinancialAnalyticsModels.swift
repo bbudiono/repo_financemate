@@ -79,7 +79,7 @@ public struct AnalyticsTransaction: Identifiable, Hashable, Codable {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
         self.date = formatter.date(from: transaction.date) ?? Date()
-        self.category = transaction.category
+        self.category = transaction.category ?? .other
         self.description = transaction.description
         self.vendor = vendor
         self.transactionType = transactionType
@@ -159,7 +159,7 @@ public struct SeasonalPatterns: Codable {
 }
 
 public struct CategoryTrend: Identifiable, Codable {
-    public let id = UUID()
+    public var id = UUID()
     public let category: ExpenseCategory
     public let monthlyChanges: [Double]
     public let overallGrowthRate: Double
@@ -181,7 +181,7 @@ public struct IncomeTrendAnalysis: Codable {
 }
 
 public struct IncomeSource: Identifiable, Codable {
-    public let id = UUID()
+    public var id = UUID()
     public let source: String
     public let monthlyAverage: Double
     public let reliability: Double // 0.0 - 1.0
@@ -214,7 +214,7 @@ public struct ExpenseForecast: Codable {
 }
 
 public struct MonthlyPrediction: Identifiable, Codable {
-    public let id = UUID()
+    public var id = UUID()
     public let month: String
     public let predictedAmount: Double
     public let confidence: Double
@@ -234,7 +234,7 @@ public struct ConfidenceInterval: Codable {
 }
 
 public struct CategoryForecast: Identifiable, Codable {
-    public let id = UUID()
+    public var id = UUID()
     public let category: ExpenseCategory
     public let monthlyPredictions: [Double]
     public let confidence: Double
@@ -255,7 +255,7 @@ public struct CashFlowProjection: Codable {
 }
 
 public struct MonthlyProjection: Identifiable, Codable {
-    public let id = UUID()
+    public var id = UUID()
     public let month: String
     public let projectedIncome: Double
     public let projectedExpenses: Double
@@ -294,7 +294,7 @@ public struct FinancialRiskAssessment: Codable {
 }
 
 public struct RiskFactor: Identifiable, Codable {
-    public let id = UUID()
+    public var id = UUID()
     public let factor: String
     public let impact: RiskImpact
     public let likelihood: Double // 0.0 - 1.0
@@ -316,7 +316,7 @@ public struct VolatilityMeasures: Codable {
 }
 
 public struct VolatilityCluster: Identifiable, Codable {
-    public let id = UUID()
+    public var id = UUID()
     public let startDate: Date
     public let endDate: Date
     public let averageVolatility: Double
@@ -345,7 +345,7 @@ public struct FinancialPortfolio: Identifiable, Codable {
 }
 
 public struct PortfolioHolding: Identifiable, Codable {
-    public let id = UUID()
+    public var id = UUID()
     public let symbol: String
     public let shares: Double
     public let currentPrice: Double
@@ -369,7 +369,7 @@ public struct PortfolioPerformanceAnalysis: Codable {
 }
 
 public struct SectorAllocation: Identifiable, Codable {
-    public let id = UUID()
+    public var id = UUID()
     public let sector: String
     public let allocation: Double // Percentage
     public let performance: Double
@@ -383,7 +383,7 @@ public struct PortfolioOptimization: Codable {
 }
 
 public struct AssetAllocation: Identifiable, Codable {
-    public let id = UUID()
+    public var id = UUID()
     public let asset: String
     public let currentWeight: Double
     public let recommendedWeight: Double
@@ -391,7 +391,7 @@ public struct AssetAllocation: Identifiable, Codable {
 }
 
 public struct RebalancingStep: Identifiable, Codable {
-    public let id = UUID()
+    public var id = UUID()
     public let action: RebalancingAction
     public let asset: String
     public let amount: Double
@@ -429,13 +429,13 @@ public struct MLCategorizationResult: Codable {
 }
 
 public struct CategoryPrediction: Identifiable, Codable {
-    public let id = UUID()
+    public var id = UUID()
     public let category: ExpenseCategory
     public let confidence: Double
 }
 
 public struct AnomalyDetection: Identifiable, Codable {
-    public let id = UUID()
+    public var id = UUID()
     public let transaction: AnalyticsTransaction
     public let anomalyType: AnomalyType
     public let anomalyScore: Double
@@ -468,7 +468,7 @@ public struct AnalyticsPerformanceMetrics: Codable {
 }
 
 public struct AnalyticsRecommendation: Identifiable, Codable {
-    public let id = UUID()
+    public var id = UUID()
     public let type: RecommendationType
     public let title: String
     public let description: String
@@ -510,7 +510,7 @@ public struct CashFlowData: Codable {
 }
 
 public struct FinancialDataPoint: Identifiable, Codable {
-    public let id = UUID()
+    public var id = UUID()
     public let date: Date
     public let value: Double
     
