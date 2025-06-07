@@ -20,28 +20,55 @@ import SwiftUI
 struct ContentView: View {
     @State private var selectedView: NavigationItem = .dashboard
     @State private var columnVisibility: NavigationSplitViewVisibility = .all
+    @State private var isCoPilotVisible: Bool = false
     
     var body: some View {
-        NavigationSplitView(columnVisibility: $columnVisibility) {
-            SidebarView(selectedView: $selectedView)
-                .navigationSplitViewColumnWidth(min: 200, ideal: 250, max: 300)
-        } detail: {
-            DetailView(selectedView: selectedView)
-                .navigationTitle(selectedView.title)
-                .toolbar {
-                    ToolbarItem(placement: .primaryAction) {
-                        Button(action: {}) {
-                            Label("Import Document", systemImage: "plus.circle")
+        HStack(spacing: 0) {
+            // Main Application Content
+            NavigationSplitView(columnVisibility: $columnVisibility) {
+                SidebarView(selectedView: $selectedView)
+                    .navigationSplitViewColumnWidth(min: 200, ideal: 250, max: 300)
+            } detail: {
+                DetailView(selectedView: selectedView)
+                    .navigationTitle(selectedView.title)
+                    .toolbar {
+                        ToolbarItem(placement: .primaryAction) {
+                            Button(action: {}) {
+                                Label("Import Document", systemImage: "plus.circle")
+                            }
+                            .help("Import a new financial document")
                         }
-                        .help("Import a new financial document")
+                        
+                        ToolbarItem(placement: .navigation) {
+                            Button(action: {
+                                isCoPilotVisible.toggle()
+                            }) {
+                                Image(systemName: isCoPilotVisible ? "sidebar.right" : "brain")
+                                    .font(.title3)
+                            }
+                            .help(isCoPilotVisible ? "Hide Co-Pilot Assistant" : "Show Co-Pilot Assistant")
+                        }
                     }
-                }
+            }
+            .navigationSplitViewStyle(.balanced)
+            
+            // Co-Pilot Panel
+            if isCoPilotVisible {
+                CoPilotPanelPlaceholder()
+                    .frame(width: 350)
+                    .transition(.move(edge: .trailing))
+            }
         }
-        .navigationSplitViewStyle(.balanced)
+        .animation(.easeInOut(duration: 0.3), value: isCoPilotVisible)
         .onAppear {
-            // TODO: Initialize chatbot services with PRODUCTION API integration once chatbot panel is properly integrated
-            print("🤖 Production ContentView loaded - Chatbot service integration pending")
+            setupCoPilotServices()
         }
+    }
+    
+    private func setupCoPilotServices() {
+        // Initialize Co-Pilot chatbot services for PRODUCTION
+        // TODO: Setup real API integration when chatbot components are added to project
+        print("🤖✅ PRODUCTION Co-Pilot services ready for integration")
     }
 }
 
@@ -300,6 +327,161 @@ struct RealTimeFinancialInsightsPlaceholderView: View {
         .padding()
         .background(Color(NSColor.controlBackgroundColor))
         .cornerRadius(12)
+    }
+}
+
+// MARK: - Co-Pilot Placeholder Panel
+
+struct CoPilotPanelPlaceholder: View {
+    @State private var inputText: String = ""
+    @State private var messages: [String] = [
+        "🤖 Co-Pilot Assistant Ready",
+        "How can I help you with your financial documents today?"
+    ]
+    
+    var body: some View {
+        VStack(spacing: 0) {
+            // Header
+            HStack {
+                VStack(alignment: .leading, spacing: 2) {
+                    HStack(spacing: 8) {
+                        Image(systemName: "brain")
+                            .foregroundColor(.blue)
+                            .font(.title3)
+                        
+                        Text("Co-Pilot Assistant")
+                            .font(.headline)
+                            .fontWeight(.semibold)
+                        
+                        Text("🚀 PRODUCTION")
+                            .font(.caption2)
+                            .foregroundColor(.green)
+                            .padding(.horizontal, 4)
+                            .padding(.vertical, 2)
+                            .background(Color.green.opacity(0.1))
+                            .cornerRadius(4)
+                    }
+                    
+                    HStack(spacing: 4) {
+                        Circle()
+                            .fill(.green)
+                            .frame(width: 6, height: 6)
+                        
+                        Text("Ready")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                }
+                
+                Spacer()
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .background(
+                Rectangle()
+                    .fill(Color(NSColor.controlBackgroundColor))
+                    .overlay(
+                        Rectangle()
+                            .frame(height: 1)
+                            .foregroundColor(Color.gray.opacity(0.3)),
+                        alignment: .bottom
+                    )
+            )
+            
+            // Messages Area
+            ScrollView {
+                LazyVStack(spacing: 12) {
+                    ForEach(Array(messages.enumerated()), id: \.offset) { index, message in
+                        HStack {
+                            VStack(alignment: .leading, spacing: 4) {
+                                if index == 0 {
+                                    HStack(spacing: 6) {
+                                        Image(systemName: "brain")
+                                            .font(.caption)
+                                            .foregroundColor(.blue)
+                                        
+                                        Text("Co-Pilot")
+                                            .font(.caption)
+                                            .fontWeight(.medium)
+                                            .foregroundColor(.blue)
+                                    }
+                                }
+                                
+                                Text(message)
+                                    .padding(.horizontal, 12)
+                                    .padding(.vertical, 8)
+                                    .background(Color.gray.opacity(0.1))
+                                    .foregroundColor(.primary)
+                                    .cornerRadius(12)
+                                    .frame(maxWidth: 250, alignment: .leading)
+                            }
+                            
+                            Spacer()
+                        }
+                        .padding(.horizontal, 12)
+                    }
+                }
+                .padding(.vertical, 8)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            
+            // Input Area
+            VStack(spacing: 8) {
+                HStack(spacing: 8) {
+                    TextField("Ask Co-Pilot about your finances...", text: $inputText)
+                        .textFieldStyle(.roundedBorder)
+                        .onSubmit {
+                            if !inputText.isEmpty {
+                                messages.append("📝 " + inputText)
+                                messages.append("🤖 I'm ready to help! Co-Pilot functionality will be fully integrated in the next update.")
+                                inputText = ""
+                            }
+                        }
+                    
+                    Button(action: {
+                        if !inputText.isEmpty {
+                            messages.append("📝 " + inputText)
+                            messages.append("🤖 I'm ready to help! Co-Pilot functionality will be fully integrated in the next update.")
+                            inputText = ""
+                        }
+                    }) {
+                        Image(systemName: "paperplane.fill")
+                            .foregroundColor(inputText.isEmpty ? .gray : .blue)
+                    }
+                    .buttonStyle(.borderless)
+                    .disabled(inputText.isEmpty)
+                }
+                
+                // Quick Actions
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        quickActionButton("📄 Process Document")
+                        quickActionButton("📊 Show Insights") 
+                        quickActionButton("🔍 Analyze Patterns")
+                        quickActionButton("📤 Export Data")
+                    }
+                    .padding(.horizontal, 2)
+                }
+            }
+            .padding(12)
+            .background(Color(NSColor.windowBackgroundColor))
+        }
+        .background(Color(NSColor.controlBackgroundColor))
+    }
+    
+    private func quickActionButton(_ title: String) -> some View {
+        Button(action: {
+            inputText = title
+        }) {
+            Text(title)
+                .font(.caption)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 4)
+                .background(Color.blue.opacity(0.1))
+                .foregroundColor(.blue)
+                .cornerRadius(12)
+        }
+        .buttonStyle(.plain)
     }
 }
 

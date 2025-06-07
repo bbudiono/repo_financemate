@@ -1,8 +1,8 @@
-
+// SANDBOX FILE: For testing/development. See .cursorrules.
 
 //
 //  ChatbotPanelIntegration.swift
-//  FinanceMate
+//  FinanceMate-Sandbox
 //
 //  Created by Assistant on 6/4/25.
 //
@@ -41,14 +41,32 @@ public class ChatbotSetupManager {
     /// Initialize the chatbot system with production services for real API integration
     /// Call this method in your App initialization or main window setup
     @MainActor public func setupProductionServices() {
-        // Use RealLLMAPIService for direct OpenAI integration
+        // Try RealLLMAPIService first (simpler and more reliable)
         let realLLMService = RealLLMAPIService()
         let autocompletionService = DemoAutocompletionService() // Keep demo for now, upgrade later
         
         ChatbotServiceRegistry.shared.register(chatbotBackend: realLLMService)
         ChatbotServiceRegistry.shared.register(autocompletionService: autocompletionService)
         
-        print("🤖✅ PRODUCTION REAL LLM API SERVICE initialized successfully with direct OpenAI integration")
+        print("🤖✅ REAL LLM API SERVICE initialized successfully with direct OpenAI integration")
+        
+        // Fallback to sophisticated ProductionChatbotService if needed
+        // This provides multi-provider support and streaming but is more complex
+        /*
+        do {
+            let chatbotBackend = try ProductionChatbotService.createFromEnvironment()
+            let autocompletionService = DemoAutocompletionService()
+            
+            ChatbotServiceRegistry.shared.register(chatbotBackend: chatbotBackend)
+            ChatbotServiceRegistry.shared.register(autocompletionService: autocompletionService)
+            
+            print("🤖✅ PRODUCTION chatbot services initialized successfully with real LLM API")
+        } catch {
+            print("🤖❌ PRODUCTION service initialization failed: \(error.localizedDescription)")
+            print("🤖🔄 Falling back to demo services for development")
+            setupDemoServices()
+        }
+        */
     }
     
     /// Initialize the chatbot system with demo services for sandbox testing (FALLBACK)
@@ -191,8 +209,8 @@ public struct ExampleAppWithChatbot: View {
             }
         }
         .onAppear {
-            // Initialize chatbot services
-            ChatbotSetupManager.shared.setupDemoServices()
+            // Initialize chatbot services with PRODUCTION API integration
+            ChatbotSetupManager.shared.setupProductionServices()
         }
     }
     
@@ -351,8 +369,8 @@ private struct ExampleSettingsView: View {
 public class ExampleAppDelegate: NSObject, NSApplicationDelegate {
     
     public func applicationDidFinishLaunching(_ notification: Notification) {
-        // Initialize chatbot services
-        ChatbotSetupManager.shared.setupDemoServices()
+        // Initialize chatbot services with PRODUCTION API integration
+        ChatbotSetupManager.shared.setupProductionServices()
         
         // Configure other app settings
         setupMainWindow()

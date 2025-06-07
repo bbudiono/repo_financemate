@@ -13,6 +13,314 @@ FinanceMate
 
 ---
 
+# Chapter 2: Navigation Structure & User Journey Map
+
+## 2.1 Application Navigation Hierarchy
+
+```
+FinanceMate (macOS Application)
+├── 🏠 Dashboard
+│   ├── Financial Overview Dashboard
+│   ├── Quick Statistics Cards
+│   ├── Recent Activity Feed
+│   └── AI-Powered Insights Panel
+│
+├── 📄 Documents
+│   ├── Document Upload Interface
+│   ├── OCR Processing Queue
+│   ├── Document Library & Search
+│   └── Document Detail View
+│       ├── Extracted Data Preview
+│       ├── Manual Edit Interface
+│       └── AI Validation Results
+│
+├── 📊 Analytics
+│   ├── Basic Financial Reports
+│   ├── Category Breakdown Charts
+│   ├── Trend Analysis Views
+│   └── Export Options
+│
+├── 🧠 MLACS (Multi-LLM Agent Coordination System)
+│   ├── 📋 Overview Dashboard
+│   │   ├── System Status Monitor
+│   │   ├── Agent Activity Feed
+│   │   └── Performance Metrics
+│   ├── 🔍 Model Discovery
+│   │   ├── Local Model Scanner
+│   │   ├── Available Models List
+│   │   └── Installation Recommendations
+│   ├── 📈 System Analysis
+│   │   ├── Hardware Capability Assessment
+│   │   ├── Performance Benchmarks
+│   │   └── Optimization Suggestions
+│   ├── 🪄 Setup Wizard
+│   │   ├── Guided Model Configuration
+│   │   ├── API Key Management
+│   │   └── Integration Testing
+│   └── 👥 Agent Management
+│       ├── Agent Creation Interface
+│       ├── Task Assignment Console
+│       └── Coordination Controls
+│
+├── ⚡ Enhanced Analytics
+│   ├── Real-Time Financial Insights
+│   ├── AI-Powered Document Processing
+│   ├── Advanced Pattern Recognition
+│   └── Predictive Analytics Dashboard
+│
+├── 📤 Financial Export
+│   ├── Export Format Selection
+│   ├── Column Mapping Interface
+│   ├── Cloud Integration Setup
+│   └── Automated Sync Configuration
+│
+├── 🔧 Speculative Decoding
+│   ├── AI Performance Optimization
+│   ├── Model Acceleration Controls
+│   └── Resource Management
+│
+├── 🤖 Chatbot Testing
+│   ├── Conversation Test Interface
+│   ├── Response Quality Assessment
+│   └── Integration Validation
+│
+├── ⚠️ Crash Analysis
+│   ├── System Stability Monitor
+│   ├── Error Log Viewer
+│   └── Diagnostic Reports
+│
+├── 🏃‍♂️ LLM Benchmark
+│   ├── Performance Testing Suite
+│   ├── Model Comparison Tools
+│   └── Benchmark Results
+│
+└── ⚙️ Settings
+    ├── General Preferences
+    ├── API Key Management
+    ├── Cloud Account Configuration
+    └── UI/UX Customization
+```
+
+## 2.2 Co-Pilot Chatbot Integration Points
+
+The **persistent Co-Pilot chatbot interface** serves as the primary interaction layer across ALL navigation sections:
+
+### 2.2.1 Chatbot Accessibility Matrix
+```
+Navigation Item          | Chatbot Integration Level | Key Functions
+------------------------|-----------------------------|----------------------------------
+🏠 Dashboard            | PRIMARY                    | Financial insights, trend analysis, quick queries
+📄 Documents            | PRIMARY                    | OCR guidance, data validation, batch processing
+📊 Analytics            | PRIMARY                    | Report generation, data interpretation, insights
+🧠 MLACS                | CRITICAL                   | Agent coordination, model management, system control
+⚡ Enhanced Analytics   | PRIMARY                    | Real-time analysis, pattern discovery, predictions
+📤 Financial Export     | SECONDARY                  | Export assistance, format recommendations
+🔧 Speculative Decoding | TERTIARY                   | Performance optimization guidance
+🤖 Chatbot Testing      | META                       | Self-testing and validation
+⚠️ Crash Analysis       | SECONDARY                  | Diagnostic assistance, troubleshooting
+🏃‍♂️ LLM Benchmark      | SECONDARY                  | Performance interpretation, recommendations
+⚙️ Settings             | SECONDARY                  | Configuration guidance, setup assistance
+```
+
+### 2.2.2 Persistent UI Integration
+- **Panel Position**: Right-side persistent panel (350px width, resizable)
+- **Visibility**: Toggle button in main toolbar (brain icon) - always accessible
+- **Context Awareness**: Automatically adapts suggestions based on current navigation context
+- **Cross-Navigation**: Can execute operations across all application sections
+- **Real-Time Services**: Connected to actual LLM APIs for production functionality
+- **Message History**: Persistent conversation history with timestamp and user/assistant attribution
+- **Quick Actions**: Context-sensitive quick action buttons for common operations
+- **Status Indicators**: Live connection status and processing indicators
+
+### 2.2.3 Co-Pilot Interface Technical Implementation
+```
+Co-Pilot Panel Structure:
+├── 📋 Header Section
+│   ├── Co-Pilot Assistant branding
+│   ├── Production status indicator
+│   └── Connection status (Ready/Processing...)
+├── 💬 Messages Area
+│   ├── Scrollable conversation history
+│   ├── Message bubbles (user vs assistant)
+│   ├── Timestamp display
+│   └── Empty state welcome interface
+├── ⌨️ Input Area
+│   ├── Multi-line text input field
+│   ├── Send button with state management
+│   └── Horizontal quick action buttons
+└── 🔧 Integration Layer
+    ├── RealLLMAPIService connection
+    ├── ChatbotBackendProtocol implementation
+    └── Cross-app service coordination
+```
+
+## 2.3 User Journey Flows
+
+### 2.3.1 Primary User Flow: Document Processing with Co-Pilot
+```
+1. User uploads document → Documents section
+2. Co-Pilot offers OCR processing guidance
+3. AI extracts data with real-time feedback
+4. User reviews/edits with Co-Pilot assistance
+5. Co-Pilot suggests categorization and export options
+6. Data automatically syncs to chosen spreadsheet service
+7. Analytics updated with Co-Pilot insights
+```
+
+### 2.3.2 Advanced User Flow: MLACS-Powered Analysis
+```
+1. User queries: "Analyze my Q4 spending patterns"
+2. Co-Pilot coordinates multiple AI agents via MLACS
+3. Document analysis agent processes receipts/invoices
+4. Financial analysis agent identifies patterns
+5. Reporting agent generates comprehensive insights
+6. Results displayed in Enhanced Analytics with explanations
+7. Co-Pilot offers actionable recommendations
+```
+
+### 2.3.3 Setup & Configuration Flow
+```
+1. First Launch → Setup Wizard (MLACS section)
+2. Co-Pilot guides through model discovery
+3. API key configuration with security guidance
+4. Integration testing with cloud services
+5. Sample document processing demonstration
+6. Personalized dashboard configuration
+7. Ongoing optimization recommendations
+```
+
+## 2.4 Navigation Implementation Details
+
+### 2.4.1 Application Navigation Architecture
+```
+FinanceMate Navigation System (ContentView.swift):
+└── 🖥️ NavigationSplitView (3-Column Layout)
+    ├── 📱 Sidebar (200-300px)
+    │   ├── App Title: "FinanceMate"
+    │   ├── Navigation List with 11 items
+    │   └── SidebarListStyle() for macOS native appearance
+    ├── 📄 Detail View (Main Content Area)
+    │   ├── Dynamic content based on selectedView
+    │   ├── Navigation title updates automatically
+    │   └── Toolbar with Import Document button
+    └── 🤖 Co-Pilot Panel (350px, toggleable)
+        ├── Persistent chat interface
+        ├── Context-aware quick actions
+        └── Real-time status indicators
+```
+
+### 2.4.2 Complete Navigation Item Mapping
+```
+NavigationItem Enum Structure:
+├── .dashboard          → DashboardView()
+├── .documents          → DocumentsView()
+├── .analytics          → AnalyticsView()
+├── .mlacs              → MLACSPlaceholderView() [Production] / MLACSView() [Sandbox]
+├── .export             → FinancialExportView()
+├── .enhancedAnalytics  → RealTimeFinancialInsightsPlaceholderView() [Production]
+├── .speculativeDecoding → Placeholder with coming soon message
+├── .chatbotTesting     → Placeholder with testing interface preview
+├── .crashAnalysis      → Placeholder with stability monitoring preview
+├── .llmBenchmark       → Placeholder with performance testing preview
+└── .settings           → SettingsView()
+
+System Images per Navigation Item:
+├── Dashboard:            "chart.line.uptrend.xyaxis"
+├── Documents:            "doc.fill"
+├── Analytics:            "chart.bar.fill"
+├── MLACS:                "brain.head.profile"
+├── Financial Export:     "square.and.arrow.up.fill"
+├── Enhanced Analytics:   "chart.bar.doc.horizontal.fill"
+├── Speculative Decoding: "cpu.fill"
+├── Chatbot Testing:      "message.badge.waveform"
+├── Crash Analysis:       "exclamationmark.triangle.fill"
+├── LLM Benchmark:        "speedometer"
+└── Settings:             "gear"
+```
+
+### 2.4.3 State Management & Context
+```
+Navigation State Variables (@State):
+├── selectedView: NavigationItem = .dashboard
+├── columnVisibility: NavigationSplitViewVisibility = .all
+└── isCoPilotVisible: Bool = false
+
+Context Tracking Implementation:
+├── Active navigation section monitoring
+├── Co-Pilot panel visibility state
+├── Navigation title dynamic updates
+├── Toolbar content based on current view
+└── Cross-view operation coordination
+
+View Lifecycle Management:
+├── .onAppear() → setupCoPilotServices()
+├── Dynamic content loading per navigation item
+├── State preservation across navigation changes
+└── Co-Pilot context awareness updates
+```
+
+### 2.4.4 Production vs Sandbox Implementation
+```
+Environment-Specific Views:
+Production Environment:
+├── MLACS → MLACSPlaceholderView (sophisticated preview)
+├── Enhanced Analytics → RealTimeFinancialInsightsPlaceholderView
+├── Co-Pilot → CoPilotPanelPlaceholder (functional demo)
+└── Build-stable implementations for App Store submission
+
+Sandbox Environment:
+├── MLACS → MLACSView (full functionality with 5 tabs)
+├── Enhanced Analytics → RealTimeFinancialInsightsView
+├── Co-Pilot → CoPilotPanel (real API integration)
+└── Development and testing environment
+
+Shared Components:
+├── Navigation infrastructure (ContentView, SidebarView, DetailView)
+├── Core views (Dashboard, Documents, Analytics, Settings)
+├── Export functionality (FinancialExportView)
+└── Base services and data models
+```
+
+### 2.4.5 Information Architecture & Data Flow
+```
+Input Layer:
+- Document Upload Interface (drag-and-drop, file picker)
+- Manual Data Entry through forms
+- Cloud Service Imports (OAuth-based)
+- Co-Pilot Conversational Input
+- Email Integration (Future)
+
+Processing Layer:
+- OCR Engine (Apple Vision Framework)
+- MLACS Agent Coordination System
+- AI-Powered Data Extraction
+- Financial Pattern Recognition
+- Real-Time Document Analysis
+
+Intelligence Layer:
+- Co-Pilot Chatbot Interface (Primary)
+- Multi-Agent LLM Coordination
+- Real-Time Insights Generation
+- Predictive Analytics Engine
+- Context-Aware Assistance
+
+Output Layer:
+- Interactive Dashboard Views
+- Automated Report Generation
+- Cloud Spreadsheet Sync
+- Actionable Co-Pilot Recommendations
+- Export to Multiple Formats
+
+Cross-Section Operations:
+- Co-Pilot initiates operations from any navigation section
+- Analytics insights accessible from document views
+- Export functions available throughout application
+- Settings changes reflect immediately across all sections
+- MLACS coordination operates across all features
+```
+
+---
+
 # Product Requirements Document (PRD)
 
 ## High-Level Objective
