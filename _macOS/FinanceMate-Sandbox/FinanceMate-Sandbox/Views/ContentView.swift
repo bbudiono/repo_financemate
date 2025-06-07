@@ -89,6 +89,8 @@ struct DetailView: View {
                 MLACSView()
             case .export:
                 FinancialExportView()
+            case .enhancedAnalytics:
+                RealTimeFinancialInsightsView()
             case .settings:
                 SettingsView()
             }
@@ -103,6 +105,7 @@ enum NavigationItem: String, CaseIterable {
     case analytics = "Analytics"
     case mlacs = "MLACS"
     case export = "Financial Export"
+    case enhancedAnalytics = "Enhanced Analytics"
     case settings = "Settings"
     
     var title: String {
@@ -116,6 +119,7 @@ enum NavigationItem: String, CaseIterable {
         case .analytics: return "chart.bar.fill"
         case .mlacs: return "brain.head.profile"
         case .export: return "square.and.arrow.up.fill"
+        case .enhancedAnalytics: return "chart.bar.doc.horizontal.fill"
         case .settings: return "gearshape.fill"
         }
     }

@@ -68,7 +68,8 @@ struct MLACSView: View {
                     )
                 case .agentManagement:
                     MLACSAgentManagementView(
-                        currentAgent: singleAgentMode.currentAgent,
+                        systemCapabilities: systemCapabilities,
+                        availableModels: discoveryResults?.availableModels ?? [],
                         onConfigureAgent: configureAgent
                     )
                 }
@@ -484,22 +485,97 @@ struct MLACSSetupWizardView: View {
 // MARK: - Agent Management View
 
 struct MLACSAgentManagementView: View {
-    let currentAgent: LocalAIAgent?
+    let systemCapabilities: SystemCapabilityProfile?
+    let availableModels: [DiscoveredModel]
     let onConfigureAgent: () -> Void
+    
+    @StateObject private var agentManager = MLACSAgentManager()
+    @State private var showingCreateAgent = false
+    @State private var showingAgentDetails = false
+    @State private var selectedAgent: ManagedAgent?
+    @State private var showingConfiguration = false
+    @State private var errorMessage: String?
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Agent Management")
-                .font(.title2)
-                .fontWeight(.semibold)
+            // Header
+            HStack {
+                Text("Agent Management")
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                
+                Spacer()
+                
+                Button("Create Agent") {
+                    showingCreateAgent = true
+                }
+                .help("Create a new AI agent")
+                .disabled(availableModels.filter { $0.isInstalled }.isEmpty)
+            }
             
-            if let agent = currentAgent {
-                AgentStatusView(agent: agent)
+            // Content
+            if agentManager.agents.isEmpty {
+                EmptyAgentManagementView(
+                    onCreateAgent: { showingCreateAgent = true },
+                    hasInstalledModels: !availableModels.filter { $0.isInstalled }.isEmpty
+                )
             } else {
-                EmptyAgentView(onConfigureAgent: onConfigureAgent)
+                AgentListView(
+                    agents: Array(agentManager.agents.values).sorted { $0.createdDate > $1.createdDate },
+                    onSelectAgent: { agent in
+                        selectedAgent = agent
+                        showingAgentDetails = true
+                    },
+                    onConfigureAgent: { agent in
+                        selectedAgent = agent
+                        showingConfiguration = true
+                    },
+                    agentManager: agentManager
+                )
             }
         }
         .padding()
+        .sheet(isPresented: $showingCreateAgent) {
+            CreateAgentView(
+                availableModels: availableModels.filter { $0.isInstalled },
+                systemCapabilities: systemCapabilities,
+                agentManager: agentManager,
+                onComplete: {
+                    showingCreateAgent = false
+                }
+            )
+        }
+        .sheet(isPresented: $showingAgentDetails) {
+            if let agent = selectedAgent {
+                AgentDetailView(
+                    agent: agent,
+                    agentManager: agentManager,
+                    onDismiss: {
+                        showingAgentDetails = false
+                        selectedAgent = nil
+                    }
+                )
+            }
+        }
+        .sheet(isPresented: $showingConfiguration) {
+            if let agent = selectedAgent {
+                AgentConfigurationView(
+                    agent: agent,
+                    agentManager: agentManager,
+                    onComplete: {
+                        showingConfiguration = false
+                        selectedAgent = nil
+                    }
+                )
+            }
+        }
+        .alert("Agent Management Error", isPresented: .constant(errorMessage != nil)) {
+            Button("OK") {
+                errorMessage = nil
+            }
+        } message: {
+            Text(errorMessage ?? "")
+        }
     }
 }
 
@@ -850,20 +926,327 @@ struct AgentStatusView: View {
     }
 }
 
-struct EmptyAgentView: View {
-    let onConfigureAgent: () -> Void
+struct EmptyAgentManagementView: View {
+    let onCreateAgent: () -> Void
+    let hasInstalledModels: Bool
     
     var body: some View {
-        VStack(spacing: 16) {
-            Image(systemName: "person.badge.plus")
-                .font(.system(size: 48))
+        VStack(spacing: 20) {
+            Image(systemName: "person.3.fill")
+                .font(.system(size: 64))
                 .foregroundColor(.secondary)
-            Text("No agent configured")
-                .font(.title3)
-            Button("Configure Agent") {
-                onConfigureAgent()
+            
+            VStack(spacing: 8) {
+                Text("No Agents Created")
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                
+                Text(hasInstalledModels ? 
+                     "Create your first AI agent to get started with MLACS." :
+                     "Install a local model first, then create your first AI agent.")
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
             }
-            .buttonStyle(.borderedProminent)
+            
+            if hasInstalledModels {
+                Button("Create First Agent") {
+                    onCreateAgent()
+                }
+                .buttonStyle(.borderedProminent)
+                .help("Create your first AI agent")
+            } else {
+                VStack(spacing: 12) {
+                    Text("No installed models available")
+                        .font(.caption)
+                        .foregroundColor(.orange)
+                    
+                    Text("Visit Model Discovery to install a model first")
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+}
+
+struct AgentListView: View {
+    let agents: [ManagedAgent]
+    let onSelectAgent: (ManagedAgent) -> Void
+    let onConfigureAgent: (ManagedAgent) -> Void
+    let agentManager: MLACSAgentManager
+    
+    var body: some View {
+        ScrollView {
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 2), spacing: 16) {
+                ForEach(agents, id: \.id) { agent in
+                    AgentCardView(
+                        agent: agent,
+                        onSelect: { onSelectAgent(agent) },
+                        onConfigure: { onConfigureAgent(agent) },
+                        onToggleActive: {
+                            do {
+                                if agent.isActive {
+                                    try agentManager.deactivateAgent(id: agent.id)
+                                } else {
+                                    try agentManager.activateAgent(id: agent.id)
+                                }
+                            } catch {
+                                print("Failed to toggle agent: \(error)")
+                            }
+                        }
+                    )
+                }
+            }
+            .padding()
+        }
+    }
+}
+
+struct AgentCardView: View {
+    let agent: ManagedAgent
+    let onSelect: () -> Void
+    let onConfigure: () -> Void
+    let onToggleActive: () -> Void
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            // Header
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(agent.name)
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                    
+                    Text(agent.modelName)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                
+                Spacer()
+                
+                // Status indicator
+                Circle()
+                    .fill(agent.isActive ? Color.green : Color.gray)
+                    .frame(width: 12, height: 12)
+            }
+            
+            // Configuration details
+            VStack(alignment: .leading, spacing: 4) {
+                HStack {
+                    Text("Specialization:")
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                    Text(agent.configuration.specialization.rawValue.capitalized)
+                        .font(.caption2)
+                        .fontWeight(.medium)
+                }
+                
+                HStack {
+                    Text("Memory:")
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                    Text("\(agent.configuration.memoryLimit)MB")
+                        .font(.caption2)
+                        .fontWeight(.medium)
+                }
+                
+                HStack {
+                    Text("Created:")
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                    Text(agent.createdDate, style: .date)
+                        .font(.caption2)
+                        .fontWeight(.medium)
+                }
+            }
+            
+            // Action buttons
+            HStack(spacing: 8) {
+                Button(agent.isActive ? "Deactivate" : "Activate") {
+                    onToggleActive()
+                }
+                .buttonStyle(.bordered)
+                .font(.caption)
+                
+                Button("Configure") {
+                    onConfigure()
+                }
+                .buttonStyle(.bordered)
+                .font(.caption)
+                
+                Spacer()
+                
+                Button("Details") {
+                    onSelect()
+                }
+                .buttonStyle(.borderedProminent)
+                .font(.caption)
+            }
+        }
+        .padding()
+        .background(Color(NSColor.controlBackgroundColor))
+        .cornerRadius(12)
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(agent.isActive ? Color.blue.opacity(0.3) : Color.clear, lineWidth: 2)
+        )
+    }
+}
+
+// Placeholder views for sheet presentations
+struct CreateAgentView: View {
+    let availableModels: [DiscoveredModel]
+    let systemCapabilities: SystemCapabilityProfile?
+    let agentManager: MLACSAgentManager
+    let onComplete: () -> Void
+    
+    @Environment(\.dismiss) private var dismiss
+    @State private var selectedModel: DiscoveredModel?
+    @State private var agentName = ""
+    @State private var selectedPersonality: AgentPersonality = .professional
+    @State private var selectedSpecialization: AgentSpecialization = .general
+    @State private var creativityLevel: Double = 0.5
+    @State private var isCreating = false
+    
+    var body: some View {
+        NavigationView {
+            Form {
+                Section(header: Text("Agent Details")) {
+                    TextField("Agent Name", text: $agentName)
+                    
+                    Picker("Model", selection: $selectedModel) {
+                        Text("Select Model").tag(nil as DiscoveredModel?)
+                        ForEach(availableModels, id: \.modelId) { model in
+                            Text("\(model.name) - \(model.provider)").tag(model as DiscoveredModel?)
+                        }
+                    }
+                    
+                    Picker("Personality", selection: $selectedPersonality) {
+                        ForEach(AgentPersonality.allCases, id: \.self) { personality in
+                            Text(personality.rawValue.capitalized).tag(personality)
+                        }
+                    }
+                    
+                    Picker("Specialization", selection: $selectedSpecialization) {
+                        ForEach(AgentSpecialization.allCases, id: \.self) { specialization in
+                            Text(specialization.rawValue.capitalized).tag(specialization)
+                        }
+                    }
+                }
+                
+                Section(header: Text("Configuration")) {
+                    VStack(alignment: .leading) {
+                        Text("Creativity Level: \(creativityLevel, specifier: "%.1f")")
+                        Slider(value: $creativityLevel, in: 0...1)
+                    }
+                }
+            }
+            .navigationTitle("Create Agent")
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                }
+                
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Create") {
+                        createAgent()
+                    }
+                    .disabled(agentName.isEmpty || selectedModel == nil || isCreating)
+                }
+            }
+        }
+    }
+    
+    private func createAgent() {
+        guard let model = selectedModel,
+              let capabilities = systemCapabilities else { return }
+        
+        isCreating = true
+        
+        do {
+            let configuration = AgentConfiguration(
+                name: agentName,
+                personality: selectedPersonality,
+                specialization: selectedSpecialization,
+                responseStyle: .balanced,
+                creativityLevel: creativityLevel,
+                safetyLevel: .high,
+                memoryLimit: min(model.memoryRequirementMB, capabilities.availableRAM),
+                contextWindowSize: 4096,
+                customInstructions: ""
+            )
+            
+            _ = try agentManager.createAgent(
+                from: model,
+                configuration: configuration,
+                systemCapabilities: capabilities
+            )
+            
+            onComplete()
+            dismiss()
+        } catch {
+            print("Failed to create agent: \(error)")
+        }
+        
+        isCreating = false
+    }
+}
+
+struct AgentDetailView: View {
+    let agent: ManagedAgent
+    let agentManager: MLACSAgentManager
+    let onDismiss: () -> Void
+    
+    var body: some View {
+        NavigationView {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    Text("Agent Details Placeholder")
+                        .font(.title2)
+                    Text("Detailed agent information will be shown here")
+                        .foregroundColor(.secondary)
+                }
+                .padding()
+            }
+            .navigationTitle(agent.name)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Done") {
+                        onDismiss()
+                    }
+                }
+            }
+        }
+    }
+}
+
+struct AgentConfigurationView: View {
+    let agent: ManagedAgent
+    let agentManager: MLACSAgentManager
+    let onComplete: () -> Void
+    
+    var body: some View {
+        NavigationView {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    Text("Agent Configuration Placeholder")
+                        .font(.title2)
+                    Text("Agent configuration options will be shown here")
+                        .foregroundColor(.secondary)
+                }
+                .padding()
+            }
+            .navigationTitle("Configure \(agent.name)")
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Done") {
+                        onComplete()
+                    }
+                }
+            }
         }
     }
 }

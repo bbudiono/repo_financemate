@@ -5,7 +5,6 @@
 //  Created by Assistant on 6/7/25.
 //
 
-
 /*
 * Purpose: Real-Time Financial Insights View with AI-powered analysis and MLACS integration
 * NO MOCK DATA - Displays genuine AI-powered financial insights for TestFlight users
@@ -565,7 +564,6 @@ struct RealTimeInsightDetailView: View {
                 .padding()
             }
             .navigationTitle("Insight Details")
-            // .navigationBarTitleDisplayMode(.inline) // Not available on macOS
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Button("Done") {
@@ -627,7 +625,6 @@ struct SystemStatusView: View {
                 .padding()
             }
             .navigationTitle("System Status")
-            // .navigationBarTitleDisplayMode(.inline) // Not available on macOS
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Button("Done") {
@@ -711,7 +708,6 @@ struct AIAnalyticsView: View {
                 .padding()
             }
             .navigationTitle("AI Analytics")
-            // .navigationBarTitleDisplayMode(.inline) // Not available on macOS
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Button("Done") {

@@ -72,29 +72,11 @@ struct DetailView: View {
             case .analytics:
                 AnalyticsView()
             case .mlacs:
-                VStack {
-                    Text("🧠 MLACS")
-                        .font(.largeTitle)
-                        .foregroundColor(.blue)
-                    Text("Multi-LLM Agent Coordination System - Production Ready")
-                        .foregroundColor(.secondary)
-                    Text("Dynamic model discovery and intelligent agent management")
-                        .foregroundColor(.secondary)
-                        .font(.caption)
-                    Text("Full MLACS integration pending - files available")
-                        .foregroundColor(.orange)
-                        .font(.caption2)
-                }
+                MLACSPlaceholderView()
             case .export:
                 FinancialExportView()
             case .enhancedAnalytics:
-                VStack {
-                    Text("Enhanced Analytics")
-                        .font(.largeTitle)
-                        .foregroundColor(.blue)
-                    Text("Advanced financial analytics view coming soon")
-                        .foregroundColor(.secondary)
-                }
+                RealTimeFinancialInsightsPlaceholderView()
             case .speculativeDecoding:
                 VStack {
                     Text("Speculative Decoding")
@@ -178,6 +160,146 @@ enum NavigationItem: String, CaseIterable {
         case .llmBenchmark: return "speedometer"
         case .settings: return "gear"
         }
+    }
+}
+
+// MARK: - Placeholder Views for Production
+
+struct MLACSPlaceholderView: View {
+    var body: some View {
+        VStack(spacing: 20) {
+            Image(systemName: "brain.head.profile")
+                .font(.system(size: 64))
+                .foregroundColor(.blue)
+            
+            VStack(spacing: 8) {
+                Text("🧠 MLACS")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .foregroundColor(.blue)
+                
+                Text("Multi-LLM Agent Coordination System")
+                    .font(.title2)
+                    .foregroundColor(.secondary)
+                
+                Text("Advanced AI agent management and coordination")
+                    .font(.body)
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+            }
+            
+            VStack(spacing: 12) {
+                HStack(spacing: 20) {
+                    featureCard("Model Discovery", "magnifyingglass", "Detect and manage local AI models")
+                    featureCard("System Analysis", "chart.bar.xaxis", "Analyze hardware capabilities")
+                }
+                
+                HStack(spacing: 20) {
+                    featureCard("Agent Management", "person.3", "Configure and coordinate AI agents")
+                    featureCard("Setup Wizard", "wand.and.stars", "Guided setup for new models")
+                }
+            }
+            .padding()
+            
+            Text("Full MLACS functionality coming soon")
+                .font(.caption)
+                .foregroundColor(.orange)
+                .padding(.top)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding()
+    }
+    
+    private func featureCard(_ title: String, _ icon: String, _ description: String) -> some View {
+        VStack(spacing: 8) {
+            Image(systemName: icon)
+                .font(.title2)
+                .foregroundColor(.blue)
+            
+            Text(title)
+                .font(.headline)
+                .fontWeight(.medium)
+            
+            Text(description)
+                .font(.caption)
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity)
+        .padding()
+        .background(Color(NSColor.controlBackgroundColor))
+        .cornerRadius(12)
+    }
+}
+
+struct RealTimeFinancialInsightsPlaceholderView: View {
+    var body: some View {
+        VStack(spacing: 20) {
+            Image(systemName: "chart.bar.doc.horizontal.fill")
+                .font(.system(size: 64))
+                .foregroundColor(.purple)
+            
+            VStack(spacing: 8) {
+                Text("⚡ Enhanced Analytics")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .foregroundColor(.purple)
+                
+                Text("Real-Time Financial Insights with AI")
+                    .font(.title2)
+                    .foregroundColor(.secondary)
+                
+                Text("AI-powered analysis and real-time processing")
+                    .font(.body)
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+            }
+            
+            VStack(spacing: 12) {
+                HStack(spacing: 20) {
+                    insightCard("Live Insights", "brain", "0", "AI-generated insights")
+                    insightCard("Documents Processed", "doc.fill", "0", "Analyzed documents")
+                }
+                
+                HStack(spacing: 20) {
+                    insightCard("System Load", "gauge", "0%", "Processing capacity")
+                    insightCard("AI Models", "cpu", "Ready", "Analysis engines")
+                }
+            }
+            .padding()
+            
+            Text("Real-time insights engine initializing...")
+                .font(.caption)
+                .foregroundColor(.orange)
+                .padding(.top)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding()
+    }
+    
+    private func insightCard(_ title: String, _ icon: String, _ value: String, _ description: String) -> some View {
+        VStack(spacing: 8) {
+            Image(systemName: icon)
+                .font(.title2)
+                .foregroundColor(.purple)
+            
+            Text(value)
+                .font(.title3)
+                .fontWeight(.semibold)
+            
+            Text(title)
+                .font(.headline)
+                .fontWeight(.medium)
+            
+            Text(description)
+                .font(.caption)
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity)
+        .padding()
+        .background(Color(NSColor.controlBackgroundColor))
+        .cornerRadius(12)
     }
 }
 
