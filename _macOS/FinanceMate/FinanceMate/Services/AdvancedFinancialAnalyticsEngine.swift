@@ -1,7 +1,6 @@
-// SANDBOX FILE: For testing/development. See .cursorrules.
 //
 // AdvancedFinancialAnalyticsEngine.swift
-// FinanceMate-Sandbox
+// FinanceMate
 //
 // Purpose: Simplified financial analytics engine for Sandbox environment
 // Issues & Complexity Summary: Basic analytics engine stub for build compatibility

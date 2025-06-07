@@ -1,11 +1,10 @@
 //
 //  CrashDetector.swift
-//  FinanceMate-Sandbox
+//  FinanceMate
 //
 //  Created by Assistant on 6/2/25.
 //
 
-// SANDBOX FILE: For testing/development. See .cursorrules.
 
 /*
 * Purpose: Real-time crash detection and monitoring component for comprehensive system stability

@@ -1,3 +1,4 @@
+
 //
 //  MLACSModelDiscovery.swift
 //  FinanceMate
@@ -615,6 +616,26 @@ public struct DiscoveredModel: Hashable {
     public let memoryRequirementMB: Int
     public let capabilities: [String]
     public let isInstalled: Bool
+    
+    public init(
+        name: String,
+        provider: String,
+        modelId: String,
+        parameterCount: Int64,
+        sizeBytes: Int64,
+        memoryRequirementMB: Int,
+        capabilities: [String],
+        isInstalled: Bool
+    ) {
+        self.name = name
+        self.provider = provider
+        self.modelId = modelId
+        self.parameterCount = parameterCount
+        self.sizeBytes = sizeBytes
+        self.memoryRequirementMB = memoryRequirementMB
+        self.capabilities = capabilities
+        self.isInstalled = isInstalled
+    }
     
     // Implement Hashable manually since capabilities is an array
     public func hash(into hasher: inout Hasher) {

@@ -81,6 +81,9 @@ struct DetailView: View {
                     Text("Dynamic model discovery and intelligent agent management")
                         .foregroundColor(.secondary)
                         .font(.caption)
+                    Text("Full MLACS integration pending - files available")
+                        .foregroundColor(.orange)
+                        .font(.caption2)
                 }
             case .export:
                 FinancialExportView()

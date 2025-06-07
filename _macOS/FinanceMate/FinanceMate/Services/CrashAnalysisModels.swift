@@ -1,11 +1,10 @@
 //
 //  CrashAnalysisModels.swift
-//  FinanceMate-Sandbox
+//  FinanceMate
 //
 //  Created by Assistant on 6/2/25.
 //
 
-// SANDBOX FILE: For testing/development. See .cursorrules.
 
 /*
 * Purpose: Comprehensive data models for crash analysis and monitoring system integration with financial workflows

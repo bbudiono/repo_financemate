@@ -1,11 +1,10 @@
 //
 //  FinancialAnalyticsMLModels.swift
-//  FinanceMate-Sandbox
+//  FinanceMate
 //
 //  Created by Assistant on 6/2/25.
 //
 
-// SANDBOX FILE: For testing/development. See .cursorrules.
 
 /*
 * Purpose: Machine Learning models for Financial Analytics Engine - simplified implementation for TDD

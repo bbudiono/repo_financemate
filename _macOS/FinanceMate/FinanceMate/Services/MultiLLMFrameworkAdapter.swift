@@ -2,7 +2,7 @@
 
 //
 //  MultiLLMFrameworkAdapter.swift
-//  FinanceMate-Sandbox
+//  FinanceMate
 //
 //  Created by Assistant on 6/2/25.
 //

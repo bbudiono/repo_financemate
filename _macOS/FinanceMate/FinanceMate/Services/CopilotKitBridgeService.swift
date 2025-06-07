@@ -1,7 +1,6 @@
-// SANDBOX FILE: For testing/development. See .cursorrules.
 //
 // CopilotKitBridgeService.swift
-// FinanceMate-Sandbox
+// FinanceMate
 //
 // Purpose: Simplified bridge service for CopilotKit integration in Sandbox environment
 // Issues & Complexity Summary: Basic service stub for build compatibility

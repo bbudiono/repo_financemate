@@ -1,4 +1,3 @@
-// SANDBOX FILE: For testing/development. See .cursorrules.
 /*
 * Purpose: REAL Document Processing Pipeline with PDFKit + Vision OCR integration - NO MOCK DATA
 * Issues & Complexity Summary: Complex document processing pipeline with OCR, file handling, and async processing

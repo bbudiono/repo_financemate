@@ -1,11 +1,10 @@
 //
 //  MemoryMonitor.swift
-//  FinanceMate-Sandbox
+//  FinanceMate
 //
 //  Created by Assistant on 6/2/25.
 //
 
-// SANDBOX FILE: For testing/development. See .cursorrules.
 
 /*
 * Purpose: Advanced memory monitoring and pressure detection for financial processing workflows

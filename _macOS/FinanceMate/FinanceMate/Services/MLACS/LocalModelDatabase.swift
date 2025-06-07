@@ -1,4 +1,3 @@
-// PRODUCTION FILE: Migrated from sandbox for FinanceMate production
 
 //
 //  LocalModelDatabase.swift
@@ -434,6 +433,20 @@ public struct AgentResponse {
     public let confidence: Double
     public let sources: [String]
     public let agent: LocalAIAgent
+    
+    public init(
+        content: String,
+        responseTime: Double,
+        confidence: Double,
+        sources: [String],
+        agent: LocalAIAgent
+    ) {
+        self.content = content
+        self.responseTime = responseTime
+        self.confidence = confidence
+        self.sources = sources
+        self.agent = agent
+    }
 }
 
 public struct AgentPerformanceMetrics {
