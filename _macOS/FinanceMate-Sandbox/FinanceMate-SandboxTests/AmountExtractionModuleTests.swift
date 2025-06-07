@@ -131,7 +131,8 @@ final class AmountExtractionModuleTests: XCTestCase {
         let numericValue = AmountExtractionModule.extractNumericValue(from: amountString)
         
         // Then
-        XCTAssertEqual(numericValue, 1234.56, accuracy: 0.01)
+        XCTAssertNotNil(numericValue)
+        XCTAssertEqual(numericValue!, 1234.56, accuracy: 0.01)
     }
     
     func testExtractNumericValue_InvalidAmount() {
@@ -153,7 +154,8 @@ final class AmountExtractionModuleTests: XCTestCase {
         let numericValue = AmountExtractionModule.extractNumericValue(from: amountString)
         
         // Then
-        XCTAssertEqual(numericValue, 500.0, accuracy: 0.01)
+        XCTAssertNotNil(numericValue)
+        XCTAssertEqual(numericValue!, 500.0, accuracy: 0.01)
     }
     
     // MARK: - Amount Normalization Tests

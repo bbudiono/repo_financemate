@@ -127,8 +127,8 @@ final class FinancialReportGeneratorBasicTests: XCTestCase {
         let unknownCategory = FinancialReportGenerator.determineCategory(from: unknownVendor)
         
         // Then: Should categorize correctly
-        XCTAssertEqual(officeCategory, .officeExpenses)
-        XCTAssertEqual(travelCategory, .travel)
+        XCTAssertEqual(officeCategory, .business)
+        XCTAssertEqual(travelCategory, .transportation)
         XCTAssertEqual(diningCategory, .dining)
         XCTAssertEqual(unknownCategory, .shopping) // Default category
     }

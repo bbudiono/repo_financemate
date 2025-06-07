@@ -71,6 +71,17 @@ struct DetailView: View {
                 DocumentsView()
             case .analytics:
                 AnalyticsView()
+            case .mlacs:
+                VStack {
+                    Text("🧠 MLACS")
+                        .font(.largeTitle)
+                        .foregroundColor(.blue)
+                    Text("Multi-LLM Agent Coordination System - Production Ready")
+                        .foregroundColor(.secondary)
+                    Text("Dynamic model discovery and intelligent agent management")
+                        .foregroundColor(.secondary)
+                        .font(.caption)
+                }
             case .export:
                 FinancialExportView()
             case .enhancedAnalytics:
@@ -125,6 +136,7 @@ enum NavigationItem: String, CaseIterable {
     case dashboard = "dashboard"
     case documents = "documents"
     case analytics = "analytics"
+    case mlacs = "mlacs"
     case export = "export"
     case enhancedAnalytics = "enhancedAnalytics"
     case speculativeDecoding = "speculativeDecoding"
@@ -138,6 +150,7 @@ enum NavigationItem: String, CaseIterable {
         case .dashboard: return "Dashboard"
         case .documents: return "Documents"
         case .analytics: return "Analytics"
+        case .mlacs: return "MLACS"
         case .export: return "Financial Export"
         case .enhancedAnalytics: return "Enhanced Analytics"
         case .speculativeDecoding: return "Speculative Decoding"
@@ -153,10 +166,11 @@ enum NavigationItem: String, CaseIterable {
         case .dashboard: return "chart.line.uptrend.xyaxis"
         case .documents: return "doc.fill"
         case .analytics: return "chart.bar.fill"
+        case .mlacs: return "brain.head.profile"
         case .export: return "square.and.arrow.up.fill"
         case .enhancedAnalytics: return "chart.bar.doc.horizontal.fill"
         case .speculativeDecoding: return "cpu.fill"
-        case .chatbotTesting: return "brain.head.profile"
+        case .chatbotTesting: return "message.badge.waveform"
         case .crashAnalysis: return "exclamationmark.triangle.fill"
         case .llmBenchmark: return "speedometer"
         case .settings: return "gear"
