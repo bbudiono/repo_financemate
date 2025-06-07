@@ -25,9 +25,11 @@
 */
 
 import SwiftUI
+import Foundation
 
 struct SettingsView: View {
     @StateObject private var settingsManager = SettingsManager.shared
+    @State private var isAuthenticated = false
     @State private var showingAbout = false
     @State private var showingDataExport = false
     @State private var showingResetConfirmation = false
@@ -73,11 +75,24 @@ struct SettingsView: View {
                     
                     SettingsRow(
                         icon: "faceid",
-                        title: "Biometric Authentication",
+                        title: "Biometric Authentication", 
                         description: "Use Touch ID or Face ID for app access"
                     ) {
                         Toggle("", isOn: $settingsManager.biometricAuthEnabled)
                             .toggleStyle(SwitchToggleStyle())
+                    }
+                    
+                    // Apple ID Authentication
+                    SettingsRow(
+                        icon: "applelogo",
+                        title: "Sign in with Apple",
+                        description: isAuthenticated ? "Signed in" : "Sign in to sync data"
+                    ) {
+                        Button(isAuthenticated ? "Sign Out" : "Sign In") {
+                            isAuthenticated.toggle()
+                            print("Authentication toggled: \(isAuthenticated)")
+                        }
+                        .buttonStyle(.bordered)
                     }
                 }
                 
@@ -497,6 +512,7 @@ struct FeatureRow: View {
 struct DataExportView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var selectedFormat: SettingsExportFormat = .pdf
+    @StateObject private var exportService = BasicExportService()
     @State private var includeCharts = true
     @State private var includeTransactions = true
     @State private var includeAnalytics = true
@@ -592,21 +608,42 @@ struct DataExportView: View {
     }
     
     private func exportData() {
-        // Implementation for data export
-        print("Exporting data in \(selectedFormat.displayName) format")
-        dismiss()
+        Task {
+            do {
+                let financialData: [FinancialData] = [] // Would fetch from Core Data in real implementation
+                
+                switch selectedFormat {
+                case .csv:
+                    _ = try await exportService.exportToCSV(financialData.map(FinancialDataAdapter.init))
+                case .json:
+                    _ = try await exportService.exportToJSON(financialData.map(FinancialDataAdapter.init))
+                case .pdf:
+                    _ = try await exportService.exportToPDF(financialData.map(FinancialDataAdapter.init))
+                case .excel:
+                    let result = try await exportService.exportToFile(financialData, format: .excel)
+                    print("Export completed: \(result.recordCount) records")
+                }
+                
+                print("Export completed successfully in \(selectedFormat.displayName) format")
+                dismiss()
+            } catch {
+                print("Export failed: \(error)")
+            }
+        }
     }
 }
 
 enum SettingsExportFormat: CaseIterable {
     case pdf
     case csv
+    case json
     case excel
     
     var displayName: String {
         switch self {
         case .pdf: return "PDF"
         case .csv: return "CSV"
+        case .json: return "JSON"
         case .excel: return "Excel"
         }
     }

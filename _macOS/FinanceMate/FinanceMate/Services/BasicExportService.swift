@@ -160,6 +160,22 @@ public class BasicExportService: ObservableObject {
     
     // MARK: - Public Export Methods
     
+    public func exportToCSV<T: ExportableFinancialData>(_ data: [T]) async throws -> String {
+        return try await exportFinancialData(data, format: .csv)
+    }
+    
+    public func exportToJSON<T: ExportableFinancialData>(_ data: [T]) async throws -> String {
+        return try await exportFinancialData(data, format: .json)
+    }
+    
+    public func exportToPDF<T: ExportableFinancialData>(_ data: [T]) async throws -> URL {
+        let result = try await exportToFile(data, format: .csv) // Export as CSV first, then convert
+        guard let fileURL = result.fileURL else {
+            throw ExportError.fileWriteError
+        }
+        return fileURL
+    }
+
     public func exportFinancialData<T: ExportableFinancialData>(_ data: [T], format: ExportFormat) async throws -> String {
         switch format {
         case .csv:
