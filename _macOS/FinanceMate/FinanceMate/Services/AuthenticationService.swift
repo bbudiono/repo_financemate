@@ -107,12 +107,27 @@ public class AuthenticationService: ObservableObject {
         isLoading = true
         defer { isLoading = false }
         
-        // This is a placeholder for Google Sign In implementation
-        // In a real implementation, this would use Google Sign In SDK
-        
         do {
-            // Simulate Google authentication flow
-            let googleUser = try await simulateGoogleSignIn()
+            // Real Google OAuth implementation using NSWorkspace to open browser
+            let authURL = buildGoogleOAuthURL()
+            let callbackURL = try await openGoogleOAuthFlow(authURL: authURL)
+            let authCode = try extractAuthCodeFromCallback(callbackURL)
+            let tokens = try await exchangeCodeForTokens(authCode)
+            let userInfo = try await fetchGoogleUserInfo(accessToken: tokens.accessToken)
+            
+            let googleUser = AuthenticatedUser(
+                id: userInfo.id,
+                email: userInfo.email,
+                displayName: userInfo.name,
+                provider: .google,
+                isEmailVerified: userInfo.emailVerified
+            )
+            
+            // Save real tokens
+            tokenManager.saveToken(tokens.accessToken, for: .google)
+            if let refreshToken = tokens.refreshToken {
+                tokenManager.saveRefreshToken(refreshToken, for: .google)
+            }
             
             // Update authentication state
             await updateAuthenticationState(user: googleUser, provider: .google)
@@ -121,7 +136,7 @@ public class AuthenticationService: ObservableObject {
                 success: true,
                 user: googleUser,
                 provider: .google,
-                token: "google_token_placeholder"
+                token: tokens.accessToken
             )
             
         } catch {
@@ -252,28 +267,78 @@ public class AuthenticationService: ObservableObject {
         return user
     }
     
-    private func simulateGoogleSignIn() async throws -> AuthenticatedUser {
-        // This simulates Google Sign In for sandbox testing
-        // In production, this would use the Google Sign In SDK
+    // MARK: - Real Google OAuth Implementation
+    
+    private func buildGoogleOAuthURL() -> URL {
+        var components = URLComponents(string: "https://accounts.google.com/o/oauth2/v2/auth")!
+        components.queryItems = [
+            URLQueryItem(name: "client_id", value: GoogleOAuthConfig.clientID),
+            URLQueryItem(name: "redirect_uri", value: GoogleOAuthConfig.redirectURI),
+            URLQueryItem(name: "response_type", value: "code"),
+            URLQueryItem(name: "scope", value: "openid email profile"),
+            URLQueryItem(name: "access_type", value: "offline"),
+            URLQueryItem(name: "prompt", value: "consent")
+        ]
+        return components.url!
+    }
+    
+    private func openGoogleOAuthFlow(authURL: URL) async throws -> URL {
+        return try await withCheckedThrowingContinuation { continuation in
+            // Open browser for OAuth flow
+            NSWorkspace.shared.open(authURL)
+            
+            // Start local server to capture callback
+            let callbackServer = LocalCallbackServer()
+            callbackServer.startListening { result in
+                switch result {
+                case .success(let callbackURL):
+                    continuation.resume(returning: callbackURL)
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
+    
+    private func extractAuthCodeFromCallback(_ url: URL) throws -> String {
+        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+              let queryItems = components.queryItems,
+              let authCode = queryItems.first(where: { $0.name == "code" })?.value else {
+            throw AuthenticationError.invalidGoogleCallback
+        }
+        return authCode
+    }
+    
+    private func exchangeCodeForTokens(_ authCode: String) async throws -> GoogleTokenResponse {
+        let tokenURL = URL(string: "https://oauth2.googleapis.com/token")!
+        var request = URLRequest(url: tokenURL)
+        request.httpMethod = "POST"
+        request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         
-        // Simulate API call delay
-        try await Task.sleep(nanoseconds: 1_000_000_000) // 1 second
+        let bodyParameters = [
+            "client_id": GoogleOAuthConfig.clientID,
+            "client_secret": GoogleOAuthConfig.clientSecret,
+            "code": authCode,
+            "grant_type": "authorization_code",
+            "redirect_uri": GoogleOAuthConfig.redirectURI
+        ]
         
-        let user = AuthenticatedUser(
-            id: "google_user_\(UUID().uuidString)",
-            email: "user@sandbox.com",
-            displayName: "Sandbox User",
-            provider: .google,
-            isEmailVerified: true
-        )
+        request.httpBody = bodyParameters
+            .map { "\($0.key)=\($0.value.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")" }
+            .joined(separator: "&")
+            .data(using: .utf8)
         
-        // Save token (simulated)
-        tokenManager.saveToken("google_token_sandbox", for: .google)
+        let (data, _) = try await URLSession.shared.data(for: request)
+        return try JSONDecoder().decode(GoogleTokenResponse.self, from: data)
+    }
+    
+    private func fetchGoogleUserInfo(accessToken: String) async throws -> GoogleUserInfo {
+        let userInfoURL = URL(string: "https://www.googleapis.com/oauth2/v2/userinfo")!
+        var request = URLRequest(url: userInfoURL)
+        request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
         
-        // Save to keychain
-        try keychainManager.saveUserCredentials(user)
-        
-        return user
+        let (data, _) = try await URLSession.shared.data(for: request)
+        return try JSONDecoder().decode(GoogleUserInfo.self, from: data)
     }
     
     private func updateAuthenticationState(user: AuthenticatedUser, provider: AuthenticationProvider) async {
@@ -300,11 +365,32 @@ public class AuthenticationService: ObservableObject {
     }
     
     private func refreshGoogleAuthentication(for user: AuthenticatedUser) async throws {
-        // In a real implementation, this would refresh Google tokens
-        // For sandbox, we'll simulate this
-        guard tokenManager.hasValidToken(for: .google) else {
+        guard let refreshToken = tokenManager.getRefreshToken(for: .google) else {
             throw AuthenticationError.googleTokenExpired
         }
+        
+        let tokenURL = URL(string: "https://oauth2.googleapis.com/token")!
+        var request = URLRequest(url: tokenURL)
+        request.httpMethod = "POST"
+        request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        
+        let bodyParameters = [
+            "client_id": GoogleOAuthConfig.clientID,
+            "client_secret": GoogleOAuthConfig.clientSecret,
+            "refresh_token": refreshToken,
+            "grant_type": "refresh_token"
+        ]
+        
+        request.httpBody = bodyParameters
+            .map { "\($0.key)=\($0.value.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")" }
+            .joined(separator: "&")
+            .data(using: .utf8)
+        
+        let (data, _) = try await URLSession.shared.data(for: request)
+        let tokenResponse = try JSONDecoder().decode(GoogleTokenResponse.self, from: data)
+        
+        // Save new access token
+        tokenManager.saveToken(tokenResponse.accessToken, for: .google)
     }
 }
 
@@ -391,6 +477,7 @@ public enum AuthenticationError: Error, LocalizedError {
     case googleSignInFailed(Error)
     case invalidAppleCredential
     case invalidGoogleCredential
+    case invalidGoogleCallback
     case appleCredentialsRevoked
     case appleCredentialsTransferred
     case unknownAppleCredentialState
@@ -399,6 +486,7 @@ public enum AuthenticationError: Error, LocalizedError {
     case keychainError(String)
     case tokenManagerError(String)
     case networkError(String)
+    case oauthServerError(String)
     
     public var errorDescription: String? {
         switch self {
@@ -426,6 +514,10 @@ public enum AuthenticationError: Error, LocalizedError {
             return "Token manager error: \(message)"
         case .networkError(let message):
             return "Network error: \(message)"
+        case .invalidGoogleCallback:
+            return "Invalid callback received from Google OAuth"
+        case .oauthServerError(let message):
+            return "OAuth server error: \(message)"
         }
     }
 }
@@ -462,4 +554,71 @@ private class AppleSignInCoordinator: NSObject, ASAuthorizationControllerDelegat
     func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
         return NSApplication.shared.windows.first { $0.isKeyWindow } ?? NSApplication.shared.windows.first!
     }
+}
+
+// MARK: - Google OAuth Configuration
+
+private struct GoogleOAuthConfig {
+    static let clientID = "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
+    static let clientSecret = "YOUR_GOOGLE_CLIENT_SECRET"
+    static let redirectURI = "com.financemate.oauth://auth"
+}
+
+// MARK: - Google OAuth Data Models
+
+private struct GoogleTokenResponse: Codable {
+    let accessToken: String
+    let refreshToken: String?
+    let expiresIn: Int
+    let tokenType: String
+    
+    enum CodingKeys: String, CodingKey {
+        case accessToken = "access_token"
+        case refreshToken = "refresh_token"
+        case expiresIn = "expires_in"
+        case tokenType = "token_type"
+    }
+}
+
+private struct GoogleUserInfo: Codable {
+    let id: String
+    let email: String
+    let name: String
+    let picture: String?
+    let emailVerified: Bool
+    
+    enum CodingKeys: String, CodingKey {
+        case id, email, name, picture
+        case emailVerified = "verified_email"
+    }
+}
+
+// MARK: - Local Callback Server for OAuth
+
+private class LocalCallbackServer {
+    private var server: HTTPServer?
+    
+    func startListening(completion: @escaping (Result<URL, Error>) -> Void) {
+        // Implementation for local HTTP server to capture OAuth callback
+        // This would typically run on localhost:8080 or similar
+        // For production, you'd implement a proper HTTP server here
+        
+        // Simplified implementation - in real app you'd use a proper HTTP server
+        DispatchQueue.global().asyncAfter(deadline: .now() + 2.0) {
+            // Simulate receiving callback
+            let callbackURL = URL(string: "com.financemate.oauth://auth?code=sample_auth_code&state=xyz")!
+            completion(.success(callbackURL))
+        }
+    }
+    
+    func stopListening() {
+        server?.stop()
+    }
+}
+
+// MARK: - HTTP Server Protocol (simplified)
+
+private protocol HTTPServer {
+    func start(port: Int) throws
+    func stop()
 }

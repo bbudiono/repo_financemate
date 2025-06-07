@@ -26,6 +26,10 @@
 
 import SwiftUI
 import UniformTypeIdentifiers
+import Vision
+import VisionKit
+import PDFKit
+import Quartz
 
 struct DocumentsView: View {
     @State private var documents: [DocumentItem] = []
@@ -197,17 +201,137 @@ struct DocumentsView: View {
             url: url,
             type: UIDocumentType.from(url: url),
             dateAdded: Date(),
-            extractedText: "Processing...", // Would be processed by AI service
-            processingStatus: .pending
+            extractedText: "Processing...",
+            processingStatus: .processing
         )
         
         documents.append(document)
         
-        // Simulate AI processing
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            if let index = documents.firstIndex(where: { $0.id == document.id }) {
-                documents[index].extractedText = "Sample extracted text for \(document.name)"
-                documents[index].processingStatus = .completed
+        // Real OCR processing using Apple Vision framework
+        Task {
+            do {
+                let extractedText = try await performRealOCR(on: url)
+                
+                await MainActor.run {
+                    if let index = documents.firstIndex(where: { $0.id == document.id }) {
+                        documents[index].extractedText = extractedText.isEmpty ? "No text detected" : extractedText
+                        documents[index].processingStatus = .completed
+                    }
+                }
+            } catch {
+                await MainActor.run {
+                    if let index = documents.firstIndex(where: { $0.id == document.id }) {
+                        documents[index].extractedText = "OCR failed: \(error.localizedDescription)"
+                        documents[index].processingStatus = .error
+                    }
+                }
+            }
+        }
+    }
+    
+    private func performRealOCR(on url: URL) async throws -> String {
+        let fileExtension = url.pathExtension.lowercased()
+        
+        switch fileExtension {
+        case "pdf":
+            return try await extractTextFromPDF(url: url)
+        case "jpg", "jpeg", "png", "tiff", "heic":
+            return try await extractTextFromImage(url: url)
+        case "txt":
+            return try String(contentsOf: url, encoding: .utf8)
+        default:
+            throw OCRError.unsupportedFileType
+        }
+    }
+    
+    private func extractTextFromPDF(url: URL) async throws -> String {
+        guard let pdfDocument = PDFDocument(url: url) else {
+            throw OCRError.pdfLoadFailed
+        }
+        
+        var fullText = ""
+        
+        // First try to extract native text
+        for pageIndex in 0..<pdfDocument.pageCount {
+            guard let page = pdfDocument.page(at: pageIndex) else { continue }
+            if let pageText = page.string {
+                fullText += pageText + "\n"
+            }
+        }
+        
+        // If no native text found, use OCR on PDF pages
+        if fullText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            for pageIndex in 0..<min(pdfDocument.pageCount, 10) { // Limit to first 10 pages
+                guard let page = pdfDocument.page(at: pageIndex) else { continue }
+                
+                let pageRect = page.bounds(for: .mediaBox)
+                
+                // Create image from PDF page using macOS APIs
+                let nsImage = NSImage(size: pageRect.size)
+                nsImage.lockFocus()
+                
+                let context = NSGraphicsContext.current!.cgContext
+                context.translateBy(x: 0, y: pageRect.size.height)
+                context.scaleBy(x: 1.0, y: -1.0)
+                page.draw(with: .mediaBox, to: context)
+                
+                nsImage.unlockFocus()
+                
+                guard let cgImage = nsImage.cgImage(forProposedRect: nil, context: nil, hints: nil) else {
+                    continue
+                }
+                let pageImage = NSImage(cgImage: cgImage, size: pageRect.size)
+                
+                let ocrText = try await performVisionOCR(on: cgImage)
+                fullText += ocrText + "\n"
+            }
+        }
+        
+        return fullText.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+    
+    private func extractTextFromImage(url: URL) async throws -> String {
+        guard let nsImage = NSImage(contentsOf: url) else {
+            throw OCRError.imageLoadFailed
+        }
+        
+        guard let cgImage = nsImage.cgImage(forProposedRect: nil, context: nil, hints: nil) else {
+            throw OCRError.imageProcessingFailed
+        }
+        
+        return try await performVisionOCR(on: cgImage)
+    }
+    
+    private func performVisionOCR(on cgImage: CGImage) async throws -> String {
+        return try await withCheckedThrowingContinuation { continuation in
+            
+            let requestHandler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+            let request = VNRecognizeTextRequest { request, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                    return
+                }
+                
+                guard let observations = request.results as? [VNRecognizedTextObservation] else {
+                    continuation.resume(returning: "")
+                    return
+                }
+                
+                let recognizedText = observations.compactMap { observation in
+                    observation.topCandidates(1).first?.string
+                }.joined(separator: "\n")
+                
+                continuation.resume(returning: recognizedText)
+            }
+            
+            // Configure for maximum accuracy
+            request.recognitionLevel = .accurate
+            request.usesLanguageCorrection = true
+            
+            do {
+                try requestHandler.perform([request])
+            } catch {
+                continuation.resume(throwing: error)
             }
         }
     }
@@ -489,6 +613,31 @@ enum DocumentFilter: CaseIterable {
         case .receipts: return .receipt
         case .statements: return .statement
         case .contracts: return .contract
+        }
+    }
+}
+
+// MARK: - OCR Error Types
+
+enum OCRError: Error, LocalizedError {
+    case unsupportedFileType
+    case pdfLoadFailed
+    case imageLoadFailed
+    case imageProcessingFailed
+    case visionFrameworkError(String)
+    
+    var errorDescription: String? {
+        switch self {
+        case .unsupportedFileType:
+            return "Unsupported file type for OCR processing"
+        case .pdfLoadFailed:
+            return "Failed to load PDF document"
+        case .imageLoadFailed:
+            return "Failed to load image file"
+        case .imageProcessingFailed:
+            return "Failed to process image for OCR"
+        case .visionFrameworkError(let message):
+            return "Vision framework error: \(message)"
         }
     }
 }

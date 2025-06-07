@@ -154,9 +154,33 @@ public class TokenManager {
         revokeToken(for: provider)
     }
     
+    public func saveRefreshToken(_ refreshToken: String, for provider: AuthenticationProvider) {
+        let key = refreshTokenKeychainKey(for: provider)
+        do {
+            let data = refreshToken.data(using: .utf8)!
+            try keychain.save(data, for: key)
+        } catch {
+            print("Failed to save refresh token for \(provider.rawValue): \(error)")
+        }
+    }
+    
+    public func getRefreshToken(for provider: AuthenticationProvider) -> String? {
+        let key = refreshTokenKeychainKey(for: provider)
+        do {
+            guard let data = keychain.retrieve(for: key) else { return nil }
+            return String(data: data, encoding: .utf8)
+        } catch {
+            print("Failed to retrieve refresh token for \(provider.rawValue): \(error)")
+            return nil
+        }
+    }
+    
     public func clearAllTokens() {
         for provider in AuthenticationProvider.allCases {
             revokeToken(for: provider)
+            // Also clear refresh tokens
+            let refreshKey = refreshTokenKeychainKey(for: provider)
+            keychain.delete(for: refreshKey)
         }
         tokenCache.removeAll()
     }
@@ -211,6 +235,10 @@ public class TokenManager {
     
     private func tokenKeychainKey(for provider: AuthenticationProvider) -> String {
         return "token_\(provider.rawValue)"
+    }
+    
+    private func refreshTokenKeychainKey(for provider: AuthenticationProvider) -> String {
+        return "refresh_token_\(provider.rawValue)"
     }
     
     private func loadCachedTokens() {

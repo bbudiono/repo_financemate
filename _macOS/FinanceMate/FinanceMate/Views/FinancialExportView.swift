@@ -241,9 +241,7 @@ struct FinancialExportView: View {
                 let dataArray = Array(filteredData)
                 
                 // Perform export using BasicExportService
-                let result = try await Task {
-                    return try exportService.exportToFile(dataArray, format: selectedFormat)
-                }.value
+                let result = try await exportService.exportToFile(dataArray, format: selectedFormat)
                 
                 await MainActor.run {
                     exportResult = result

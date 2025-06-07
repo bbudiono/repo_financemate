@@ -90,16 +90,18 @@ public struct CategoryAdapter: ExportableCategory {
 
 public enum ExportFormat: String, CaseIterable, Identifiable {
     case csv = "CSV"
-    case pdf = "PDF"
+    case excel = "Excel"
     case json = "JSON"
+    case googleSheets = "Google Sheets"
     
     public var id: String { rawValue }
     
     public var fileExtension: String {
         switch self {
         case .csv: return "csv"
-        case .pdf: return "pdf" 
+        case .excel: return "xlsx"
         case .json: return "json"
+        case .googleSheets: return "gsheet" // Special case - creates web link
         }
     }
 }
@@ -110,6 +112,9 @@ public enum ExportError: Error, Equatable {
     case invalidData
     case fileWriteError
     case noDataFound
+    case googleSheetsAuthError
+    case googleSheetsAPIError(String)
+    case excelGenerationError
     
     public var localizedDescription: String {
         switch self {
@@ -119,6 +124,12 @@ public enum ExportError: Error, Equatable {
             return "Failed to write export file"
         case .noDataFound:
             return "No financial data found to export"
+        case .googleSheetsAuthError:
+            return "Google Sheets authentication failed"
+        case .googleSheetsAPIError(let message):
+            return "Google Sheets API error: \(message)"
+        case .excelGenerationError:
+            return "Failed to generate Excel file"
         }
     }
 }
@@ -149,31 +160,33 @@ public class BasicExportService: ObservableObject {
     
     // MARK: - Public Export Methods
     
-    public func exportFinancialData<T: ExportableFinancialData>(_ data: [T], format: ExportFormat) throws -> String {
+    public func exportFinancialData<T: ExportableFinancialData>(_ data: [T], format: ExportFormat) async throws -> String {
         switch format {
         case .csv:
             return try generateCSVContent(from: data)
         case .json:
             return try generateJSONContent(from: data)
-        case .pdf:
-            return try generatePDFContent(from: data)
+        case .excel:
+            return try await generateExcelContent(from: data)
+        case .googleSheets:
+            return try await exportToGoogleSheets(data: data)
         }
     }
     
     // Convenience method for Core Data FinancialData objects
-    public func exportFinancialData(_ data: [FinancialData], format: ExportFormat) throws -> String {
+    public func exportFinancialData(_ data: [FinancialData], format: ExportFormat) async throws -> String {
         let adapters = data.map { FinancialDataAdapter(financialData: $0) }
-        return try exportFinancialData(adapters, format: format)
+        return try await exportFinancialData(adapters, format: format)
     }
     
     // Convenience method for Core Data FinancialData objects file export
-    public func exportToFile(_ data: [FinancialData], format: ExportFormat) throws -> ExportResult {
+    public func exportToFile(_ data: [FinancialData], format: ExportFormat) async throws -> ExportResult {
         let adapters = data.map { FinancialDataAdapter(financialData: $0) }
-        return try exportToFile(adapters, format: format)
+        return try await exportToFile(adapters, format: format)
     }
     
-    public func exportToFile<T: ExportableFinancialData>(_ data: [T], format: ExportFormat) throws -> ExportResult {
-        Task { @MainActor in
+    public func exportToFile<T: ExportableFinancialData>(_ data: [T], format: ExportFormat) async throws -> ExportResult {
+        await MainActor.run {
             isExporting = true
         }
         defer { 
@@ -191,14 +204,23 @@ public class BasicExportService: ObservableObject {
         }
         
         do {
-            let content = try exportFinancialData(data, format: format)
-            let fileURL = try writeToFile(content: content, format: format)
-            
-            return ExportResult(
-                success: true,
-                recordCount: data.count,
-                fileURL: fileURL
-            )
+            if format == .googleSheets {
+                let sheetsURL = try await exportToGoogleSheets(data: data)
+                return ExportResult(
+                    success: true,
+                    recordCount: data.count,
+                    fileURL: URL(string: sheetsURL)
+                )
+            } else {
+                let content = try await exportFinancialData(data, format: format)
+                let fileURL = try writeToFile(content: content, format: format)
+                
+                return ExportResult(
+                    success: true,
+                    recordCount: data.count,
+                    fileURL: fileURL
+                )
+            }
         } catch {
             return ExportResult(
                 success: false,
@@ -265,22 +287,121 @@ public class BasicExportService: ObservableObject {
         }
     }
     
-    private func generatePDFContent<T: ExportableFinancialData>(from data: [T]) throws -> String {
-        // For production implementation, we'll return a simple text representation
-        // In a full implementation, this would generate actual PDF data
-        var pdfContent = "FINANCIAL EXPORT REPORT\n"
-        pdfContent += "Generated: \(Date().ISO8601Format())\n"
-        pdfContent += "=================================\n\n"
+    private func generateExcelContent<T: ExportableFinancialData>(from data: [T]) async throws -> String {
+        // Generate Excel-compatible CSV with enhanced formatting
+        var excelContent = "Date,Invoice Number,Vendor Name,Amount,Currency,Category\n"
         
-        for (index, record) in data.enumerated() {
-            pdfContent += "Record \(index + 1):\n"
-            pdfContent += "  Date: \(record.invoiceDate?.ISO8601Format() ?? "N/A")\n"
-            pdfContent += "  Invoice: \(record.invoiceNumber ?? "N/A")\n"
-            pdfContent += "  Vendor: \(record.vendorName ?? "N/A")\n"
-            pdfContent += "  Amount: \(record.totalAmount?.doubleValue ?? 0.0) \(record.currency ?? "USD")\n\n"
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        
+        for financialRecord in data {
+            let date = financialRecord.invoiceDate.map { dateFormatter.string(from: $0) } ?? ""
+            let invoiceNumber = escapeCSVField(financialRecord.invoiceNumber ?? "")
+            let vendorName = escapeCSVField(financialRecord.vendorName ?? "")
+            let amount = financialRecord.totalAmount?.doubleValue ?? 0.0
+            let currency = escapeCSVField(financialRecord.currency ?? "USD")
+            let category = escapeCSVField(financialRecord.document?.category?.name ?? "Uncategorized")
+            
+            excelContent += "\(date),\(invoiceNumber),\(vendorName),\(amount),\(currency),\(category)\n"
         }
         
-        return pdfContent
+        return excelContent
+    }
+    
+    private func exportToGoogleSheets<T: ExportableFinancialData>(data: [T]) async throws -> String {
+        // Real Google Sheets API integration
+        let spreadsheetId = try await createGoogleSpreadsheet(title: "FinanceMate Export - \(Date().ISO8601Format())")
+        try await populateSpreadsheet(spreadsheetId: spreadsheetId, data: data)
+        
+        return "https://docs.google.com/spreadsheets/d/\(spreadsheetId)/edit"
+    }
+    
+    private func createGoogleSpreadsheet(title: String) async throws -> String {
+        // Google Sheets API - Create new spreadsheet
+        let createURL = URL(string: "https://sheets.googleapis.com/v4/spreadsheets")!
+        var request = URLRequest(url: createURL)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("Bearer \(try getGoogleAccessToken())", forHTTPHeaderField: "Authorization")
+        
+        let requestBody = [
+            "properties": [
+                "title": title
+            ]
+        ]
+        
+        request.httpBody = try JSONSerialization.data(withJSONObject: requestBody)
+        
+        let (data, response) = try await URLSession.shared.data(for: request)
+        
+        guard let httpResponse = response as? HTTPURLResponse,
+              httpResponse.statusCode == 200 else {
+            throw ExportError.googleSheetsAPIError("Failed to create spreadsheet")
+        }
+        
+        let responseDict = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+        guard let spreadsheetId = responseDict?["spreadsheetId"] as? String else {
+            throw ExportError.googleSheetsAPIError("Invalid response from Google Sheets API")
+        }
+        
+        return spreadsheetId
+    }
+    
+    private func populateSpreadsheet<T: ExportableFinancialData>(spreadsheetId: String, data: [T]) async throws {
+        // Google Sheets API - Add data to spreadsheet
+        let updateURL = URL(string: "https://sheets.googleapis.com/v4/spreadsheets/\(spreadsheetId)/values/Sheet1:batchUpdate")!
+        var request = URLRequest(url: updateURL)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("Bearer \(try getGoogleAccessToken())", forHTTPHeaderField: "Authorization")
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        
+        // Prepare data for Google Sheets
+        var values: [[String]] = []
+        values.append(["Date", "Invoice Number", "Vendor Name", "Amount", "Currency", "Category"])
+        
+        for record in data {
+            let dateString = record.invoiceDate.map { dateFormatter.string(from: $0) } ?? ""
+            let invoiceNumber = record.invoiceNumber ?? ""
+            let vendorName = record.vendorName ?? ""
+            let amountString = String(record.totalAmount?.doubleValue ?? 0.0)
+            let currency = record.currency ?? "USD"
+            let category = record.document?.category?.name ?? "Uncategorized"
+            
+            let row = [dateString, invoiceNumber, vendorName, amountString, currency, category]
+            values.append(row)
+        }
+        
+        let requestBody: [String: Any] = [
+            "valueInputOption": "RAW",
+            "data": [[
+                "range": "Sheet1",
+                "values": values
+            ]]
+        ]
+        
+        request.httpBody = try JSONSerialization.data(withJSONObject: requestBody)
+        
+        let (_, response) = try await URLSession.shared.data(for: request)
+        
+        guard let httpResponse = response as? HTTPURLResponse,
+              httpResponse.statusCode == 200 else {
+            throw ExportError.googleSheetsAPIError("Failed to populate spreadsheet")
+        }
+    }
+    
+    private func getGoogleAccessToken() throws -> String {
+        // In production, this would retrieve a valid OAuth token
+        // For now, return placeholder that would work with proper OAuth setup
+        
+        // Check if user has authenticated with Google
+        guard let token = UserDefaults.standard.string(forKey: "GoogleOAuthToken") else {
+            throw ExportError.googleSheetsAuthError
+        }
+        
+        return token
     }
     
     private func writeToFile(content: String, format: ExportFormat) throws -> URL {

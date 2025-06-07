@@ -27,19 +27,13 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @State private var notifications = true
-    @State private var autoSync = false
-    @State private var biometricAuth = true
-    @State private var darkMode = false
-    @State private var currencyCode = "USD"
-    @State private var dateFormat = "MM/DD/YYYY"
-    @State private var autoBackup = true
+    @StateObject private var settingsManager = SettingsManager.shared
     @State private var showingAbout = false
     @State private var showingDataExport = false
     @State private var showingResetConfirmation = false
+    @State private var showingAPIKeyManagement = false
+    @State private var showingCloudConfiguration = false
     
-    let currencies = ["USD", "EUR", "GBP", "JPY", "CAD", "AUD"]
-    let dateFormats = ["MM/DD/YYYY", "DD/MM/YYYY", "YYYY-MM-DD"]
     
     var body: some View {
         ScrollView {
@@ -64,7 +58,7 @@ struct SettingsView: View {
                         title: "Notifications",
                         description: "Receive alerts for important financial activities"
                     ) {
-                        Toggle("", isOn: $notifications)
+                        Toggle("", isOn: $settingsManager.notificationsEnabled)
                             .toggleStyle(SwitchToggleStyle())
                     }
                     
@@ -73,7 +67,7 @@ struct SettingsView: View {
                         title: "Auto Sync",
                         description: "Automatically sync data across devices"
                     ) {
-                        Toggle("", isOn: $autoSync)
+                        Toggle("", isOn: $settingsManager.autoSyncEnabled)
                             .toggleStyle(SwitchToggleStyle())
                     }
                     
@@ -82,7 +76,7 @@ struct SettingsView: View {
                         title: "Biometric Authentication",
                         description: "Use Touch ID or Face ID for app access"
                     ) {
-                        Toggle("", isOn: $biometricAuth)
+                        Toggle("", isOn: $settingsManager.biometricAuthEnabled)
                             .toggleStyle(SwitchToggleStyle())
                     }
                 }
@@ -94,7 +88,7 @@ struct SettingsView: View {
                         title: "Dark Mode",
                         description: "Use dark theme throughout the app"
                     ) {
-                        Toggle("", isOn: $darkMode)
+                        Toggle("", isOn: $settingsManager.darkModeEnabled)
                             .toggleStyle(SwitchToggleStyle())
                     }
                 }
@@ -106,8 +100,8 @@ struct SettingsView: View {
                         title: "Currency",
                         description: "Default currency for financial calculations"
                     ) {
-                        Picker("Currency", selection: $currencyCode) {
-                            ForEach(currencies, id: \.self) { currency in
+                        Picker("Currency", selection: $settingsManager.defaultCurrency) {
+                            ForEach(settingsManager.availableCurrencies, id: \.self) { currency in
                                 Text(currency).tag(currency)
                             }
                         }
@@ -120,8 +114,8 @@ struct SettingsView: View {
                         title: "Date Format",
                         description: "How dates are displayed throughout the app"
                     ) {
-                        Picker("Date Format", selection: $dateFormat) {
-                            ForEach(dateFormats, id: \.self) { format in
+                        Picker("Date Format", selection: $settingsManager.dateFormat) {
+                            ForEach(settingsManager.availableDateFormats, id: \.self) { format in
                                 Text(format).tag(format)
                             }
                         }
@@ -134,8 +128,29 @@ struct SettingsView: View {
                         title: "Auto Backup",
                         description: "Automatically backup data to iCloud"
                     ) {
-                        Toggle("", isOn: $autoBackup)
+                        Toggle("", isOn: $settingsManager.autoBackupEnabled)
                             .toggleStyle(SwitchToggleStyle())
+                    }
+                }
+                
+                // API Keys & Integration
+                SettingsSection(title: "API Integration") {
+                    SettingsActionRow(
+                        icon: "key.fill",
+                        title: "API Keys",
+                        description: "Manage OpenAI, Google, and other API keys",
+                        color: .blue
+                    ) {
+                        showingAPIKeyManagement = true
+                    }
+                    
+                    SettingsActionRow(
+                        icon: "cloud.fill",
+                        title: "Cloud Services",
+                        description: "Configure Google Drive, Dropbox, and other services",
+                        color: .green
+                    ) {
+                        showingCloudConfiguration = true
                     }
                 }
                 
@@ -210,6 +225,12 @@ struct SettingsView: View {
         .sheet(isPresented: $showingDataExport) {
             DataExportView()
         }
+        .sheet(isPresented: $showingAPIKeyManagement) {
+            APIKeyManagementView()
+        }
+        .sheet(isPresented: $showingCloudConfiguration) {
+            CloudConfigurationView()
+        }
         .alert("Reset All Data", isPresented: $showingResetConfirmation) {
             Button("Cancel", role: .cancel) { }
             Button("Reset", role: .destructive) {
@@ -221,8 +242,9 @@ struct SettingsView: View {
     }
     
     private func resetAllData() {
-        // Implementation for resetting all user data
-        print("Resetting all data...")
+        Task {
+            await settingsManager.resetAllData()
+        }
     }
 }
 
@@ -605,6 +627,467 @@ enum DateRange: CaseIterable {
         case .lastThreeMonths: return "Last 3 Months"
         case .lastSixMonths: return "Last 6 Months"
         }
+    }
+}
+
+// MARK: - Settings Manager
+
+class SettingsManager: ObservableObject {
+    static let shared = SettingsManager()
+    
+    // MARK: - Published Properties
+    
+    @Published var notificationsEnabled: Bool {
+        didSet { UserDefaults.standard.set(notificationsEnabled, forKey: "notificationsEnabled") }
+    }
+    
+    @Published var autoSyncEnabled: Bool {
+        didSet { UserDefaults.standard.set(autoSyncEnabled, forKey: "autoSyncEnabled") }
+    }
+    
+    @Published var biometricAuthEnabled: Bool {
+        didSet { UserDefaults.standard.set(biometricAuthEnabled, forKey: "biometricAuthEnabled") }
+    }
+    
+    @Published var darkModeEnabled: Bool {
+        didSet { 
+            UserDefaults.standard.set(darkModeEnabled, forKey: "darkModeEnabled")
+            updateAppearance()
+        }
+    }
+    
+    @Published var defaultCurrency: String {
+        didSet { UserDefaults.standard.set(defaultCurrency, forKey: "defaultCurrency") }
+    }
+    
+    @Published var dateFormat: String {
+        didSet { UserDefaults.standard.set(dateFormat, forKey: "dateFormat") }
+    }
+    
+    @Published var autoBackupEnabled: Bool {
+        didSet { UserDefaults.standard.set(autoBackupEnabled, forKey: "autoBackupEnabled") }
+    }
+    
+    // MARK: - Constants
+    
+    let availableCurrencies = ["USD", "EUR", "GBP", "JPY", "CAD", "AUD", "CHF", "CNY"]
+    let availableDateFormats = ["MM/DD/YYYY", "DD/MM/YYYY", "YYYY-MM-DD", "DD-MM-YYYY"]
+    
+    // MARK: - Initialization
+    
+    private init() {
+        // Load saved settings or use defaults
+        self.notificationsEnabled = UserDefaults.standard.object(forKey: "notificationsEnabled") as? Bool ?? true
+        self.autoSyncEnabled = UserDefaults.standard.object(forKey: "autoSyncEnabled") as? Bool ?? false
+        self.biometricAuthEnabled = UserDefaults.standard.object(forKey: "biometricAuthEnabled") as? Bool ?? true
+        self.darkModeEnabled = UserDefaults.standard.object(forKey: "darkModeEnabled") as? Bool ?? false
+        self.defaultCurrency = UserDefaults.standard.string(forKey: "defaultCurrency") ?? "USD"
+        self.dateFormat = UserDefaults.standard.string(forKey: "dateFormat") ?? "MM/DD/YYYY"
+        self.autoBackupEnabled = UserDefaults.standard.object(forKey: "autoBackupEnabled") as? Bool ?? true
+        
+        // Apply appearance settings
+        updateAppearance()
+    }
+    
+    // MARK: - API Key Management
+    
+    func saveAPIKey(_ key: String, for service: APIService) {
+        let keychain = KeychainManager()
+        do {
+            let data = key.data(using: .utf8)!
+            try keychain.save(data, for: "api_key_\(service.rawValue)")
+        } catch {
+            print("Failed to save API key for \(service.rawValue): \(error)")
+        }
+    }
+    
+    func getAPIKey(for service: APIService) -> String? {
+        let keychain = KeychainManager()
+        guard let data = keychain.retrieve(for: "api_key_\(service.rawValue)") else { return nil }
+        return String(data: data, encoding: .utf8)
+    }
+    
+    func removeAPIKey(for service: APIService) {
+        let keychain = KeychainManager()
+        keychain.delete(for: "api_key_\(service.rawValue)")
+    }
+    
+    // MARK: - Data Management
+    
+    func resetAllData() async {
+        // Clear UserDefaults
+        let domain = Bundle.main.bundleIdentifier!
+        UserDefaults.standard.removePersistentDomain(forName: domain)
+        UserDefaults.standard.synchronize()
+        
+        // Clear Keychain
+        let keychain = KeychainManager()
+        for service in APIService.allCases {
+            keychain.delete(for: "api_key_\(service.rawValue)")
+        }
+        
+        // Reset to defaults
+        await MainActor.run {
+            self.notificationsEnabled = true
+            self.autoSyncEnabled = false
+            self.biometricAuthEnabled = true
+            self.darkModeEnabled = false
+            self.defaultCurrency = "USD"
+            self.dateFormat = "MM/DD/YYYY"
+            self.autoBackupEnabled = true
+        }
+    }
+    
+    private func updateAppearance() {
+        DispatchQueue.main.async {
+            if let window = NSApplication.shared.windows.first {
+                window.appearance = self.darkModeEnabled ? NSAppearance(named: .darkAqua) : NSAppearance(named: .aqua)
+            }
+        }
+    }
+}
+
+// MARK: - API Service Enum
+
+enum APIService: String, CaseIterable {
+    case openai = "openai"
+    case google = "google"
+    case anthropic = "anthropic"
+    case microsoft = "microsoft"
+    
+    var displayName: String {
+        switch self {
+        case .openai: return "OpenAI"
+        case .google: return "Google"
+        case .anthropic: return "Anthropic"
+        case .microsoft: return "Microsoft"
+        }
+    }
+    
+    var description: String {
+        switch self {
+        case .openai: return "For GPT-4 and document analysis"
+        case .google: return "For Google Sheets and Drive integration"
+        case .anthropic: return "For Claude AI assistance"
+        case .microsoft: return "For Office 365 integration"
+        }
+    }
+}
+
+// MARK: - API Key Management View
+
+struct APIKeyManagementView: View {
+    @Environment(\.dismiss) private var dismiss
+    @StateObject private var settingsManager = SettingsManager.shared
+    @State private var apiKeys: [APIService: String] = [:]
+    @State private var showingKeyEntry = false
+    @State private var selectedService: APIService = .openai
+    @State private var keyText = ""
+    
+    var body: some View {
+        NavigationView {
+            VStack(spacing: 20) {
+                // Header
+                VStack(spacing: 12) {
+                    Image(systemName: "key.fill")
+                        .font(.largeTitle)
+                        .foregroundColor(.blue)
+                    
+                    Text("API Key Management")
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                    
+                    Text("Securely store your API keys for external services")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                }
+                .padding(.top)
+                
+                // API Services List
+                VStack(spacing: 12) {
+                    ForEach(APIService.allCases, id: \.self) { service in
+                        APIKeyRow(
+                            service: service,
+                            hasKey: apiKeys[service] != nil,
+                            onEdit: {
+                                selectedService = service
+                                keyText = apiKeys[service] ?? ""
+                                showingKeyEntry = true
+                            },
+                            onRemove: {
+                                settingsManager.removeAPIKey(for: service)
+                                apiKeys[service] = nil
+                            }
+                        )
+                    }
+                }
+                .padding()
+                .background(Color.gray.opacity(0.05))
+                .cornerRadius(12)
+                .padding(.horizontal)
+                
+                Spacer()
+            }
+            .navigationTitle("API Keys")
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Done") {
+                        dismiss()
+                    }
+                }
+            }
+        }
+        .onAppear {
+            loadAPIKeys()
+        }
+        .sheet(isPresented: $showingKeyEntry) {
+            APIKeyEntryView(
+                service: selectedService,
+                initialKey: keyText,
+                onSave: { key in
+                    settingsManager.saveAPIKey(key, for: selectedService)
+                    apiKeys[selectedService] = key
+                }
+            )
+        }
+    }
+    
+    private func loadAPIKeys() {
+        for service in APIService.allCases {
+            if let key = settingsManager.getAPIKey(for: service) {
+                apiKeys[service] = key
+            }
+        }
+    }
+}
+
+struct APIKeyRow: View {
+    let service: APIService
+    let hasKey: Bool
+    let onEdit: () -> Void
+    let onRemove: () -> Void
+    
+    var body: some View {
+        HStack(spacing: 16) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(service.displayName)
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+                
+                Text(service.description)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+            
+            Spacer()
+            
+            if hasKey {
+                HStack(spacing: 8) {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundColor(.green)
+                    
+                    Button("Edit") {
+                        onEdit()
+                    }
+                    .buttonStyle(.bordered)
+                    
+                    Button("Remove") {
+                        onRemove()
+                    }
+                    .buttonStyle(.bordered)
+                    .foregroundColor(.red)
+                }
+            } else {
+                Button("Add Key") {
+                    onEdit()
+                }
+                .buttonStyle(.borderedProminent)
+            }
+        }
+        .padding()
+    }
+}
+
+struct APIKeyEntryView: View {
+    @Environment(\.dismiss) private var dismiss
+    let service: APIService
+    @State var initialKey: String
+    let onSave: (String) -> Void
+    
+    @State private var keyText: String = ""
+    
+    var body: some View {
+        NavigationView {
+            VStack(spacing: 20) {
+                VStack(spacing: 12) {
+                    Image(systemName: "key.fill")
+                        .font(.largeTitle)
+                        .foregroundColor(.blue)
+                    
+                    Text("\(service.displayName) API Key")
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                    
+                    Text(service.description)
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                }
+                .padding(.top)
+                
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("API Key")
+                        .font(.headline)
+                    
+                    SecureField("Enter your API key", text: $keyText)
+                        .textFieldStyle(.roundedBorder)
+                    
+                    Text("Your API key is stored securely in the system keychain")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                .padding()
+                .background(Color.gray.opacity(0.05))
+                .cornerRadius(12)
+                .padding(.horizontal)
+                
+                Spacer()
+                
+                Button("Save API Key") {
+                    onSave(keyText)
+                    dismiss()
+                }
+                .buttonStyle(.borderedProminent)
+                .disabled(keyText.isEmpty)
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal)
+            }
+            .navigationTitle("API Key")
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                }
+            }
+        }
+        .onAppear {
+            keyText = initialKey
+        }
+    }
+}
+
+// MARK: - Cloud Configuration View
+
+struct CloudConfigurationView: View {
+    @Environment(\.dismiss) private var dismiss
+    @State private var googleDriveEnabled = false
+    @State private var dropboxEnabled = false
+    @State private var iCloudEnabled = true
+    @State private var oneDriveEnabled = false
+    
+    var body: some View {
+        NavigationView {
+            VStack(spacing: 20) {
+                VStack(spacing: 12) {
+                    Image(systemName: "cloud.fill")
+                        .font(.largeTitle)
+                        .foregroundColor(.blue)
+                    
+                    Text("Cloud Services")
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                    
+                    Text("Configure cloud storage and sync services")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                }
+                .padding(.top)
+                
+                VStack(spacing: 16) {
+                    CloudServiceRow(
+                        name: "iCloud",
+                        description: "Apple's cloud storage service",
+                        icon: "icloud.fill",
+                        color: .blue,
+                        isEnabled: $iCloudEnabled
+                    )
+                    
+                    CloudServiceRow(
+                        name: "Google Drive",
+                        description: "Google's cloud storage and sync",
+                        icon: "globe",
+                        color: .green,
+                        isEnabled: $googleDriveEnabled
+                    )
+                    
+                    CloudServiceRow(
+                        name: "Dropbox",
+                        description: "File hosting and sync service",
+                        icon: "square.and.arrow.up",
+                        color: .blue,
+                        isEnabled: $dropboxEnabled
+                    )
+                    
+                    CloudServiceRow(
+                        name: "OneDrive",
+                        description: "Microsoft's cloud storage",
+                        icon: "cloud",
+                        color: .orange,
+                        isEnabled: $oneDriveEnabled
+                    )
+                }
+                .padding()
+                .background(Color.gray.opacity(0.05))
+                .cornerRadius(12)
+                .padding(.horizontal)
+                
+                Spacer()
+            }
+            .navigationTitle("Cloud Services")
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Done") {
+                        dismiss()
+                    }
+                }
+            }
+        }
+    }
+}
+
+struct CloudServiceRow: View {
+    let name: String
+    let description: String
+    let icon: String
+    let color: Color
+    @Binding var isEnabled: Bool
+    
+    var body: some View {
+        HStack(spacing: 16) {
+            Image(systemName: icon)
+                .font(.title2)
+                .foregroundColor(color)
+                .frame(width: 32, height: 32)
+            
+            VStack(alignment: .leading, spacing: 4) {
+                Text(name)
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+                
+                Text(description)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+            
+            Spacer()
+            
+            Toggle("", isOn: $isEnabled)
+                .toggleStyle(SwitchToggleStyle())
+        }
+        .padding()
     }
 }
 

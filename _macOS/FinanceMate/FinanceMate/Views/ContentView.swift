@@ -21,6 +21,7 @@ struct ContentView: View {
     @State private var selectedView: NavigationItem = .dashboard
     @State private var columnVisibility: NavigationSplitViewVisibility = .all
     @State private var isCoPilotVisible: Bool = false
+    @State private var showingAbout: Bool = false
     
     var body: some View {
         HStack(spacing: 0) {
@@ -29,11 +30,15 @@ struct ContentView: View {
                 SidebarView(selectedView: $selectedView)
                     .navigationSplitViewColumnWidth(min: 200, ideal: 250, max: 300)
             } detail: {
-                DetailView(selectedView: selectedView)
+                DetailView(selectedView: selectedView, onNavigate: { newView in
+                    selectedView = newView
+                })
                     .navigationTitle(selectedView.title)
-                    .toolbar {
+                    .toolbar(content: {
                         ToolbarItem(placement: .primaryAction) {
-                            Button(action: {}) {
+                            Button(action: {
+                                selectedView = .documents
+                            }) {
                                 Label("Import Document", systemImage: "plus.circle")
                             }
                             .help("Import a new financial document")
@@ -48,18 +53,48 @@ struct ContentView: View {
                             }
                             .help(isCoPilotVisible ? "Hide Co-Pilot Assistant" : "Show Co-Pilot Assistant")
                         }
-                    }
+                        
+                        ToolbarItem(placement: .automatic) {
+                            Menu {
+                                Button("Preferences") {
+                                    selectedView = .settings
+                                }
+                                Button("About FinanceMate") {
+                                    showingAbout = true
+                                }
+                            } label: {
+                                HStack(spacing: 4) {
+                                    Image(systemName: "person.circle")
+                                    Text("User")
+                                        .font(.caption)
+                                }
+                            }
+                            .help("User menu")
+                        }
+                    })
             }
             .navigationSplitViewStyle(.balanced)
             
             // Co-Pilot Panel
             if isCoPilotVisible {
-                CoPilotPanelPlaceholder()
-                    .frame(width: 350)
-                    .transition(.move(edge: .trailing))
+                VStack {
+                    Text("🤖 Co-Pilot Assistant")
+                        .font(.headline)
+                        .padding()
+                    Text("AI assistant functionality ready for integration")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    Spacer()
+                }
+                .frame(width: 350)
+                .background(Color(NSColor.controlBackgroundColor))
+                .transition(.move(edge: .trailing))
             }
         }
         .animation(.easeInOut(duration: 0.3), value: isCoPilotVisible)
+        .sheet(isPresented: $showingAbout) {
+            AboutView()
+        }
         .onAppear {
             setupCoPilotServices()
         }
@@ -88,16 +123,17 @@ struct SidebarView: View {
 
 struct DetailView: View {
     let selectedView: NavigationItem
+    let onNavigate: (NavigationItem) -> Void
     
     var body: some View {
         Group {
             switch selectedView {
             case .dashboard:
-                DashboardView()
+                DashboardView(onNavigate: onNavigate)
             case .documents:
                 DocumentsView()
             case .analytics:
-                AnalyticsView()
+                AnalyticsView(onNavigate: onNavigate)
             case .mlacs:
                 MLACSPlaceholderView()
             case .export:
@@ -330,160 +366,6 @@ struct RealTimeFinancialInsightsPlaceholderView: View {
     }
 }
 
-// MARK: - Co-Pilot Placeholder Panel
-
-struct CoPilotPanelPlaceholder: View {
-    @State private var inputText: String = ""
-    @State private var messages: [String] = [
-        "🤖 Co-Pilot Assistant Ready",
-        "How can I help you with your financial documents today?"
-    ]
-    
-    var body: some View {
-        VStack(spacing: 0) {
-            // Header
-            HStack {
-                VStack(alignment: .leading, spacing: 2) {
-                    HStack(spacing: 8) {
-                        Image(systemName: "brain")
-                            .foregroundColor(.blue)
-                            .font(.title3)
-                        
-                        Text("Co-Pilot Assistant")
-                            .font(.headline)
-                            .fontWeight(.semibold)
-                        
-                        Text("🚀 PRODUCTION")
-                            .font(.caption2)
-                            .foregroundColor(.green)
-                            .padding(.horizontal, 4)
-                            .padding(.vertical, 2)
-                            .background(Color.green.opacity(0.1))
-                            .cornerRadius(4)
-                    }
-                    
-                    HStack(spacing: 4) {
-                        Circle()
-                            .fill(.green)
-                            .frame(width: 6, height: 6)
-                        
-                        Text("Ready")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-                }
-                
-                Spacer()
-            }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
-            .background(
-                Rectangle()
-                    .fill(Color(NSColor.controlBackgroundColor))
-                    .overlay(
-                        Rectangle()
-                            .frame(height: 1)
-                            .foregroundColor(Color.gray.opacity(0.3)),
-                        alignment: .bottom
-                    )
-            )
-            
-            // Messages Area
-            ScrollView {
-                LazyVStack(spacing: 12) {
-                    ForEach(Array(messages.enumerated()), id: \.offset) { index, message in
-                        HStack {
-                            VStack(alignment: .leading, spacing: 4) {
-                                if index == 0 {
-                                    HStack(spacing: 6) {
-                                        Image(systemName: "brain")
-                                            .font(.caption)
-                                            .foregroundColor(.blue)
-                                        
-                                        Text("Co-Pilot")
-                                            .font(.caption)
-                                            .fontWeight(.medium)
-                                            .foregroundColor(.blue)
-                                    }
-                                }
-                                
-                                Text(message)
-                                    .padding(.horizontal, 12)
-                                    .padding(.vertical, 8)
-                                    .background(Color.gray.opacity(0.1))
-                                    .foregroundColor(.primary)
-                                    .cornerRadius(12)
-                                    .frame(maxWidth: 250, alignment: .leading)
-                            }
-                            
-                            Spacer()
-                        }
-                        .padding(.horizontal, 12)
-                    }
-                }
-                .padding(.vertical, 8)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            
-            // Input Area
-            VStack(spacing: 8) {
-                HStack(spacing: 8) {
-                    TextField("Ask Co-Pilot about your finances...", text: $inputText)
-                        .textFieldStyle(.roundedBorder)
-                        .onSubmit {
-                            if !inputText.isEmpty {
-                                messages.append("📝 " + inputText)
-                                messages.append("🤖 I'm ready to help! Co-Pilot functionality will be fully integrated in the next update.")
-                                inputText = ""
-                            }
-                        }
-                    
-                    Button(action: {
-                        if !inputText.isEmpty {
-                            messages.append("📝 " + inputText)
-                            messages.append("🤖 I'm ready to help! Co-Pilot functionality will be fully integrated in the next update.")
-                            inputText = ""
-                        }
-                    }) {
-                        Image(systemName: "paperplane.fill")
-                            .foregroundColor(inputText.isEmpty ? .gray : .blue)
-                    }
-                    .buttonStyle(.borderless)
-                    .disabled(inputText.isEmpty)
-                }
-                
-                // Quick Actions
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 8) {
-                        quickActionButton("📄 Process Document")
-                        quickActionButton("📊 Show Insights") 
-                        quickActionButton("🔍 Analyze Patterns")
-                        quickActionButton("📤 Export Data")
-                    }
-                    .padding(.horizontal, 2)
-                }
-            }
-            .padding(12)
-            .background(Color(NSColor.windowBackgroundColor))
-        }
-        .background(Color(NSColor.controlBackgroundColor))
-    }
-    
-    private func quickActionButton(_ title: String) -> some View {
-        Button(action: {
-            inputText = title
-        }) {
-            Text(title)
-                .font(.caption)
-                .padding(.horizontal, 8)
-                .padding(.vertical, 4)
-                .background(Color.blue.opacity(0.1))
-                .foregroundColor(.blue)
-                .cornerRadius(12)
-        }
-        .buttonStyle(.plain)
-    }
-}
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {

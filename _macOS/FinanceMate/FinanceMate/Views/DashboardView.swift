@@ -30,6 +30,11 @@ import CoreData
 
 struct DashboardView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    let onNavigate: ((NavigationItem) -> Void)?
+    
+    init(onNavigate: ((NavigationItem) -> Void)? = nil) {
+        self.onNavigate = onNavigate
+    }
     
     // Core Data fetch requests for ALL data (not just recent)
     @FetchRequest(
@@ -196,7 +201,7 @@ struct DashboardView: View {
                 Spacer()
                 
                 Button("View Details") {
-                    // Navigate to analytics
+                    onNavigate?(.analytics)
                 }
                 .font(.caption)
                 .foregroundColor(.blue)
@@ -249,7 +254,7 @@ struct DashboardView: View {
                 Spacer()
                 
                 Button("View All") {
-                    // Navigate to documents
+                    onNavigate?(.documents)
                 }
                 .font(.caption)
                 .foregroundColor(.blue)

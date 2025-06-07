@@ -23,9 +23,16 @@ import AppKit
 
 @main
 struct FinanceMateApp: App {
+    
+    init() {
+        // Populate sample data on app launch
+        SampleDataService.shared.populateSampleDataIfNeeded(context: CoreDataStack.shared.mainContext)
+    }
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environment(\.managedObjectContext, CoreDataStack.shared.mainContext)
                 .frame(minWidth: 800, minHeight: 600)
         }
         .commands {
