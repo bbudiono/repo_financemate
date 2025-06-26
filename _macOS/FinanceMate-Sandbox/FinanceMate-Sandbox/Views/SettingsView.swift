@@ -25,16 +25,18 @@
 * Last Updated: 2025-06-05
 */
 
-import SwiftUI
+import AppKit
 import Combine
+import SwiftUI
 
 struct SettingsView: View {
-    
     // MARK: - State Management
-    
+
+    @Environment(\.colorScheme) private var colorScheme
+    @StateObject private var themeManager = ThemeManager.shared
     @StateObject private var taskMaster = TaskMasterAIService()
     @StateObject private var wiringService: TaskMasterWiringService
-    
+
     // Persistent Settings State - REAL FUNCTIONALITY
     @AppStorage("notifications") private var notifications = true
     @AppStorage("autoSync") private var autoSync = false
@@ -43,7 +45,7 @@ struct SettingsView: View {
     @AppStorage("currencyCode") private var currencyCode = "USD"
     @AppStorage("dateFormat") private var dateFormat = "MM/DD/YYYY"
     @AppStorage("autoBackup") private var autoBackup = true
-    
+
     // Modal State Management
     @State private var showingAbout = false
     @State private var showingDataExport = false
@@ -53,58 +55,80 @@ struct SettingsView: View {
     @State private var showingSSOSetup = false
     @State private var showingAdvancedPreferences = false
     @State private var showingResetConfirmation = false
-    
+
     // Analytics and Tracking
     @State private var interactionAnalytics: UIInteractionAnalytics?
     @State private var activeWorkflowCount = 0
-    
+
     // Data Configuration
     let currencies = ["USD", "EUR", "GBP", "JPY", "CAD", "AUD"]
     let dateFormats = ["MM/DD/YYYY", "DD/MM/YYYY", "YYYY-MM-DD"]
-    
+
     // MARK: - Initialization
-    
+
     init() {
         let taskMasterService = TaskMasterAIService()
         self._wiringService = StateObject(wrappedValue: TaskMasterWiringService(taskMaster: taskMasterService))
     }
-    
+
     // MARK: - Main View
-    
+
     var body: some View {
         ScrollView {
             VStack(spacing: 24) {
                 // Header with TaskMaster Status
                 settingsHeaderView
-                
+                    .adaptiveGlass()
+
                 // General Settings Section
                 generalSettingsSection
-                
+                    .mediumGlass()
+
                 // Appearance Section
                 appearanceSection
-                
+                    .lightGlass()
+
                 // Data & Privacy Section
                 dataPrivacySection
-                
+                    .mediumGlass()
+
                 // Security Section
                 securitySection
-                
+                    .heavyGlass()
+
                 // Account Management Section
                 accountManagementSection
-                
+                    .mediumGlass()
+
                 // Data Management Section
                 dataManagementSection
-                
+                    .lightGlass()
+
                 // Support Section
                 supportSection
-                
+                    .mediumGlass()
+
                 // Analytics Section
                 analyticsSection
-                
+                    .adaptiveGlass()
+
                 // Version and Status Info
                 versionInfoSection
+                    .lightGlass()
             }
+            .padding()
         }
+        .background(
+            // Settings background with subtle gradient
+            LinearGradient(
+                colors: [
+                    FinanceMateTheme.surfaceColor(for: colorScheme).opacity(0.1),
+                    FinanceMateTheme.surfaceColor(for: colorScheme).opacity(0.05)
+                ],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        )
         .navigationTitle("Settings")
         .task {
             await initializeTaskMasterIntegration()
@@ -113,25 +137,25 @@ struct SettingsView: View {
             AboutView()
         }
         .sheet(isPresented: $showingDataExport) {
-            DataExportModalView(wiringService: wiringService)
+            DataExportView()
         }
         .sheet(isPresented: $showingDataImport) {
-            DataImportModalView(wiringService: wiringService)
+            DataImportPlaceholderView()
         }
         .sheet(isPresented: $showingSecurityConfig) {
-            SecurityConfigurationModalView(wiringService: wiringService)
+            SecurityConfigurationPlaceholderView()
         }
         .sheet(isPresented: $showingAccountSetup) {
-            AccountSetupModalView(wiringService: wiringService)
+            APIKeyManagementView()
         }
         .sheet(isPresented: $showingSSOSetup) {
-            SSOSetupModalView(wiringService: wiringService)
+            SSOSetupPlaceholderView()
         }
         .sheet(isPresented: $showingAdvancedPreferences) {
-            AdvancedPreferencesModalView(wiringService: wiringService)
+            CloudConfigurationView()
         }
         .alert("Reset All Data", isPresented: $showingResetConfirmation) {
-            Button("Cancel", role: .cancel) { 
+            Button("Cancel", role: .cancel) {
                 Task {
                     await trackButtonAction(
                         buttonId: "cancel-reset-data",
@@ -154,9 +178,9 @@ struct SettingsView: View {
             Text("This will permanently delete all your financial data. This action cannot be undone.")
         }
     }
-    
+
     // MARK: - View Sections
-    
+
     private var settingsHeaderView: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
@@ -164,32 +188,33 @@ struct SettingsView: View {
                     Text("Settings")
                         .font(.largeTitle)
                         .fontWeight(.bold)
-                    
+                        .foregroundColor(FinanceMateTheme.textPrimary(for: colorScheme))
+
                     Text("Configure your FinanceMate preferences (SANDBOX)")
                         .font(.subheadline)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(FinanceMateTheme.textSecondary(for: colorScheme))
                 }
-                
+
                 Spacer()
-                
+
                 VStack(alignment: .trailing, spacing: 4) {
-                    Text("🧪 SANDBOX")
+                    Text("SANDBOX")
                         .font(.caption)
                         .fontWeight(.bold)
-                        .foregroundColor(.orange)
+                        .foregroundColor(FinanceMateTheme.sandboxWatermark)
                         .padding(6)
-                        .background(Color.orange.opacity(0.2))
+                        .background(FinanceMateTheme.sandboxWatermark.opacity(0.2))
                         .cornerRadius(6)
-                    
-                    Text("🔧 TaskMaster Active: \(activeWorkflowCount)")
+
+                    Text("TaskMaster Active: \(activeWorkflowCount)")
                         .font(.caption2)
-                        .foregroundColor(.blue)
+                        .foregroundColor(FinanceMateTheme.infoColor)
                         .padding(4)
-                        .background(Color.blue.opacity(0.1))
+                        .background(FinanceMateTheme.infoColor.opacity(0.1))
                         .cornerRadius(4)
                 }
             }
-            
+
             if let analytics = interactionAnalytics {
                 analyticsStatusBar(analytics: analytics)
             }
@@ -197,29 +222,29 @@ struct SettingsView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal)
     }
-    
+
     private func analyticsStatusBar(analytics: UIInteractionAnalytics) -> some View {
         HStack(spacing: 16) {
             Label("\(analytics.totalInteractions)", systemImage: "hand.tap")
                 .font(.caption)
-                .foregroundColor(.secondary)
-            
+                .foregroundColor(FinanceMateTheme.textSecondary(for: colorScheme))
+
             Label("\(Int(analytics.workflowCompletionRate * 100))%", systemImage: "checkmark.circle")
                 .font(.caption)
-                .foregroundColor(.green)
-            
+                .foregroundColor(FinanceMateTheme.successColor)
+
             Label(analytics.mostActiveView, systemImage: "eye")
                 .font(.caption)
-                .foregroundColor(.blue)
-            
+                .foregroundColor(FinanceMateTheme.infoColor)
+
             Spacer()
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 6)
-        .background(Color.gray.opacity(0.05))
+        .background(FinanceMateTheme.surfaceColor(for: colorScheme).opacity(0.3))
         .cornerRadius(8)
     }
-    
+
     private var generalSettingsSection: some View {
         SettingsSection(title: "General") {
             TaskMasterSettingsRow(
@@ -241,7 +266,7 @@ struct SettingsView: View {
                         }
                     }
             }
-            
+
             TaskMasterSettingsRow(
                 icon: "arrow.triangle.2.circlepath",
                 title: "Auto Sync",
@@ -261,7 +286,7 @@ struct SettingsView: View {
                         }
                     }
             }
-            
+
             TaskMasterSettingsRow(
                 icon: "faceid",
                 title: "Biometric Authentication",
@@ -283,7 +308,7 @@ struct SettingsView: View {
             }
         }
     }
-    
+
     private var appearanceSection: some View {
         SettingsSection(title: "Appearance") {
             TaskMasterSettingsRow(
@@ -305,7 +330,7 @@ struct SettingsView: View {
                         }
                     }
             }
-            
+
             TaskMasterActionRow(
                 icon: "paintbrush.fill",
                 title: "Advanced Customization",
@@ -318,7 +343,7 @@ struct SettingsView: View {
             }
         }
     }
-    
+
     private var dataPrivacySection: some View {
         SettingsSection(title: "Data & Privacy") {
             TaskMasterSettingsRow(
@@ -345,7 +370,7 @@ struct SettingsView: View {
                     }
                 }
             }
-            
+
             TaskMasterSettingsRow(
                 icon: "calendar",
                 title: "Date Format",
@@ -370,7 +395,7 @@ struct SettingsView: View {
                     }
                 }
             }
-            
+
             TaskMasterSettingsRow(
                 icon: "icloud.fill",
                 title: "Auto Backup",
@@ -392,7 +417,7 @@ struct SettingsView: View {
             }
         }
     }
-    
+
     private var securitySection: some View {
         SettingsSection(title: "Security") {
             TaskMasterActionRow(
@@ -405,7 +430,7 @@ struct SettingsView: View {
             ) {
                 showingSecurityConfig = true
             }
-            
+
             TaskMasterActionRow(
                 icon: "person.badge.key.fill",
                 title: "SSO Authentication Setup",
@@ -418,7 +443,7 @@ struct SettingsView: View {
             }
         }
     }
-    
+
     private var accountManagementSection: some View {
         SettingsSection(title: "Account Management") {
             TaskMasterActionRow(
@@ -433,7 +458,7 @@ struct SettingsView: View {
             }
         }
     }
-    
+
     private var dataManagementSection: some View {
         SettingsSection(title: "Data Management") {
             TaskMasterActionRow(
@@ -446,7 +471,7 @@ struct SettingsView: View {
             ) {
                 showingDataExport = true
             }
-            
+
             TaskMasterActionRow(
                 icon: "square.and.arrow.down",
                 title: "Import Data",
@@ -457,7 +482,7 @@ struct SettingsView: View {
             ) {
                 showingDataImport = true
             }
-            
+
             TaskMasterActionRow(
                 icon: "trash.fill",
                 title: "Reset All Data",
@@ -470,7 +495,7 @@ struct SettingsView: View {
             }
         }
     }
-    
+
     private var supportSection: some View {
         SettingsSection(title: "Support") {
             TaskMasterActionRow(
@@ -481,9 +506,16 @@ struct SettingsView: View {
                 wiringService: wiringService,
                 elementId: "help-support-button"
             ) {
-                // Open help documentation
+                Task {
+                    await trackButtonAction(
+                        buttonId: "help-support-button",
+                        actionDescription: "Open Help Documentation",
+                        expectedOutcome: "Help documentation opened in browser"
+                    )
+                    openHelpDocumentation()
+                }
             }
-            
+
             TaskMasterActionRow(
                 icon: "envelope.fill",
                 title: "Contact Us",
@@ -492,9 +524,16 @@ struct SettingsView: View {
                 wiringService: wiringService,
                 elementId: "contact-us-button"
             ) {
-                // Open contact form
+                Task {
+                    await trackButtonAction(
+                        buttonId: "contact-us-button",
+                        actionDescription: "Open Contact Form",
+                        expectedOutcome: "Contact form opened in mail client"
+                    )
+                    openContactForm()
+                }
             }
-            
+
             TaskMasterActionRow(
                 icon: "info.circle.fill",
                 title: "About FinanceMate",
@@ -507,7 +546,7 @@ struct SettingsView: View {
             }
         }
     }
-    
+
     private var analyticsSection: some View {
         SettingsSection(title: "Analytics & Performance") {
             if let analytics = interactionAnalytics {
@@ -518,7 +557,7 @@ struct SettingsView: View {
                         Text("\(analytics.totalInteractions)")
                             .fontWeight(.semibold)
                     }
-                    
+
                     HStack {
                         Text("Workflow Completion Rate")
                         Spacer()
@@ -526,7 +565,7 @@ struct SettingsView: View {
                             .fontWeight(.semibold)
                             .foregroundColor(.green)
                     }
-                    
+
                     HStack {
                         Text("Average Task Time")
                         Spacer()
@@ -541,22 +580,22 @@ struct SettingsView: View {
             }
         }
     }
-    
+
     private var versionInfoSection: some View {
         VStack(spacing: 8) {
             Text("FinanceMate v1.0.0 (SANDBOX)")
                 .font(.caption)
                 .foregroundColor(.secondary)
-            
+
             Text("Build 2025.06.05 - TaskMaster Integration")
                 .font(.caption2)
                 .foregroundColor(.secondary)
-            
+
             HStack(spacing: 12) {
                 Text("🔧 Active Tasks: \(activeWorkflowCount)")
                     .font(.caption2)
                     .foregroundColor(.blue)
-                
+
                 if let analytics = interactionAnalytics {
                     Text("📊 \(analytics.totalInteractions) interactions")
                         .font(.caption2)
@@ -566,9 +605,9 @@ struct SettingsView: View {
         }
         .padding(.top)
     }
-    
+
     // MARK: - TaskMaster Integration Methods
-    
+
     private func initializeTaskMasterIntegration() async {
         // Initialize TaskMaster tracking for SettingsView
         await trackNavigationAction(
@@ -577,24 +616,24 @@ struct SettingsView: View {
             toView: "SettingsView",
             actionDescription: "Open Settings View"
         )
-        
+
         // Start analytics monitoring
         startAnalyticsMonitoring()
-        
+
         print("🔧 SettingsView TaskMaster integration initialized")
     }
-    
+
     private func startAnalyticsMonitoring() {
         Task {
             while true {
                 interactionAnalytics = await wiringService.generateInteractionAnalytics()
                 activeWorkflowCount = wiringService.activeWorkflows.count
-                
+
                 try await Task.sleep(for: .seconds(5))
             }
         }
     }
-    
+
     private func trackButtonAction(
         buttonId: String,
         actionDescription: String,
@@ -608,7 +647,7 @@ struct SettingsView: View {
             metadata: ["settings_action": "true"]
         )
     }
-    
+
     private func trackToggleAction(
         toggleId: String,
         newValue: Bool,
@@ -616,7 +655,7 @@ struct SettingsView: View {
     ) async {
         _ = await wiringService.trackButtonAction(
             buttonId: toggleId,
-            viewName: "SettingsView", 
+            viewName: "SettingsView",
             actionDescription: "Toggle \(settingName) to \(newValue ? "enabled" : "disabled")",
             expectedOutcome: "\(settingName) setting updated",
             metadata: [
@@ -626,7 +665,7 @@ struct SettingsView: View {
             ]
         )
     }
-    
+
     private func trackPickerAction(
         pickerId: String,
         selectedValue: String,
@@ -644,7 +683,7 @@ struct SettingsView: View {
             ]
         )
     }
-    
+
     private func trackNavigationAction(
         navigationId: String,
         fromView: String,
@@ -659,7 +698,7 @@ struct SettingsView: View {
             metadata: ["settings_navigation": "true"]
         )
     }
-    
+
     private func resetAllData() async {
         // Create Level 5 task for data reset workflow
         _ = await wiringService.trackModalWorkflow(
@@ -688,14 +727,26 @@ struct SettingsView: View {
             ],
             metadata: ["critical_operation": "true", "data_destructive": "true"]
         )
-        
+
         // Complete reset workflow
         await wiringService.completeWorkflow(
             workflowId: "reset-all-data-workflow",
             outcome: "All data reset completed successfully"
         )
-        
+
         print("🗑️ All data reset (simulated)")
+    }
+
+    private func openHelpDocumentation() {
+        if let url = URL(string: "https://docs.financemate.app/help") {
+            NSWorkspace.shared.open(url)
+        }
+    }
+
+    private func openContactForm() {
+        if let url = URL(string: "mailto:support@financemate.app?subject=FinanceMate Support Request (Sandbox)") {
+            NSWorkspace.shared.open(url)
+        }
     }
 }
 
@@ -704,19 +755,19 @@ struct SettingsView: View {
 struct SettingsSection<Content: View>: View {
     let title: String
     let content: Content
-    
+
     init(title: String, @ViewBuilder content: () -> Content) {
         self.title = title
         self.content = content()
     }
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text(title)
                 .font(.headline)
                 .fontWeight(.semibold)
                 .padding(.horizontal)
-            
+
             VStack(spacing: 1) {
                 content
             }
@@ -727,101 +778,21 @@ struct SettingsSection<Content: View>: View {
     }
 }
 
-struct AboutView: View {
-    @Environment(\.dismiss) private var dismiss
-    
-    var body: some View {
-        NavigationView {
-            ScrollView {
-                VStack(spacing: 24) {
-                    // App Icon and Name
-                    VStack(spacing: 16) {
-                        Image(systemName: "chart.line.uptrend.xyaxis.circle.fill")
-                            .font(.system(size: 80))
-                            .foregroundColor(.blue)
-                        
-                        Text("FinanceMate (SANDBOX)")
-                            .font(.largeTitle)
-                            .fontWeight(.bold)
-                        
-                        Text("Your Personal Finance Companion")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                    }
-                    .padding(.top)
-                    
-                    // Version Information
-                    VStack(spacing: 12) {
-                        InfoRow(label: "Version", value: "1.0.0 (SANDBOX)")
-                        InfoRow(label: "Build", value: "2025.06.05")
-                        InfoRow(label: "Platform", value: "macOS 14.0+")
-                        InfoRow(label: "Framework", value: "SwiftUI + TaskMaster-AI")
-                    }
-                    .padding()
-                    .background(Color.gray.opacity(0.05))
-                    .cornerRadius(12)
-                    .padding(.horizontal)
-                    
-                    // TaskMaster Integration Info
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("TaskMaster-AI Integration")
-                            .font(.headline)
-                            .fontWeight(.semibold)
-                        
-                        Text("This SANDBOX build includes comprehensive TaskMaster-AI integration for advanced workflow tracking, modal coordination, and user interaction analytics.")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                            .multilineTextAlignment(.leading)
-                    }
-                    .padding(.horizontal)
-                    
-                    Text("© 2025 FinanceMate (SANDBOX BUILD). All rights reserved.")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                        .padding(.bottom)
-                }
-            }
-            .navigationTitle("About")
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") {
-                        dismiss()
-                    }
-                }
-            }
-        }
-    }
-}
-
 struct InfoRow: View {
     let label: String
     let value: String
-    
+
     var body: some View {
         HStack {
             Text(label)
                 .font(.subheadline)
                 .foregroundColor(.secondary)
-            
+
             Spacer()
-            
+
             Text(value)
                 .font(.subheadline)
                 .fontWeight(.medium)
-        }
-    }
-}
-
-enum SettingsExportFormat: CaseIterable {
-    case pdf
-    case csv
-    case excel
-    
-    var displayName: String {
-        switch self {
-        case .pdf: return "PDF"
-        case .csv: return "CSV"
-        case .excel: return "Excel"
         }
     }
 }
@@ -832,7 +803,7 @@ enum SettingsViewDateRange: CaseIterable {
     case thisMonth
     case lastThreeMonths
     case lastSixMonths
-    
+
     var displayName: String {
         switch self {
         case .all: return "All Time"
@@ -840,6 +811,146 @@ enum SettingsViewDateRange: CaseIterable {
         case .thisMonth: return "This Month"
         case .lastThreeMonths: return "Last 3 Months"
         case .lastSixMonths: return "Last 6 Months"
+        }
+    }
+}
+
+// MARK: - TaskMaster Settings Components
+// Note: TaskMasterSettingsRow and TaskMasterActionRow are imported from TaskMasterSettingsComponents.swift
+
+// MARK: - Placeholder Modal Views
+
+struct DataImportPlaceholderView: View {
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        NavigationView {
+            VStack(spacing: 20) {
+                Image(systemName: "square.and.arrow.down")
+                    .font(.largeTitle)
+                    .foregroundColor(.green)
+
+                Text("Data Import")
+                    .font(.title2)
+                    .fontWeight(.semibold)
+
+                Text("Import financial data from external sources")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+
+                Text("This feature will allow importing data from CSV files, bank statements, and other financial platforms.")
+                    .font(.body)
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+                    .padding()
+
+                Spacer()
+
+                Text("Coming Soon")
+                    .font(.caption)
+                    .foregroundColor(.orange)
+                    .padding()
+                    .background(Color.orange.opacity(0.1))
+                    .cornerRadius(8)
+            }
+            .padding()
+            .navigationTitle("Import Data")
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { dismiss() }
+                }
+            }
+        }
+    }
+}
+
+struct SecurityConfigurationPlaceholderView: View {
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        NavigationView {
+            VStack(spacing: 20) {
+                Image(systemName: "shield.fill")
+                    .font(.largeTitle)
+                    .foregroundColor(.red)
+
+                Text("Security Configuration")
+                    .font(.title2)
+                    .fontWeight(.semibold)
+
+                Text("Configure advanced security settings")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+
+                Text("Advanced security features including encryption settings, two-factor authentication, and security policies.")
+                    .font(.body)
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+                    .padding()
+
+                Spacer()
+
+                Text("Coming Soon")
+                    .font(.caption)
+                    .foregroundColor(.orange)
+                    .padding()
+                    .background(Color.orange.opacity(0.1))
+                    .cornerRadius(8)
+            }
+            .padding()
+            .navigationTitle("Security")
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { dismiss() }
+                }
+            }
+        }
+    }
+}
+
+struct SSOSetupPlaceholderView: View {
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        NavigationView {
+            VStack(spacing: 20) {
+                Image(systemName: "person.badge.key.fill")
+                    .font(.largeTitle)
+                    .foregroundColor(.orange)
+
+                Text("SSO Setup")
+                    .font(.title2)
+                    .fontWeight(.semibold)
+
+                Text("Configure Single Sign-On integration")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+
+                Text("Set up SSO with your organization's identity provider including SAML, OAuth, and enterprise authentication.")
+                    .font(.body)
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+                    .padding()
+
+                Spacer()
+
+                Text("Coming Soon")
+                    .font(.caption)
+                    .foregroundColor(.orange)
+                    .padding()
+                    .background(Color.orange.opacity(0.1))
+                    .cornerRadius(8)
+            }
+            .padding()
+            .navigationTitle("SSO Authentication")
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { dismiss() }
+                }
+            }
         }
     }
 }
