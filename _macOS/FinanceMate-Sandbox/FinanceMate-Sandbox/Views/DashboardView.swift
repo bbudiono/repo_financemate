@@ -25,55 +25,59 @@
 * Last Updated: 2025-06-06
 */
 
-import SwiftUI
 import CoreData
+import SwiftUI
 
 struct DashboardView: View {
     @Environment(\.managedObjectContext) private var viewContext
-    
+    @Environment(\.colorScheme) private var colorScheme
+    @StateObject private var themeManager = ThemeManager.shared
+
     // TaskMaster-AI Wiring Integration
     @StateObject private var taskMaster = TaskMasterAIService()
     @StateObject private var wiringService: TaskMasterWiringService
-    
+
     init() {
         let taskMasterService = TaskMasterAIService()
         let wiring = TaskMasterWiringService(taskMaster: taskMasterService)
         _taskMaster = StateObject(wrappedValue: taskMasterService)
         _wiringService = StateObject(wrappedValue: wiring)
     }
-    
+
     // Core Data fetch requests for ALL data (not just recent)
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \FinancialData.invoiceDate, ascending: false)],
         animation: .default)
     private var allFinancialData: FetchedResults<FinancialData>
-    
+
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \Document.dateCreated, ascending: false)],
         animation: .default)
     private var allDocuments: FetchedResults<Document>
-    
+
     @State private var showingAddTransaction = false
-    
+    @State private var showingDocumentUpload = false
+    @State private var showingAnalytics = false
+
     // Computed properties for metrics access by components
     private var totalBalance: Double {
         let totalIncome = allFinancialData
             .compactMap { $0.totalAmount?.doubleValue }
             .filter { $0 > 0 }
             .reduce(0, +)
-        
+
         let totalExpenses = allFinancialData
             .compactMap { $0.totalAmount?.doubleValue }
             .filter { $0 < 0 }
             .reduce(0, +)
-        
+
         return totalIncome + totalExpenses
     }
-    
+
     private var monthlyIncome: Double {
         let startOfMonth = Calendar.current.dateInterval(of: .month, for: Date())?.start ?? Date()
         return allFinancialData
-            .filter { 
+            .filter {
                 guard let date = $0.invoiceDate else { return false }
                 return date >= startOfMonth
             }
@@ -81,11 +85,11 @@ struct DashboardView: View {
             .filter { $0 > 0 }
             .reduce(0, +)
     }
-    
+
     private var monthlyExpenses: Double {
         let startOfMonth = Calendar.current.dateInterval(of: .month, for: Date())?.start ?? Date()
         return abs(allFinancialData
-            .filter { 
+            .filter {
                 guard let date = $0.invoiceDate else { return false }
                 return date >= startOfMonth
             }
@@ -93,71 +97,92 @@ struct DashboardView: View {
             .filter { $0 < 0 }
             .reduce(0, +))
     }
-    
+
     private var goalAchievementPercentage: Double {
         let monthlyGoal = calculateMonthlyGoal()
         guard monthlyGoal > 0 else { return 0 }
         return min((monthlyIncome / monthlyGoal) * 100, 100)
     }
-    
+
     private func calculateMonthlyGoal() -> Double {
         let previousMonth = Calendar.current.date(byAdding: .month, value: -1, to: Date()) ?? Date()
         let startOfPreviousMonth = Calendar.current.dateInterval(of: .month, for: previousMonth)?.start ?? Date()
         let endOfPreviousMonth = Calendar.current.dateInterval(of: .month, for: previousMonth)?.end ?? Date()
-        
+
         let previousMonthIncome = allFinancialData
-            .filter { 
+            .filter {
                 guard let date = $0.invoiceDate else { return false }
                 return date >= startOfPreviousMonth && date <= endOfPreviousMonth
             }
             .compactMap { $0.totalAmount?.doubleValue }
             .filter { $0 > 0 }
             .reduce(0, +)
-        
+
         return previousMonthIncome > 0 ? previousMonthIncome * 1.1 : 0
     }
-    
+
     var body: some View {
         ScrollView {
             LazyVStack(spacing: 20) {
-                // Modular Header Component
+                // Modular Header Component with glassmorphism
                 DashboardHeader()
-                
-                // Modular Metrics Grid Component
+                    .adaptiveGlass()
+
+                // Modular Metrics Grid Component with glassmorphism
                 DashboardMetricsGrid(allFinancialData: allFinancialData)
                     .padding(.horizontal)
-                
-                // NEW: Real-Time Financial Insights Preview - NO MOCK DATA
+                    .mediumGlass()
+
+                // NEW: Real-Time Financial Insights Preview with glassmorphism
                 DashboardInsightsPreview()
                     .padding(.horizontal)
-                
-                // Modular Spending Chart Component
+                    .lightGlass()
+
+                // Modular Spending Chart Component with glassmorphism
                 DashboardSpendingChart(
                     allFinancialData: allFinancialData,
                     wiringService: wiringService
                 )
                 .padding(.horizontal)
-                
-                // Modular Recent Activity Component
+                .mediumGlass()
+
+                // Modular Recent Activity Component with glassmorphism
                 DashboardRecentActivity(
                     allDocuments: allDocuments,
                     wiringService: wiringService
                 )
                 .padding(.horizontal)
-                
-                // Modular Quick Actions Component
+                .adaptiveGlass()
+
+                // Modular Quick Actions Component with glassmorphism
                 DashboardQuickActions(
                     allDocuments: allDocuments,
                     wiringService: wiringService,
                     showingAddTransaction: $showingAddTransaction,
+                    showingDocumentUpload: $showingDocumentUpload,
+                    showingAnalytics: $showingAnalytics,
                     totalBalance: totalBalance,
                     monthlyIncome: monthlyIncome
                 )
-                
-                // Modular Data Status Component
+                .heavyGlass()
+
+                // Modular Data Status Component with glassmorphism
                 DashboardDataStatus(allFinancialData: allFinancialData)
+                    .lightGlass()
             }
+            .padding()
         }
+        .background(
+            // Dashboard background with subtle gradient
+            LinearGradient(
+                colors: [
+                    FinanceMateTheme.surfaceColor(for: colorScheme).opacity(0.1),
+                    FinanceMateTheme.surfaceColor(for: colorScheme).opacity(0.05)
+                ],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        )
         .navigationTitle("Dashboard")
         .onAppear {
             // Track dashboard view appearance
@@ -181,6 +206,12 @@ struct DashboardView: View {
         .sheet(isPresented: $showingAddTransaction) {
             AddTransactionView()
         }
+        .sheet(isPresented: $showingDocumentUpload) {
+            DocumentsView()
+        }
+        .sheet(isPresented: $showingAnalytics) {
+            AnalyticsView()
+        }
     }
 }
 
@@ -197,51 +228,59 @@ struct DashboardView: View {
 struct AddTransactionView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.managedObjectContext) private var viewContext
-    
+    @Environment(\.colorScheme) private var colorScheme
+    @StateObject private var themeManager = ThemeManager.shared
+
     @State private var amount: String = ""
     @State private var description: String = ""
     @State private var isIncome: Bool = true
     @State private var selectedDate = Date()
-    
+
     // TaskMaster-AI Wiring Integration
     @StateObject private var taskMaster = TaskMasterAIService()
     @StateObject private var wiringService: TaskMasterWiringService
-    
+
     init() {
         let taskMasterService = TaskMasterAIService()
         let wiring = TaskMasterWiringService(taskMaster: taskMasterService)
         _taskMaster = StateObject(wrappedValue: taskMasterService)
         _wiringService = StateObject(wrappedValue: wiring)
     }
-    
+
     var body: some View {
         NavigationView {
             Form {
-                Section(header: Text("Transaction Details")) {
+                Section(header: Text("Transaction Details")
+                    .foregroundColor(FinanceMateTheme.textPrimary(for: colorScheme))
+                    .font(.headline)) {
                     HStack {
                         Text("Type:")
+                            .foregroundColor(FinanceMateTheme.textPrimary(for: colorScheme))
                         Picker("Type", selection: $isIncome) {
                             Text("Income").tag(true)
                             Text("Expense").tag(false)
                         }
                         .pickerStyle(SegmentedPickerStyle())
                     }
-                    
+
                     HStack {
                         Text("Amount:")
+                            .foregroundColor(FinanceMateTheme.textPrimary(for: colorScheme))
                         TextField("0.00", text: $amount)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                     }
-                    
+
                     HStack {
                         Text("Description:")
+                            .foregroundColor(FinanceMateTheme.textPrimary(for: colorScheme))
                         TextField("Enter description", text: $description)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                     }
-                    
+
                     DatePicker("Date:", selection: $selectedDate, displayedComponents: .date)
+                        .foregroundColor(FinanceMateTheme.textPrimary(for: colorScheme))
                 }
-                
+
                 Section {
                     Button("Save Transaction") {
                         Task {
@@ -263,13 +302,19 @@ struct AddTransactionView: View {
                     }
                     .disabled(amount.isEmpty || description.isEmpty)
                 }
-                
-                Section(header: Text("Current Data")) {
+
+                Section(header: Text("Current Data")
+                    .foregroundColor(FinanceMateTheme.textPrimary(for: colorScheme))
+                    .font(.headline)) {
                     Text("• \(fetchFinancialDataCount()) FinancialData records")
+                        .foregroundColor(FinanceMateTheme.textSecondary(for: colorScheme))
                     Text("• \(fetchDocumentCount()) Document records")
+                        .foregroundColor(FinanceMateTheme.textSecondary(for: colorScheme))
                     Text("• Real Core Data integration active")
+                        .foregroundColor(FinanceMateTheme.successColor)
                 }
             }
+            .lightGlass()
             .navigationTitle("Add Transaction")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -294,20 +339,20 @@ struct AddTransactionView: View {
             }
         }
     }
-    
+
     private func fetchFinancialDataCount() -> Int {
         let request: NSFetchRequest<FinancialData> = FinancialData.fetchRequest()
         return (try? viewContext.count(for: request)) ?? 0
     }
-    
+
     private func fetchDocumentCount() -> Int {
         let request: NSFetchRequest<Document> = Document.fetchRequest()
         return (try? viewContext.count(for: request)) ?? 0
     }
-    
+
     private func saveTransaction() {
         guard let amountValue = Double(amount) else { return }
-        
+
         let financialData = FinancialData(context: viewContext)
         financialData.id = UUID()
         financialData.invoiceDate = selectedDate
@@ -315,11 +360,11 @@ struct AddTransactionView: View {
         financialData.currency = "USD"
         financialData.vendorName = description
         financialData.extractionConfidence = 1.0 // User entered data is 100% confident
-        
+
         do {
             try viewContext.save()
             print("✅ Saved transaction: \(description) - \(isIncome ? "+" : "-")$\(amountValue)")
-            
+
             // Complete the workflow if this was triggered from dashboard modal workflow
             Task {
                 _ = await wiringService.trackButtonAction(
@@ -336,11 +381,11 @@ struct AddTransactionView: View {
                     ]
                 )
             }
-            
+
             dismiss()
         } catch {
             print("❌ Error saving transaction: \(error)")
-            
+
             // Track the error
             Task {
                 _ = await wiringService.trackButtonAction(
