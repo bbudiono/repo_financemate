@@ -91,39 +91,48 @@ iOSInjectionProject/
 
 # macOS
 .DS_Store
-.AppleDouble
-.LSOverride
-
-# VSCode specific
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
 
 # Environment variables
-.env 
-node_modules
+.env
+.env.*
 
-# Added by Task Master AI
+# Temporary files
+temp/
+tmp/
+backup/
+*.tmp
+*.bak
+
+# Archives
+*.xcarchive
+
 # Logs
-logs
 *.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-dev-debug.log
-# Dependency directories
+
+# Test coverage
+coverage/
+
+# Xcode test result bundles (per audit requirements)
+*.xcresult/
+*.xcresult
+
+# Node modules (if any JS tooling)
 node_modules/
-# Editor directories and files
-.idea
-.vscode
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-# OS specific
-# Task files
-tasks.json
-tasks/ 
+
+# Python
+__pycache__/
+*.pyc
+venv/
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Project specific
+/temp/
+/backup/
+/debug-stream-system/
+/spec/

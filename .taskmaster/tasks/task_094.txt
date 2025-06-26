@@ -1,0 +1,43 @@
+# Task ID: 94
+# Title: Remove Sandbox Watermark and Tagline from Production Builds
+# Status: pending
+# Dependencies: None
+# Priority: medium
+# Description: Ensure that no Sandbox-specific watermark or tagline appears in any part of the application when deployed to the Production environment.
+# Details:
+Audit the codebase for any logic, assets, or configuration that conditionally displays a 'Sandbox' watermark, logo, or tagline. Refactor environment checks to guarantee these elements are only present in non-production (e.g., development, staging, sandbox) environments. Review build and deployment scripts to confirm that production builds cannot inadvertently include sandbox/test indicators. Update documentation to clarify the separation of environment-specific branding. Coordinate with QA to identify any edge cases where sandbox indicators might persist, such as in cached assets or dynamically generated content. Prioritize this task for MVP readiness to ensure a professional production release.
+
+# Test Strategy:
+Deploy the application to a production-like environment and perform a thorough UI/UX review across all pages and downloadable assets (e.g., PDFs, reports, signed documents) to confirm the absence of any Sandbox watermark, logo, or tagline. Validate that environment variables and configuration files are correctly set for production. Conduct regression testing to ensure no sandbox indicators are present after code changes. Document test results with annotated screenshots and confirm with stakeholders before release.
+
+# Subtasks:
+## 1. Audit Codebase for Watermark Implementation [pending]
+### Dependencies: None
+### Description: Conduct a comprehensive audit of the codebase to identify all instances where the 'Sandbox' watermark or tagline is implemented
+### Details:
+Search for watermark-related code in UI components, CSS files, and report templates. Look specifically for environment-based conditional logic that controls watermark visibility. Check for background images with watermarks in report sections like 'BackImage' settings. Document all locations where watermarks are implemented and the mechanism used to display them.
+
+## 2. Refactor Environment Detection Logic [pending]
+### Dependencies: 94.1
+### Description: Modify the environment detection mechanism to ensure watermarks only appear in non-production environments
+### Details:
+Implement a robust environment detection system that clearly distinguishes between production and non-production environments. Update conditional logic to explicitly check for production environment before hiding watermarks. Ensure that the environment detection is consistent across all application components. Consider implementing a centralized configuration service that provides environment information to all components.
+
+## 3. Update Build and Deployment Scripts [pending]
+### Dependencies: 94.2
+### Description: Modify build and deployment pipelines to ensure production builds cannot include sandbox indicators
+### Details:
+Review and update build scripts to set environment-specific variables during the build process. Implement environment-specific asset selection during deployment to ensure production builds use clean, watermark-free assets. Add verification steps in the CI/CD pipeline that check for the presence of watermarks in production builds. Create a mechanism to replace watermarked documents with original versions when deploying to production, similar to the OneSpan Sign approach.
+
+## 4. Implement Caching and Dynamic Content Controls [pending]
+### Dependencies: 94.2, 94.3
+### Description: Address edge cases where watermarks might persist in cached assets or dynamically generated content
+### Details:
+Implement cache invalidation mechanisms when transitioning between environments. Add environment checks in dynamic content generation services to prevent watermark inclusion. Review all document generation processes to ensure they don't include watermarks in production. Implement a final validation step for all dynamically generated content before delivery to the client.
+
+## 5. Update Documentation and Conduct Final Verification [pending]
+### Dependencies: 94.1, 94.2, 94.3, 94.4
+### Description: Update technical documentation and perform comprehensive testing to verify watermark removal
+### Details:
+Update developer documentation to clearly explain the environment-specific branding implementation. Create guidelines for adding new features to ensure they follow the established pattern for environment-specific elements. Coordinate with QA to develop a comprehensive test plan covering all application areas. Perform a final review of all application components in the production environment to verify complete removal of sandbox indicators.
+

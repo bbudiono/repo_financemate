@@ -2,7 +2,7 @@ name: FinanceMate
 options:
   bundleIdPrefix: com.products
   deploymentTarget:
-    macOS: "13.5"
+    macOS: "13.0"
 targets:
   FinanceMate:
     type: application
@@ -15,7 +15,7 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.products.FinanceMate
         INFOPLIST_FILE: Resources/Info.plist
-        MACOSX_DEPLOYMENT_TARGET: "13.5"
+        MACOSX_DEPLOYMENT_TARGET: "13.0"
         DEVELOPMENT_TEAM: 7KV34995HH
         CODE_SIGN_STYLE: Automatic
         SIGNING_CERTIFICATE: "Development"

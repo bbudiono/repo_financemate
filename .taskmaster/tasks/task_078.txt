@@ -1,0 +1,43 @@
+# Task ID: 78
+# Title: Implement Apple and Google SSO in Sandbox with TDD and Polished Modals
+# Status: pending
+# Dependencies: None
+# Priority: high
+# Description: Implement Apple and Google SSO authentication in the Sandbox environment using Test-Driven Development, with professional modals and modular, reusable code. Integrate with .env values and log all actions.
+# Details:
+This task requires implementing both Apple and Google Single Sign-On (SSO) in the Sandbox environment, following TDD principles. Start by writing failing tests for SSO modal presentation, success/failure scenarios, and secure token storage. Reference the high-quality example code in docs/ExampleCode/XcodeFiles/Example macOS Application/SynchroNext-Sandbox/Sources/Authentication/ for modal design and authentication flow. Ensure all code is modular, reusable, and fully compliant with .cursorrules, including comprehensive comments, ratings, and complexity blocks. Integrate SSO configuration with .env values for client IDs and secrets. Log all implementation actions, decisions, and rationale in DEVELOPMENT_LOG.MD and AI_MODEL_STM.MD. Use context7 for the latest Apple/SwiftUI/SSO documentation. This is a Level 5-6, P1 task, requiring attention to detail and adherence to best practices for authentication and UI/UX.
+
+# Test Strategy:
+Begin by writing failing unit tests for each SSO provider (Apple and Google) covering modal presentation, user authentication success/failure, and secure token storage. Use XCTest to verify that modals are presented and dismissed correctly, authentication tokens are stored securely, and error states are handled gracefully. Mock network and authentication responses to ensure tests are reliable and fast. Test integration with .env values by injecting test configurations and verifying correct behavior. Review all code for compliance with .cursorrules, including comments, ratings, and complexity blocks. Log all test actions and results in DEVELOPMENT_LOG.MD. Perform manual UI testing to ensure modals are polished and user-friendly. Finally, verify that all logs and documentation are up to date and complete.
+
+# Subtasks:
+## 1. Set up TDD environment and write failing tests for SSO authentication [pending]
+### Dependencies: None
+### Description: Create the test infrastructure and write comprehensive failing tests for both Apple and Google SSO authentication flows, including modal presentation, success/failure scenarios, and token storage
+### Details:
+Create XCTest test cases for both authentication providers. Include tests for modal presentation, authentication success/failure handling, token validation, secure storage, and error handling. Reference the example code in docs/ExampleCode/XcodeFiles/Example macOS Application/SynchroNext-Sandbox/Sources/Authentication/ for test structure. Ensure tests verify integration with .env configuration values.
+
+## 2. Implement Apple SSO authentication with environment configuration [pending]
+### Dependencies: 78.1
+### Description: Create modular, reusable components for Apple SSO authentication that integrate with .env configuration values and follow TDD principles
+### Details:
+Implement Apple SSO using Apple's Sign In with Apple framework. Create a service class that handles authentication flow, token management, and error handling. Integrate with .env values for client ID and team ID. Ensure implementation passes all tests created in subtask 1. Follow .cursorrules for code quality, including comprehensive comments, ratings, and complexity blocks. Document implementation decisions in DEVELOPMENT_LOG.MD.
+
+## 3. Implement Google SSO authentication with environment configuration [pending]
+### Dependencies: 78.1
+### Description: Create modular, reusable components for Google SSO authentication that integrate with .env configuration values and follow TDD principles
+### Details:
+Implement Google SSO using Google Sign-In SDK. Create a service class that handles authentication flow, token management, and error handling. Integrate with .env values for client ID and secret. Ensure implementation passes all tests created in subtask 1. Follow .cursorrules for code quality, including comprehensive comments, ratings, and complexity blocks. Document implementation decisions in DEVELOPMENT_LOG.MD.
+
+## 4. Design and implement professional SSO modals with SwiftUI [pending]
+### Dependencies: 78.2, 78.3
+### Description: Create polished, reusable modal components for SSO authentication that provide a consistent user experience across both authentication providers
+### Details:
+Design and implement SwiftUI modals for SSO authentication following the example in docs/ExampleCode/XcodeFiles/Example macOS Application/SynchroNext-Sandbox/Sources/Authentication/. Create a unified modal interface that works with both Apple and Google SSO. Include loading states, error handling, and success confirmation. Ensure modals are responsive and follow accessibility guidelines. Document design decisions in AI_MODEL_STM.MD.
+
+## 5. Integrate SSO implementations with Sandbox environment and finalize documentation [pending]
+### Dependencies: 78.2, 78.3, 78.4
+### Description: Connect the SSO authentication implementations to the Sandbox environment, implement comprehensive logging, and finalize all documentation
+### Details:
+Integrate both SSO implementations with the Sandbox environment. Implement comprehensive logging for all authentication actions and events. Ensure all code is fully compliant with .cursorrules. Complete documentation in DEVELOPMENT_LOG.MD and AI_MODEL_STM.MD, including implementation rationale, architecture decisions, and usage examples. Perform final code review and refactoring to ensure modularity and reusability.
+

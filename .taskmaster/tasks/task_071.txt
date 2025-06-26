@@ -1,0 +1,43 @@
+# Task ID: 71
+# Title: Add Mandatory Comment Block to sync_tasks.sh
+# Status: pending
+# Dependencies: None
+# Priority: Critical
+# Description: Add the mandatory comment block (purpose, issues & complexity, ranking/rating, last updated) to the top of scripts/sync_tasks.sh as per .cursorrules section 6.4.1.
+# Details:
+
+
+# Test Strategy:
+
+
+# Subtasks:
+## 1. Review .cursorrules Section 6.4.1 for Comment Block Requirements [pending]
+### Dependencies: None
+### Description: Thoroughly examine section 6.4.1 of the .cursorrules document to understand the mandatory comment block format and required fields such as purpose, issues & complexity, ranking/rating, and last updated.
+### Details:
+Obtain the latest .cursorrules document and extract the exact specifications for the comment block to ensure compliance. Note any formatting, content, or style guidelines specified.
+
+## 2. Analyze scripts/sync_tasks.sh to Determine Appropriate Comment Content [pending]
+### Dependencies: 71.1
+### Description: Review the sync_tasks.sh script to gather information needed to fill in the mandatory comment block fields such as the script's purpose, known issues, complexity, ranking, and last update date.
+### Details:
+Read through the script code and any existing documentation or version control history to accurately describe the script's functionality and status for the comment block.
+
+## 3. Draft the Mandatory Comment Block in Compliance with .cursorrules [pending]
+### Dependencies: 71.2
+### Description: Create the comment block text with all required fields formatted as per .cursorrules section 6.4.1, using appropriate shell script comment syntax (e.g., hash marks for each line).
+### Details:
+Use single-line comments (#) for each line of the block at the top of sync_tasks.sh. Include fields: purpose, issues & complexity, ranking/rating, last updated. Follow any style or formatting rules from the .cursorrules.
+
+## 4. Insert the Comment Block at the Top of sync_tasks.sh [pending]
+### Dependencies: 71.3
+### Description: Add the drafted mandatory comment block to the very beginning of the scripts/sync_tasks.sh file, ensuring it does not interfere with the script execution (e.g., after the shebang line if present).
+### Details:
+Open sync_tasks.sh, place the comment block immediately after the shebang line (#!/bin/bash) if it exists, or at the top if not. Save changes and maintain file permissions.
+
+## 5. Set Status of All Subtasks to 'Pending' and Document Completion [pending]
+### Dependencies: 71.4
+### Description: Update the project management system or tracking tool to mark all subtasks related to this task as 'pending' to reset progress tracking, and document the addition of the comment block.
+### Details:
+Access the task tracking system, locate subtasks for Task ID 71, and set their status to 'pending'. Add notes or comments indicating the comment block was added as per .cursorrules 6.4.1.
+

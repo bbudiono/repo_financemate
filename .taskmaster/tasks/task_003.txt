@@ -1,0 +1,43 @@
+# Task ID: 3
+# Title: Implement Core Application Layer and Navigation
+# Status: pending
+# Dependencies: 1, 2
+# Priority: high
+# Description: Build the core application layer with MVVM architecture and set up basic navigation using SwiftUI.
+# Details:
+Implement App and Scene delegates. Set up root NavigationView or NavigationSplitView. Create basic ViewModels for navigation state. Use SwiftUI for UI components. Implement modular component structure for maintainability.
+
+# Test Strategy:
+Test navigation flows between main views. Verify MVVM separation and modularity.
+
+# Subtasks:
+## 1. Create MVVM Model Structure [pending]
+### Dependencies: None
+### Description: Define the core data models that will be used throughout the application, following the Model component of MVVM architecture.
+### Details:
+Create a Models directory and implement base model protocols and concrete model classes. Define identifiable models with appropriate properties and methods. Ensure models are immutable where appropriate and include necessary business logic within the model layer.
+
+## 2. Implement Container ViewModel for Navigation [pending]
+### Dependencies: 3.1
+### Description: Create a container ViewModel class that will manage navigation state across the application.
+### Details:
+Create a ContainerViewModel class conforming to ObservableObject protocol. Implement a published NavigationPath property to track navigation state. Add lifecycle methods (init/deinit) for proper resource management. Include methods to push, pop and reset navigation as needed.
+
+## 3. Set Up App and Scene Delegates [pending]
+### Dependencies: 3.2
+### Description: Configure the application entry point and scene management to establish the foundation for the SwiftUI application.
+### Details:
+Create App struct conforming to App protocol. Configure WindowGroup with the root view. If needed, implement UIApplicationDelegate and UISceneDelegate for additional lifecycle control. Set up environment objects for dependency injection at the app level.
+
+## 4. Build Root Navigation Structure [pending]
+### Dependencies: 3.2, 3.3
+### Description: Implement the root navigation container view that will serve as the foundation for the application's navigation system.
+### Details:
+Create a ContainerView that uses NavigationStack or NavigationSplitView. Inject the ContainerViewModel as a StateObject. Configure the navigation destination builder to handle different view destinations. Implement proper view modifiers for navigation appearance and behavior.
+
+## 5. Create Modular UI Components [pending]
+### Dependencies: 3.1, 3.4
+### Description: Develop reusable SwiftUI components that will be used throughout the application to ensure consistency and maintainability.
+### Details:
+Create a Components directory with subdirectories for different component types. Implement reusable views like buttons, cards, and list items. Create view modifiers for consistent styling. Ensure components follow MVVM by connecting to ViewModels where appropriate. Document usage patterns for each component.
+

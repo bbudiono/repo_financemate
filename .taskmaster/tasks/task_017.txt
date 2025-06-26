@@ -1,0 +1,43 @@
+# Task ID: 17
+# Title: CloudKit Integration for Data Sync (Optional)
+# Status: pending
+# Dependencies: 2, 3
+# Priority: low
+# Description: Add optional CloudKit integration for data synchronization across devices.
+# Details:
+Configure CoreData with CloudKit. Implement sync logic for all models. Handle conflicts and offline scenarios. Add settings for enabling/disabling sync.
+
+# Test Strategy:
+Test data sync across devices. Verify conflict resolution and offline support.
+
+# Subtasks:
+## 1. Set up Core Data with CloudKit container [pending]
+### Dependencies: None
+### Description: Configure the Core Data stack to use NSPersistentCloudKitContainer for CloudKit integration
+### Details:
+Replace the standard NSPersistentContainer with NSPersistentCloudKitContainer in the Core Data stack. Enable the CloudKit capability in the app target settings. Configure the persistent container to use the appropriate CloudKit container identifier. Update the Core Data model file to ensure compatibility with CloudKit.
+
+## 2. Implement invisible push notification support [pending]
+### Dependencies: 17.1
+### Description: Add support for silent push notifications to enable background sync with CloudKit
+### Details:
+Configure the app for remote notifications in the capabilities section. Implement application delegate methods to handle silent push notifications. Set up the necessary entitlements for background refresh. Register for remote notifications during app launch. Handle notification reception to trigger data synchronization.
+
+## 3. Create sync settings UI and preferences [pending]
+### Dependencies: 17.1
+### Description: Develop a user interface for enabling/disabling CloudKit synchronization
+### Details:
+Create a settings screen with a toggle for CloudKit sync. Implement UserDefaults storage for the sync preference. Add explanatory text about data usage and privacy implications. Include a sync status indicator showing last successful sync time. Provide options for manual sync triggering.
+
+## 4. Implement conflict resolution strategy [pending]
+### Dependencies: 17.1, 17.2
+### Description: Develop logic to handle data conflicts between local and cloud versions
+### Details:
+Create a conflict resolution service that detects conflicts between local and remote data. Implement strategies for automatic conflict resolution based on timestamps or other metadata. Develop a UI for manual conflict resolution when automatic resolution isn't possible. Add logging for conflict events to help with debugging.
+
+## 5. Handle offline scenarios and error recovery [pending]
+### Dependencies: 17.1, 17.2, 17.4
+### Description: Implement robust handling of network connectivity issues and CloudKit errors
+### Details:
+Create a network monitoring service to detect connectivity changes. Implement a queue system for pending changes during offline periods. Add retry logic with exponential backoff for failed CloudKit operations. Develop user notifications for persistent sync issues requiring attention. Implement data recovery mechanisms for corruption scenarios.
+

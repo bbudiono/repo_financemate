@@ -1,0 +1,5 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild test-without-building -project FinanceMate.xcodeproj -scheme FinanceMate -destination platform=macOS,arch=arm64 -enableCodeCoverage YES -resultBundlePath docs/test_reports/actual_test_results.xcresult
+
+xcodebuild: error: Scheme FinanceMate is not currently configured for the test-without-building action.
+

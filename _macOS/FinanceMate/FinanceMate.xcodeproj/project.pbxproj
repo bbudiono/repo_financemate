@@ -27,10 +27,29 @@
 		D62D0351A2F14CD8816B3337F0FE5F6A /* AnalyticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2AAC89D21EB40AABC6461CF42C85165 /* AnalyticsView.swift */; };
 		E1234567890ABCDEF1234567 /* FinancialExportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1234567890ABCDEF1234567 /* FinancialExportView.swift */; };
 		E2345678901BCDEF23456789 /* BasicExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2345678901BCDEF23456789 /* BasicExportService.swift */; };
+		E5E7EF30544D4EE198A03945 /* APIKeysIntegrationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DDC146887E149D9A1AAE027 /* APIKeysIntegrationService.swift */; };
+		2F7AB726D00249769D602DEA /* TaskMasterAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB69FC0CD6B4F97A50AA08A /* TaskMasterAIService.swift */; };
 		6EC6AD87195C426EAEB30A5E /* KeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD83D43E3A470D869D3D96 /* KeychainManager.swift */; };
 		4066900159D6459DBF9CC355 /* UserSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFEA0A41404442ABF32EB70 /* UserSessionManager.swift */; };
 		C76704F73B3D454E8963D3B7 /* TokenManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8364F6BBEC35411F9A95BBD8 /* TokenManager.swift */; };
-		AB123456789ABCDEF1234567 /* SampleDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD123456789ABCDEF1234567 /* SampleDataService.swift */; };
+		SECB1234567890ABCDEF1234 /* OAuth2Manager.swift in Sources */ = {isa = PBXBuildFile; fileRef = SEC1234567890ABCDEF1234 /* OAuth2Manager.swift */; };
+		SECB2234567890ABCDEF1234 /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = SEC2234567890ABCDEF1234 /* SessionManager.swift */; };
+		SECB3234567890ABCDEF1234 /* BiometricAuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = SEC3234567890ABCDEF1234 /* BiometricAuthManager.swift */; };
+		SECB4234567890ABCDEF1234 /* SecurityAuditLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = SEC4234567890ABCDEF1234 /* SecurityAuditLogger.swift */; };
+		CMTP234567890ABCDEF1234 /* CommonTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = CMT1234567890ABCDEF1234 /* CommonTypes.swift */; };
+		AUTH234567890ABCDEF1234 /* AuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AUT1234567890ABCDEF1234 /* AuthenticationService.swift */; };
+		SETM234567890ABCDEF1234 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = SET1234567890ABCDEF1234 /* SettingsManager.swift */; };
+		SUB5234567890ABCDEF1234 /* Subscription+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = SUBF634567890ABCDEF1234 /* Subscription+CoreDataClass.swift */; };
+		SUB6234567890ABCDEF1234 /* Subscription+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = SUBF734567890ABCDEF1234 /* Subscription+CoreDataProperties.swift */; };
+		LEGALBF1234567890ABCDEF1 /* LegalContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = LEGAL1234567890ABCDEF123 /* LegalContent.swift */; };
+		SUB1234567890ABCDEF1234 /* SubscriptionManagementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = SUBF234567890ABCDEF1234 /* SubscriptionManagementView.swift */; };
+		SUBD234567890ABCDEF1234 /* SubscriptionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = SUBG234567890ABCDEF1234 /* SubscriptionDetailView.swift */; };
+		SUB2234567890ABCDEF1234 /* AddSubscriptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = SUBF434567890ABCDEF1234 /* AddSubscriptionView.swift */; };
+		SUB3234567890ABCDEF1234 /* SubscriptionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = SUBF534567890ABCDEF1234 /* SubscriptionViewModel.swift */; };
+		DASH234567890ABCDEF1234 /* DashboardDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAS1234567890ABCDEF1234 /* DashboardDataService.swift */; };
+		TEST1234567890ABCDEF1234 /* AuthenticationE2ETests.swift in Sources */ = {isa = PBXBuildFile; fileRef = TESTF123456789ABCDEF1234 /* AuthenticationE2ETests.swift */; };
+		CA00C390A3A0BBB2E3F00FED /* CentralizedTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261DA6ADC713A1A4EA28FD37 /* CentralizedTheme.swift */; };
+		TEST2234567890ABCDEF1234 /* ScreenshotService.swift in Sources */ = {isa = PBXBuildFile; fileRef = TESTF223456789ABCDEF1234 /* ScreenshotService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -55,10 +74,30 @@
 		F1234567890ABCDEF1234567 /* FinancialExportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinancialExportView.swift; sourceTree = "<group>"; };
 		F2345678901BCDEF23456789 /* BasicExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicExportService.swift; sourceTree = "<group>"; };
 		F74A98781F1B874D7128CEE5 /* FinanceMate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FinanceMate.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8DDC146887E149D9A1AAE027 /* APIKeysIntegrationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKeysIntegrationService.swift; sourceTree = "<group>"; };
+		ADB69FC0CD6B4F97A50AA08A /* TaskMasterAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskMasterAIService.swift; sourceTree = "<group>"; };
 		07FD83D43E3A470D869D3D96 /* KeychainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainManager.swift; sourceTree = "<group>"; };
 		CEFEA0A41404442ABF32EB70 /* UserSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSessionManager.swift; sourceTree = "<group>"; };
 		8364F6BBEC35411F9A95BBD8 /* TokenManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenManager.swift; sourceTree = "<group>"; };
-		CD123456789ABCDEF1234567 /* SampleDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleDataService.swift; sourceTree = "<group>"; };
+		SEC1234567890ABCDEF1234 /* OAuth2Manager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuth2Manager.swift; sourceTree = "<group>"; };
+		SEC2234567890ABCDEF1234 /* SessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionManager.swift; sourceTree = "<group>"; };
+		SEC3234567890ABCDEF1234 /* BiometricAuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricAuthManager.swift; sourceTree = "<group>"; };
+		SEC4234567890ABCDEF1234 /* SecurityAuditLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityAuditLogger.swift; sourceTree = "<group>"; };
+		CMT1234567890ABCDEF1234 /* CommonTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonTypes.swift; sourceTree = "<group>"; };
+		AUT1234567890ABCDEF1234 /* AuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationService.swift; sourceTree = "<group>"; };
+		SET1234567890ABCDEF1234 /* SettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../Managers/SettingsManager.swift"; sourceTree = "<group>"; };
+		SUBF234567890ABCDEF1234 /* SubscriptionManagementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionManagementView.swift; sourceTree = "<group>"; };
+		SUBG234567890ABCDEF1234 /* SubscriptionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionDetailView.swift; sourceTree = "<group>"; };
+		SUBF434567890ABCDEF1234 /* AddSubscriptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddSubscriptionView.swift; sourceTree = "<group>"; };
+		SUBF534567890ABCDEF1234 /* SubscriptionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../ViewModels/SubscriptionViewModel.swift"; sourceTree = "<group>"; };
+		SUBF634567890ABCDEF1234 /* Subscription+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Subscription+CoreDataClass.swift"; sourceTree = "<group>"; };
+		SUBF734567890ABCDEF1234 /* Subscription+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Subscription+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		LEGAL1234567890ABCDEF123 /* LegalContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LegalContent.swift"; sourceTree = "<group>"; };
+		DAS1234567890ABCDEF1234 /* DashboardDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardDataService.swift; sourceTree = "<group>"; };
+		261DA6ADC713A1A4EA28FD37 /* CentralizedTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FinanceMate/UI/CentralizedTheme.swift"; sourceTree = "<group>"; };
+		F74A98781F1B874D7128CEE6 /* FinanceMateTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FinanceMateTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		TESTF123456789ABCDEF1234 /* AuthenticationE2ETests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "E2ETests/AuthenticationE2ETests.swift"; sourceTree = "<group>"; };
+		TESTF223456789ABCDEF1234 /* ScreenshotService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "E2ETests/ScreenshotService.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -66,6 +105,7 @@
 			isa = PBXGroup;
 			children = (
 				F74A98781F1B874D7128CEE5 /* FinanceMate.app */,
+				F74A98781F1B874D7128CEE6 /* FinanceMateTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -79,6 +119,9 @@
 				221AF239D0C640B3876CEFC1891317A7 /* DocumentsView.swift */,
 				ADE74DA56CA14FC99080F4D66630B464 /* SettingsView.swift */,
 				F1234567890ABCDEF1234567 /* FinancialExportView.swift */,
+				SUBF234567890ABCDEF1234 /* SubscriptionManagementView.swift */,
+				SUBG234567890ABCDEF1234 /* SubscriptionDetailView.swift */,
+				SUBF434567890ABCDEF1234 /* AddSubscriptionView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -113,6 +156,8 @@
 				AF9E8B3C1234567890ABCDEF /* FinancialData+CoreDataProperties.swift */,
 				BF9E8B3C1234567890ABCDEF /* Project+CoreDataClass.swift */,
 				CF9E8B3C1234567890ABCDEF /* Project+CoreDataProperties.swift */,
+				SUBF634567890ABCDEF1234 /* Subscription+CoreDataClass.swift */,
+				SUBF734567890ABCDEF1234 /* Subscription+CoreDataProperties.swift */,
 			);
 			path = DataModels;
 			sourceTree = "<group>";
@@ -129,10 +174,20 @@
 			isa = PBXGroup;
 			children = (
 				F2345678901BCDEF23456789 /* BasicExportService.swift */,
+				8DDC146887E149D9A1AAE027 /* APIKeysIntegrationService.swift */,
+				ADB69FC0CD6B4F97A50AA08A /* TaskMasterAIService.swift */,
 				07FD83D43E3A470D869D3D96 /* KeychainManager.swift */,
 				CEFEA0A41404442ABF32EB70 /* UserSessionManager.swift */,
 				8364F6BBEC35411F9A95BBD8 /* TokenManager.swift */,
-				CD123456789ABCDEF1234567 /* SampleDataService.swift */,
+				SEC1234567890ABCDEF1234 /* OAuth2Manager.swift */,
+				SEC2234567890ABCDEF1234 /* SessionManager.swift */,
+				SEC3234567890ABCDEF1234 /* BiometricAuthManager.swift */,
+				SEC4234567890ABCDEF1234 /* SecurityAuditLogger.swift */,
+				CMT1234567890ABCDEF1234 /* CommonTypes.swift */,
+				AUT1234567890ABCDEF1234 /* AuthenticationService.swift */,
+				SET1234567890ABCDEF1234 /* SettingsManager.swift */,
+				DAS1234567890ABCDEF1234 /* DashboardDataService.swift */,
+				SUBF534567890ABCDEF1234 /* SubscriptionViewModel.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -144,9 +199,18 @@
 				78E9ABC1234567890DEFABCD /* Sources */,
 				5A3E0825B270488F84D0B970B9505899 /* Views */,
 				A1B2C3D4E5F6789012345678 /* Services */,
+				MODELS123456789ABCDEF1234 /* Models */,
 				23B45678901234567890123B /* Assets.xcassets */,
 			);
 			path = FinanceMate;
+			sourceTree = "<group>";
+		};
+		MODELS123456789ABCDEF1234 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				LEGAL1234567890ABCDEF123 /* LegalContent.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -156,6 +220,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 435707CA1503CC15628E92D7 /* Build configuration list for PBXNativeTarget "FinanceMate" */;
 			buildPhases = (
+				SWIFTLINT001234567890ABC /* SwiftLint */,
 				D2B194BACCAE2FCF7AD52E55 /* Sources */,
 				34C56789012345678901234C /* Resources */,
 			);
@@ -169,6 +234,24 @@
 			productName = FinanceMate;
 			productReference = F74A98781F1B874D7128CEE5 /* FinanceMate.app */;
 			productType = "com.apple.product-type.application";
+		};
+		C0501184582E4B8B33A799AF /* FinanceMateTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 435707CA1503CC15628E92D8 /* Build configuration list for PBXNativeTarget "FinanceMateTests" */;
+			buildPhases = (
+				D2B194BACCAE2FCF7AD52E56 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C0501184582E4B8B33A799B0 /* PBXTargetDependency */,
+			);
+			name = FinanceMateTests;
+			packageProductDependencies = (
+			);
+			productName = FinanceMateTests;
+			productReference = F74A98781F1B874D7128CEE6 /* FinanceMateTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -199,6 +282,7 @@
 			projectRoot = "";
 			targets = (
 				C0501184582E4B8B33A799AE /* FinanceMate */,
+				C0501184582E4B8B33A799AF /* FinanceMateTests */,
 			);
 		};
 /* End PBXProject section */
@@ -227,10 +311,36 @@
 				BE8F6A2B1234567890ABCDEF /* Project+CoreDataProperties.swift in Sources */,
 				E1234567890ABCDEF1234567 /* FinancialExportView.swift in Sources */,
 				E2345678901BCDEF23456789 /* BasicExportService.swift in Sources */,
+				E5E7EF30544D4EE198A03945 /* APIKeysIntegrationService.swift in Sources */,
+				2F7AB726D00249769D602DEA /* TaskMasterAIService.swift in Sources */,
 				6EC6AD87195C426EAEB30A5E /* KeychainManager.swift in Sources */,
 				4066900159D6459DBF9CC355 /* UserSessionManager.swift in Sources */,
 				C76704F73B3D454E8963D3B7 /* TokenManager.swift in Sources */,
-				AB123456789ABCDEF1234567 /* SampleDataService.swift in Sources */,
+				SECB1234567890ABCDEF1234 /* OAuth2Manager.swift in Sources */,
+				SECB2234567890ABCDEF1234 /* SessionManager.swift in Sources */,
+				SECB3234567890ABCDEF1234 /* BiometricAuthManager.swift in Sources */,
+				SECB4234567890ABCDEF1234 /* SecurityAuditLogger.swift in Sources */,
+				CMTP234567890ABCDEF1234 /* CommonTypes.swift in Sources */,
+				AUTH234567890ABCDEF1234 /* AuthenticationService.swift in Sources */,
+				SETM234567890ABCDEF1234 /* SettingsManager.swift in Sources */,
+				SUB5234567890ABCDEF1234 /* Subscription+CoreDataClass.swift in Sources */,
+				SUB6234567890ABCDEF1234 /* Subscription+CoreDataProperties.swift in Sources */,
+				LEGALBF1234567890ABCDEF1 /* LegalContent.swift in Sources */,
+				SUB1234567890ABCDEF1234 /* SubscriptionManagementView.swift in Sources */,
+				SUBD234567890ABCDEF1234 /* SubscriptionDetailView.swift in Sources */,
+				SUB2234567890ABCDEF1234 /* AddSubscriptionView.swift in Sources */,
+				SUB3234567890ABCDEF1234 /* SubscriptionViewModel.swift in Sources */,
+				DASH234567890ABCDEF1234 /* DashboardDataService.swift in Sources */,
+				CA00C390A3A0BBB2E3F00FED /* CentralizedTheme.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D2B194BACCAE2FCF7AD52E56 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				TEST1234567890ABCDEF1234 /* AuthenticationE2ETests.swift in Sources */,
+				TEST2234567890ABCDEF1234 /* ScreenshotService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -246,6 +356,45 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		SWIFTLINT001234567890ABC /* SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftLint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftlint >/dev/null; then\n  cd \"$SRCROOT/../..\"\n  swiftlint --config .swiftlint.yml --reporter xcode || true\nelse\n  echo \"warning: SwiftLint not installed, install via 'brew install swiftlint'\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		C0501184582E4B8B33A799B0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C0501184582E4B8B33A799AE /* FinanceMate */;
+			targetProxy = C0501184582E4B8B33A799B1 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXContainerItemProxy section */
+		C0501184582E4B8B33A799B1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0A583971E86D889EC014362E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C0501184582E4B8B33A799AE;
+			remoteInfo = FinanceMate;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin XCBuildConfiguration section */
 		01BAE5A01430C22B21F22343 /* Release */ = {
@@ -297,7 +446,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -363,7 +512,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -396,7 +545,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ablankcanvas.financemate;
 				PRODUCT_NAME = FinanceMate;
@@ -426,7 +575,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ablankcanvas.financemate;
 				PRODUCT_NAME = FinanceMate;
@@ -444,6 +593,15 @@
 			buildConfigurations = (
 				64B95EE3699006D87282614C /* Debug */,
 				1489F5D31A2744422DC82D7D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		435707CA1503CC15628E92D8 /* Build configuration list for PBXNativeTarget "FinanceMateTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				64B95EE3699006D87282614D /* Debug */,
+				1489F5D31A2744422DC82D7E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

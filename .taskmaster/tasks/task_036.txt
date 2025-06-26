@@ -1,0 +1,43 @@
+# Task ID: 36
+# Title: Implement Comprehensive Unit Tests for Refactored User Model (TDD, SSO, Profile, .cursorrules) [P0]
+# Status: pending
+# Dependencies: 35
+# Priority: high
+# Description: Develop and update modular, maintainable unit tests for the refactored User model (Task #35) in Sandbox, ensuring full coverage of SSO extensibility (Apple/Google), profile data (avatar, editable fields), and all new/refactored logic, following TDD and .cursorrules compliance.
+# Details:
+Begin by reviewing the refactored User model from Task #35 to identify all new and updated logic, especially areas related to SSO extensibility (Apple/Google) and profile data management (avatar, editable fields). Use a test-driven development (TDD) approach: write failing unit tests for each required behavior before implementing or updating the corresponding code. Ensure tests are modular, isolated, and maintainable, adhering to .cursorrules and best practices such as clear naming, low cyclomatic complexity, and no external dependencies. Cover all edge cases, error handling, and integration points for SSO providers and profile updates. Organize tests for clarity and future extensibility, and document test cases thoroughly. Link this task to Task #35 and log as a P0 test task.
+
+# Test Strategy:
+Verify that all unit tests are present, modular, and pass consistently in isolation. Confirm tests cover 100% of new/refactored logic, including SSO extensibility (Apple/Google), profile data (avatar, editable fields), and error handling. Use code coverage tools to ensure high coverage and review test code for maintainability and compliance with .cursorrules. Validate that tests follow TDD principles (test-first, red-green-refactor) and are easy to extend for future SSO or profile features. Peer review test code for clarity, simplicity, and adherence to project standards.
+
+# Subtasks:
+## 1. Create Test Framework and Structure for User Model Tests [pending]
+### Dependencies: None
+### Description: Set up the testing framework, directory structure, and base test classes for the User model unit tests, ensuring compliance with .cursorrules and TDD principles.
+### Details:
+Create a dedicated test directory for User model tests with separate files for different functional areas (core, SSO, profile). Set up mock objects and test fixtures for dependencies. Implement base test classes with common setup/teardown logic. Configure test runner to integrate with CI/CD pipeline. Ensure all test files follow naming conventions and .cursorrules compliance.
+
+## 2. Implement Core User Model Unit Tests [pending]
+### Dependencies: 36.1
+### Description: Develop unit tests for the core functionality of the refactored User model, focusing on basic CRUD operations, validation, and business logic.
+### Details:
+Write small, focused tests for user creation, retrieval, update, and deletion. Test validation rules for required fields, data types, and business constraints. Cover authentication logic, password handling, and user state management. Ensure tests are isolated with no external dependencies. Use descriptive test names that clearly indicate the behavior being tested. Follow TDD by writing failing tests first, then implementing the code to make them pass.
+
+## 3. Develop SSO Integration Unit Tests [pending]
+### Dependencies: 36.1
+### Description: Create comprehensive unit tests for SSO extensibility features, covering both Apple and Google authentication flows and integration points.
+### Details:
+Implement tests for Apple SSO authentication flow, token validation, and user creation/linking. Create parallel tests for Google SSO integration. Test error handling for invalid tokens, network failures, and account conflicts. Mock external SSO provider APIs to ensure tests remain fast and isolated. Verify proper handling of user profile data received from SSO providers. Test edge cases such as account merging, disconnecting SSO providers, and handling expired tokens.
+
+## 4. Implement Profile Data Management Tests [pending]
+### Dependencies: 36.1, 36.2
+### Description: Develop unit tests for user profile data management, including avatar handling, editable fields, and profile update operations.
+### Details:
+Write tests for profile data validation, sanitization, and persistence. Test avatar upload, retrieval, and deletion functionality. Verify editable vs. read-only field enforcement. Test profile update operations including partial updates. Cover privacy settings and visibility controls for profile data. Ensure proper error handling for invalid inputs and file operations. Test performance considerations for large profile datasets.
+
+## 5. Perform Test Coverage Analysis and Documentation [pending]
+### Dependencies: 36.2, 36.3, 36.4
+### Description: Analyze test coverage, identify gaps, implement missing tests, and document the comprehensive test suite for the User model.
+### Details:
+Run code coverage analysis to identify untested or undertested code paths. Implement additional tests to achieve comprehensive coverage. Document test cases, fixtures, and mocking strategies. Create a test plan document linking requirements to specific tests. Verify all tests follow best practices: small and focused, descriptive names, deterministic results, and no implementation duplication. Ensure tests are maintainable and will be easy to update when the User model changes.
+

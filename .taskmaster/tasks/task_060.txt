@@ -1,0 +1,43 @@
+# Task ID: 60
+# Title: Refactor SignInView.swift for Authentication UI/UX, Modularity, and Maintainability
+# Status: pending
+# Dependencies: None
+# Priority: high
+# Description: Refactor SignInView.swift in the Sandbox project to enhance authentication UI/UX, improve modularity and maintainability, and ensure P0 compliance. The file must now include a full .cursorrules-compliant comment block with pre-coding assessment, complexity drivers, and a post-implementation update. The code/problem rating has been raised to 92%/90% to reflect the current modular, maintainable, and TDD-compliant SSO/auth UI. Add a Last Updated field to the comment block. Ensure the file is fully aligned with the Corporate Style Guide.
+# Details:
+Break down large view structures in SignInView.swift into smaller, reusable SwiftUI components using @ViewBuilder, Group, or separate files as appropriate to improve modularity and maintainability[1][2]. Refactor authentication flows to streamline user interactions and enhance UI/UX, ensuring clear feedback for authentication states (e.g., loading, error, success). Update or add documentation and comment blocks at the top of the file to reflect the new structure and logic, following the Corporate Style Guide and .cursorrules requirements (including pre-coding assessment, complexity drivers, post-implementation update, and Last Updated field). Ensure all naming conventions, formatting, and UI elements are consistent with corporate standards. Where possible, leverage SwiftLint or similar tools to enforce style and prevent regressions[4]. Remove or refactor any legacy or redundant code, and ensure state management is clean and testable. Consider accessibility and localization best practices throughout the refactor. This work brings SignInView.swift into P0 compliance. Next: Refactor ProfileView.swift for code quality, modularity, and compliance.
+
+# Test Strategy:
+Develop or expand unit and UI tests to cover all authentication scenarios, including successful sign-in, failed sign-in, loading states, and edge cases (e.g., empty fields, network errors). Use code coverage tools to verify that over 90% of the code is exercised by tests. Manually verify that the UI aligns with the Corporate Style Guide and provides a seamless user experience across devices and accessibility settings. Review the updated .cursorrules-compliant comment block for completeness and adherence to documentation standards, including the Last Updated field. Run static analysis and linter tools to confirm style compliance and absence of new warnings or errors.
+
+# Subtasks:
+## 1. Analyze and decompose SignInView.swift into modular components [pending]
+### Dependencies: None
+### Description: Analyze the current structure of SignInView.swift and identify logical UI components that can be extracted into separate, reusable views to improve modularity and maintainability.
+### Details:
+Review the entire SignInView.swift file and identify large view structures that can be broken down. Create a component map documenting which parts should be extracted (authentication form, buttons, status indicators, etc.). Use @ViewBuilder or Group for smaller components that should remain in the same file, and plan separate files for larger reusable components. Document the component hierarchy and state management requirements.
+
+## 2. Implement modular component structure with proper state management [pending]
+### Dependencies: 60.1
+### Description: Refactor the SignInView.swift file by implementing the component structure identified in the analysis phase, with proper state management between parent and child components.
+### Details:
+Extract identified components into separate views using @ViewBuilder, Group, or new files as appropriate. Implement proper state management using @Binding for child components that need to modify parent state. Ensure all extracted components follow the Corporate Style Guide naming conventions. Update imports and references throughout the codebase as needed. Maintain all existing functionality while improving code organization.
+
+## 3. Enhance authentication flow UI/UX with clear feedback states [pending]
+### Dependencies: 60.2
+### Description: Improve the authentication flow by implementing clear visual feedback for different authentication states (loading, error, success) and streamlining user interactions.
+### Details:
+Implement loading indicators during authentication processes. Create clear, user-friendly error messages for authentication failures. Add success animations or transitions for successful authentication. Ensure all UI elements provide appropriate feedback for user interactions (button presses, form validation, etc.). Implement accessibility features including proper VoiceOver support and dynamic type compatibility. Ensure all text is prepared for localization.
+
+## 4. Implement .cursorrules-compliant documentation and comment blocks [pending]
+### Dependencies: 60.3
+### Description: Add comprehensive documentation to the refactored SignInView.swift file, including the required .cursorrules-compliant comment block with pre-coding assessment, complexity drivers, and post-implementation update.
+### Details:
+Create a complete comment block at the top of SignInView.swift following .cursorrules requirements. Include pre-coding assessment detailing the refactoring approach and goals. Document complexity drivers that influenced the implementation decisions. Add a post-implementation update summarizing changes made and benefits achieved. Include a 'Last Updated' field with the current date. Document all public functions, properties, and types with clear descriptions of their purpose and usage. Ensure all documentation follows the Corporate Style Guide formatting requirements.
+
+## 5. Configure SwiftLint and perform final compliance verification [pending]
+### Dependencies: 60.4
+### Description: Set up or update SwiftLint rules to enforce the Corporate Style Guide and prevent future regressions, then perform a final verification of P0 compliance for the refactored SignInView.swift.
+### Details:
+Update or create SwiftLint configuration to enforce naming conventions, file structure, and code style rules from the Corporate Style Guide. Run SwiftLint on the refactored code and address any remaining issues. Perform a comprehensive review of the refactored SignInView.swift against all P0 compliance requirements. Remove any redundant or legacy code identified during the final review. Verify all UI elements are consistent with corporate standards. Create a final compliance report documenting how each requirement has been met.
+

@@ -5,6 +5,6 @@
       location = "group:FinanceMate/FinanceMate.xcodeproj">
    </FileRef>
    <FileRef
-      location = "container:FinanceMate-Sandbox/FinanceMate-Sandbox.xcodeproj">
+      location = "group:FinanceMate-Sandbox/FinanceMate-Sandbox.xcodeproj">
    </FileRef>
 </Workspace>

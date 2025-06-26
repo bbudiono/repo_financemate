@@ -1,0 +1,110 @@
+[
+  {
+    "character" : 1,
+    "file" : "/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMate/TESTFLIGHT_SUBMISSION_SUMMARY.md",
+    "line" : 1,
+    "reason" : "Don't include vertical whitespace (empty line) after opening braces",
+    "rule_id" : "vertical_whitespace_opening_braces",
+    "severity" : "Warning",
+    "type" : "Vertical Whitespace after Opening Braces"
+  },
+  {
+    "character" : 25,
+    "file" : "/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMate/FinanceMate/Managers/DocumentListManager.swift",
+    "line" : 41,
+    "reason" : "Force try should be avoided",
+    "rule_id" : "force_try",
+    "severity" : "Error",
+    "type" : "Force Try"
+  },
+  {
+    "character" : 29,
+    "file" : "/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMate/FinanceMate/Managers/DocumentListManager.swift",
+    "line" : 51,
+    "reason" : "Force try should be avoided",
+    "rule_id" : "force_try",
+    "severity" : "Error",
+    "type" : "Force Try"
+  },
+  {
+    "character" : 22,
+    "file" : "/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMate/FinanceMate/Managers/DocumentListManager.swift",
+    "line" : 61,
+    "reason" : "Force try should be avoided",
+    "rule_id" : "force_try",
+    "severity" : "Error",
+    "type" : "Force Try"
+  },
+  {
+    "character" : 25,
+    "file" : "/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMate/FinanceMate/Managers/DocumentListManager.swift",
+    "line" : 62,
+    "reason" : "Force try should be avoided",
+    "rule_id" : "force_try",
+    "severity" : "Error",
+    "type" : "Force Try"
+  },
+  {
+    "character" : 25,
+    "file" : "/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMate/FinanceMate/Managers/DocumentListManager.swift",
+    "line" : 63,
+    "reason" : "Force try should be avoided",
+    "rule_id" : "force_try",
+    "severity" : "Error",
+    "type" : "Force Try"
+  },
+  {
+    "character" : 25,
+    "file" : "/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMate/FinanceMate/Managers/DocumentListManager.swift",
+    "line" : 72,
+    "reason" : "Force try should be avoided",
+    "rule_id" : "force_try",
+    "severity" : "Error",
+    "type" : "Force Try"
+  },
+  {
+    "character" : 29,
+    "file" : "/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMate/FinanceMate/Managers/DocumentListManager.swift",
+    "line" : 82,
+    "reason" : "Force try should be avoided",
+    "rule_id" : "force_try",
+    "severity" : "Error",
+    "type" : "Force Try"
+  },
+  {
+    "character" : 33,
+    "file" : "/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMate/FinanceMate/Services/DocumentProcessingService.swift",
+    "line" : 104,
+    "reason" : "Force try should be avoided",
+    "rule_id" : "force_try",
+    "severity" : "Error",
+    "type" : "Force Try"
+  },
+  {
+    "character" : 33,
+    "file" : "/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMate/FinanceMate/Services/DocumentProcessingService.swift",
+    "line" : 107,
+    "reason" : "Force try should be avoided",
+    "rule_id" : "force_try",
+    "severity" : "Error",
+    "type" : "Force Try"
+  },
+  {
+    "character" : 37,
+    "file" : "/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMate/FinanceMate/Sources/Core/DataModels/CoreDataStack.swift",
+    "line" : 47,
+    "reason" : "Force try should be avoided",
+    "rule_id" : "force_try",
+    "severity" : "Error",
+    "type" : "Force Try"
+  },
+  {
+    "character" : 102,
+    "file" : "/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMate/FinanceMateTests/E2ETests/ScreenshotService.swift",
+    "line" : 18,
+    "reason" : "Force unwrapping should be avoided",
+    "rule_id" : "force_unwrapping",
+    "severity" : "Error",
+    "type" : "Force Unwrapping"
+  }
+]

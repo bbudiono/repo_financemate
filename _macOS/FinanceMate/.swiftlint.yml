@@ -1,0 +1,126 @@
+# SwiftLint Configuration for FinanceMate
+# Version: 1.0.0
+# Created for comprehensive code quality enforcement
+
+# Directories to include
+included:
+  - FinanceMate
+  - FinanceMateTests
+  - FinanceMateUITests
+
+# Directories to exclude
+excluded:
+  - Carthage
+  - Pods
+  - .build
+  - Resources
+  - test_artifacts
+  - Scripts
+
+# Disabled rules (temporarily for phased implementation)
+disabled_rules:
+  - trailing_whitespace  # Will be auto-fixed
+  - duplicate_imports    # Will be manually fixed
+  - line_length         # Will be gradually addressed
+  - file_length         # Will be refactored over time
+  - function_body_length # Will be refactored over time
+  - type_body_length    # Will be refactored over time
+  - cyclomatic_complexity # Will be addressed in refactoring
+  - nesting             # Will be addressed in refactoring
+
+# Enabled rules (critical for build stability)
+opt_in_rules:
+  - unused_import
+  - unused_private_declaration
+  - force_unwrapping
+  - force_try
+  - force_cast
+  - implicit_getter
+  - redundant_string_enum_value
+  - redundant_type_annotation
+  - vertical_whitespace_opening_braces
+  - vertical_whitespace_closing_braces
+
+# Rule configurations
+identifier_name:
+  min_length: 2  # Allow short names like 'id', 'x', 'y'
+  max_length: 60
+  excluded:
+    - r    # RGB red component
+    - g    # RGB green component  
+    - b    # RGB blue component
+    - x    # x coordinate
+    - y    # y coordinate
+    - i    # index
+    - id   # identifier
+
+line_length:
+  warning: 120
+  error: 200
+  ignores_urls: true
+  ignores_comments: true
+
+file_length:
+  warning: 400
+  error: 1000
+
+function_body_length:
+  warning: 50
+  error: 100
+
+type_body_length:
+  warning: 200
+  error: 400
+
+cyclomatic_complexity:
+  warning: 10
+  error: 20
+
+nesting:
+  type_level:
+    warning: 3
+    error: 5
+  statement_level:
+    warning: 5
+    error: 10
+
+# Force unwrapping configuration
+force_unwrapping:
+  severity: error
+
+# Force try configuration  
+force_try:
+  severity: error
+
+# Force cast configuration
+force_cast:
+  severity: error
+
+# Custom rules for specific patterns
+custom_rules:
+  # Prevent hardcoded authentication bypass
+  no_hardcoded_auth:
+    name: "No Hardcoded Authentication"
+    regex: 'isAuthenticated\s*=\s*true'
+    message: "Don't hardcode authentication bypass"
+    severity: error
+    
+  # Ensure proper error handling
+  proper_error_handling:
+    name: "Proper Error Handling"
+    regex: 'try!\s'
+    message: "Use proper error handling instead of try!"
+    severity: error
+    
+  # Prevent empty catch blocks
+  no_empty_catch:
+    name: "No Empty Catch Blocks"
+    regex: 'catch\s*\{\s*\}'
+    message: "Catch blocks should not be empty"
+    severity: warning
+
+# Reporting configuration
+reporter: "emoji" # xcode, json, csv, checkstyle, junit, html, emoji, sonarqube, markdown, github-actions-logging
+
+# Performance settings
+compilation_mode: wholemodule

@@ -1,0 +1,43 @@
+# Task ID: 12
+# Title: Search Functionality Across Data Types
+# Status: pending
+# Dependencies: 2, 3
+# Priority: medium
+# Description: Implement search across cases, clients, documents, and events.
+# Details:
+Build search bar and results view. Query CoreData for matches in all relevant models. Support basic filtering and sorting.
+
+# Test Strategy:
+Test search accuracy and performance. Verify results across all data types.
+
+# Subtasks:
+## 1. Design and Implement Search Bar UI [pending]
+### Dependencies: None
+### Description: Create a unified search bar component that will allow users to input queries for searching across cases, clients, documents, and events.
+### Details:
+Design the search bar to be accessible from the main interface. Ensure it supports real-time input and triggers search actions as the user types or submits a query. Integrate with the view controller managing the results display.
+
+## 2. Define CoreData Fetch Logic for All Data Types [pending]
+### Dependencies: 12.1
+### Description: Implement CoreData fetch requests for cases, clients, documents, and events, supporting keyword-based search.
+### Details:
+For each data type, define fetch requests with NSPredicate to filter results based on the search query. Ensure predicates cover relevant fields (e.g., name, title, description). Consider performance and optimize queries as needed.
+
+## 3. Integrate Search Logic with UI and Results View [pending]
+### Dependencies: 12.2
+### Description: Connect the search bar to the CoreData fetch logic and display results in a unified results view.
+### Details:
+On search input, trigger fetch requests for all data types and aggregate results. Display results in a table or collection view, grouping or labeling by data type as appropriate.
+
+## 4. Implement Filtering and Sorting Options [pending]
+### Dependencies: 12.3
+### Description: Add UI controls and logic to allow users to filter and sort search results by data type, date, or other relevant fields.
+### Details:
+Provide filter options (e.g., checkboxes or segmented controls) for data types and sorting options (e.g., by date, name). Update fetch requests and results view based on selected filters and sort orders.
+
+## 5. Optimize and Test Search Performance and Accuracy [pending]
+### Dependencies: 12.4
+### Description: Profile search performance, optimize queries, and ensure accurate results across all data types.
+### Details:
+Use profiling tools to identify bottlenecks in fetch requests. Refine predicates or consider advanced techniques (e.g., batching, background fetching, or SQLite FTS if needed). Conduct comprehensive testing for accuracy and speed.
+

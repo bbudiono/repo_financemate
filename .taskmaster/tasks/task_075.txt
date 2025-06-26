@@ -1,0 +1,43 @@
+# Task ID: 75
+# Title: Implement Google SSO: SDK Initialization (Sandbox)
+# Status: pending
+# Dependencies: None
+# Priority: high
+# Description: Initialize the Google Sign-In SDK in the FinanceMate-Sandbox macOS application. This includes adding the SDK dependency, configuring it with the Client ID, and setting up the initial handling for the authentication flow. This task is a prerequisite for the full Google SSO sign-in functionality.
+# Details:
+1. Verify/add Google Sign-In SDK Swift Package. 2. Create AuthenticationService if not present. 3. Implement SDK initialization in AppDelegate or AuthenticationService using ClientID from Info.plist. 4. Write unit tests for initialization. 5. Ensure Sandbox build remains GREEN. Follow TDD and .cursorrules §8.2.
+
+# Test Strategy:
+Unit tests will verify SDK initialization. Manual test of app launch to ensure no crashes. Sandbox build must succeed.
+
+# Subtasks:
+## 1. Add Google Sign-In SDK Dependency [pending]
+### Dependencies: None
+### Description: Integrate the Google Sign-In SDK into the FinanceMate-Sandbox macOS project using Swift Package Manager.
+### Details:
+Open the Xcode project, navigate to File > Add Packages, and add the official Google Sign-In SDK package. Ensure the package is correctly resolved and appears in the project's dependencies. Commit the changes to version control.
+
+## 2. Create or Update AuthenticationService [pending]
+### Dependencies: 75.1
+### Description: Ensure an AuthenticationService class exists to encapsulate authentication logic, or create one if missing.
+### Details:
+Check for an existing AuthenticationService class. If absent, create a new Swift class named AuthenticationService. Define an interface for initializing and managing the Google Sign-In SDK. Prepare the class for dependency injection if required by the app architecture.
+
+## 3. Configure SDK Initialization with Client ID [pending]
+### Dependencies: 75.2
+### Description: Initialize the Google Sign-In SDK with the Client ID from Info.plist within the AuthenticationService or AppDelegate.
+### Details:
+Read the Client ID from Info.plist at runtime. In AuthenticationService (or AppDelegate if more appropriate), initialize the Google Sign-In SDK using the Client ID. Ensure the configuration is performed early in the app lifecycle, such as in applicationDidFinishLaunching.
+
+## 4. Implement Initial Authentication Flow Handling [pending]
+### Dependencies: 75.3
+### Description: Set up the initial handling for the Google authentication flow, including URL handling and sign-in triggers.
+### Details:
+Implement the necessary methods to handle authentication callbacks, such as handling URLs in AppDelegate. Set up a basic sign-in trigger (e.g., a method or button action) that calls the Google Sign-In SDK's signIn method. Ensure the flow is sandbox-safe and does not yet require full UI integration.
+
+## 5. Write and Run Unit Tests for SDK Initialization [pending]
+### Dependencies: 75.4
+### Description: Develop unit tests to cover all aspects of the SDK initialization and ensure the Sandbox build remains green.
+### Details:
+Using TDD, write unit tests for AuthenticationService and SDK initialization logic. Ensure tests cover error cases, correct reading of Client ID, and proper SDK configuration. Run the full test suite and verify that the Sandbox build passes without regressions.
+

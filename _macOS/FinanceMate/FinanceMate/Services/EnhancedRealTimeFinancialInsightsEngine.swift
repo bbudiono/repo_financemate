@@ -5,7 +5,6 @@
 //  Created by Assistant on 6/7/25.
 //
 
-
 /*
 * Purpose: Enhanced Real-Time Financial Insights Engine with MLACS Agent Integration
 * NO MOCK DATA - All insights generated from actual financial data using AI agents
@@ -13,103 +12,102 @@
 * Integration: MLACS agents, document processing pipeline, Core Data, real-time updates
 */
 
-import Foundation
-import CoreData
 import Combine
+import CoreData
+import Foundation
 import SwiftUI
 
 // MARK: - Enhanced Financial Insights Engine with MLACS Integration
 
 @MainActor
 public class EnhancedRealTimeFinancialInsightsEngine: ObservableObject {
-    
     // MARK: - Published Properties
-    
+
     @Published public private(set) var isReady = false
     @Published public private(set) var isMLACSConnected = false
     @Published public private(set) var lastAnalysisDate: Date?
     @Published public private(set) var currentInsights: [FinancialInsight] = []
     @Published public private(set) var aiAnalysisProgress: Double = 0.0
     @Published public private(set) var activeAgentCount: Int = 0
-    @Published public private(set) var systemHealth: MLACSSystemHealth = MLACSSystemHealth()
-    
+    @Published public private(set) var systemHealth = MLACSSystemHealth()
+
     // MARK: - Core Dependencies
-    
+
     public let context: NSManagedObjectContext
     private let mlacsFramework: MLACSFramework
     private let documentPipeline: DocumentProcessingPipeline
     private let baseInsightsEngine: RealTimeFinancialInsightsEngine
-    
+
     // MARK: - MLACS Agents
-    
+
     private var financialAnalysisAgent: MLACSAgent?
     private var spendingAnalysisAgent: MLACSAgent?
     private var anomalyDetectionAgent: MLACSAgent?
     private var predictiveAnalyticsAgent: MLACSAgent?
     private var documentProcessingAgent: MLACSAgent?
-    
+
     // MARK: - Private Properties
-    
+
     private var cancellables = Set<AnyCancellable>()
     private let processingQueue = DispatchQueue(label: "com.financemate.enhanced.insights", qos: .userInitiated)
     private var agentCoordinationChannel: MLACSChannel?
-    
+
     // MARK: - Enhanced Analysis Models
-    
+
     private var aiPoweredInsightCache: [String: EnhancedFinancialInsight] = [:]
     private var realTimeAnalysisStream: PassthroughSubject<FinancialInsight, Never> = PassthroughSubject()
     private var documentProcessingStream: PassthroughSubject<PipelineProcessedDocument, Never> = PassthroughSubject()
-    
+
     // MARK: - Initialization
-    
-    public init(context: NSManagedObjectContext, 
+
+    public init(context: NSManagedObjectContext,
                 mlacsFramework: MLACSFramework? = nil,
                 documentPipeline: DocumentProcessingPipeline? = nil) {
         self.context = context
         self.mlacsFramework = mlacsFramework ?? MLACSFramework()
         self.documentPipeline = documentPipeline ?? DocumentProcessingPipeline()
         self.baseInsightsEngine = RealTimeFinancialInsightsEngine(context: context)
-        
+
         setupEnhancedEngine()
     }
-    
+
     // MARK: - Enhanced Engine Setup
-    
+
     private func setupEnhancedEngine() {
         setupDataStreamMonitoring()
         setupSystemHealthMonitoring()
         isReady = true
     }
-    
+
     public func initializeMLACSIntegration() async throws {
         guard !isMLACSConnected else { return }
-        
+
         aiAnalysisProgress = 0.1
-        
+
         // Initialize MLACS framework
         try await mlacsFramework.initialize()
         aiAnalysisProgress = 0.3
-        
+
         // Create specialized financial analysis agents
         try await createFinancialAnalysisAgents()
         aiAnalysisProgress = 0.6
-        
+
         // Setup agent coordination
         try await setupAgentCoordination()
         aiAnalysisProgress = 0.8
-        
+
         // Setup real-time processing streams
         setupRealTimeProcessingStreams()
         aiAnalysisProgress = 1.0
-        
+
         isMLACSConnected = true
         activeAgentCount = mlacsFramework.activeAgents.count
-        
+
         print("Enhanced Financial Insights Engine with MLACS initialized successfully")
     }
-    
+
     // MARK: - Agent Creation and Management
-    
+
     private func createFinancialAnalysisAgents() async throws {
         // Financial Analysis Agent - Primary coordinator
         financialAnalysisAgent = try await mlacsFramework.createAgent(
@@ -133,7 +131,7 @@ public class EnhancedRealTimeFinancialInsightsEngine: ObservableObject {
                 ]
             )
         )
-        
+
         // Spending Analysis Agent - Specialized for spending patterns
         spendingAnalysisAgent = try await mlacsFramework.createAgent(
             type: .custom("spending_analyzer"),
@@ -154,7 +152,7 @@ public class EnhancedRealTimeFinancialInsightsEngine: ObservableObject {
                 ]
             )
         )
-        
+
         // Anomaly Detection Agent - AI-powered anomaly detection
         anomalyDetectionAgent = try await mlacsFramework.createAgent(
             type: .custom("anomaly_detector"),
@@ -176,7 +174,7 @@ public class EnhancedRealTimeFinancialInsightsEngine: ObservableObject {
                 ]
             )
         )
-        
+
         // Predictive Analytics Agent - Future forecasting
         predictiveAnalyticsAgent = try await mlacsFramework.createAgent(
             type: .custom("predictive_analyst"),
@@ -198,7 +196,7 @@ public class EnhancedRealTimeFinancialInsightsEngine: ObservableObject {
                 ]
             )
         )
-        
+
         // Document Processing Agent - Intelligent document analysis
         documentProcessingAgent = try await mlacsFramework.createAgent(
             type: .processor,
@@ -219,42 +217,42 @@ public class EnhancedRealTimeFinancialInsightsEngine: ObservableObject {
                 ]
             )
         )
-        
+
         // Setup agent message handlers
         try await setupAgentMessageHandlers()
     }
-    
+
     private func setupAgentMessageHandlers() async throws {
         // Financial Analysis Agent handlers
         financialAnalysisAgent?.registerMessageHandler(for: .task) { [weak self] message in
             await self?.handleFinancialAnalysisTask(message)
         }
-        
+
         financialAnalysisAgent?.registerMessageHandler(for: .data) { [weak self] message in
             await self?.handleFinancialDataAnalysis(message)
         }
-        
+
         // Spending Analysis Agent handlers
         spendingAnalysisAgent?.registerMessageHandler(for: .task) { [weak self] message in
             await self?.handleSpendingAnalysisTask(message)
         }
-        
+
         // Anomaly Detection Agent handlers
         anomalyDetectionAgent?.registerMessageHandler(for: .task) { [weak self] message in
             await self?.handleAnomalyDetectionTask(message)
         }
-        
+
         // Predictive Analytics Agent handlers
         predictiveAnalyticsAgent?.registerMessageHandler(for: .task) { [weak self] message in
             await self?.handlePredictiveAnalyticsTask(message)
         }
-        
+
         // Document Processing Agent handlers
         documentProcessingAgent?.registerMessageHandler(for: .data) { [weak self] message in
             await self?.handleDocumentProcessingData(message)
         }
     }
-    
+
     private func setupAgentCoordination() async throws {
         // Create coordination channel for all financial agents
         let agentIds = [
@@ -264,28 +262,28 @@ public class EnhancedRealTimeFinancialInsightsEngine: ObservableObject {
             predictiveAnalyticsAgent?.id,
             documentProcessingAgent?.id
         ].compactMap { $0 }
-        
+
         agentCoordinationChannel = try await mlacsFramework.createChannel(
             name: "Financial Insights Coordination",
             participants: agentIds
         )
     }
-    
+
     // MARK: - Enhanced Real-Time Analysis
-    
+
     public func generateEnhancedRealTimeInsights() async throws -> [EnhancedFinancialInsight] {
         guard isMLACSConnected else {
             // Fallback to base engine if MLACS not available
             let baseInsights = try baseInsightsEngine.generateRealTimeInsights()
             return baseInsights.map { EnhancedFinancialInsight(from: $0) }
         }
-        
+
         aiAnalysisProgress = 0.0
         var enhancedInsights: [EnhancedFinancialInsight] = []
-        
+
         // Coordinate analysis across all agents
         let analysisTaskId = UUID().uuidString
-        
+
         // Task 1: Primary financial analysis
         aiAnalysisProgress = 0.2
         try await financialAnalysisAgent?.sendMessage(
@@ -299,7 +297,7 @@ public class EnhancedRealTimeFinancialInsightsEngine: ObservableObject {
                 "enable_ai_insights": true
             ]
         )
-        
+
         // Task 2: Spending pattern analysis
         aiAnalysisProgress = 0.4
         try await spendingAnalysisAgent?.sendMessage(
@@ -312,7 +310,7 @@ public class EnhancedRealTimeFinancialInsightsEngine: ObservableObject {
                 "include_predictions": true
             ]
         )
-        
+
         // Task 3: Anomaly detection
         aiAnalysisProgress = 0.6
         try await anomalyDetectionAgent?.sendMessage(
@@ -325,7 +323,7 @@ public class EnhancedRealTimeFinancialInsightsEngine: ObservableObject {
                 "sensitivity": "adaptive"
             ]
         )
-        
+
         // Task 4: Predictive analytics
         aiAnalysisProgress = 0.8
         try await predictiveAnalyticsAgent?.sendMessage(
@@ -338,19 +336,19 @@ public class EnhancedRealTimeFinancialInsightsEngine: ObservableObject {
                 "include_scenarios": true
             ]
         )
-        
+
         // Generate base insights and enhance with AI
         let baseInsights = try baseInsightsEngine.generateRealTimeInsights()
-        
+
         for insight in baseInsights {
             let enhanced = try await enhanceInsightWithAI(insight, taskId: analysisTaskId)
             enhancedInsights.append(enhanced)
         }
-        
+
         // Generate AI-exclusive insights
         let aiInsights = try await generateAIExclusiveInsights(taskId: analysisTaskId)
         enhancedInsights.append(contentsOf: aiInsights)
-        
+
         // Sort by AI confidence and priority
         enhancedInsights.sort { lhs, rhs in
             if lhs.aiConfidence != rhs.aiConfidence {
@@ -358,20 +356,20 @@ public class EnhancedRealTimeFinancialInsightsEngine: ObservableObject {
             }
             return lhs.priority.rawValue < rhs.priority.rawValue
         }
-        
+
         aiAnalysisProgress = 1.0
         currentInsights = enhancedInsights.map { $0.toFinancialInsight() }
         lastAnalysisDate = Date()
-        
+
         return enhancedInsights
     }
-    
+
     // MARK: - Document Processing Integration
-    
+
     public func processDocumentWithAIAnalysis(at url: URL) async throws -> EnhancedDocumentAnalysisResult {
         // Process document through pipeline
         let processResult = await documentPipeline.processDocument(at: url)
-        
+
         switch processResult {
         case .success(let processedDocument):
             // Send processed document to AI agent for enhanced analysis
@@ -387,32 +385,32 @@ public class EnhancedRealTimeFinancialInsightsEngine: ObservableObject {
                     "document_type": processedDocument.documentType.rawValue
                 ]
             )
-            
+
             // Generate enhanced insights from document
             let documentInsights = try await generateDocumentSpecificInsights(processedDocument)
-            
+
             // Update real-time insights with document data
             documentProcessingStream.send(processedDocument)
-            
+
             return EnhancedDocumentAnalysisResult(
                 processedDocument: processedDocument,
                 aiInsights: documentInsights,
                 processingMethod: .aiEnhanced,
                 agentCoordinationUsed: true
             )
-            
+
         case .failure(let error):
             throw EnhancedInsightsError.documentProcessingFailed(error.localizedDescription)
         }
     }
-    
+
     // MARK: - Predictive Analytics
-    
+
     public func generatePredictiveFinancialForecast() async throws -> PredictiveFinancialForecast {
         guard let predictiveAgent = predictiveAnalyticsAgent else {
             throw EnhancedInsightsError.agentNotAvailable("Predictive Analytics Agent")
         }
-        
+
         try await predictiveAgent.sendMessage(
             to: predictiveAgent.id,
             type: .task,
@@ -424,12 +422,12 @@ public class EnhancedRealTimeFinancialInsightsEngine: ObservableObject {
                 "confidence_intervals": true
             ]
         )
-        
+
         // Get financial data for forecasting
         let financialData = try fetchFinancialData()
         let spendingTrends = try baseInsightsEngine.analyzeSpendingTrends()
         let incomeAnalysis = try baseInsightsEngine.analyzeIncomePatterns()
-        
+
         return PredictiveFinancialForecast(
             forecastHorizon: 6,
             spendingForecast: generateSpendingForecast(from: spendingTrends),
@@ -442,9 +440,9 @@ public class EnhancedRealTimeFinancialInsightsEngine: ObservableObject {
             agentId: predictiveAgent.id
         )
     }
-    
+
     // MARK: - Real-Time Monitoring
-    
+
     private func setupRealTimeProcessingStreams() {
         // Monitor real-time analysis stream
         realTimeAnalysisStream
@@ -453,7 +451,7 @@ public class EnhancedRealTimeFinancialInsightsEngine: ObservableObject {
                 self?.updateInsightsCache(with: insight)
             }
             .store(in: &cancellables)
-        
+
         // Monitor document processing stream
         documentProcessingStream
             .debounce(for: .seconds(1), scheduler: DispatchQueue.main)
@@ -464,7 +462,7 @@ public class EnhancedRealTimeFinancialInsightsEngine: ObservableObject {
             }
             .store(in: &cancellables)
     }
-    
+
     private func setupDataStreamMonitoring() {
         // Monitor Core Data changes for real-time updates
         NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave)
@@ -476,7 +474,7 @@ public class EnhancedRealTimeFinancialInsightsEngine: ObservableObject {
             }
             .store(in: &cancellables)
     }
-    
+
     private func setupSystemHealthMonitoring() {
         // Monitor MLACS system health
         Timer.publish(every: 30, on: .main, in: .common)
@@ -486,13 +484,13 @@ public class EnhancedRealTimeFinancialInsightsEngine: ObservableObject {
             }
             .store(in: &cancellables)
     }
-    
+
     // MARK: - AI Enhancement Methods
-    
+
     private func enhanceInsightWithAI(_ baseInsight: FinancialInsight, taskId: String) async throws -> EnhancedFinancialInsight {
         // AI enhancement would involve more sophisticated analysis
         // For now, we enhance with additional context and confidence
-        
+
         let aiEnhancements = AIInsightEnhancements(
             contextualInformation: generateContextualInformation(for: baseInsight),
             predictionComponents: generatePredictionComponents(for: baseInsight),
@@ -500,7 +498,7 @@ public class EnhancedRealTimeFinancialInsightsEngine: ObservableObject {
             riskFactors: identifyRiskFactors(for: baseInsight),
             alternativeScenarios: generateAlternativeScenarios(for: baseInsight)
         )
-        
+
         return EnhancedFinancialInsight(
             from: baseInsight,
             aiEnhancements: aiEnhancements,
@@ -509,33 +507,33 @@ public class EnhancedRealTimeFinancialInsightsEngine: ObservableObject {
             agentTaskId: taskId
         )
     }
-    
+
     private func generateAIExclusiveInsights(taskId: String) async throws -> [EnhancedFinancialInsight] {
         var aiInsights: [EnhancedFinancialInsight] = []
-        
+
         // AI-generated cashflow prediction
         if let cashflowInsight = try await generateCashflowPredictionInsight(taskId: taskId) {
             aiInsights.append(cashflowInsight)
         }
-        
+
         // AI-generated investment opportunity insight
         if let investmentInsight = try await generateInvestmentOpportunityInsight(taskId: taskId) {
             aiInsights.append(investmentInsight)
         }
-        
+
         // AI-generated financial health score
         if let healthInsight = try await generateFinancialHealthInsight(taskId: taskId) {
             aiInsights.append(healthInsight)
         }
-        
+
         return aiInsights
     }
-    
+
     // MARK: - Agent Message Handlers
-    
+
     private func handleFinancialAnalysisTask(_ message: MLACSMessage) async {
         guard let taskType = message.payload["task_type"]?.value as? String else { return }
-        
+
         switch taskType {
         case "comprehensive_analysis":
             // Agent performs comprehensive financial analysis
@@ -547,35 +545,35 @@ public class EnhancedRealTimeFinancialInsightsEngine: ObservableObject {
             print("Unknown financial analysis task: \(taskType)")
         }
     }
-    
+
     private func handleFinancialDataAnalysis(_ message: MLACSMessage) async {
         // Process financial data analysis results from agent
         if let analysisResults = message.payload["analysis_results"]?.value as? [String: Any] {
             await processAnalysisResults(analysisResults)
         }
     }
-    
+
     private func handleSpendingAnalysisTask(_ message: MLACSMessage) async {
         guard let taskType = message.payload["task_type"]?.value as? String else { return }
-        
+
         if taskType == "spending_pattern_analysis" {
             // Enhanced spending pattern analysis with AI
             await processEnhancedSpendingAnalysis(message)
         }
     }
-    
+
     private func handleAnomalyDetectionTask(_ message: MLACSMessage) async {
         guard let taskType = message.payload["task_type"]?.value as? String else { return }
-        
+
         if taskType == "anomaly_detection" {
             // AI-powered anomaly detection
             await processAIAnomalyDetection(message)
         }
     }
-    
+
     private func handlePredictiveAnalyticsTask(_ message: MLACSMessage) async {
         guard let taskType = message.payload["task_type"]?.value as? String else { return }
-        
+
         switch taskType {
         case "predictive_analysis":
             await processPredictiveAnalysis(message)
@@ -585,149 +583,149 @@ public class EnhancedRealTimeFinancialInsightsEngine: ObservableObject {
             print("Unknown predictive analytics task: \(taskType)")
         }
     }
-    
+
     private func handleDocumentProcessingData(_ message: MLACSMessage) async {
         if let documentId = message.payload["document_id"]?.value as? String {
             await processEnhancedDocumentAnalysis(documentId, message: message)
         }
     }
-    
+
     // MARK: - Helper Methods
-    
+
     private func fetchFinancialData() throws -> [FinancialData] {
         let request: NSFetchRequest<FinancialData> = FinancialData.fetchRequest()
         request.sortDescriptors = [NSSortDescriptor(keyPath: \FinancialData.invoiceDate, ascending: false)]
         return try context.fetch(request)
     }
-    
+
     private func updateSystemHealth() {
         if isMLACSConnected {
             systemHealth = mlacsFramework.getSystemHealth()
             activeAgentCount = mlacsFramework.activeAgents.count
         }
     }
-    
+
     private func updateInsightsCache(with insight: FinancialInsight) {
         // Cache insights for real-time display
         let cacheKey = "\(insight.type.rawValue)_\(insight.id.uuidString)"
         aiPoweredInsightCache[cacheKey] = EnhancedFinancialInsight(from: insight)
     }
-    
+
     private func updateInsightsFromDocument(_ document: PipelineProcessedDocument) async throws {
         // Generate insights from newly processed document
         let documentInsights = try await generateDocumentSpecificInsights(document)
-        
+
         for insight in documentInsights {
             realTimeAnalysisStream.send(insight.toFinancialInsight())
         }
     }
-    
+
     private func refreshInsightsInBackground() async throws {
         // Background refresh of insights when data changes
         _ = try await generateEnhancedRealTimeInsights()
     }
-    
+
     // MARK: - Stub Implementations for AI Methods
-    
+
     private func generateContextualInformation(for insight: FinancialInsight) -> String {
-        return "AI-enhanced context: This insight is based on advanced pattern recognition and historical analysis."
+        "AI-enhanced context: This insight is based on advanced pattern recognition and historical analysis."
     }
-    
+
     private func generatePredictionComponents(for insight: FinancialInsight) -> [String] {
-        return ["trend_analysis", "pattern_recognition", "statistical_modeling"]
+        ["trend_analysis", "pattern_recognition", "statistical_modeling"]
     }
-    
+
     private func calculateRecommendationStrength(for insight: FinancialInsight) -> Double {
-        return min(1.0, insight.confidence + 0.1)
+        min(1.0, insight.confidence + 0.1)
     }
-    
+
     private func identifyRiskFactors(for insight: FinancialInsight) -> [String] {
-        return ["market_volatility", "spending_patterns", "income_stability"]
+        ["market_volatility", "spending_patterns", "income_stability"]
     }
-    
+
     private func generateAlternativeScenarios(for insight: FinancialInsight) -> [String] {
-        return ["conservative_approach", "aggressive_optimization", "balanced_strategy"]
+        ["conservative_approach", "aggressive_optimization", "balanced_strategy"]
     }
-    
+
     private func generateCashflowPredictionInsight(taskId: String) async throws -> EnhancedFinancialInsight? {
         // AI-generated cashflow prediction logic would go here
-        return nil // Simplified for now
+        nil // Simplified for now
     }
-    
+
     private func generateInvestmentOpportunityInsight(taskId: String) async throws -> EnhancedFinancialInsight? {
         // AI-generated investment opportunity logic would go here
-        return nil // Simplified for now
+        nil // Simplified for now
     }
-    
+
     private func generateFinancialHealthInsight(taskId: String) async throws -> EnhancedFinancialInsight? {
         // AI-generated financial health score logic would go here
-        return nil // Simplified for now
+        nil // Simplified for now
     }
-    
+
     private func generateDocumentSpecificInsights(_ document: PipelineProcessedDocument) async throws -> [EnhancedFinancialInsight] {
         // Generate insights specific to the processed document
-        return [] // Simplified for now
+        [] // Simplified for now
     }
-    
+
     private func generateSpendingForecast(from trends: RealTimeSpendingTrendAnalysis) -> SpendingForecast {
-        return SpendingForecast(
+        SpendingForecast(
             projectedMonthlySpending: trends.projectedNextMonth,
             confidence: trends.trendStrength,
             trend: trends.monthlyTrend
         )
     }
-    
+
     private func generateIncomeForecast(from analysis: RealTimeIncomeAnalysis) -> IncomeForecast {
-        return IncomeForecast(
+        IncomeForecast(
             projectedMonthlyIncome: analysis.projectedNextIncome,
             stabilityScore: analysis.stabilityScore,
             growthRate: analysis.lastThreeMonthsGrowth
         )
     }
-    
+
     private func generateAIPoweredBudgetRecommendations() async throws -> [AIPoweredBudgetRecommendation] {
         let baseRecommendations = try baseInsightsEngine.generateBudgetRecommendations()
         return baseRecommendations.map { AIPoweredBudgetRecommendation(from: $0) }
     }
-    
+
     private func generateRiskAssessment(from data: [FinancialData]) -> RiskAssessment {
-        return RiskAssessment(
+        RiskAssessment(
             overallRiskScore: 0.3,
             riskFactors: ["income_variability", "spending_volatility"],
             mitigationStrategies: ["emergency_fund", "budget_optimization"]
         )
     }
-    
+
     // MARK: - Processing Method Stubs
-    
+
     private func processComprehensiveAnalysis(_ message: MLACSMessage) async {
         // Implementation for comprehensive analysis processing
     }
-    
+
     private func processRealTimeUpdate(_ message: MLACSMessage) async {
         // Implementation for real-time update processing
     }
-    
+
     private func processAnalysisResults(_ results: [String: Any]) async {
         // Implementation for processing analysis results
     }
-    
+
     private func processEnhancedSpendingAnalysis(_ message: MLACSMessage) async {
         // Implementation for enhanced spending analysis
     }
-    
+
     private func processAIAnomalyDetection(_ message: MLACSMessage) async {
         // Implementation for AI anomaly detection
     }
-    
+
     private func processPredictiveAnalysis(_ message: MLACSMessage) async {
         // Implementation for predictive analysis
     }
-    
+
     private func processComprehensiveForecast(_ message: MLACSMessage) async {
         // Implementation for comprehensive forecast
     }
-    
+
     private func processEnhancedDocumentAnalysis(_ documentId: String, message: MLACSMessage) async {
         // Implementation for enhanced document analysis
     }
@@ -742,8 +740,8 @@ public struct EnhancedFinancialInsight {
     public let processingMethod: InsightProcessingMethod
     public let agentTaskId: String?
     public let generatedAt: Date
-    
-    public init(from insight: FinancialInsight, 
+
+    public init(from insight: FinancialInsight,
                 aiEnhancements: AIInsightEnhancements = AIInsightEnhancements(),
                 aiConfidence: Double = 0.0,
                 processingMethod: InsightProcessingMethod = .traditional,
@@ -755,16 +753,16 @@ public struct EnhancedFinancialInsight {
         self.agentTaskId = agentTaskId
         self.generatedAt = Date()
     }
-    
+
     public var id: UUID { baseInsight.id }
     public var type: FinancialInsightType { baseInsight.type }
     public var title: String { baseInsight.title }
     public var description: String { baseInsight.description }
     public var confidence: Double { baseInsight.confidence }
     public var priority: InsightPriority { baseInsight.priority }
-    
+
     public func toFinancialInsight() -> FinancialInsight {
-        return baseInsight
+        baseInsight
     }
 }
 
@@ -774,7 +772,7 @@ public struct AIInsightEnhancements {
     public let recommendationStrength: Double
     public let riskFactors: [String]
     public let alternativeScenarios: [String]
-    
+
     public init(contextualInformation: String = "",
                 predictionComponents: [String] = [],
                 recommendationStrength: Double = 0.0,
@@ -801,7 +799,7 @@ public struct EnhancedDocumentAnalysisResult {
     public let processingMethod: InsightProcessingMethod
     public let agentCoordinationUsed: Bool
     public let analysisTimestamp: Date
-    
+
     public init(processedDocument: PipelineProcessedDocument,
                 aiInsights: [EnhancedFinancialInsight],
                 processingMethod: InsightProcessingMethod,
@@ -845,7 +843,7 @@ public struct AIPoweredBudgetRecommendation {
     public let confidence: Double
     public let reasoning: String
     public let aiOptimizations: [String]
-    
+
     public init(from recommendation: RealTimeBudgetRecommendation) {
         self.category = recommendation.category
         self.suggestedAmount = recommendation.suggestedAmount
@@ -870,7 +868,7 @@ public enum EnhancedInsightsError: Error, LocalizedError {
     case documentProcessingFailed(String)
     case aiAnalysisFailed(String)
     case coordinationFailure(String)
-    
+
     public var errorDescription: String? {
         switch self {
         case .mlacsNotInitialized:

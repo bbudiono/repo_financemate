@@ -1,0 +1,43 @@
+# Task ID: 13
+# Title: Time Tracking System
+# Status: pending
+# Dependencies: 2, 3
+# Priority: medium
+# Description: Implement time tracking for billable hours per case.
+# Details:
+Add Time Entry model in CoreData. Build UI for starting/stopping timers and manual entry. Associate time entries with cases and tasks. Support basic billing rate application.
+
+# Test Strategy:
+Test timer functionality, manual entry, and billing rate application. Verify case/task association.
+
+# Subtasks:
+## 1. Create Time Entry CoreData Model [pending]
+### Dependencies: None
+### Description: Design and implement the Time Entry model in CoreData with appropriate relationships to Case and Task entities
+### Details:
+Create a TimeEntry entity in the CoreData model with attributes for startTime, endTime, duration, billableStatus, notes, and billingRate. Set up relationships to Case and Task entities. Enable Persistent History Tracking for the CoreData store to track changes across the application
+
+## 2. Implement Timer Service [pending]
+### Dependencies: None
+### Description: Create a service to handle timer functionality including starting, pausing, and stopping time tracking
+### Details:
+Develop a TimerService class that manages active timers, handles background execution, and persists timer state. Implement methods for starting new timers, stopping active timers, and calculating duration. Initialize Core Data on a background queue to avoid blocking the UI thread during app startup
+
+## 3. Build Time Entry UI Components [pending]
+### Dependencies: None
+### Description: Create UI components for timer controls and manual time entry forms
+### Details:
+Design and implement UI components including a timer control panel with start/stop buttons, a running timer display, and forms for manual time entry and editing. Create a time entry list view that displays entries grouped by case and date
+
+## 4. Implement Billing Rate Application [pending]
+### Dependencies: None
+### Description: Create functionality to apply billing rates to time entries and calculate billable amounts
+### Details:
+Develop a BillingService that retrieves appropriate billing rates based on case type, staff member, or other criteria. Implement methods to calculate billable amounts based on duration and rate. Add UI components to display and edit billing information
+
+## 5. Integrate Time Tracking with Case Management [pending]
+### Dependencies: None
+### Description: Connect time tracking functionality with the existing case management system
+### Details:
+Modify case detail views to include time tracking sections. Implement filters and reports for time entries by case, date range, and billing status. Create summary views showing total hours and billable amounts per case. Ensure proper data synchronization using Core Data's persistent history tracking
+

@@ -1,4 +1,3 @@
-
 //
 //  FinancialDocumentProcessor.swift
 //  FinanceMate
@@ -25,71 +24,70 @@
 * Last Updated: 2025-06-02
 */
 
-import Foundation
-import Vision
-import SwiftUI
 import Combine
+import Foundation
 import PDFKit
+import SwiftUI
+import Vision
 
 // MARK: - Financial Document Processor
 
 @MainActor
 public class FinancialDocumentProcessor: ObservableObject {
-    
     // MARK: - Published Properties
-    
+
     @Published public var isProcessing: Bool = false
     @Published public var processingProgress: Double = 0.0
     @Published public var lastProcessedDocument: ProcessedFinancialDocument?
     @Published public var processingError: String?
-    
+
     // MARK: - Private Properties
-    
+
     private let ocrService: OCRService
     private let currencyFormatter: NumberFormatter
     private let dateDetector: NSDataDetector
-    
+
     // MARK: - Initialization
-    
+
     public init() {
         self.ocrService = OCRService()
-        
+
         // Configure currency formatter
         self.currencyFormatter = NumberFormatter()
         self.currencyFormatter.numberStyle = .currency
         self.currencyFormatter.currencyCode = "USD"
-        
+
         // Configure date detector
         self.dateDetector = try! NSDataDetector(types: NSTextCheckingResult.CheckingType.date.rawValue)
     }
-    
+
     // MARK: - Public Processing Methods
-    
+
     public func processFinancialDocument(url: URL) async -> Result<ProcessedFinancialDocument, FinancialProcessingError> {
         isProcessing = true
         processingProgress = 0.0
         processingError = nil
-        
+
         defer {
             Task { @MainActor in
                 isProcessing = false
                 processingProgress = 0.0
             }
         }
-        
+
         do {
             // Step 1: Detect document type (10%)
             await updateProgress(0.1)
             let documentType = detectFinancialDocumentType(from: url)
-            
+
             // Step 2: Extract text via OCR (40%)
             await updateProgress(0.4)
             let extractedText = try await extractTextFromDocument(url: url)
-            
+
             // Step 3: Classify and extract financial data (30%)
             await updateProgress(0.7)
             let financialData = await classifyFinancialData(text: extractedText, documentType: documentType)
-            
+
             // Step 4: Structure and validate results (20%)
             await updateProgress(0.9)
             let financialDocument = await createFinancialDocument(
@@ -98,41 +96,40 @@ public class FinancialDocumentProcessor: ObservableObject {
                 extractedText: extractedText,
                 financialData: financialData
             )
-            
+
             await updateProgress(1.0)
             lastProcessedDocument = financialDocument
-            
+
             return .success(financialDocument)
-            
         } catch {
             let processingError = FinancialProcessingError.processingFailed(error)
             self.processingError = processingError.localizedDescription
             return .failure(processingError)
         }
     }
-    
+
     public func batchProcessDocuments(urls: [URL]) async -> [Result<ProcessedFinancialDocument, FinancialProcessingError>] {
         var results: [Result<ProcessedFinancialDocument, FinancialProcessingError>] = []
         let totalDocuments = urls.count
-        
+
         for (index, url) in urls.enumerated() {
             let result = await processFinancialDocument(url: url)
             results.append(result)
-            
+
             // Update overall batch progress
             let batchProgress = Double(index + 1) / Double(totalDocuments)
             await updateProgress(batchProgress)
         }
-        
+
         return results
     }
-    
+
     // MARK: - Document Type Detection
-    
+
     private func detectFinancialDocumentType(from url: URL) -> ProcessedDocumentType {
         let fileName = url.lastPathComponent.lowercased()
         let pathExtension = url.pathExtension.lowercased()
-        
+
         // Check filename patterns first
         if fileName.contains("invoice") {
             return .invoice
@@ -145,7 +142,7 @@ public class FinancialDocumentProcessor: ObservableObject {
         } else if fileName.contains("expense") || fileName.contains("report") {
             return .expenseReport
         }
-        
+
         // Default based on file type
         switch pathExtension {
         case "pdf":
@@ -156,12 +153,12 @@ public class FinancialDocumentProcessor: ObservableObject {
             return .unknown
         }
     }
-    
+
     // MARK: - Text Extraction
-    
+
     private func extractTextFromDocument(url: URL) async throws -> String {
         let pathExtension = url.pathExtension.lowercased()
-        
+
         switch pathExtension {
         case "pdf":
             return extractTextFromPDF(url: url)
@@ -173,12 +170,12 @@ public class FinancialDocumentProcessor: ObservableObject {
             throw FinancialProcessingError.unsupportedFormat
         }
     }
-    
+
     private func extractTextFromPDF(url: URL) -> String {
         guard let pdfDocument = PDFDocument(url: url) else {
             return ""
         }
-        
+
         var extractedText = ""
         for pageIndex in 0..<pdfDocument.pageCount {
             if let page = pdfDocument.page(at: pageIndex) {
@@ -186,10 +183,10 @@ public class FinancialDocumentProcessor: ObservableObject {
                 extractedText += "\n"
             }
         }
-        
+
         return extractedText
     }
-    
+
     private func extractTextFromImage(url: URL) async throws -> String {
         do {
             let text = try await ocrService.extractText(from: url)
@@ -198,9 +195,9 @@ public class FinancialDocumentProcessor: ObservableObject {
             throw FinancialProcessingError.ocrFailed(error)
         }
     }
-    
+
     // MARK: - Financial Data Classification
-    
+
     private func classifyFinancialData(text: String, documentType: ProcessedDocumentType) async -> ProcessedFinancialData {
         let amounts = extractAmounts(from: text)
         let dates = extractDates(from: text)
@@ -208,7 +205,7 @@ public class FinancialDocumentProcessor: ObservableObject {
         let categories = classifyExpenseCategories(from: text)
         let lineItems = extractLineItems(from: text)
         let taxInfo = extractTaxInformation(from: text)
-        
+
         return ProcessedFinancialData(
             totalAmount: amounts.first,
             subTotal: findSubTotal(in: amounts),
@@ -225,12 +222,12 @@ public class FinancialDocumentProcessor: ObservableObject {
             confidence: calculateConfidence(text: text, extractedData: amounts.count + dates.count)
         )
     }
-    
+
     // MARK: - Data Extraction Methods
-    
+
     private func extractAmounts(from text: String) -> [ExtractedAmount] {
         var amounts: [ExtractedAmount] = []
-        
+
         // Regular expressions for different currency patterns
         let patterns = [
             #"\$[\d,]+\.?\d*"#,  // $1,234.56
@@ -238,11 +235,11 @@ public class FinancialDocumentProcessor: ObservableObject {
             #"[\d,]+\.?\d*\s*USD"#,  // 1234.56 USD
             #"\b\d{1,3}(?:,\d{3})*(?:\.\d{2})?\b"#  // 1,234.56
         ]
-        
+
         for pattern in patterns {
             let regex = try! NSRegularExpression(pattern: pattern, options: .caseInsensitive)
             let matches = regex.matches(in: text, range: NSRange(text.startIndex..., in: text))
-            
+
             for match in matches {
                 if let range = Range(match.range, in: text) {
                     let amountString = String(text[range])
@@ -252,36 +249,36 @@ public class FinancialDocumentProcessor: ObservableObject {
                 }
             }
         }
-        
+
         return amounts.sorted { $0.value > $1.value } // Largest amounts first
     }
-    
+
     private func parseAmount(from string: String) -> ExtractedAmount? {
         let cleanedString = string
             .replacingOccurrences(of: "$", with: "")
             .replacingOccurrences(of: "USD", with: "")
             .replacingOccurrences(of: ",", with: "")
             .trimmingCharacters(in: .whitespaces)
-        
+
         guard let value = Double(cleanedString) else { return nil }
-        
+
         return ExtractedAmount(
             value: value,
             currency: "USD",
             formattedString: string.trimmingCharacters(in: .whitespaces)
         )
     }
-    
+
     private func extractDates(from text: String) -> [ExtractedDate] {
         var financialDates: [ExtractedDate] = []
         let matches = dateDetector.matches(in: text, range: NSRange(text.startIndex..., in: text))
-        
+
         for match in matches {
             if let date = match.date,
                let range = Range(match.range, in: text) {
                 let context = String(text[range])
                 let dateType = classifyDateType(context: context, text: text)
-                
+
                 financialDates.append(ExtractedDate(
                     date: date,
                     type: dateType,
@@ -289,14 +286,14 @@ public class FinancialDocumentProcessor: ObservableObject {
                 ))
             }
         }
-        
+
         return financialDates
     }
-    
+
     private func classifyDateType(context: String, text: String) -> ExtractedDateType {
         let lowerContext = context.lowercased()
         let surroundingText = text.lowercased()
-        
+
         if lowerContext.contains("due") || surroundingText.contains("due date") {
             return .dueDate
         } else if lowerContext.contains("invoice") || surroundingText.contains("invoice date") {
@@ -309,25 +306,25 @@ public class FinancialDocumentProcessor: ObservableObject {
             return .transactionDate
         }
     }
-    
+
     private func extractVendors(from text: String, documentType: ProcessedDocumentType) -> [ExtractedVendor] {
         var vendors: [ExtractedVendor] = []
-        
+
         // Common vendor patterns
         let patterns = [
             #"(?:FROM|BILL TO|VENDOR):\s*([^\n]+)"#,
             #"^([A-Z][A-Za-z\s&]+(?:LLC|Inc|Corp|Co\.)?)"#
         ]
-        
+
         for pattern in patterns {
             let regex = try! NSRegularExpression(pattern: pattern, options: [.anchorsMatchLines, .caseInsensitive])
             let matches = regex.matches(in: text, range: NSRange(text.startIndex..., in: text))
-            
+
             for match in matches {
                 if match.numberOfRanges > 1,
                    let range = Range(match.range(at: 1), in: text) {
                     let vendorName = String(text[range]).trimmingCharacters(in: .whitespacesAndNewlines)
-                    
+
                     if !vendorName.isEmpty && vendorName.count > 2 {
                         vendors.append(ExtractedVendor(
                             name: vendorName,
@@ -338,14 +335,14 @@ public class FinancialDocumentProcessor: ObservableObject {
                 }
             }
         }
-        
+
         return vendors
     }
-    
+
     private func extractVendorAddress(near vendorName: String, in text: String) -> String? {
         // Simple address extraction - look for lines after vendor name
         let lines = text.components(separatedBy: .newlines)
-        
+
         for (index, line) in lines.enumerated() {
             if line.contains(vendorName) && index + 1 < lines.count {
                 let nextLine = lines[index + 1].trimmingCharacters(in: .whitespaces)
@@ -357,25 +354,25 @@ public class FinancialDocumentProcessor: ObservableObject {
                 }
             }
         }
-        
+
         return nil
     }
-    
+
     private func extractTaxId(near vendorName: String, in text: String) -> String? {
         let taxIdPattern = #"(?:Tax ID|TIN|EIN):\s*(\d{2}-\d{7})"#
         let regex = try! NSRegularExpression(pattern: taxIdPattern, options: .caseInsensitive)
         let matches = regex.matches(in: text, range: NSRange(text.startIndex..., in: text))
-        
+
         for match in matches {
             if match.numberOfRanges > 1,
                let range = Range(match.range(at: 1), in: text) {
                 return String(text[range])
             }
         }
-        
+
         return nil
     }
-    
+
     private func classifyExpenseCategories(from text: String) -> [ExtractedExpenseCategory] {
         let categoryKeywords: [ExtractedExpenseCategory: [String]] = [
             .office: ["office", "supplies", "paper", "pen", "stapler", "desk"],
@@ -389,10 +386,10 @@ public class FinancialDocumentProcessor: ObservableObject {
             .maintenance: ["repair", "maintenance", "cleaning", "service"],
             .insurance: ["insurance", "premium", "coverage", "policy"]
         ]
-        
+
         var detectedCategories: [ExtractedExpenseCategory] = []
         let lowerText = text.lowercased()
-        
+
         for (category, keywords) in categoryKeywords {
             for keyword in keywords {
                 if lowerText.contains(keyword) {
@@ -401,30 +398,30 @@ public class FinancialDocumentProcessor: ObservableObject {
                 }
             }
         }
-        
+
         return detectedCategories.isEmpty ? [.other] : Array(Set(detectedCategories))
     }
-    
+
     private func extractLineItems(from text: String) -> [ExtractedLineItem] {
         var lineItems: [ExtractedLineItem] = []
         let lines = text.components(separatedBy: .newlines)
-        
+
         for line in lines {
             // Look for lines with quantities, descriptions, and amounts
             let lineItemPattern = #"(.+?)\s+(\d+(?:\.\d+)?)\s+(\$?[\d,]+\.?\d*)"#
             let regex = try! NSRegularExpression(pattern: lineItemPattern)
             let matches = regex.matches(in: line, range: NSRange(line.startIndex..., in: line))
-            
+
             for match in matches {
                 if match.numberOfRanges == 4 {
                     let descriptionRange = Range(match.range(at: 1), in: line)!
                     let quantityRange = Range(match.range(at: 2), in: line)!
                     let amountRange = Range(match.range(at: 3), in: line)!
-                    
+
                     let description = String(line[descriptionRange]).trimmingCharacters(in: .whitespaces)
                     let quantityString = String(line[quantityRange])
                     let amountString = String(line[amountRange])
-                    
+
                     if let quantity = Double(quantityString),
                        let amount = parseAmount(from: amountString) {
                         lineItems.append(ExtractedLineItem(
@@ -438,13 +435,13 @@ public class FinancialDocumentProcessor: ObservableObject {
                 }
             }
         }
-        
+
         return lineItems
     }
-    
+
     private func classifyItemCategory(description: String) -> ExtractedExpenseCategory {
         let lowerDescription = description.lowercased()
-        
+
         if lowerDescription.contains("software") || lowerDescription.contains("license") {
             return .software
         } else if lowerDescription.contains("travel") || lowerDescription.contains("flight") {
@@ -457,35 +454,35 @@ public class FinancialDocumentProcessor: ObservableObject {
             return .other
         }
     }
-    
+
     private func extractTaxInformation(from text: String) -> ExtractedTaxInfo {
         var taxAmount: ExtractedAmount?
         var taxRate: Double?
         let taxId: String? = nil
-        
+
         // Extract tax amount
         let taxAmountPattern = #"(?:Tax|VAT|GST):\s*\$?([\d,]+\.?\d*)"#
         let taxRegex = try! NSRegularExpression(pattern: taxAmountPattern, options: .caseInsensitive)
         let taxMatches = taxRegex.matches(in: text, range: NSRange(text.startIndex..., in: text))
-        
+
         if let match = taxMatches.first,
            match.numberOfRanges > 1,
            let range = Range(match.range(at: 1), in: text) {
             let amountString = String(text[range])
             taxAmount = parseAmount(from: amountString)
         }
-        
+
         // Extract tax rate
         let taxRatePattern = #"(\d+(?:\.\d+)?)\s*%"#
         let rateRegex = try! NSRegularExpression(pattern: taxRatePattern)
         let rateMatches = rateRegex.matches(in: text, range: NSRange(text.startIndex..., in: text))
-        
+
         if let match = rateMatches.first,
            let range = Range(match.range(at: 1), in: text) {
             let rateString = String(text[range])
             taxRate = Double(rateString)
         }
-        
+
         return ExtractedTaxInfo(
             taxAmount: taxAmount,
             taxRate: taxRate,
@@ -493,107 +490,107 @@ public class FinancialDocumentProcessor: ObservableObject {
             isTaxExempt: text.lowercased().contains("tax exempt")
         )
     }
-    
+
     // MARK: - Helper Methods
-    
+
     private func findSubTotal(in amounts: [ExtractedAmount]) -> ExtractedAmount? {
         // Usually the second largest amount is subtotal
-        return amounts.count > 1 ? amounts[1] : nil
+        amounts.count > 1 ? amounts[1] : nil
     }
-    
+
     private func findDiscount(in text: String) -> ExtractedAmount? {
         let discountPattern = #"(?:Discount|Savings):\s*\$?([\d,]+\.?\d*)"#
         let regex = try! NSRegularExpression(pattern: discountPattern, options: .caseInsensitive)
         let matches = regex.matches(in: text, range: NSRange(text.startIndex..., in: text))
-        
+
         if let match = matches.first,
            match.numberOfRanges > 1,
            let range = Range(match.range(at: 1), in: text) {
             let amountString = String(text[range])
             return parseAmount(from: amountString)
         }
-        
+
         return nil
     }
-    
+
     private func extractCurrency(from text: String) -> String? {
         let currencyPattern = #"([A-Z]{3})\s*[\d,]+"#
         let regex = try! NSRegularExpression(pattern: currencyPattern)
         let matches = regex.matches(in: text, range: NSRange(text.startIndex..., in: text))
-        
+
         if let match = matches.first,
            match.numberOfRanges > 1,
            let range = Range(match.range(at: 1), in: text) {
             return String(text[range])
         }
-        
+
         return nil
     }
-    
+
     private func extractInvoiceNumber(from text: String) -> String? {
         let invoicePattern = #"(?:Invoice|INV)(?:\s*#?):\s*([A-Z0-9-]+)"#
         let regex = try! NSRegularExpression(pattern: invoicePattern, options: .caseInsensitive)
         let matches = regex.matches(in: text, range: NSRange(text.startIndex..., in: text))
-        
+
         if let match = matches.first,
            match.numberOfRanges > 1,
            let range = Range(match.range(at: 1), in: text) {
             return String(text[range])
         }
-        
+
         return nil
     }
-    
+
     private func extractCustomerInfo(from text: String) -> ExtractedCustomer? {
         let customerPattern = #"(?:Bill To|Customer):\s*([^\n]+)"#
         let regex = try! NSRegularExpression(pattern: customerPattern, options: .caseInsensitive)
         let matches = regex.matches(in: text, range: NSRange(text.startIndex..., in: text))
-        
+
         if let match = matches.first,
            match.numberOfRanges > 1,
            let range = Range(match.range(at: 1), in: text) {
             let customerName = String(text[range]).trimmingCharacters(in: .whitespacesAndNewlines)
             return ExtractedCustomer(name: customerName, address: nil, email: nil)
         }
-        
+
         return nil
     }
-    
+
     private func extractPaymentTerms(from text: String) -> String? {
         let termsPattern = #"(?:Payment Terms|Terms):\s*([^\n]+)"#
         let regex = try! NSRegularExpression(pattern: termsPattern, options: .caseInsensitive)
         let matches = regex.matches(in: text, range: NSRange(text.startIndex..., in: text))
-        
+
         if let match = matches.first,
            match.numberOfRanges > 1,
            let range = Range(match.range(at: 1), in: text) {
             return String(text[range]).trimmingCharacters(in: .whitespacesAndNewlines)
         }
-        
+
         return nil
     }
-    
+
     private func calculateConfidence(text: String, extractedData: Int) -> Double {
         let textLength = text.count
         let hasAmounts = extractedData > 0
         let hasVendor = text.lowercased().contains("invoice") || text.lowercased().contains("receipt")
-        
+
         var confidence = 0.3 // Base confidence
-        
+
         if hasAmounts { confidence += 0.3 }
         if hasVendor { confidence += 0.2 }
         if textLength > 200 { confidence += 0.2 }
-        
+
         return min(confidence, 1.0)
     }
-    
+
     private func createFinancialDocument(
         url: URL,
         documentType: ProcessedDocumentType,
         extractedText: String,
         financialData: ProcessedFinancialData
     ) async -> ProcessedFinancialDocument {
-        return ProcessedFinancialDocument(
+        ProcessedFinancialDocument(
             id: UUID(),
             originalURL: url,
             documentType: documentType,
@@ -604,7 +601,7 @@ public class FinancialDocumentProcessor: ObservableObject {
             lastModified: Date()
         )
     }
-    
+
     private func updateProgress(_ progress: Double) async {
         await MainActor.run {
             self.processingProgress = progress
@@ -623,7 +620,7 @@ public struct ProcessedFinancialDocument: Identifiable, Codable {
     public let processingStatus: DocumentProcessingStatus
     public let processedDate: Date
     public let lastModified: Date
-    
+
     public init(id: UUID, originalURL: URL, documentType: ProcessedDocumentType, extractedText: String, financialData: ProcessedFinancialData, processingStatus: DocumentProcessingStatus, processedDate: Date, lastModified: Date) {
         self.id = id
         self.originalURL = originalURL
@@ -644,7 +641,7 @@ public enum ProcessedDocumentType: String, CaseIterable, Codable {
     case expenseReport = "Expense Report"
     case contract = "Contract"
     case unknown = "Unknown"
-    
+
     public var icon: String {
         switch self {
         case .invoice: return "doc.text.fill"
@@ -656,7 +653,7 @@ public enum ProcessedDocumentType: String, CaseIterable, Codable {
         case .unknown: return "questionmark.square"
         }
     }
-    
+
     public var color: Color {
         switch self {
         case .invoice: return .orange
@@ -684,7 +681,7 @@ public struct ProcessedFinancialData: Codable {
     public let categories: [ExtractedExpenseCategory]
     public let paymentTerms: String?
     public let confidence: Double
-    
+
     public init(totalAmount: ExtractedAmount?, subTotal: ExtractedAmount?, taxAmount: ExtractedAmount?, discountAmount: ExtractedAmount?, currencyCode: String, invoiceNumber: String?, vendor: ExtractedVendor?, customerInfo: ExtractedCustomer?, dates: [ExtractedDate], lineItems: [ExtractedLineItem], categories: [ExtractedExpenseCategory], paymentTerms: String?, confidence: Double) {
         self.totalAmount = totalAmount
         self.subTotal = subTotal
@@ -706,7 +703,7 @@ public struct ExtractedAmount: Codable {
     public let value: Double
     public let currency: String
     public let formattedString: String
-    
+
     public init(value: Double, currency: String, formattedString: String) {
         self.value = value
         self.currency = currency
@@ -718,7 +715,7 @@ public struct ExtractedVendor: Codable {
     public let name: String
     public let address: String?
     public let taxId: String?
-    
+
     public init(name: String, address: String?, taxId: String?) {
         self.name = name
         self.address = address
@@ -730,7 +727,7 @@ public struct ExtractedCustomer: Codable {
     public let name: String
     public let address: String?
     public let email: String?
-    
+
     public init(name: String, address: String?, email: String?) {
         self.name = name
         self.address = address
@@ -742,7 +739,7 @@ public struct ExtractedDate: Codable {
     public let date: Date
     public let type: ExtractedDateType
     public let context: String
-    
+
     public init(date: Date, type: ExtractedDateType, context: String) {
         self.date = date
         self.type = type
@@ -764,7 +761,7 @@ public struct ExtractedLineItem: Codable {
     public let unitPrice: Double
     public let totalAmount: ExtractedAmount
     public let category: ExtractedExpenseCategory
-    
+
     public init(description: String, quantity: Double, unitPrice: Double, totalAmount: ExtractedAmount, category: ExtractedExpenseCategory) {
         self.description = description
         self.quantity = quantity
@@ -786,7 +783,7 @@ public enum ExtractedExpenseCategory: String, CaseIterable, Codable {
     case maintenance = "Maintenance"
     case insurance = "Insurance"
     case other = "Other"
-    
+
     public var icon: String {
         switch self {
         case .office: return "pencil.and.outline"
@@ -809,7 +806,7 @@ public struct ExtractedTaxInfo: Codable {
     public let taxRate: Double?
     public let taxId: String?
     public let isTaxExempt: Bool
-    
+
     public init(taxAmount: ExtractedAmount?, taxRate: Double?, taxId: String?, isTaxExempt: Bool) {
         self.taxAmount = taxAmount
         self.taxRate = taxRate
@@ -824,7 +821,7 @@ public enum FinancialProcessingError: Error, LocalizedError {
     case unsupportedFormat
     case invalidDocument
     case extractionFailed
-    
+
     public var errorDescription: String? {
         switch self {
         case .processingFailed(let error):
@@ -840,4 +837,3 @@ public enum FinancialProcessingError: Error, LocalizedError {
         }
     }
 }
-

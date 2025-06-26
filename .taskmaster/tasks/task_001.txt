@@ -1,0 +1,43 @@
+# Task ID: 1
+# Title: Setup Project Repository and Initial Structure
+# Status: pending
+# Dependencies: None
+# Priority: high
+# Description: Initialize the project repository with Swift/SwiftUI, set up Xcode project, and define basic folder structure for MVVM architecture.
+# Details:
+Create a new Xcode project targeting macOS 13.0+. Set up folders for Models, Views, ViewModels, Services, and Utilities. Initialize Git repository and add basic README and .gitignore. Configure Swift 5.5+ and SwiftUI 3+ as minimum requirements.
+
+# Test Strategy:
+Verify project builds and runs on macOS 13.0+. Check folder structure and Xcode project settings.
+
+# Subtasks:
+## 1. Initialize Xcode Project with Basic Configuration [pending]
+### Dependencies: None
+### Description: Create a new Xcode project with SwiftUI template targeting macOS 13.0+ and configure the basic project settings.
+### Details:
+Launch Xcode and create a new project using the SwiftUI App template. Set the deployment target to macOS 13.0+. Configure Swift 5.5+ as the language version. Set up the app's bundle identifier, team, and initial capabilities. Ensure SwiftUI 3+ is selected as the framework.
+
+## 2. Implement MVVM Folder Structure [pending]
+### Dependencies: 1.1
+### Description: Organize the project with a proper MVVM architecture folder structure to separate concerns and improve maintainability.
+### Details:
+Create main group folders for Models, Views, ViewModels, Services, and Utilities. Within the Views folder, create subfolders for different UI components or screens. Set up a Resources folder for assets, localization files, and other non-code resources. Move existing template files to their appropriate locations in the new structure.
+
+## 3. Initialize Git Repository with Configuration Files [pending]
+### Dependencies: 1.2
+### Description: Set up version control for the project with proper Git configuration and documentation.
+### Details:
+Initialize a Git repository in the project root. Create a comprehensive README.md file describing the project structure, architecture, and setup instructions. Add a .gitignore file tailored for Swift/Xcode projects to exclude build artifacts, user-specific files, and dependencies. Create an initial commit with the basic project structure.
+
+## 4. Configure Build Settings and Environment [pending]
+### Dependencies: 1.1
+### Description: Set up proper build configurations for development and production environments.
+### Details:
+Create Debug and Release configuration files. Configure build settings for different environments including compiler optimizations, debug information, and conditional compilation flags. Set up scheme configurations for development, testing, and production. Configure code signing settings for development and distribution.
+
+## 5. Implement Basic App Architecture Components [pending]
+### Dependencies: 1.2
+### Description: Create template files for core MVVM components to establish the architectural foundation.
+### Details:
+Create a base Model protocol and example model implementation. Implement a basic ViewModel protocol with common functionality. Set up a sample View that connects to a ViewModel. Create a Services folder with a basic service protocol and implementation example. Add a DependencyInjection container or service locator to manage dependencies between components.
+

@@ -5,7 +5,6 @@
 //  Created by Assistant on 6/2/25.
 //
 
-
 /*
 * Purpose: Specialized monitoring for financial processing workflows with crash detection and recovery
 * Issues & Complexity Summary: Financial-specific monitoring with transaction safety and crash prevention
@@ -25,82 +24,81 @@
 * Last Updated: 2025-06-02
 */
 
-import Foundation
-import SwiftUI
-import os
 import Combine
+import Foundation
+import os
 import OSLog
+import SwiftUI
 
 // MARK: - Financial Workflow Monitor
 
 public class FinancialWorkflowMonitor: ObservableObject {
-    
     // MARK: - Published Properties
-    
+
     public let workflowCrashDetected = PassthroughSubject<FinancialWorkflowCrashEvent, Never>()
     @Published public var activeWorkflows: [ActiveWorkflow] = []
     @Published public var workflowHealth: WorkflowHealth = .healthy
-    
+
     // MARK: - Private Properties
-    
+
     private let logger = os.Logger(subsystem: "com.financemate.workflowmonitor", category: "monitoring")
     private var isMonitoring = false
     private var monitoringTimer: Timer?
-    
+
     // Workflow tracking
     private var activeDocuments: Set<String> = []
     private var pendingTransactions: [String: FinancialWorkflowTransaction] = [:]
     private var workflowHistory: [WorkflowEvent] = []
     private var lastSuccessfulOperation: Date?
     private var currentOperationStartTime: Date?
-    
+
     // Error tracking
     private var documentProcessingErrors = 0
     private var impactedTransactionCount = 0
-    
+
     // MARK: - Initialization
-    
+
     public init() {
         setupWorkflowMonitoring()
     }
-    
+
     private func setupWorkflowMonitoring() {
         logger.info("💰 Setting up financial workflow monitoring")
     }
-    
+
     // MARK: - Public Interface
-    
+
     public func startMonitoring() {
         guard !isMonitoring else { return }
-        
+
         logger.info("🚀 Starting financial workflow monitoring")
         isMonitoring = true
-        
+
         monitoringTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { [weak self] _ in
             self?.performWorkflowHealthCheck()
         }
-        
+
         logger.info("✅ Financial workflow monitoring active")
     }
-    
+
     public func stopMonitoring() {
         guard isMonitoring else { return }
-        
+
         logger.info("⏹️ Stopping financial workflow monitoring")
         isMonitoring = false
-        
+
         monitoringTimer?.invalidate()
         monitoringTimer = nil
-        
+
         logger.info("🔴 Financial workflow monitoring stopped")
     }
-    
+
     // MARK: - Workflow Tracking
-    
+
     public func startDocumentProcessing(_ documentId: String, type: FinancialWorkflowType) {
         activeDocuments.insert(documentId)
         currentOperationStartTime = Date()
-        
+
         let workflow = ActiveWorkflow(
             id: documentId,
             type: type,
@@ -109,19 +107,19 @@ public class FinancialWorkflowMonitor: ObservableObject {
             documentsProcessed: 1,
             transactionsProcessed: 0
         )
-        
+
         DispatchQueue.main.async {
             self.activeWorkflows.append(workflow)
         }
-        
+
         logWorkflowEvent(.started, workflowType: type, details: ["documentId": documentId])
-        
+
         logger.info("📄 Started processing document: \(documentId) (\(type.rawValue))")
     }
-    
+
     public func finishDocumentProcessing(_ documentId: String, success: Bool, transactionCount: Int = 0) {
         activeDocuments.remove(documentId)
-        
+
         if success {
             lastSuccessfulOperation = Date()
             logWorkflowEvent(.completed, workflowType: .documentProcessing, details: [
@@ -131,13 +129,13 @@ public class FinancialWorkflowMonitor: ObservableObject {
         } else {
             documentProcessingErrors += 1
             impactedTransactionCount += transactionCount
-            
+
             logWorkflowEvent(.failed, workflowType: .documentProcessing, details: [
                 "documentId": documentId,
                 "transactionCount": "\(transactionCount)",
                 "error": "ProcessingFailed"
             ])
-            
+
             // Trigger workflow crash event for failures
             triggerWorkflowCrash(
                 type: .documentProcessing,
@@ -147,19 +145,19 @@ public class FinancialWorkflowMonitor: ObservableObject {
                 error: FinancialWorkflowError.documentProcessingFailed(documentId)
             )
         }
-        
+
         // Update active workflows
         DispatchQueue.main.async {
             self.activeWorkflows.removeAll { $0.id == documentId }
         }
-        
+
         currentOperationStartTime = nil
         logger.info("✅ Finished processing document: \(documentId) - Success: \(success)")
     }
-    
+
     public func startTransactionAnalysis(_ transactionId: String, transaction: FinancialWorkflowTransaction) {
         pendingTransactions[transactionId] = transaction
-        
+
         let workflow = ActiveWorkflow(
             id: transactionId,
             type: .transactionAnalysis,
@@ -168,19 +166,19 @@ public class FinancialWorkflowMonitor: ObservableObject {
             documentsProcessed: 0,
             transactionsProcessed: 1
         )
-        
+
         DispatchQueue.main.async {
             self.activeWorkflows.append(workflow)
         }
-        
+
         logWorkflowEvent(.started, workflowType: .transactionAnalysis, details: ["transactionId": transactionId])
-        
+
         logger.info("💳 Started analyzing transaction: \(transactionId)")
     }
-    
+
     public func finishTransactionAnalysis(_ transactionId: String, success: Bool) {
         pendingTransactions.removeValue(forKey: transactionId)
-        
+
         if success {
             lastSuccessfulOperation = Date()
             logWorkflowEvent(.completed, workflowType: .transactionAnalysis, details: ["transactionId": transactionId])
@@ -190,7 +188,7 @@ public class FinancialWorkflowMonitor: ObservableObject {
                 "transactionId": transactionId,
                 "error": "AnalysisFailed"
             ])
-            
+
             triggerWorkflowCrash(
                 type: .transactionAnalysis,
                 function: "finishTransactionAnalysis",
@@ -199,20 +197,20 @@ public class FinancialWorkflowMonitor: ObservableObject {
                 error: FinancialWorkflowError.transactionAnalysisFailed(transactionId)
             )
         }
-        
+
         // Update active workflows
         DispatchQueue.main.async {
             self.activeWorkflows.removeAll { $0.id == transactionId }
         }
-        
+
         logger.info("✅ Finished analyzing transaction: \(transactionId) - Success: \(success)")
     }
-    
+
     public func reportAnalyticsEngineIssue(_ error: Error) {
         logWorkflowEvent(.failed, workflowType: .analyticsEngine, details: [
             "error": error.localizedDescription
         ])
-        
+
         triggerWorkflowCrash(
             type: .analyticsEngine,
             function: "reportAnalyticsEngineIssue",
@@ -220,31 +218,31 @@ public class FinancialWorkflowMonitor: ObservableObject {
             transactionsBeingProcessed: pendingTransactions.count,
             error: error
         )
-        
+
         logger.error("🔥 Analytics engine issue reported: \(error.localizedDescription)")
     }
-    
+
     // MARK: - Health Monitoring
-    
+
     private func performWorkflowHealthCheck() {
         guard isMonitoring else { return }
-        
+
         checkForStalledWorkflows()
         updateWorkflowHealth()
         checkForMemoryLeaksInWorkflows()
         validateTransactionIntegrity()
     }
-    
+
     private func checkForStalledWorkflows() {
         let currentTime = Date()
         let stalledThreshold: TimeInterval = 300 // 5 minutes
-        
+
         for workflow in activeWorkflows {
             let duration = currentTime.timeIntervalSince(workflow.startTime)
-            
+
             if duration > stalledThreshold {
                 logger.warning("⚠️ Stalled workflow detected: \(workflow.id) (\(workflow.type.rawValue))")
-                
+
                 triggerWorkflowCrash(
                     type: workflow.type,
                     function: "checkForStalledWorkflows",
@@ -255,13 +253,13 @@ public class FinancialWorkflowMonitor: ObservableObject {
             }
         }
     }
-    
+
     private func updateWorkflowHealth() {
         let activeWorkflowCount = activeWorkflows.count
         let recentErrors = countRecentErrors()
-        
+
         let health: WorkflowHealth
-        
+
         if recentErrors > 5 || activeWorkflowCount > 10 {
             health = .critical
         } else if recentErrors > 2 || activeWorkflowCount > 5 {
@@ -271,17 +269,17 @@ public class FinancialWorkflowMonitor: ObservableObject {
         } else {
             health = .healthy
         }
-        
+
         DispatchQueue.main.async {
             self.workflowHealth = health
         }
     }
-    
+
     private func checkForMemoryLeaksInWorkflows() {
         // Check if workflows are accumulating without completion
         if activeWorkflows.count > 20 {
             logger.warning("⚠️ Potential memory leak: Too many active workflows (\(self.activeWorkflows.count))")
-            
+
             triggerWorkflowCrash(
                 type: .documentProcessing,
                 function: "checkForMemoryLeaksInWorkflows",
@@ -291,13 +289,13 @@ public class FinancialWorkflowMonitor: ObservableObject {
             )
         }
     }
-    
+
     private func validateTransactionIntegrity() {
         // Check for transaction data integrity issues
         for (transactionId, transaction) in pendingTransactions {
             if !isTransactionValid(transaction) {
                 logger.error("💥 Transaction integrity violation: \(transactionId)")
-                
+
                 triggerWorkflowCrash(
                     type: .transactionAnalysis,
                     function: "validateTransactionIntegrity",
@@ -308,11 +306,10 @@ public class FinancialWorkflowMonitor: ObservableObject {
             }
         }
     }
-    
+
     // MARK: - Crash Event Handling
-    
+
     private func triggerWorkflowCrash(type: FinancialWorkflowType, function: String, documentsBeingProcessed: Int, transactionsBeingProcessed: Int, error: Error) {
-        
         let crashEvent = FinancialWorkflowCrashEvent(
             timestamp: Date(),
             workflowType: type,
@@ -322,42 +319,42 @@ public class FinancialWorkflowMonitor: ObservableObject {
             stackTrace: generateStackTrace(),
             error: error
         )
-        
+
         logger.critical("💥 Financial workflow crash: \(type.rawValue) in \(function)")
-        
+
         DispatchQueue.main.async {
             self.workflowCrashDetected.send(crashEvent)
         }
     }
-    
+
     // MARK: - Data Access Methods
-    
+
     public func getActiveDocumentCount() -> Int {
-        return activeDocuments.count
+        activeDocuments.count
     }
-    
+
     public func getPendingTransactionCount() -> Int {
-        return pendingTransactions.count
+        pendingTransactions.count
     }
-    
+
     public func getLastSuccessfulOperation() -> Date? {
-        return lastSuccessfulOperation
+        lastSuccessfulOperation
     }
-    
+
     public func getCurrentOperationStartTime() -> Date? {
-        return currentOperationStartTime
+        currentOperationStartTime
     }
-    
+
     public func getDocumentProcessingErrors() -> Int {
-        return documentProcessingErrors
+        documentProcessingErrors
     }
-    
+
     public func getImpactedTransactionCount() -> Int {
-        return impactedTransactionCount
+        impactedTransactionCount
     }
-    
+
     // MARK: - Helper Methods
-    
+
     private func logWorkflowEvent(_ eventType: WorkflowEventType, workflowType: FinancialWorkflowType, details: [String: String]) {
         let event = WorkflowEvent(
             timestamp: Date(),
@@ -365,31 +362,31 @@ public class FinancialWorkflowMonitor: ObservableObject {
             workflowType: workflowType,
             details: details
         )
-        
+
         workflowHistory.append(event)
-        
+
         // Trim history if needed
         if workflowHistory.count > 100 {
             workflowHistory.removeFirst(workflowHistory.count - 100)
         }
     }
-    
+
     private func countRecentErrors() -> Int {
         let oneHourAgo = Date().addingTimeInterval(-3600)
         return workflowHistory.filter { event in
             event.type == .failed && event.timestamp > oneHourAgo
         }.count
     }
-    
+
     private func isTransactionValid(_ transaction: FinancialWorkflowTransaction) -> Bool {
         // Basic transaction validation
-        return !transaction.id.isEmpty && 
-               transaction.amount != 0.0 && 
+        !transaction.id.isEmpty &&
+               transaction.amount != 0.0 &&
                !transaction.description.isEmpty
     }
-    
+
     private func generateStackTrace() -> [String] {
-        return [
+        [
             "FinancialWorkflowMonitor.triggerWorkflowCrash",
             "FinancialWorkflowMonitor.performWorkflowHealthCheck",
             "Timer.scheduledTimer",
@@ -407,7 +404,7 @@ public struct ActiveWorkflow: Identifiable {
     public let status: WorkflowStatus
     public let documentsProcessed: Int
     public let transactionsProcessed: Int
-    
+
     public init(id: String, type: FinancialWorkflowType, startTime: Date, status: WorkflowStatus, documentsProcessed: Int, transactionsProcessed: Int) {
         self.id = id
         self.type = type
@@ -424,7 +421,7 @@ public struct FinancialWorkflowTransaction {
     public let description: String
     public let category: String
     public let timestamp: Date
-    
+
     public init(id: String, amount: Double, description: String, category: String, timestamp: Date = Date()) {
         self.id = id
         self.amount = amount
@@ -439,7 +436,7 @@ public struct WorkflowEvent {
     public let type: WorkflowEventType
     public let workflowType: FinancialWorkflowType
     public let details: [String: String]
-    
+
     public init(timestamp: Date, type: WorkflowEventType, workflowType: FinancialWorkflowType, details: [String: String]) {
         self.timestamp = timestamp
         self.type = type
@@ -462,7 +459,7 @@ public enum WorkflowHealth: String, CaseIterable {
     case warning = "warning"
     case degraded = "degraded"
     case critical = "critical"
-    
+
     public var color: Color {
         switch self {
         case .healthy: return .green
@@ -486,7 +483,7 @@ public enum FinancialWorkflowError: Error, LocalizedError {
     case workflowStalled(String, TimeInterval)
     case memoryLeakDetected(Int)
     case transactionIntegrityViolation(String)
-    
+
     public var errorDescription: String? {
         switch self {
         case .documentProcessingFailed(let documentId):

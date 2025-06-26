@@ -49,7 +49,7 @@
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.productivity</string>
 	<key>LSMinimumSystemVersion</key>
-	<string>14.0</string>
+	<string>13.5</string>
 	<key>LSRequiresNativeExecution</key>
 	<true/>
 	<key>NSAccentColorName</key>

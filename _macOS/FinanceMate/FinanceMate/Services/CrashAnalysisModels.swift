@@ -2,9 +2,8 @@
 //  CrashAnalysisModels.swift
 //  FinanceMate
 //
-//  Created by Assistant on 6/2/25.
+//  Created by Assistant on 6/26/25.
 //
-
 
 /*
 * Purpose: Comprehensive data models for crash analysis and monitoring system integration with financial workflows
@@ -22,7 +21,7 @@
 * Final Code Complexity (Actual %): 78%
 * Overall Result Score (Success & Quality %): 92%
 * Key Variances/Learnings: Comprehensive model design enables robust crash monitoring and financial workflow integration
-* Last Updated: 2025-06-02
+* Last Updated: 2025-06-26
 */
 
 import Foundation
@@ -36,7 +35,7 @@ public struct CrashEvent {
     public let severity: CrashSeverity
     public let context: CrashContext
     public let metadata: [String: String]
-    
+
     public init(timestamp: Date, type: CrashType, severity: CrashSeverity, context: CrashContext, metadata: [String: String] = [:]) {
         self.timestamp = timestamp
         self.type = type
@@ -56,7 +55,7 @@ public struct CrashReport: Identifiable {
     public let financialOperationState: FinancialOperationState
     public let recoveryActions: [RecoveryAction]
     public let metadata: [String: String]
-    
+
     public init(id: UUID, timestamp: Date, type: CrashType, severity: CrashSeverity, context: CrashContext, systemState: SystemState, financialOperationState: FinancialOperationState, recoveryActions: [RecoveryAction], metadata: [String: String]) {
         self.id = id
         self.timestamp = timestamp
@@ -76,7 +75,7 @@ public struct CrashContext {
     public let threadInfo: ThreadInfo
     public let memoryUsage: CrashMemoryUsage
     public let stackTrace: [String]
-    
+
     public init(module: String, function: String, threadInfo: ThreadInfo, memoryUsage: CrashMemoryUsage, stackTrace: [String]) {
         self.module = module
         self.function = function
@@ -89,7 +88,7 @@ public struct CrashContext {
 public struct ThreadInfo {
     public let id: String
     public let isMain: Bool
-    
+
     public init(id: String, isMain: Bool) {
         self.id = id
         self.isMain = isMain
@@ -107,7 +106,7 @@ public struct SystemState {
     public let openFileDescriptors: Int
     public let systemVersion: String
     public let appVersion: String
-    
+
     public init(timestamp: Date, memoryUsage: CrashMemoryUsage, cpuUsage: Double, diskSpace: UInt64, activeThreads: Int, openFileDescriptors: Int, systemVersion: String, appVersion: String) {
         self.timestamp = timestamp
         self.memoryUsage = memoryUsage
@@ -126,7 +125,7 @@ public struct CrashMemoryUsage {
     public let availableMemory: UInt64
     public let swapUsed: UInt64
     public let peakMemoryUsage: UInt64
-    
+
     public init(totalMemory: UInt64 = 8_000_000_000, usedMemory: UInt64 = 4_000_000_000, availableMemory: UInt64 = 4_000_000_000, swapUsed: UInt64 = 0, peakMemoryUsage: UInt64 = 5_000_000_000) {
         self.totalMemory = totalMemory
         self.usedMemory = usedMemory
@@ -143,7 +142,7 @@ public struct FinancialOperationState {
     public let analyticsEngineState: Bool
     public let lastSuccessfulOperation: Date?
     public let operationStartTime: Date?
-    
+
     public init(currentOperation: FinancialProcessingStatus, activeDocuments: Int, pendingTransactions: Int, analyticsEngineState: Bool, lastSuccessfulOperation: Date?, operationStartTime: Date?) {
         self.currentOperation = currentOperation
         self.activeDocuments = activeDocuments
@@ -162,7 +161,7 @@ public struct MemoryEvent {
     public let severity: CrashSeverity
     public let currentUsage: CrashMemoryUsage
     public let threshold: UInt64
-    
+
     public init(timestamp: Date, type: MemoryEventType, severity: CrashSeverity, currentUsage: CrashMemoryUsage, threshold: UInt64) {
         self.timestamp = timestamp
         self.type = type
@@ -179,7 +178,7 @@ public struct PerformanceEvent {
     public let metric: String
     public let value: Double
     public let threshold: Double
-    
+
     public init(timestamp: Date, type: PerformanceEventType, severity: CrashSeverity, metric: String, value: Double, threshold: Double) {
         self.timestamp = timestamp
         self.type = type
@@ -198,7 +197,7 @@ public struct FinancialWorkflowCrashEvent {
     public let transactionsBeingProcessed: Int
     public let stackTrace: [String]
     public let error: Error
-    
+
     public init(timestamp: Date, workflowType: FinancialWorkflowType, failingFunction: String, documentsBeingProcessed: Int, transactionsBeingProcessed: Int, stackTrace: [String], error: Error) {
         self.timestamp = timestamp
         self.workflowType = workflowType
@@ -217,7 +216,7 @@ public struct RecoveryAction {
     public let description: String
     public let priority: RecoveryPriority
     public let automated: Bool
-    
+
     public init(type: RecoveryActionType, description: String, priority: RecoveryPriority, automated: Bool) {
         self.type = type
         self.description = description
@@ -237,7 +236,7 @@ public struct CrashAnalysisReport {
     public let financialProcessingImpact: FinancialProcessingImpact
     public let recommendations: [SystemRecommendation]
     public let technicalDetails: TechnicalDetails
-    
+
     public init(reportId: UUID, generatedAt: Date, reportingPeriod: DateInterval, crashStatistics: CrashStatistics, systemHealthAnalysis: SystemHealthAnalysis, financialProcessingImpact: FinancialProcessingImpact, recommendations: [SystemRecommendation], technicalDetails: TechnicalDetails) {
         self.reportId = reportId
         self.generatedAt = generatedAt
@@ -257,7 +256,7 @@ public struct CrashStatistics {
     public let crashesByModule: [String: Int]
     public let averageCrashesPerDay: Double
     public let memoryRelatedCrashes: Int
-    
+
     public init(totalCrashes: Int, recentCrashes: Int, crashesByType: [CrashType: Int], crashesByModule: [String: Int], averageCrashesPerDay: Double, memoryRelatedCrashes: Int) {
         self.totalCrashes = totalCrashes
         self.recentCrashes = recentCrashes
@@ -276,7 +275,7 @@ public struct SystemHealthAnalysis {
     public let stabilityScore: Double
     public let uptime: TimeInterval
     public let lastCrashTimestamp: Date?
-    
+
     public init(currentStatus: SystemHealthStatus, memoryUtilization: Double, cpuUtilization: Double, diskUtilization: Double, stabilityScore: Double, uptime: TimeInterval, lastCrashTimestamp: Date?) {
         self.currentStatus = currentStatus
         self.memoryUtilization = memoryUtilization
@@ -295,7 +294,7 @@ public struct FinancialProcessingImpact {
     public let impactedTransactions: Int
     public let documentProcessingErrors: Int
     public let analyticsEngineInterruptions: Int
-    
+
     public init(totalFinancialCrashes: Int, dataLossIncidents: Int, averageRecoveryTimeMinutes: Double, impactedTransactions: Int, documentProcessingErrors: Int, analyticsEngineInterruptions: Int) {
         self.totalFinancialCrashes = totalFinancialCrashes
         self.dataLossIncidents = dataLossIncidents
@@ -311,7 +310,7 @@ public struct SystemRecommendation {
     public let priority: RecommendationPriority
     public let description: String
     public let implementationSteps: [String]
-    
+
     public init(type: RecommendationType, priority: RecommendationPriority, description: String, implementationSteps: [String]) {
         self.type = type
         self.priority = priority
@@ -327,7 +326,7 @@ public struct TechnicalDetails {
     public let memoryMonitoringThresholds: [String: Double]
     public let performanceTrackingMetrics: [String]
     public let logFile: String
-    
+
     public init(monitoringConfiguration: CrashMonitoringConfiguration, systemConfiguration: SystemConfiguration, crashDetectionMethods: [String], memoryMonitoringThresholds: [String: Double], performanceTrackingMetrics: [String], logFile: String) {
         self.monitoringConfiguration = monitoringConfiguration
         self.systemConfiguration = systemConfiguration
@@ -347,7 +346,7 @@ public struct CrashMonitoringConfiguration {
     public let alerting: AlertingConfiguration
     public let enableAutomaticRecovery: Bool
     public let reportingInterval: TimeInterval
-    
+
     public init(crashDetection: CrashDetectionConfiguration = CrashDetectionConfiguration(), memoryMonitoring: MemoryMonitoringConfiguration = MemoryMonitoringConfiguration(), performanceTracking: PerformanceTrackingConfiguration = PerformanceTrackingConfiguration(), alerting: AlertingConfiguration = AlertingConfiguration(), enableAutomaticRecovery: Bool = true, reportingInterval: TimeInterval = 3600) {
         self.crashDetection = crashDetection
         self.memoryMonitoring = memoryMonitoring
@@ -363,7 +362,7 @@ public struct CrashDetectionConfiguration {
     public let enableStackTraceCapture: Bool
     public let enableSystemStateCapture: Bool
     public let crashReportingLevel: CrashSeverity
-    
+
     public init(enableCrashReporting: Bool = true, enableStackTraceCapture: Bool = true, enableSystemStateCapture: Bool = true, crashReportingLevel: CrashSeverity = .medium) {
         self.enableCrashReporting = enableCrashReporting
         self.enableStackTraceCapture = enableStackTraceCapture
@@ -377,7 +376,7 @@ public struct MemoryMonitoringConfiguration {
     public let criticalMemoryThreshold: Double
     public let monitoringInterval: TimeInterval
     public let enableMemoryPressureDetection: Bool
-    
+
     public init(memoryWarningThreshold: Double = 80.0, criticalMemoryThreshold: Double = 90.0, monitoringInterval: TimeInterval = 10.0, enableMemoryPressureDetection: Bool = true) {
         self.memoryWarningThreshold = memoryWarningThreshold
         self.criticalMemoryThreshold = criticalMemoryThreshold
@@ -391,7 +390,7 @@ public struct PerformanceTrackingConfiguration {
     public let responseTimeThreshold: TimeInterval
     public let trackingInterval: TimeInterval
     public let enablePerformanceBasedCrashDetection: Bool
-    
+
     public init(cpuUsageThreshold: Double = 85.0, responseTimeThreshold: TimeInterval = 5.0, trackingInterval: TimeInterval = 5.0, enablePerformanceBasedCrashDetection: Bool = true) {
         self.cpuUsageThreshold = cpuUsageThreshold
         self.responseTimeThreshold = responseTimeThreshold
@@ -405,7 +404,7 @@ public struct AlertingConfiguration {
     public let enableSystemHealthAlerts: Bool
     public let enableFinancialProcessingAlerts: Bool
     public let alertThreshold: CrashSeverity
-    
+
     public init(enableCrashAlerts: Bool = true, enableSystemHealthAlerts: Bool = true, enableFinancialProcessingAlerts: Bool = true, alertThreshold: CrashSeverity = .high) {
         self.enableCrashAlerts = enableCrashAlerts
         self.enableSystemHealthAlerts = enableSystemHealthAlerts
@@ -420,7 +419,7 @@ public struct SystemConfiguration {
     public let processorCount: Int
     public let totalMemory: UInt64
     public let osVersion: String
-    
+
     public init(platform: String = "macOS", architecture: String = "arm64", processorCount: Int = 8, totalMemory: UInt64 = 16_000_000_000, osVersion: String = "14.0") {
         self.platform = platform
         self.architecture = architecture
@@ -428,9 +427,9 @@ public struct SystemConfiguration {
         self.totalMemory = totalMemory
         self.osVersion = osVersion
     }
-    
+
     public static func current() -> SystemConfiguration {
-        return SystemConfiguration()
+        SystemConfiguration()
     }
 }
 
@@ -460,7 +459,7 @@ public enum SystemHealthStatus: String, CaseIterable {
     case warning = "warning"
     case degraded = "degraded"
     case critical = "critical"
-    
+
     public var color: Color {
         switch self {
         case .healthy: return .green
@@ -469,7 +468,7 @@ public enum SystemHealthStatus: String, CaseIterable {
         case .critical: return .red
         }
     }
-    
+
     public var icon: String {
         switch self {
         case .healthy: return "checkmark.circle.fill"
@@ -561,7 +560,7 @@ extension CrashType {
         case .systemResourceExhaustion: return "System Resource Exhaustion"
         }
     }
-    
+
     public var icon: String {
         switch self {
         case .memoryPressure, .outOfMemory: return "memorychip"
