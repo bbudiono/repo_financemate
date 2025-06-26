@@ -26,57 +26,77 @@
 * Last Updated: 2025-06-02
 */
 
-import SwiftUI
 import Charts
+import SwiftUI
 
 // MARK: - Enhanced Analytics View
 
 struct EnhancedAnalyticsView: View {
-    
+    @Environment(\.colorScheme) private var colorScheme
+    @StateObject private var themeManager = ThemeManager.shared
     @StateObject private var viewModel: AnalyticsViewModel
     @StateObject private var taskMasterService = TaskMasterAIService()
     @StateObject private var wiringService: TaskMasterWiringService
     @State private var selectedChart: ChartType = .trends
-    
+
     init(documentManager: DocumentManager) {
         self._viewModel = StateObject(wrappedValue: AnalyticsViewModel(documentManager: documentManager))
         let taskMaster = TaskMasterAIService()
         self._wiringService = StateObject(wrappedValue: TaskMasterWiringService(taskMaster: taskMaster))
     }
-    
+
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
-                // Header with Sandbox indicator
+                // Header with Sandbox indicator and glassmorphism
                 headerView
-                
+                    .adaptiveGlass()
+
                 // Loading state
                 if viewModel.isLoading {
                     loadingView
+                        .lightGlass()
                 } else {
-                    // Main content
+                    // Main content with glassmorphism
                     ScrollView {
                         LazyVStack(spacing: 20) {
-                            // Summary cards
+                            // Summary cards with glassmorphism
                             summaryCardsView
-                            
-                            // Chart controls
+                                .mediumGlass()
+
+                            // Chart controls with glassmorphism
                             chartControlsView
-                            
-                            // Selected chart view
+                                .lightGlass()
+
+                            // Selected chart view with glassmorphism
                             selectedChartView
-                            
-                            // Quick insights
+                                .heavyGlass()
+
+                            // Quick insights with glassmorphism
                             quickInsightsView
-                            
-                            // Advanced Analytics Engine
+                                .mediumGlass()
+
+                            // Advanced Analytics Engine with glassmorphism
                             advancedAnalyticsView
-                            
-                            // Detailed analytics
+                                .adaptiveGlass()
+
+                            // Detailed analytics with glassmorphism
                             detailedAnalyticsView
+                                .lightGlass()
                         }
                         .padding()
                     }
+                    .background(
+                        // Analytics background with subtle gradient
+                        LinearGradient(
+                            colors: [
+                                FinanceMateTheme.surfaceColor(for: colorScheme).opacity(0.1),
+                                FinanceMateTheme.surfaceColor(for: colorScheme).opacity(0.05)
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
                 }
             }
             .navigationTitle("")
@@ -88,23 +108,24 @@ struct EnhancedAnalyticsView: View {
             }
         }
     }
-    
+
     // MARK: - Header View
-    
+
     private var headerView: some View {
         HStack {
             VStack(alignment: .leading) {
                 Text("Financial Analytics")
                     .font(.largeTitle)
                     .fontWeight(.bold)
-                
+                    .foregroundColor(FinanceMateTheme.textPrimary(for: colorScheme))
+
                 Text("Real-time insights and trends")
                     .font(.subheadline)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(FinanceMateTheme.textSecondary(for: colorScheme))
             }
-            
+
             Spacer()
-            
+
             // Period selector
             Picker("Period", selection: $viewModel.selectedPeriod) {
                 ForEach(AnalyticsPeriod.allCases, id: \.self) { period in
@@ -128,12 +149,12 @@ struct EnhancedAnalyticsView: View {
                             "date_range_end": ISO8601DateFormatter().string(from: newPeriod.dateRange.end)
                         ]
                     )
-                    
+
                     // Load analytics data for new period
                     await viewModel.loadAnalyticsData()
                 }
             }
-            
+
             // Refresh button
             Button(action: {
                 Task {
@@ -145,7 +166,7 @@ struct EnhancedAnalyticsView: View {
             }
             .buttonStyle(.bordered)
             .disabled(viewModel.isLoading)
-            
+
             // Sandbox indicator
             Text("🧪 SANDBOX")
                 .font(.caption)
@@ -158,23 +179,23 @@ struct EnhancedAnalyticsView: View {
         .padding()
         .background(Color(NSColor.controlBackgroundColor))
     }
-    
+
     // MARK: - Loading View
-    
+
     private var loadingView: some View {
         VStack(spacing: 20) {
             ProgressView()
                 .scaleEffect(1.5)
-            
+
             Text("Loading Analytics...")
                 .font(.headline)
                 .foregroundColor(.secondary)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
-    
+
     // MARK: - Summary Cards View
-    
+
     private var summaryCardsView: some View {
         HStack(spacing: 20) {
             SummaryCard(
@@ -183,21 +204,21 @@ struct EnhancedAnalyticsView: View {
                 icon: "dollarsign.circle.fill",
                 color: .blue
             )
-            
+
             SummaryCard(
                 title: "Average Transaction",
                 value: formatCurrency(viewModel.averageSpending ?? 0),
                 icon: "chart.bar.fill",
                 color: .green
             )
-            
+
             SummaryCard(
                 title: "Documents Processed",
                 value: "\(viewModel.monthlyData.reduce(0) { $0 + $1.transactionCount })",
                 icon: "doc.text.fill",
                 color: .orange
             )
-            
+
             SummaryCard(
                 title: "Categories",
                 value: "\(viewModel.categoryData.count)",
@@ -206,16 +227,16 @@ struct EnhancedAnalyticsView: View {
             )
         }
     }
-    
+
     // MARK: - Chart Controls View
-    
+
     private var chartControlsView: some View {
         HStack {
             Text("Charts")
                 .font(.headline)
-            
+
             Spacer()
-            
+
             Picker("Chart Type", selection: $selectedChart) {
                 ForEach(ChartType.allCases, id: \.self) { chartType in
                     Label(chartType.displayName, systemImage: chartType.icon)
@@ -241,16 +262,16 @@ struct EnhancedAnalyticsView: View {
             }
         }
     }
-    
+
     // MARK: - Selected Chart View
-    
+
     @ViewBuilder
     private var selectedChartView: some View {
         VStack(alignment: .leading, spacing: 15) {
             Text(selectedChart.displayName)
                 .font(.title2)
                 .fontWeight(.semibold)
-            
+
             switch selectedChart {
             case .trends:
                 trendsChartView
@@ -264,9 +285,9 @@ struct EnhancedAnalyticsView: View {
         .background(Color(NSColor.controlBackgroundColor))
         .cornerRadius(12)
     }
-    
+
     // MARK: - Trends Chart View
-    
+
     private var trendsChartView: some View {
         Chart(viewModel.monthlyData) { data in
             LineMark(
@@ -275,7 +296,7 @@ struct EnhancedAnalyticsView: View {
             )
             .foregroundStyle(.blue)
             .symbol(Circle().strokeBorder(lineWidth: 2))
-            
+
             AreaMark(
                 x: .value("Period", data.period),
                 y: .value("Amount", data.totalSpending)
@@ -295,9 +316,9 @@ struct EnhancedAnalyticsView: View {
             }
         }
     }
-    
+
     // MARK: - Categories Chart View
-    
+
     private var categoriesChartView: some View {
         Chart(viewModel.categoryData.prefix(6)) { data in
             SectorMark(
@@ -316,9 +337,9 @@ struct EnhancedAnalyticsView: View {
             }
         }
     }
-    
+
     // MARK: - Comparison Chart View
-    
+
     private var comparisonChartView: some View {
         Chart(viewModel.categoryData.prefix(8)) { data in
             BarMark(
@@ -340,14 +361,14 @@ struct EnhancedAnalyticsView: View {
             }
         }
     }
-    
+
     // MARK: - Quick Insights View
-    
+
     private var quickInsightsView: some View {
         VStack(alignment: .leading, spacing: 15) {
             Text("Quick Insights")
                 .font(.headline)
-            
+
             LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 2), spacing: 15) {
                 InsightCard(
                     title: "Top Category",
@@ -356,7 +377,7 @@ struct EnhancedAnalyticsView: View {
                     icon: "crown.fill",
                     color: .yellow
                 )
-                
+
                 InsightCard(
                     title: "Growth Trend",
                     value: calculateGrowthTrend(),
@@ -364,7 +385,7 @@ struct EnhancedAnalyticsView: View {
                     icon: "chart.line.uptrend.xyaxis",
                     color: .green
                 )
-                
+
                 InsightCard(
                     title: "Most Frequent",
                     value: getMostFrequentCategory(),
@@ -372,7 +393,7 @@ struct EnhancedAnalyticsView: View {
                     icon: "repeat",
                     color: .blue
                 )
-                
+
                 InsightCard(
                     title: "Efficiency Score",
                     value: calculateEfficiencyScore(),
@@ -383,14 +404,14 @@ struct EnhancedAnalyticsView: View {
             }
         }
     }
-    
+
     // MARK: - Detailed Analytics View
-    
+
     private var detailedAnalyticsView: some View {
         VStack(alignment: .leading, spacing: 15) {
             Text("Category Breakdown")
                 .font(.headline)
-            
+
             ForEach(viewModel.categoryData.prefix(10)) { category in
                 CategoryRowView(category: category)
             }
@@ -399,17 +420,17 @@ struct EnhancedAnalyticsView: View {
         .background(Color(NSColor.controlBackgroundColor))
         .cornerRadius(12)
     }
-    
+
     // MARK: - Advanced Analytics View
-    
+
     private var advancedAnalyticsView: some View {
         VStack(alignment: .leading, spacing: 15) {
             HStack {
                 Text("Advanced Analytics Engine")
                     .font(.headline)
-                
+
                 Spacer()
-                
+
                 Button("Generate Advanced Report") {
                     Task {
                         await handleAdvancedReportGeneration()
@@ -417,7 +438,7 @@ struct EnhancedAnalyticsView: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .disabled(viewModel.isLoading)
-                
+
                 Button("Detect Anomalies") {
                     Task {
                         await handleAnomalyDetection()
@@ -425,7 +446,7 @@ struct EnhancedAnalyticsView: View {
                 }
                 .buttonStyle(.bordered)
                 .disabled(viewModel.isLoading)
-                
+
                 Button("Analyze Trends") {
                     Task {
                         await handleTrendAnalysis()
@@ -433,7 +454,7 @@ struct EnhancedAnalyticsView: View {
                 }
                 .buttonStyle(.bordered)
                 .disabled(viewModel.isLoading)
-                
+
                 // Export menu
                 Menu("Export Analytics") {
                     Button("Export as PDF") {
@@ -441,19 +462,19 @@ struct EnhancedAnalyticsView: View {
                             await handleAnalyticsExport(format: "PDF")
                         }
                     }
-                    
+
                     Button("Export as CSV") {
                         Task {
                             await handleAnalyticsExport(format: "CSV")
                         }
                     }
-                    
+
                     Button("Export as Excel") {
                         Task {
                             await handleAnalyticsExport(format: "Excel")
                         }
                     }
-                    
+
                     Button("Export as JSON") {
                         Task {
                             await handleAnalyticsExport(format: "JSON")
@@ -462,36 +483,36 @@ struct EnhancedAnalyticsView: View {
                 }
                 .disabled(viewModel.isLoading)
             }
-            
+
             if let lastReport = viewModel.lastAdvancedReport {
                 VStack(alignment: .leading, spacing: 10) {
                     Text("Latest Advanced Analytics Report")
                         .font(.subheadline)
                         .fontWeight(.medium)
-                    
+
                     HStack {
                         VStack(alignment: .leading) {
                             Text("Risk Score: \(Int(lastReport.riskScore * 100))%")
                                 .foregroundColor(getRiskColor(lastReport.riskScore))
-                            
+
                             Text("Trend: \(lastReport.trendAnalysis)")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
-                        
+
                         Spacer()
-                        
+
                         Text("Generated: \(formatDate(lastReport.generatedDate))")
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
-                    
+
                     if !lastReport.recommendations.isEmpty {
                         VStack(alignment: .leading, spacing: 4) {
                             Text("Recommendations:")
                                 .font(.caption)
                                 .fontWeight(.medium)
-                            
+
                             ForEach(lastReport.recommendations.prefix(3), id: \.self) { recommendation in
                                 Text("• \(recommendation)")
                                     .font(.caption)
@@ -509,41 +530,41 @@ struct EnhancedAnalyticsView: View {
         .background(Color(NSColor.controlBackgroundColor))
         .cornerRadius(12)
     }
-    
+
     // MARK: - Helper Methods
-    
+
     private func formatCurrency(_ amount: Double) -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
         formatter.locale = Locale.current
         return formatter.string(from: NSNumber(value: amount)) ?? "$0.00"
     }
-    
+
     private func calculateGrowthTrend() -> String {
         guard viewModel.monthlyData.count >= 2 else { return "N/A" }
-        
+
         let latest = viewModel.monthlyData.last?.totalSpending ?? 0
         let previous = viewModel.monthlyData.dropLast().last?.totalSpending ?? 0
-        
+
         if previous > 0 {
             let growth = ((latest - previous) / previous) * 100
             return String(format: "%.1f%%", growth)
         }
-        
+
         return "N/A"
     }
-    
+
     private func getMostFrequentCategory() -> String {
-        return viewModel.categoryData.max(by: { $0.transactionCount < $1.transactionCount })?.categoryName ?? "N/A"
+        viewModel.categoryData.max { $0.transactionCount < $1.transactionCount }?.categoryName ?? "N/A"
     }
-    
+
     private func calculateEfficiencyScore() -> String {
         // Simplified efficiency calculation based on processing confidence
-        return "85%" // Placeholder for actual calculation
+        "85%" // Placeholder for actual calculation
     }
-    
+
     // MARK: - TaskMaster-AI Integrated Analytics Methods
-    
+
     /// Handle data refresh with TaskMaster-AI tracking
     private func handleDataRefresh() async {
         // Track data refresh action
@@ -558,11 +579,11 @@ struct EnhancedAnalyticsView: View {
                 "timestamp": ISO8601DateFormatter().string(from: Date())
             ]
         )
-        
+
         // Execute refresh
         await viewModel.refreshAnalyticsData()
     }
-    
+
     /// Handle advanced report generation with comprehensive workflow tracking
     private func handleAdvancedReportGeneration() async {
         let workflowSteps = [
@@ -590,7 +611,7 @@ struct EnhancedAnalyticsView: View {
                 validationCriteria: ["Insights generated", "Recommendations created", "Report finalized"]
             )
         ]
-        
+
         // Track the comprehensive workflow
         let workflow = await wiringService.trackModalWorkflow(
             modalId: "advanced_report_generation",
@@ -603,17 +624,17 @@ struct EnhancedAnalyticsView: View {
                 "estimated_total_duration": "16"
             ]
         )
-        
+
         // Execute the analytics generation
         await viewModel.generateAdvancedAnalyticsReport()
-        
+
         // Complete the workflow
         await wiringService.completeWorkflow(
             workflowId: "advanced_report_generation",
             outcome: "Advanced analytics report generated successfully"
         )
     }
-    
+
     /// Handle anomaly detection with workflow tracking
     private func handleAnomalyDetection() async {
         let anomalySteps = [
@@ -636,7 +657,7 @@ struct EnhancedAnalyticsView: View {
                 estimatedDuration: 4
             )
         ]
-        
+
         // Track anomaly detection workflow
         let workflow = await wiringService.trackModalWorkflow(
             modalId: "anomaly_detection",
@@ -649,17 +670,17 @@ struct EnhancedAnalyticsView: View {
                 "expected_duration": "18"
             ]
         )
-        
+
         // Execute anomaly detection
         await viewModel.detectFinancialAnomalies()
-        
+
         // Complete the workflow
         await wiringService.completeWorkflow(
             workflowId: "anomaly_detection",
             outcome: "Anomaly detection completed successfully"
         )
     }
-    
+
     /// Handle trend analysis with workflow tracking
     private func handleTrendAnalysis() async {
         let trendSteps = [
@@ -682,7 +703,7 @@ struct EnhancedAnalyticsView: View {
                 estimatedDuration: 4
             )
         ]
-        
+
         // Track trend analysis workflow
         let workflow = await wiringService.trackModalWorkflow(
             modalId: "trend_analysis",
@@ -695,17 +716,17 @@ struct EnhancedAnalyticsView: View {
                 "statistical_models": "enabled"
             ]
         )
-        
+
         // Execute trend analysis
         await viewModel.performRealTimeTrendAnalysis()
-        
+
         // Complete the workflow
         await wiringService.completeWorkflow(
             workflowId: "trend_analysis",
             outcome: "Trend analysis completed successfully"
         )
     }
-    
+
     /// Handle analytics export with comprehensive workflow tracking
     private func handleAnalyticsExport(format: String) async {
         let exportSteps = [
@@ -734,7 +755,7 @@ struct EnhancedAnalyticsView: View {
                 estimatedDuration: 2
             )
         ]
-        
+
         // Track export workflow
         let workflow = await wiringService.trackModalWorkflow(
             modalId: "analytics_export_\(format.lowercased())",
@@ -748,22 +769,22 @@ struct EnhancedAnalyticsView: View {
                 "export_timestamp": ISO8601DateFormatter().string(from: Date())
             ]
         )
-        
+
         // Simulate export process (in real implementation, this would call actual export service)
         print("📊 Exporting analytics data to \(format) format...")
-        
+
         // Simulate processing time
         try? await Task.sleep(nanoseconds: 2_000_000_000) // 2 seconds
-        
+
         // Complete the workflow
         await wiringService.completeWorkflow(
             workflowId: "analytics_export_\(format.lowercased())",
             outcome: "Analytics data exported to \(format) format successfully"
         )
-        
+
         print("✅ Analytics export to \(format) completed")
     }
-    
+
     /// Handle chart interaction tracking
     private func handleChartInteraction(type: String, chartType: String) async {
         _ = await wiringService.trackButtonAction(
@@ -779,7 +800,7 @@ struct EnhancedAnalyticsView: View {
             ]
         )
     }
-    
+
     private func getRiskColor(_ riskScore: Double) -> Color {
         if riskScore < 0.3 {
             return .green
@@ -789,7 +810,7 @@ struct EnhancedAnalyticsView: View {
             return .red
         }
     }
-    
+
     private func formatDate(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateStyle = .short
@@ -805,21 +826,21 @@ struct SummaryCard: View {
     let value: String
     let icon: String
     let color: Color
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Image(systemName: icon)
                     .foregroundColor(color)
                     .font(.title2)
-                
+
                 Spacer()
             }
-            
+
             Text(value)
                 .font(.title2)
                 .fontWeight(.bold)
-            
+
             Text(title)
                 .font(.caption)
                 .foregroundColor(.secondary)
@@ -831,60 +852,25 @@ struct SummaryCard: View {
     }
 }
 
-struct InsightCard: View {
-    let title: String
-    let value: String
-    let subtitle: String
-    let icon: String
-    let color: Color
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Image(systemName: icon)
-                    .foregroundColor(color)
-                
-                Spacer()
-            }
-            
-            Text(value)
-                .font(.headline)
-                .fontWeight(.semibold)
-            
-            Text(title)
-                .font(.caption)
-                .fontWeight(.medium)
-            
-            Text(subtitle)
-                .font(.caption2)
-                .foregroundColor(.secondary)
-        }
-        .padding()
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(NSColor.controlBackgroundColor))
-        .cornerRadius(8)
-    }
-}
-
 struct CategoryRowView: View {
     let category: CategoryAnalytics
-    
+
     var body: some View {
         HStack {
             Circle()
                 .fill(category.color)
                 .frame(width: 12, height: 12)
-            
+
             Text(category.categoryName)
                 .font(.subheadline)
-            
+
             Spacer()
-            
+
             VStack(alignment: .trailing) {
                 Text(formatCurrency(category.totalAmount))
                     .font(.subheadline)
                     .fontWeight(.medium)
-                
+
                 Text("\(Int(category.percentage))%")
                     .font(.caption)
                     .foregroundColor(.secondary)
@@ -892,7 +878,7 @@ struct CategoryRowView: View {
         }
         .padding(.vertical, 4)
     }
-    
+
     private func formatCurrency(_ amount: Double) -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
@@ -907,7 +893,7 @@ enum ChartType: String, CaseIterable {
     case trends = "trends"
     case categories = "categories"
     case comparison = "comparison"
-    
+
     var displayName: String {
         switch self {
         case .trends: return "Trends"
@@ -915,7 +901,7 @@ enum ChartType: String, CaseIterable {
         case .comparison: return "Comparison"
         }
     }
-    
+
     var icon: String {
         switch self {
         case .trends: return "chart.line.uptrend.xyaxis"
