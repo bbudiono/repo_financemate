@@ -34,6 +34,7 @@ import SwiftUI
 
 struct DashboardView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    @Environment(\.theme) private var theme
     let onNavigate: ((NavigationItem) -> Void)?
 
     init(onNavigate: ((NavigationItem) -> Void)? = nil) {
@@ -311,7 +312,7 @@ struct DashboardView: View {
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 40)
-                .lightGlass()
+                .environmentGlass(intensity: .light)
             } else {
                 ForEach(documents, id: \.self) { document in
                     CoreDataDocumentRow(document: document)
@@ -532,7 +533,7 @@ struct DashboardMetricCard: View {
                 .font(.title2)
                 .fontWeight(.bold)
         }
-        .mediumGlass()
+        .environmentGlass(intensity: .medium)
     }
 }
 
@@ -895,7 +896,7 @@ struct RealCategoryInlineView: View {
                                 .foregroundColor(.secondary)
                         }
                         .padding()
-                        .mediumGlass()
+                        .environmentGlass(intensity: .medium)
                     }
                 }
             }

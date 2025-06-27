@@ -25,6 +25,7 @@ import SwiftUI
 struct FinanceMateApp: App {
     // PERFORMANCE OPTIMIZATION: Lazy initialization of services
     @StateObject private var performanceMonitor = AppPerformanceMonitor()
+    @StateObject private var themeProvider = ThemeProvider.shared
     
     init() {
         // PERFORMANCE OPTIMIZATION: Defer heavy initialization
@@ -36,7 +37,9 @@ struct FinanceMateApp: App {
         WindowGroup {
             ContentView()
                 .environment(\.managedObjectContext, CoreDataStack.shared.mainContext)
+                .environment(\.theme, themeProvider.currentTheme)
                 .environmentObject(performanceMonitor)
+                .environmentObject(themeProvider)
                 .frame(minWidth: 800, minHeight: 600)
                 .onAppear {
                     // PERFORMANCE OPTIMIZATION: Initialize heavy services after UI appears

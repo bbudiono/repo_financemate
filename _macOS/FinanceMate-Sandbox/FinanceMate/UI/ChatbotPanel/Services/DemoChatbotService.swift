@@ -155,15 +155,22 @@ public class DemoChatbotService: ChatbotBackendProtocol {
         if lowercaseMessage.contains("hello") || lowercaseMessage.contains("hi") {
             return "Hello! I'm your AI assistant. How can I help you today?"
         } else if lowercaseMessage.contains("document") || lowercaseMessage.contains("file") {
-            return "I can help you process documents and extract financial information. You can upload PDFs, images, or other document types for analysis."
-        } else if lowercaseMessage.contains("financial") || lowercaseMessage.contains("money") || lowercaseMessage.contains("expense") {
-            return "I'm specialized in financial analysis! I can help you categorize expenses, analyze spending patterns, generate reports, and provide insights into your financial data."
+            return "I can help you process documents and extract financial information. " +
+                   "You can upload PDFs, images, or other document types for analysis."
+        } else if lowercaseMessage.contains("financial") || lowercaseMessage.contains("money") || 
+                  lowercaseMessage.contains("expense") {
+            return "I'm specialized in financial analysis! I can help you categorize expenses, " +
+                   "analyze spending patterns, generate reports, and provide insights into your financial data."
         } else if lowercaseMessage.contains("@") {
-            return "I see you're using smart tagging! That's a great way to reference specific files or elements. I can work with the referenced items to provide more targeted assistance."
+            return "I see you're using smart tagging! That's a great way to reference specific files or elements. " +
+                   "I can work with the referenced items to provide more targeted assistance."
         } else if lowercaseMessage.contains("help") {
-            return "I'm here to help! I can assist with:\n\n• Document processing and OCR\n• Financial data analysis\n• Expense categorization\n• Report generation\n• General questions\n\nWhat would you like to work on?"
+            return "I'm here to help! I can assist with:\n\n• Document processing and OCR\n" +
+                   "• Financial data analysis\n• Expense categorization\n• Report generation\n" +
+                   "• General questions\n\nWhat would you like to work on?"
         } else if lowercaseMessage.contains("error") || lowercaseMessage.contains("problem") {
-            return "I understand you're experiencing an issue. Let me help you troubleshoot that. Can you provide more details about what's happening?"
+            return "I understand you're experiencing an issue. Let me help you troubleshoot that. " +
+                   "Can you provide more details about what's happening?"
         } else {
             return demoResponses.randomElement() ?? "I understand. Let me help you with that."
         }

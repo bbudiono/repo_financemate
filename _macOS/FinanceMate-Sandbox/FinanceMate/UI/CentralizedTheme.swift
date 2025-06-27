@@ -29,6 +29,169 @@
 import Combine
 import SwiftUI
 
+// MARK: - Environment-Based Theme System
+
+// MARK: - Theme Environment Key
+public struct ThemeEnvironmentKey: EnvironmentKey {
+    public typealias Value = Theme
+    public static let defaultValue = Theme.default
+}
+
+extension EnvironmentValues {
+    public var theme: Theme {
+        get { self[ThemeEnvironmentKey.self] }
+        set { self[ThemeEnvironmentKey.self] = newValue }
+    }
+}
+
+// MARK: - Theme Data Structure
+public struct Theme: Equatable {
+    public let colors: ThemeColors
+    public let glassmorphism: GlassmorphismSettings
+    public let animations: AnimationSettings
+    public let accessibility: AccessibilitySettings
+    
+    public static let `default` = Theme(
+        colors: ThemeColors.default,
+        glassmorphism: GlassmorphismSettings.default,
+        animations: AnimationSettings.default,
+        accessibility: AccessibilitySettings.default
+    )
+    
+    public static let light = Theme(
+        colors: ThemeColors.light,
+        glassmorphism: GlassmorphismSettings.light,
+        animations: AnimationSettings.default,
+        accessibility: AccessibilitySettings.default
+    )
+    
+    public static let dark = Theme(
+        colors: ThemeColors.dark,
+        glassmorphism: GlassmorphismSettings.dark,
+        animations: AnimationSettings.default,
+        accessibility: AccessibilitySettings.default
+    )
+}
+
+// MARK: - Theme Components
+public struct ThemeColors: Equatable {
+    public let primary: Color
+    public let secondary: Color
+    public let accent: Color
+    public let background: Color
+    public let surface: Color
+    public let textPrimary: Color
+    public let textSecondary: Color
+    public let success: Color
+    public let warning: Color
+    public let error: Color
+    public let info: Color
+    
+    public static let `default` = ThemeColors(
+        primary: Color(red: 0.2, green: 0.4, blue: 0.9),
+        secondary: Color(red: 0.1, green: 0.3, blue: 0.7),
+        accent: Color(red: 0.0, green: 0.7, blue: 0.4),
+        background: Color(NSColor.windowBackgroundColor),
+        surface: Color(NSColor.windowBackgroundColor).opacity(0.8),
+        textPrimary: Color(NSColor.labelColor),
+        textSecondary: Color(NSColor.secondaryLabelColor),
+        success: Color(red: 0.0, green: 0.7, blue: 0.4),
+        warning: Color(red: 1.0, green: 0.6, blue: 0.0),
+        error: Color(red: 0.9, green: 0.3, blue: 0.3),
+        info: Color(red: 0.3, green: 0.6, blue: 0.9)
+    )
+    
+    public static let light = ThemeColors(
+        primary: Color(red: 0.2, green: 0.4, blue: 0.9),
+        secondary: Color(red: 0.1, green: 0.3, blue: 0.7),
+        accent: Color(red: 0.0, green: 0.7, blue: 0.4),
+        background: Color.white,
+        surface: Color.black.opacity(0.03),
+        textPrimary: Color.black,
+        textSecondary: Color.black.opacity(0.6),
+        success: Color(red: 0.0, green: 0.7, blue: 0.4),
+        warning: Color(red: 1.0, green: 0.6, blue: 0.0),
+        error: Color(red: 0.9, green: 0.3, blue: 0.3),
+        info: Color(red: 0.3, green: 0.6, blue: 0.9)
+    )
+    
+    public static let dark = ThemeColors(
+        primary: Color(red: 0.3, green: 0.5, blue: 1.0),
+        secondary: Color(red: 0.2, green: 0.4, blue: 0.8),
+        accent: Color(red: 0.1, green: 0.8, blue: 0.5),
+        background: Color.black,
+        surface: Color.white.opacity(0.08),
+        textPrimary: Color.white,
+        textSecondary: Color.white.opacity(0.7),
+        success: Color(red: 0.1, green: 0.8, blue: 0.5),
+        warning: Color(red: 1.0, green: 0.7, blue: 0.1),
+        error: Color(red: 1.0, green: 0.4, blue: 0.4),
+        info: Color(red: 0.4, green: 0.7, blue: 1.0)
+    )
+}
+
+public struct GlassmorphismSettings: Equatable {
+    public let intensity: GlassIntensity
+    public let cornerRadius: CGFloat
+    public let shadowRadius: CGFloat
+    public let shadowOffset: CGFloat
+    public let shadowOpacity: Double
+    public let strokeOpacity: Double
+    
+    public static let `default` = GlassmorphismSettings(
+        intensity: .adaptive,
+        cornerRadius: 12,
+        shadowRadius: 8,
+        shadowOffset: 3,
+        shadowOpacity: 0.1,
+        strokeOpacity: 0.3
+    )
+    
+    public static let light = GlassmorphismSettings(
+        intensity: .light,
+        cornerRadius: 12,
+        shadowRadius: 6,
+        shadowOffset: 2,
+        shadowOpacity: 0.08,
+        strokeOpacity: 0.2
+    )
+    
+    public static let dark = GlassmorphismSettings(
+        intensity: .medium,
+        cornerRadius: 12,
+        shadowRadius: 10,
+        shadowOffset: 4,
+        shadowOpacity: 0.15,
+        strokeOpacity: 0.4
+    )
+}
+
+public struct AnimationSettings: Equatable {
+    public let enabled: Bool
+    public let duration: Double
+    public let springResponse: Double
+    public let springDamping: Double
+    
+    public static let `default` = AnimationSettings(
+        enabled: true,
+        duration: 0.2,
+        springResponse: 0.3,
+        springDamping: 0.7
+    )
+}
+
+public struct AccessibilitySettings: Equatable {
+    public let highContrast: Bool
+    public let reduceMotion: Bool
+    public let increaseStrokeWidth: Bool
+    
+    public static let `default` = AccessibilitySettings(
+        highContrast: false,
+        reduceMotion: false,
+        increaseStrokeWidth: false
+    )
+}
+
 // MARK: - Build Configuration Detection
 
 public struct BuildConfiguration {
@@ -191,69 +354,79 @@ private struct ThemeConfiguration: Codable {
     let enableAccessibilityHighContrast: Bool
 }
 
-// MARK: - Glass Background Modifier
+// MARK: - Environment-Based Glass Background Modifier
 
-public struct EnhancedGlassBackground: ViewModifier {
-    @StateObject private var themeManager = ThemeManager.shared
+public struct EnvironmentGlassBackground: ViewModifier {
+    @Environment(\.theme) private var theme
     @Environment(\.colorScheme) private var colorScheme
-
-    let intensity: GlassIntensity?
-    let cornerRadius: CGFloat
+    
+    let customIntensity: GlassIntensity?
+    let customCornerRadius: CGFloat?
     let enableHover: Bool
-
+    
     @State private var isHovered = false
-
+    
     public init(
         intensity: GlassIntensity? = nil,
-        cornerRadius: CGFloat = 12,
+        cornerRadius: CGFloat? = nil,
         enableHover: Bool = true
     ) {
-        self.intensity = intensity
-        self.cornerRadius = cornerRadius
+        self.customIntensity = intensity
+        self.customCornerRadius = cornerRadius
         self.enableHover = enableHover
     }
-
+    
     private var effectiveIntensity: GlassIntensity {
-        intensity ?? themeManager.glassIntensity
+        customIntensity ?? theme.glassmorphism.intensity
     }
-
+    
+    private var effectiveCornerRadius: CGFloat {
+        customCornerRadius ?? theme.glassmorphism.cornerRadius
+    }
+    
     private var material: Material {
         effectiveIntensity.material(for: colorScheme)
     }
-
+    
     private var shadowRadius: CGFloat {
-        let base = effectiveIntensity.shadowRadius
+        let base = theme.glassmorphism.shadowRadius
         return isHovered && enableHover ? base * 1.2 : base
     }
-
+    
     private var shadowOpacity: Double {
-        themeManager.enableAccessibilityHighContrast ? 0.3 : 0.1
+        theme.accessibility.highContrast ? 0.3 : theme.glassmorphism.shadowOpacity
     }
-
+    
+    private var strokeOpacity: Double {
+        theme.accessibility.highContrast ? 0.4 : theme.glassmorphism.strokeOpacity
+    }
+    
+    private var strokeWidth: CGFloat {
+        theme.accessibility.increaseStrokeWidth ? 2.0 : 1.0
+    }
+    
     public func body(content: Content) -> some View {
         content
             .background(
-                RoundedRectangle(cornerRadius: cornerRadius)
+                RoundedRectangle(cornerRadius: effectiveCornerRadius)
                     .fill(material)
                     .overlay(
-                        RoundedRectangle(cornerRadius: cornerRadius)
+                        RoundedRectangle(cornerRadius: effectiveCornerRadius)
                             .stroke(
-                                themeManager.enableAccessibilityHighContrast ?
-                                    Color.primary.opacity(0.2) :
-                                    Color.white.opacity(0.3),
-                                lineWidth: 1
+                                Color.white.opacity(strokeOpacity),
+                                lineWidth: strokeWidth
                             )
                     )
                     .shadow(
                         color: .black.opacity(shadowOpacity),
                         radius: shadowRadius,
                         x: 0,
-                        y: effectiveIntensity.shadowOffset
+                        y: theme.glassmorphism.shadowOffset
                     )
             )
             .onHover { hovering in
-                if enableHover && themeManager.enableAnimations {
-                    withAnimation(.easeInOut(duration: 0.2)) {
+                if enableHover && theme.animations.enabled && !theme.accessibility.reduceMotion {
+                    withAnimation(.easeInOut(duration: theme.animations.duration)) {
                         isHovered = hovering
                     }
                 }
@@ -296,57 +469,100 @@ public struct FinanceMateTheme {
     public static let infoColor = Color(red: 0.3, green: 0.6, blue: 0.9)
 }
 
-// MARK: - View Extensions
+// MARK: - Environment-Based View Extensions
 
 extension View {
-    /// Applies glassmorphism background
-    public func enhancedGlassBackground(
+    /// Applies environment-aware glassmorphism background
+    public func environmentGlass(
         intensity: GlassIntensity? = nil,
-        cornerRadius: CGFloat = 12,
+        cornerRadius: CGFloat? = nil,
         enableHover: Bool = true
     ) -> some View {
-        self.modifier(EnhancedGlassBackground(
+        self.modifier(EnvironmentGlassBackground(
             intensity: intensity,
             cornerRadius: cornerRadius,
             enableHover: enableHover
         ))
     }
-
-    /// Applies light glassmorphism for subtle elements
-    public func lightGlass(cornerRadius: CGFloat = 8) -> some View {
-        self.enhancedGlassBackground(intensity: .light, cornerRadius: cornerRadius)
+    
+    /// Applies light glassmorphism using environment theme
+    public func lightGlass(cornerRadius: CGFloat? = nil) -> some View {
+        self.environmentGlass(intensity: .light, cornerRadius: cornerRadius)
     }
-
-    /// Applies medium glassmorphism for standard elements
-    public func mediumGlass(cornerRadius: CGFloat = 12) -> some View {
-        self.enhancedGlassBackground(intensity: .medium, cornerRadius: cornerRadius)
+    
+    /// Applies medium glassmorphism using environment theme
+    public func mediumGlass(cornerRadius: CGFloat? = nil) -> some View {
+        self.environmentGlass(intensity: .medium, cornerRadius: cornerRadius)
     }
-
-    /// Applies heavy glassmorphism for prominent elements
-    public func heavyGlass(cornerRadius: CGFloat = 16) -> some View {
-        self.enhancedGlassBackground(intensity: .heavy, cornerRadius: cornerRadius)
+    
+    /// Applies heavy glassmorphism using environment theme
+    public func heavyGlass(cornerRadius: CGFloat? = nil) -> some View {
+        self.environmentGlass(intensity: .heavy, cornerRadius: cornerRadius)
     }
-
-    /// Applies adaptive glassmorphism that responds to theme settings
-    public func adaptiveGlass(cornerRadius: CGFloat = 12) -> some View {
-        self.enhancedGlassBackground(intensity: .adaptive, cornerRadius: cornerRadius)
+    
+    /// Applies adaptive glassmorphism using environment theme settings
+    public func adaptiveGlass(cornerRadius: CGFloat? = nil) -> some View {
+        self.environmentGlass(intensity: nil, cornerRadius: cornerRadius)
+    }
+    
+    /// Sets the theme for this view and its children
+    public func theme(_ theme: Theme) -> some View {
+        self.environment(\.theme, theme)
+    }
+    
+    /// Applies theme colors for text
+    public func themeTextColor(_ textType: ThemeTextType = .primary) -> some View {
+        self.modifier(ThemeTextModifier(textType: textType))
     }
 }
 
-// MARK: - Glass Card Component
+// MARK: - Theme Text Types
+public enum ThemeTextType {
+    case primary
+    case secondary
+    case accent
+    case success
+    case warning
+    case error
+    case info
+}
 
-public struct EnhancedGlassCard<Content: View>: View {
-    @StateObject private var themeManager = ThemeManager.shared
-    @Environment(\.colorScheme) private var colorScheme
+// MARK: - Theme Text Modifier
+public struct ThemeTextModifier: ViewModifier {
+    @Environment(\.theme) private var theme
+    let textType: ThemeTextType
+    
+    public func body(content: Content) -> some View {
+        content
+            .foregroundColor(colorForType)
+    }
+    
+    private var colorForType: Color {
+        switch textType {
+        case .primary: return theme.colors.textPrimary
+        case .secondary: return theme.colors.textSecondary
+        case .accent: return theme.colors.accent
+        case .success: return theme.colors.success
+        case .warning: return theme.colors.warning
+        case .error: return theme.colors.error
+        case .info: return theme.colors.info
+        }
+    }
+}
 
+// MARK: - Environment-Based Glass Card Component
+
+public struct ThemeGlassCard<Content: View>: View {
+    @Environment(\.theme) private var theme
+    
     let content: Content
     let intensity: GlassIntensity?
     let padding: EdgeInsets
     let enableHover: Bool
     let enableAnimation: Bool
-
+    
     @State private var isHovered = false
-
+    
     public init(
         intensity: GlassIntensity? = nil,
         padding: EdgeInsets = EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16),
@@ -360,88 +576,155 @@ public struct EnhancedGlassCard<Content: View>: View {
         self.enableHover = enableHover
         self.enableAnimation = enableAnimation
     }
-
+    
     public var body: some View {
         content
             .padding(padding)
-            .enhancedGlassBackground(
+            .environmentGlass(
                 intensity: intensity,
-                enableHover: enableHover && themeManager.enableAnimations
+                enableHover: enableHover && theme.animations.enabled
             )
             .scaleEffect(isHovered && enableAnimation ? 1.02 : 1.0)
             .animation(
-                themeManager.enableAnimations ? .easeInOut(duration: 0.2) : .none,
+                (theme.animations.enabled && !theme.accessibility.reduceMotion) ? 
+                    .easeInOut(duration: theme.animations.duration) : .none,
                 value: isHovered
             )
             .onHover { hovering in
-                if enableHover && themeManager.enableAnimations {
+                if enableHover && theme.animations.enabled && !theme.accessibility.reduceMotion {
                     isHovered = hovering
                 }
             }
     }
 }
 
+// MARK: - Theme Provider
+
+public class ThemeProvider: ObservableObject {
+    @Published public var currentTheme: Theme = .default
+    
+    public static let shared = ThemeProvider()
+    
+    private init() {
+        loadThemeFromUserDefaults()
+    }
+    
+    public func setTheme(_ theme: Theme) {
+        currentTheme = theme
+        saveThemeToUserDefaults()
+    }
+    
+    public func toggleDarkMode() {
+        currentTheme = currentTheme == .light ? .dark : .light
+        saveThemeToUserDefaults()
+    }
+    
+    private func loadThemeFromUserDefaults() {
+        // Implementation for loading saved theme preferences
+        // This would integrate with the existing ThemeManager
+    }
+    
+    private func saveThemeToUserDefaults() {
+        // Implementation for saving theme preferences
+        // This would integrate with the existing ThemeManager
+    }
+}
+
 // MARK: - Theme Preview
 
 public struct ThemePreview: View {
-    @StateObject private var themeManager = ThemeManager.shared
-    @Environment(\.colorScheme) private var colorScheme
-
+    @Environment(\.theme) private var theme
+    @StateObject private var themeProvider = ThemeProvider.shared
+    
     public init() {}
-
+    
     public var body: some View {
         VStack(spacing: 16) {
             Text("Theme Preview")
                 .font(.headline)
-                .foregroundColor(FinanceMateTheme.textPrimary(for: colorScheme))
-
+                .themeTextColor(.primary)
+            
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 12) {
                     ForEach(GlassIntensity.allCases, id: \.self) { intensity in
                         VStack {
                             RoundedRectangle(cornerRadius: 8)
                                 .frame(width: 60, height: 40)
-                                .enhancedGlassBackground(intensity: intensity, cornerRadius: 8)
-
+                                .environmentGlass(intensity: intensity, cornerRadius: 8)
+                            
                             Text(intensity.displayName)
                                 .font(.caption2)
-                                .foregroundColor(FinanceMateTheme.textSecondary(for: colorScheme))
+                                .themeTextColor(.secondary)
                         }
                         .onTapGesture {
-                            themeManager.glassIntensity = intensity
+                            // Update theme with new intensity
+                            let newGlass = GlassmorphismSettings(
+                                intensity: intensity,
+                                cornerRadius: theme.glassmorphism.cornerRadius,
+                                shadowRadius: intensity.shadowRadius,
+                                shadowOffset: intensity.shadowOffset,
+                                shadowOpacity: theme.glassmorphism.shadowOpacity,
+                                strokeOpacity: theme.glassmorphism.strokeOpacity
+                            )
+                            let newTheme = Theme(
+                                colors: theme.colors,
+                                glassmorphism: newGlass,
+                                animations: theme.animations,
+                                accessibility: theme.accessibility
+                            )
+                            themeProvider.setTheme(newTheme)
                         }
                     }
                 }
                 .padding(.horizontal)
             }
-
-            EnhancedGlassCard {
+            
+            ThemeGlassCard {
                 VStack {
                     Text("Interactive Sample Card")
                         .font(.subheadline)
                         .fontWeight(.medium)
-
-                    Text("This demonstrates the glassmorphism effect with current theme settings.")
+                        .themeTextColor(.primary)
+                    
+                    Text("This demonstrates the environment-based glassmorphism effect.")
                         .font(.caption)
-                        .foregroundColor(FinanceMateTheme.textSecondary(for: colorScheme))
+                        .themeTextColor(.secondary)
                         .multilineTextAlignment(.center)
-
+                    
                     HStack {
                         Circle()
-                            .fill(FinanceMateTheme.successColor)
+                            .fill(theme.colors.success)
                             .frame(width: 12, height: 12)
-
+                        
                         Circle()
-                            .fill(FinanceMateTheme.warningColor)
+                            .fill(theme.colors.warning)
                             .frame(width: 12, height: 12)
-
+                        
                         Circle()
-                            .fill(FinanceMateTheme.errorColor)
+                            .fill(theme.colors.error)
                             .frame(width: 12, height: 12)
                     }
                 }
             }
+            
+            HStack {
+                Button("Light Theme") {
+                    themeProvider.setTheme(.light)
+                }
+                .themeTextColor(.accent)
+                
+                Button("Dark Theme") {
+                    themeProvider.setTheme(.dark)
+                }
+                .themeTextColor(.accent)
+                
+                Button("Default Theme") {
+                    themeProvider.setTheme(.default)
+                }
+                .themeTextColor(.accent)
+            }
         }
         .padding()
+        .theme(themeProvider.currentTheme)
     }
 }

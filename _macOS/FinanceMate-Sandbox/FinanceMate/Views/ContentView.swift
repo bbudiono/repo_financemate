@@ -35,7 +35,9 @@ struct ContentView: View {
                 authenticatedContent
                     .transition(.opacity.combined(with: .move(edge: .trailing)))
             } else {
-                LoginView()
+                Text("Login View Placeholder")
+                    .font(.title)
+                    .foregroundColor(.primary)
                     .transition(.opacity.combined(with: .move(edge: .leading)))
             }
         }

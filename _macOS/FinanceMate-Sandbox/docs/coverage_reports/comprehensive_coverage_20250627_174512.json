@@ -1,0 +1,176 @@
+{
+  "metadata": {
+    "generated": "2025-06-27 17:45:11",
+    "project": "FinanceMate-Sandbox",
+    "audit_phase": "AUDIT-2024JUL02-QUALITY-GATE",
+    "target_coverage": 80.0,
+    "critical_files_count": 5
+  },
+  "files": {
+    "CentralizedTheme.swift": {
+      "filename": "CentralizedTheme.swift",
+      "path": "FinanceMate/UI/CentralizedTheme.swift",
+      "coverage": 60.0,
+      "status": "FAIL",
+      "complexity": {
+        "total_lines": 730,
+        "code_lines": 583,
+        "functions": 117,
+        "view_complexity": 17,
+        "state_vars": 8,
+        "complexity_score": 34.18
+      },
+      "coverage_analysis": {
+        "estimated_coverage": 60.0,
+        "test_files_found": 0,
+        "test_files": [],
+        "complexity_factor": 0.6836,
+        "base_coverage": 45.0,
+        "test_bonus": 0.0,
+        "file_adjustment": 8.5
+      },
+      "recommendations": [
+        "CRITICAL: Create basic test file for this component",
+        "Add unit tests for individual functions and methods",
+        "Test state management and reactive behavior",
+        "Add UI tests for view interactions and navigation",
+        "Test theme application and consistency",
+        "Verify color and style calculations"
+      ],
+      "priority": "HIGH"
+    },
+    "AuthenticationService.swift": {
+      "filename": "AuthenticationService.swift",
+      "path": "FinanceMate/Services/AuthenticationService.swift",
+      "coverage": 95.0,
+      "status": "PASS",
+      "complexity": {
+        "total_lines": 421,
+        "code_lines": 294,
+        "functions": 41,
+        "view_complexity": 0,
+        "state_vars": 7,
+        "complexity_score": 13.24
+      },
+      "coverage_analysis": {
+        "estimated_coverage": 95.0,
+        "test_files_found": 4,
+        "test_files": [
+          "FinanceMateTests/AuthenticationServiceTests.swift",
+          "FinanceMateTests/Services/AuthenticationServiceTier1Tests.swift",
+          "FinanceMateTests/AuthenticationServiceTests.swift",
+          "FinanceMateTests/Services/AuthenticationServiceTier1Tests.swift"
+        ],
+        "complexity_factor": 0.5,
+        "base_coverage": 45.0,
+        "test_bonus": 60.0,
+        "file_adjustment": 12.3
+      },
+      "recommendations": [],
+      "priority": "MEDIUM"
+    },
+    "AnalyticsView.swift": {
+      "filename": "AnalyticsView.swift",
+      "path": "FinanceMate/Views/AnalyticsView.swift",
+      "coverage": 71.8,
+      "status": "FAIL",
+      "complexity": {
+        "total_lines": 709,
+        "code_lines": 568,
+        "functions": 117,
+        "view_complexity": 18,
+        "state_vars": 3,
+        "complexity_score": 32.68
+      },
+      "coverage_analysis": {
+        "estimated_coverage": 71.8,
+        "test_files_found": 2,
+        "test_files": [
+          "FinanceMateTests/ViewModels/AnalyticsViewModelTests.swift",
+          "FinanceMateTests/ViewModels/AnalyticsViewModelTests.swift"
+        ],
+        "complexity_factor": 0.6536,
+        "base_coverage": 45.0,
+        "test_bonus": 30.0,
+        "file_adjustment": -3.2
+      },
+      "recommendations": [
+        "Add UI tests for view interactions and navigation",
+        "Test view rendering and user interactions",
+        "Verify accessibility compliance"
+      ],
+      "priority": "HIGH"
+    },
+    "DashboardView.swift": {
+      "filename": "DashboardView.swift",
+      "path": "FinanceMate/Views/DashboardView.swift",
+      "coverage": 60.0,
+      "status": "FAIL",
+      "complexity": {
+        "total_lines": 1457,
+        "code_lines": 1216,
+        "functions": 187,
+        "view_complexity": 59,
+        "state_vars": 25,
+        "complexity_score": 65.91
+      },
+      "coverage_analysis": {
+        "estimated_coverage": 60.0,
+        "test_files_found": 0,
+        "test_files": [],
+        "complexity_factor": 1.3182,
+        "base_coverage": 45.0,
+        "test_bonus": 0.0,
+        "file_adjustment": -1.8
+      },
+      "recommendations": [
+        "CRITICAL: Create basic test file for this component",
+        "Add unit tests for individual functions and methods",
+        "Test state management and reactive behavior",
+        "Add UI tests for view interactions and navigation",
+        "Test view rendering and user interactions",
+        "Verify accessibility compliance"
+      ],
+      "priority": "HIGH"
+    },
+    "ContentView.swift": {
+      "filename": "ContentView.swift",
+      "path": "FinanceMate/Views/ContentView.swift",
+      "coverage": 60.0,
+      "status": "FAIL",
+      "complexity": {
+        "total_lines": 1578,
+        "code_lines": 1314,
+        "functions": 104,
+        "view_complexity": 59,
+        "state_vars": 24,
+        "complexity_score": 49.989999999999995
+      },
+      "coverage_analysis": {
+        "estimated_coverage": 60.0,
+        "test_files_found": 0,
+        "test_files": [],
+        "complexity_factor": 0.9997999999999999,
+        "base_coverage": 45.0,
+        "test_bonus": 0.0,
+        "file_adjustment": 5.7
+      },
+      "recommendations": [
+        "CRITICAL: Create basic test file for this component",
+        "Add unit tests for individual functions and methods",
+        "Test state management and reactive behavior",
+        "Add UI tests for view interactions and navigation",
+        "Test view rendering and user interactions",
+        "Verify accessibility compliance"
+      ],
+      "priority": "HIGH"
+    }
+  },
+  "summary": {
+    "total_files": 5,
+    "passing_files": 1,
+    "failing_files": 4,
+    "pass_rate": 20.0,
+    "quality_gate_status": "FAIL"
+  }
+}

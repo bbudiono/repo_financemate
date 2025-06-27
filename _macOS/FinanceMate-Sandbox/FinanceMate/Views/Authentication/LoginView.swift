@@ -30,7 +30,7 @@ import SwiftUI
 
 struct LoginView: View {
     @StateObject private var authService = AuthenticationService()
-    @StateObject private var themeManager = ThemeManager.shared
+    @Environment(\.theme) private var theme
     @Environment(\.colorScheme) private var colorScheme
     
     @State private var showingErrorAlert = false
@@ -83,13 +83,17 @@ struct LoginView: View {
     
     private var backgroundView: some View {
         ZStack {
-            // Primary gradient background using CentralizedTheme
-            FinanceMateTheme.primaryGradient
-                .ignoresSafeArea()
+            // Primary gradient background using environment theme
+            LinearGradient(
+                colors: [theme.colors.primary, theme.colors.secondary],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            .ignoresSafeArea()
             
             // Glassmorphism overlay with adaptive material
             Rectangle()
-                .fill(themeManager.glassIntensity.material(for: colorScheme))
+                .fill(theme.glassmorphism.intensity.material(for: colorScheme))
                 .ignoresSafeArea()
                 .opacity(0.4)
         }
@@ -99,21 +103,21 @@ struct LoginView: View {
     
     private var brandingSection: some View {
         VStack(spacing: 24) {
-            // App icon with glassmorphism effect using theme colors
+            // App icon with glassmorphism effect using environment theme
             Image(systemName: "dollarsign.circle.fill")
                 .font(.system(size: 80, weight: .light))
                 .foregroundStyle(
                     LinearGradient(
-                        colors: [FinanceMateTheme.accentColor, FinanceMateTheme.accentColor.opacity(0.8)],
+                        colors: [theme.colors.accent, theme.colors.accent.opacity(0.8)],
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
                     )
                 )
                 .shadow(
-                    color: .black.opacity(themeManager.enableAccessibilityHighContrast ? 0.2 : 0.1), 
-                    radius: themeManager.glassIntensity.shadowRadius, 
+                    color: .black.opacity(theme.accessibility.highContrast ? 0.2 : theme.glassmorphism.shadowOpacity), 
+                    radius: theme.glassmorphism.shadowRadius, 
                     x: 0, 
-                    y: themeManager.glassIntensity.shadowOffset
+                    y: theme.glassmorphism.shadowOffset
                 )
             
             // App title and subtitle
@@ -121,12 +125,12 @@ struct LoginView: View {
                 Text("FinanceMate")
                     .font(.largeTitle)
                     .fontWeight(.bold)
-                    .foregroundColor(FinanceMateTheme.textPrimary(for: colorScheme))
+                    .themeTextColor(.primary)
                 
                 Text("Your AI-powered financial companion")
                     .font(.title3)
                     .fontWeight(.medium)
-                    .foregroundColor(FinanceMateTheme.textSecondary(for: colorScheme))
+                    .themeTextColor(.secondary)
                     .multilineTextAlignment(.center)
             }
         }
@@ -173,11 +177,11 @@ struct LoginView: View {
                 HStack(spacing: 12) {
                     Image(systemName: "globe")
                         .font(.system(size: 20))
-                        .foregroundColor(FinanceMateTheme.textPrimary(for: colorScheme))
+                        .themeTextColor(.primary)
                     
                     Text("Sign in with Google")
                         .font(.system(size: 16, weight: .medium))
-                        .foregroundColor(FinanceMateTheme.textPrimary(for: colorScheme))
+                        .themeTextColor(.primary)
                 }
                 .frame(height: 50)
                 .frame(maxWidth: 300)
@@ -187,10 +191,10 @@ struct LoginView: View {
             .overlay(
                 RoundedRectangle(cornerRadius: 8)
                     .stroke(
-                        themeManager.enableAccessibilityHighContrast ? 
+                        theme.accessibility.highContrast ? 
                             Color.primary.opacity(0.3) : 
-                            FinanceMateTheme.textSecondary(for: colorScheme).opacity(0.3),
-                        lineWidth: 1
+                            theme.colors.textSecondary.opacity(0.3),
+                        lineWidth: theme.accessibility.increaseStrokeWidth ? 2.0 : 1.0
                     )
             )
             .accessibilityIdentifier("sign_in_google_button")
@@ -206,12 +210,12 @@ struct LoginView: View {
     private var loadingSection: some View {
         VStack(spacing: 16) {
             ProgressView()
-                .progressViewStyle(CircularProgressViewStyle(tint: FinanceMateTheme.accentColor))
+                .progressViewStyle(CircularProgressViewStyle(tint: theme.colors.accent))
                 .scaleEffect(1.2)
             
             Text("Authenticating...")
                 .font(.subheadline)
-                .foregroundColor(FinanceMateTheme.textSecondary(for: colorScheme))
+                .themeTextColor(.secondary)
         }
         .padding(24)
         .mediumGlass(cornerRadius: 12)
@@ -223,19 +227,19 @@ struct LoginView: View {
         VStack(spacing: 8) {
             Text("Secure authentication powered by Apple and Google")
                 .font(.caption)
-                .foregroundColor(FinanceMateTheme.textSecondary(for: colorScheme))
+                .themeTextColor(.secondary)
                 .multilineTextAlignment(.center)
             
             HStack(spacing: 16) {
                 Image(systemName: "lock.shield.fill")
-                    .foregroundColor(FinanceMateTheme.successColor)
+                    .themeTextColor(.success)
                 
                 Text("End-to-end encrypted")
                     .font(.caption2)
-                    .foregroundColor(FinanceMateTheme.textSecondary(for: colorScheme))
+                    .themeTextColor(.secondary)
                 
                 Image(systemName: "checkmark.shield.fill")
-                    .foregroundColor(FinanceMateTheme.successColor)
+                    .themeTextColor(.success)
             }
         }
         .padding(.horizontal, 40)

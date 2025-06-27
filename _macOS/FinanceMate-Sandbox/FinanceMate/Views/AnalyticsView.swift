@@ -33,7 +33,7 @@ import SwiftUI
 
 struct AnalyticsView: View {
     @Environment(\.managedObjectContext) private var viewContext
-    @StateObject private var themeManager = ThemeManager.shared
+    @Environment(\.theme) private var theme
     @Environment(\.colorScheme) private var colorScheme
     let onNavigate: ((NavigationItem) -> Void)?
 
@@ -109,7 +109,7 @@ struct AnalyticsView: View {
                 }
             }
         }
-        .enhancedGlassBackground(intensity: .adaptive)
+        .adaptiveGlass()
         .navigationTitle("Financial Analytics")
         .onAppear {
             loadFinancialData()
@@ -173,12 +173,12 @@ struct AnalyticsView: View {
                     }
                     .padding(.horizontal, 12)
                     .padding(.vertical, 6)
-                    .lightGlass(cornerRadius: 8)
+                    .environmentGlass(intensity: .light, cornerRadius: 8)
                 }
             }
         }
         .padding()
-        .enhancedGlassBackground(intensity: .light, cornerRadius: 12)
+        .lightGlass(cornerRadius: 12)
     }
 
     private var loadingView: some View {
@@ -270,7 +270,7 @@ struct AnalyticsView: View {
             }
         }
         .padding()
-        .enhancedGlassBackground(intensity: .medium, cornerRadius: 12)
+        .mediumGlass(cornerRadius: 12)
     }
 
     private var categoryBreakdownSection: some View {
@@ -284,7 +284,7 @@ struct AnalyticsView: View {
             categoryLegend
         }
         .padding()
-        .enhancedGlassBackground(intensity: .medium, cornerRadius: 12)
+        .mediumGlass(cornerRadius: 12)
     }
 
     @ViewBuilder
@@ -395,7 +395,7 @@ struct AnalyticsView: View {
             }
         }
         .padding()
-        .enhancedGlassBackground(intensity: .medium, cornerRadius: 12)
+        .mediumGlass(cornerRadius: 12)
     }
 
     private var insightsSection: some View {
@@ -418,7 +418,7 @@ struct AnalyticsView: View {
             }
         }
         .padding()
-        .enhancedGlassBackground(intensity: .medium, cornerRadius: 12)
+        .mediumGlass(cornerRadius: 12)
     }
 
     private func loadFinancialData() {
@@ -488,7 +488,7 @@ struct AnalyticsMetricCard: View {
                 .fontWeight(.bold)
         }
         .padding()
-        .enhancedGlassBackground(intensity: .medium, cornerRadius: 12)
+        .mediumGlass(cornerRadius: 12)
     }
 
     private func formatCurrency(_ amount: Double) -> String {

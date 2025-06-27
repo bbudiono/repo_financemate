@@ -237,7 +237,9 @@ private struct CustomTextEditor: NSViewRepresentable {
 
     func makeNSView(context: Context) -> NSScrollView {
         let scrollView = NSTextView.scrollableTextView()
-        let textView = scrollView.documentView as! NSTextView
+        guard let textView = scrollView.documentView as? NSTextView else {
+            fatalError("Failed to create NSTextView - document view is not NSTextView")
+        }
 
         textView.delegate = context.coordinator
         textView.isRichText = false
@@ -265,7 +267,9 @@ private struct CustomTextEditor: NSViewRepresentable {
     }
 
     func updateNSView(_ nsView: NSScrollView, context: Context) {
-        let textView = nsView.documentView as! NSTextView
+        guard let textView = nsView.documentView as? NSTextView else {
+            return
+        }
 
         if textView.string != text {
             textView.string = text
