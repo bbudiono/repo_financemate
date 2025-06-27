@@ -35,7 +35,7 @@ struct ContentView: View {
                 authenticatedContent
                     .transition(.opacity.combined(with: .move(edge: .trailing)))
             } else {
-                authenticationView
+                LoginView()
                     .transition(.opacity.combined(with: .move(edge: .leading)))
             }
         }

@@ -19,6 +19,7 @@
 		84629DFC41CD9C40E5C712E6 /* FinanceMateApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD23538CF257D51DBA226B97 /* FinanceMateApp.swift */; };
 		8E8F6A2B1234567890ABCDEF /* FinancialData+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F9E8B3C1234567890ABCDEF /* FinancialData+CoreDataClass.swift */; };
 		9092D5A7400F9B0CB893874C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F654E30EB3BB8388F98E94 /* ContentView.swift */; };
+		AF5E73B2EAFC467D912B8CAF /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6E84C3FBFD478E813C9DB0 /* LoginView.swift */; };
 		9E8F6A2B1234567890ABCDEF /* FinancialData+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF9E8B3C1234567890ABCDEF /* FinancialData+CoreDataProperties.swift */; };
 		A9EDDD0E9BBA4D0286A0CE234B0C4B3A /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3F78B08CDBB4B74973C660565BCDABE /* DashboardView.swift */; };
 		AE8F6A2B1234567890ABCDEF /* Project+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9E8B3C1234567890ABCDEF /* Project+CoreDataClass.swift */; };
@@ -54,6 +55,7 @@
 
 /* Begin PBXFileReference section */
 		04F654E30EB3BB8388F98E94 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		BF6E84C3FBFD478E813C9DB0 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Authentication/LoginView.swift"; sourceTree = "<group>"; };
 		221AF239D0C640B3876CEFC1891317A7 /* DocumentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentsView.swift; sourceTree = "<group>"; };
 		23B45678901234567890123B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2F9E8B3C1234567890ABCDEF /* Category+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Category+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -114,6 +116,7 @@
 			isa = PBXGroup;
 			children = (
 				04F654E30EB3BB8388F98E94 /* ContentView.swift */,
+				BF6E84C3FBFD478E813C9DB0 /* LoginView.swift */,
 				D3F78B08CDBB4B74973C660565BCDABE /* DashboardView.swift */,
 				F2AAC89D21EB40AABC6461CF42C85165 /* AnalyticsView.swift */,
 				221AF239D0C640B3876CEFC1891317A7 /* DocumentsView.swift */,
@@ -293,6 +296,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9092D5A7400F9B0CB893874C /* ContentView.swift in Sources */,
+				AF5E73B2EAFC467D912B8CAF /* LoginView.swift in Sources */,
 				A9EDDD0E9BBA4D0286A0CE234B0C4B3A /* DashboardView.swift in Sources */,
 				D62D0351A2F14CD8816B3337F0FE5F6A /* AnalyticsView.swift in Sources */,
 				38052FED7CC349B19F28B2AEE12FDDE4 /* DocumentsView.swift in Sources */,
