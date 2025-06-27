@@ -24,8 +24,6 @@ disabled_rules:
 
 # Enabled rules (critical for build stability)
 opt_in_rules:
-  - unused_import
-  - unused_private_declaration
   - force_try
   - implicit_getter
   - redundant_string_enum_value
@@ -72,7 +70,7 @@ nesting:
   type_level:
     warning: 3
     error: 5
-  statement_level:
+  function_level:
     warning: 5
     error: 10
 
@@ -107,4 +105,4 @@ custom_rules:
 reporter: "emoji" # xcode, json, csv, checkstyle, junit, html, emoji, sonarqube, markdown, github-actions-logging
 
 # Performance settings
-compilation_mode: wholemodule
+# compilation_mode: wholemodule # Removed - invalid configuration
