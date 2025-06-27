@@ -1,72 +1,79 @@
 #!/bin/bash
 
-# FinanceMate E2E Test Runner
-# This script builds and runs the E2E tests for authentication verification
+# Define the absolute path for artifacts, consistent with ScreenshotService.swift
+ARTIFACTS_DIR="$HOME/Documents/test_artifacts"
+LOG_FILE="$(pwd)/e2e_test_output.log"
+RESULT_BUNDLE_PATH="$(pwd)/e2e_test_results.xcresult"
 
-echo "🚀 FinanceMate E2E Test Runner"
-echo "=============================="
-echo ""
+echo "🚀 Running E2E Tests with Visual Evidence"
+echo "========================================"
+echo "Artifacts will be saved to: $ARTIFACTS_DIR"
 
-# Navigate to the project directory
-cd "_macOS/FinanceMate"
+# Clean previous run and create artifacts directory
+rm -rf "$ARTIFACTS_DIR"
+rm -f "$LOG_FILE"
+rm -rf "$RESULT_BUNDLE_PATH"
+mkdir -p "$ARTIFACTS_DIR"
 
 # Build the app first
-echo "📦 Building FinanceMate app..."
-xcodebuild -project FinanceMate.xcodeproj \
-           -scheme FinanceMate \
-           -configuration Debug \
-           -derivedDataPath build \
-           build
+echo "📦 Building FinanceMate..."
+xcodebuild build \
+    -workspace ../FinanceMate.xcworkspace \
+    -scheme FinanceMate \
+    -destination 'platform=macOS' \
+    -quiet
 
 if [ $? -ne 0 ]; then
-    echo "❌ Build failed!"
+    echo "❌ Build failed"
     exit 1
 fi
 
-echo "✅ Build successful!"
-echo ""
+echo "✅ Build successful"
 
-# Create test artifacts directory
-TEST_ARTIFACTS_DIR="$HOME/Documents/test_artifacts"
-mkdir -p "$TEST_ARTIFACTS_DIR"
-echo "📁 Test artifacts will be saved to: $TEST_ARTIFACTS_DIR"
-echo ""
+# Run the E2E tests with the CORRECT target syntax
+# The format is 'TestTarget/TestClass'
+echo "🧪 Running E2E Authentication Tests..."
+xcodebuild test \
+    -workspace ../FinanceMate.xcworkspace \
+    -scheme FinanceMate \
+    -destination 'platform=macOS' \
+    -only-testing:FinanceMateTests/AuthenticationE2ETests \
+    -resultBundlePath "$RESULT_BUNDLE_PATH" \
+    2>&1 | tee "$LOG_FILE"
 
-# Since the test target isn't configured in Xcode, we'll demonstrate the authentication flow
-echo "🧪 Authentication Flow Demonstration"
-echo "===================================="
-echo ""
-echo "The E2E tests are designed to verify:"
-echo "1. Welcome screen appears with authentication prompt"
-echo "2. Sign In with Apple button is visible and clickable"
-echo "3. Authentication flow can be initiated"
-echo "4. App handles authentication cancellation gracefully"
-echo "5. Multiple rapid authentication attempts don't crash the app"
-echo ""
+TEST_RESULT=${PIPESTATUS[0]}
 
-# Launch the app for manual verification
-echo "🖥️  Launching FinanceMate for manual verification..."
+# Check results
 echo ""
-echo "Please verify the following:"
-echo "✓ Welcome screen displays 'Welcome to FinanceMate'"
-echo "✓ 'Please authenticate to continue' message is visible"
-echo "✓ 'Sign In with Apple' button is present and clickable"
-echo "✓ Clicking the button initiates Apple Sign In flow"
-echo "✓ App returns to welcome screen if authentication is cancelled"
-echo ""
+echo "📊 Test Results:"
+echo "=================="
 
-# Open the built app
-open "build/Build/Products/Debug/FinanceMate.app"
+if [ $TEST_RESULT -eq 0 ]; then
+    echo "✅ E2E Tests PASSED"
+else
+    echo "❌ E2E Tests FAILED"
+    echo "See logs for details: $LOG_FILE"
+fi
 
-echo "📸 Screenshots would be captured at these points:"
-echo "- E2E_Auth_WelcomeScreen: Initial welcome screen"
-echo "- E2E_Auth_SignInButton: Close-up of authentication area"
-echo "- E2E_Auth_AfterSignInClick: State after clicking Sign In"
-echo "- E2E_Auth_Cancelled: State after cancelling authentication"
-echo "- E2E_Auth_StressTest: App state after multiple attempts"
+# Check for screenshots in the correct directory
 echo ""
+echo "📸 Screenshot Evidence:"
+echo "======================"
 
-echo "✅ E2E test demonstration complete!"
+# Look for the specific success screenshot
+SUCCESS_SCREENSHOT="$ARTIFACTS_DIR/E2E_Auth_Success_Dashboard.png"
+
+if [ -f "$SUCCESS_SCREENSHOT" ]; then
+    echo "✅ SUCCESS: '$SUCCESS_SCREENSHOT' captured."
+    ls -l "$ARTIFACTS_DIR"
+else
+    echo "❌ FAILURE: Success screenshot was not found."
+    echo "Listing contents of artifacts directory (if any):"
+    ls -l "$ARTIFACTS_DIR"
+fi
+
 echo ""
-echo "To run the actual XCUITests when the test target is configured:"
-echo "xcodebuild test -project FinanceMate.xcodeproj -scheme FinanceMate -destination 'platform=macOS'"
+echo "📁 Test artifacts saved to: $ARTIFACTS_DIR"
+echo "📋 Test logs saved to: $LOG_FILE"
+
+exit $TEST_RESULT
