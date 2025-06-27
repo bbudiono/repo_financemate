@@ -30,6 +30,7 @@
 		E2345678901BCDEF23456789 /* BasicExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2345678901BCDEF23456789 /* BasicExportService.swift */; };
 		E5E7EF30544D4EE198A03945 /* APIKeysIntegrationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DDC146887E149D9A1AAE027 /* APIKeysIntegrationService.swift */; };
 		2F7AB726D00249769D602DEA /* TaskMasterAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB69FC0CD6B4F97A50AA08A /* TaskMasterAIService.swift */; };
+		6EC6AD87195C426EAEB30A5E /* KeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD83D43E3A470D869D3D96 /* KeychainManager.swift */; };
 		4066900159D6459DBF9CC355 /* UserSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFEA0A41404442ABF32EB70 /* UserSessionManager.swift */; };
 		C76704F73B3D454E8963D3B7 /* TokenManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8364F6BBEC35411F9A95BBD8 /* TokenManager.swift */; };
 		CMTP234567890ABCDEF1234 /* CommonTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = CMT1234567890ABCDEF1234 /* CommonTypes.swift */; };
@@ -73,6 +74,7 @@
 		F74A98781F1B874D7128CEE5 /* FinanceMate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FinanceMate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8DDC146887E149D9A1AAE027 /* APIKeysIntegrationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKeysIntegrationService.swift; sourceTree = "<group>"; };
 		ADB69FC0CD6B4F97A50AA08A /* TaskMasterAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskMasterAIService.swift; sourceTree = "<group>"; };
+		07FD83D43E3A470D869D3D96 /* KeychainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../Security/KeychainManager.swift"; sourceTree = "<group>"; };
 		CEFEA0A41404442ABF32EB70 /* UserSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSessionManager.swift; sourceTree = "<group>"; };
 		8364F6BBEC35411F9A95BBD8 /* TokenManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenManager.swift; sourceTree = "<group>"; };
 		CMT1234567890ABCDEF1234 /* CommonTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonTypes.swift; sourceTree = "<group>"; };
