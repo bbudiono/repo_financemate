@@ -53,6 +53,9 @@ struct DocumentsView: View {
     
     // Document file handling service
     @StateObject private var fileHandler: DocumentFileHandlingService
+    
+    // Document processing service
+    @StateObject private var processingService: DocumentProcessingService
 
     @State private var searchText = ""
     @State private var selectedFilter: DocumentFilter = .all
@@ -66,89 +69,27 @@ struct DocumentsView: View {
     @State private var successMessage = ""
     @State private var showingPerformanceInfo = false
 
-    // Performance tracking variables
-    @State private var isVirtualizationEnabled = false
-    @State private var visibleRange: Range<Int> = 0..<50
-    @State private var totalDocumentCount = 0
-    @State private var filterPerformanceMetrics = DocumentViewPerformanceMetrics()
+    // Performance management
+    @StateObject private var performanceManager: DocumentViewPerformanceManager
     
     // MARK: - Initializer
     init() {
-        self._fileHandler = StateObject(wrappedValue: DocumentFileHandlingService(context: CoreDataStack.shared.mainContext))
+        let context = CoreDataStack.shared.mainContext
+        self._fileHandler = StateObject(wrappedValue: DocumentFileHandlingService(context: context))
+        self._processingService = StateObject(wrappedValue: DocumentProcessingService())
+        self._performanceManager = StateObject(wrappedValue: DocumentViewPerformanceManager())
     }
 
     // PERFORMANCE OPTIMIZATION: Enhanced filtered documents with better algorithms
     var filteredDocuments: [Document] {
-        let startTime = CFAbsoluteTimeGetCurrent()
-
-        // Early return for better performance
-        if documents.isEmpty {
-            return []
-        }
-
-        // PERFORMANCE OPTIMIZATION: Use lazy evaluation for large datasets
-        let filtered = documents.lazy.filter { document in
-            // Apply document type filter first (most selective)
-            if selectedFilter != .all && getDocumentType(document) != selectedFilter.uiDocumentType {
-                return false
-            }
-
-            // Apply search text filter with optimized search
-            if !searchText.isEmpty {
-                let searchLower = searchText.lowercased()
-                let fileName = (document.fileName ?? "").lowercased()
-                let extractedText = (document.rawOCRText ?? "").lowercased()
-                
-                // PERFORMANCE OPTIMIZATION: Short-circuit evaluation
-                return fileName.contains(searchLower) || extractedText.contains(searchLower)
-            }
-
-            return true
-        }
-
-        // PERFORMANCE OPTIMIZATION: Limit sorting for large datasets
-        let result: [Document]
-        if performanceMonitor.isLowMemoryMode && filtered.count > 100 {
-            // In low memory mode, limit results
-            result = Array(filtered.prefix(100))
-        } else {
-            result = filtered.sorted {
-                ($0.dateCreated ?? Date.distantPast) > ($1.dateCreated ?? Date.distantPast)
-            }
-        }
-
-        // Update performance metrics
-        let endTime = CFAbsoluteTimeGetCurrent()
-        DispatchQueue.main.async {
-            self.filterPerformanceMetrics.lastFilterTime = endTime - startTime
-            self.filterPerformanceMetrics.totalFilters += 1
-        }
-
-        return result
+        return performanceManager.optimizeDocumentFiltering(
+            documents: documents,
+            searchText: searchText,
+            selectedFilter: selectedFilter,
+            performanceMonitor: performanceMonitor
+        )
     }
 
-    private func getDocumentType(_ document: Document) -> UIDocumentType {
-        guard let fileName = document.fileName else { return .other }
-        let filename = fileName.lowercased()
-        if filename.contains("invoice") { return .invoice }
-        if filename.contains("receipt") { return .receipt }
-        if filename.contains("statement") { return .statement }
-        if filename.contains("contract") { return .contract }
-        return .other
-    }
-
-    private func getMimeType(for url: URL) -> String {
-        let pathExtension = url.pathExtension.lowercased()
-        switch pathExtension {
-        case "pdf": return "application/pdf"
-        case "jpg", "jpeg": return "image/jpeg"
-        case "png": return "image/png"
-        case "txt": return "text/plain"
-        case "tiff": return "image/tiff"
-        case "heic": return "image/heic"
-        default: return "application/octet-stream"
-        }
-    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -161,17 +102,17 @@ struct DocumentsView: View {
                         .accessibilityIdentifier("documents_header_title")
 
                     // Performance indicator
-                    if isVirtualizationEnabled {
+                    if performanceManager.isVirtualizationEnabled {
                         HStack(spacing: 4) {
                             Image(systemName: "speedometer")
-                                .foregroundColor(filterPerformanceMetrics.performanceGrade.color)
+                                .foregroundColor(performanceManager.filterPerformanceMetrics.performanceGrade.color)
                             Text("Optimized")
                                 .font(.caption)
-                                .foregroundColor(filterPerformanceMetrics.performanceGrade.color)
+                                .foregroundColor(performanceManager.filterPerformanceMetrics.performanceGrade.color)
                         }
                         .padding(.horizontal, 8)
                         .padding(.vertical, 4)
-                        .background(filterPerformanceMetrics.performanceGrade.color.opacity(0.1))
+                        .background(performanceManager.filterPerformanceMetrics.performanceGrade.color.opacity(0.1))
                         .cornerRadius(6)
                         .onTapGesture {
                             showingPerformanceInfo.toggle()
@@ -237,8 +178,8 @@ struct DocumentsView: View {
                         documents: filteredDocuments,
                         selectedDocument: $selectedDocument,
                         onDelete: deleteDocument,
-                        isVirtualizationEnabled: isVirtualizationEnabled,
-                        visibleRange: $visibleRange
+                        isVirtualizationEnabled: performanceManager.isVirtualizationEnabled,
+                        visibleRange: $performanceManager.visibleRange
                     )
 
                     if isDragOver {
@@ -293,28 +234,73 @@ struct DocumentsView: View {
             Text(successMessage)
         }
         .sheet(isPresented: $showingPerformanceInfo) {
-            DocumentListPerformanceView(metrics: filterPerformanceMetrics, isVirtualizationEnabled: isVirtualizationEnabled, totalCount: totalDocumentCount)
+            DocumentListPerformanceView(metrics: performanceManager.filterPerformanceMetrics, isVirtualizationEnabled: performanceManager.isVirtualizationEnabled, totalCount: performanceManager.totalDocumentCount)
+        }
+    }
+    
+    // MARK: - Helper Methods
+    
+    private func getDocumentType(_ document: Document) -> UIDocumentType {
+        guard let fileName = document.fileName else {
+            return .other
+        }
+        
+        let lowercasedFileName = fileName.lowercased()
+        
+        // Simple classification based on file name keywords
+        if lowercasedFileName.contains("invoice") {
+            return .invoice
+        } else if lowercasedFileName.contains("receipt") {
+            return .receipt
+        } else if lowercasedFileName.contains("statement") {
+            return .statement
+        } else if lowercasedFileName.contains("bill") {
+            return .bill
+        } else {
+            return .other
         }
     }
 
     private func handleDocumentDrop(_ providers: [NSItemProvider]) -> Bool {
         isProcessing = true
-
-        for provider in providers {
-            provider.loadItem(forTypeIdentifier: UTType.fileURL.identifier, options: nil) { item, _ in
-                DispatchQueue.main.async {
-                    if let data = item as? Data,
-                       let url = URL(dataRepresentation: data, relativeTo: nil) {
-                        processDocument(url: url)
-                    }
-
-                    if provider == providers.last {
-                        isProcessing = false
+        
+        Task {
+            // Extract URLs from providers
+            var urls: [URL] = []
+            for provider in providers {
+                if provider.hasItemConformingToTypeIdentifier("public.file-url") {
+                    do {
+                        let item = try await provider.loadItem(forTypeIdentifier: "public.file-url", options: nil)
+                        if let data = item as? Data, let url = URL(dataRepresentation: data, relativeTo: nil) {
+                            urls.append(url)
+                        }
+                    } catch {
+                        print("Failed to load dropped item: \(error)")
                     }
                 }
             }
+            
+            // Process the URLs
+            let results = await processingService.processDocuments(urls: urls)
+            let successCount = results.filter { if case .success = $0 { return true }; return false }.count
+            let errorCount = results.count - successCount
+            
+            await MainActor.run {
+                isProcessing = false
+                
+                if errorCount == 0 {
+                    successMessage = "Successfully imported \(successCount) document\(successCount == 1 ? "" : "s")"
+                    showingSuccess = true
+                } else if successCount == 0 {
+                    errorMessage = "Failed to import \(errorCount) document\(errorCount == 1 ? "" : "s")"
+                    showingError = true
+                } else {
+                    successMessage = "Imported \(successCount) documents successfully, \(errorCount) failed"
+                    showingSuccess = true
+                }
+            }
         }
-
+        
         return true
     }
 
@@ -324,17 +310,9 @@ struct DocumentsView: View {
         switch result {
         case .success(let urls):
             Task {
-                var successCount = 0
-                var errorCount = 0
-
-                for url in urls {
-                    do {
-                        try await processDocumentWithErrorHandling(url: url)
-                        successCount += 1
-                    } catch {
-                        errorCount += 1
-                    }
-                }
+                let results = await processingService.processDocuments(urls: urls)
+                let successCount = results.filter { if case .success = $0 { return true }; return false }.count
+                let errorCount = results.count - successCount
 
                 await MainActor.run {
                     isProcessing = false
@@ -358,180 +336,6 @@ struct DocumentsView: View {
         }
     }
 
-    private func processDocumentWithErrorHandling(url: URL) async throws {
-        // Create Core Data Document entity
-        let document = Document(context: viewContext)
-        document.id = UUID()
-        document.fileName = url.lastPathComponent
-        document.filePath = url.path
-        document.dateCreated = Date()
-        document.rawOCRText = "Processing..."
-        document.processingStatus = "processing"
-        document.mimeType = getMimeType(for: url)
-
-        // Get file size
-        do {
-            let attributes = try FileManager.default.attributesOfItem(atPath: url.path)
-            document.fileSize = attributes[.size] as? Int64 ?? 0
-        } catch {
-            document.fileSize = 0
-        }
-
-        // Save to Core Data immediately with processing status
-        do {
-            try viewContext.save()
-        } catch {
-            throw DocumentError.saveError(error.localizedDescription)
-        }
-
-        // Real OCR processing using Apple Vision framework
-        do {
-            let extractedText = try await performBackgroundOCR(on: url)
-
-            await MainActor.run {
-                document.rawOCRText = extractedText.isEmpty ? "No text detected" : extractedText
-                document.processingStatus = "completed"
-
-                do {
-                    try viewContext.save()
-                } catch {
-                    document.rawOCRText = "Save failed: \(error.localizedDescription)"
-                    document.processingStatus = "error"
-                }
-            }
-        } catch {
-            await MainActor.run {
-                document.rawOCRText = "OCR failed: \(error.localizedDescription)"
-                document.processingStatus = "error"
-
-                do {
-                    try viewContext.save()
-                } catch {
-                    // Document will remain in error state
-                }
-            }
-            throw DocumentError.ocrError(error.localizedDescription)
-        }
-    }
-
-    private func processDocument(url: URL) {
-        Task {
-            do {
-                try await processDocumentWithErrorHandling(url: url)
-            } catch {
-                await MainActor.run {
-                    errorMessage = "Failed to process \(url.lastPathComponent): \(error.localizedDescription)"
-                    showingError = true
-                }
-            }
-        }
-    }
-
-    private func performBackgroundOCR(on url: URL) async throws -> String {
-        let fileExtension = url.pathExtension.lowercased()
-
-        switch fileExtension {
-        case "pdf":
-            return try await extractTextFromPDF(url: url)
-        case "jpg", "jpeg", "png", "tiff", "heic":
-            return try await extractTextFromImage(url: url)
-        case "txt":
-            return try String(contentsOf: url, encoding: .utf8)
-        default:
-            throw OCRError.unsupportedFileType
-        }
-    }
-
-    private func extractTextFromPDF(url: URL) async throws -> String {
-        guard let pdfDocument = PDFDocument(url: url) else {
-            throw OCRError.pdfLoadFailed
-        }
-
-        var fullText = ""
-
-        // First try to extract native text
-        for pageIndex in 0..<pdfDocument.pageCount {
-            guard let page = pdfDocument.page(at: pageIndex) else { continue }
-            if let pageText = page.string {
-                fullText += pageText + "\n"
-            }
-        }
-
-        // If no native text found, use OCR on PDF pages
-        if fullText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            for pageIndex in 0..<min(pdfDocument.pageCount, 10) { // Limit to first 10 pages
-                guard let page = pdfDocument.page(at: pageIndex) else { continue }
-
-                let pageRect = page.bounds(for: .mediaBox)
-
-                // Create image from PDF page using macOS APIs
-                let nsImage = NSImage(size: pageRect.size)
-                nsImage.lockFocus()
-
-                let context = NSGraphicsContext.current!.cgContext
-                context.translateBy(x: 0, y: pageRect.size.height)
-                context.scaleBy(x: 1.0, y: -1.0)
-                page.draw(with: .mediaBox, to: context)
-
-                nsImage.unlockFocus()
-
-                guard let cgImage = nsImage.cgImage(forProposedRect: nil, context: nil, hints: nil) else {
-                    continue
-                }
-                let pageImage = NSImage(cgImage: cgImage, size: pageRect.size)
-
-                let ocrText = try await performVisionOCR(on: cgImage)
-                fullText += ocrText + "\n"
-            }
-        }
-
-        return fullText.trimmingCharacters(in: .whitespacesAndNewlines)
-    }
-
-    private func extractTextFromImage(url: URL) async throws -> String {
-        guard let nsImage = NSImage(contentsOf: url) else {
-            throw OCRError.imageLoadFailed
-        }
-
-        guard let cgImage = nsImage.cgImage(forProposedRect: nil, context: nil, hints: nil) else {
-            throw OCRError.imageProcessingFailed
-        }
-
-        return try await performVisionOCR(on: cgImage)
-    }
-
-    private func performVisionOCR(on cgImage: CGImage) async throws -> String {
-        try await withCheckedThrowingContinuation { continuation in
-            let requestHandler = VNImageRequestHandler(cgImage: cgImage, options: [:])
-            let request = VNRecognizeTextRequest { request, error in
-                if let error = error {
-                    continuation.resume(throwing: error)
-                    return
-                }
-
-                guard let observations = request.results as? [VNRecognizedTextObservation] else {
-                    continuation.resume(returning: "")
-                    return
-                }
-
-                let recognizedText = observations.compactMap { observation in
-                    observation.topCandidates(1).first?.string
-                }.joined(separator: "\n")
-
-                continuation.resume(returning: recognizedText)
-            }
-
-            // Configure for maximum accuracy
-            request.recognitionLevel = .accurate
-            request.usesLanguageCorrection = true
-
-            do {
-                try requestHandler.perform([request])
-            } catch {
-                continuation.resume(throwing: error)
-            }
-        }
-    }
 
     private func deleteDocument(_ document: Document) {
         viewContext.delete(document)
@@ -547,9 +351,7 @@ struct DocumentsView: View {
     }
 
     private func updateTotalCount() {
-        totalDocumentCount = documents.count
-        // Enable virtualization for large datasets
-        isVirtualizationEnabled = totalDocumentCount > 100
+        performanceManager.updateDocumentCount(documents.count)
     }
 }
 

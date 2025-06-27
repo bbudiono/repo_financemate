@@ -156,7 +156,7 @@ struct DocumentRow: View {
         if filename.contains("invoice") { return .invoice }
         if filename.contains("receipt") { return .receipt }
         if filename.contains("statement") { return .statement }
-        if filename.contains("contract") { return .contract }
+        if filename.contains("bill") { return .bill }
         return .other
     }
 

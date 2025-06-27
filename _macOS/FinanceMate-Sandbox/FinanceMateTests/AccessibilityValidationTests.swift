@@ -329,24 +329,7 @@ struct AccessibilityComponentScores {
 }
 
 // MARK: - AccessibilityManager Testing Extensions
-
-extension AccessibilityManager {
-    var supportsVoiceOver: Bool {
-        return true // VoiceOver integration implemented
-    }
-
-    var supportsKeyboardNavigation: Bool {
-        return true // Full keyboard navigation support
-    }
-
-    var supportsHighContrast: Bool {
-        return true // High contrast mode compatibility
-    }
-
-    var supportsReducedMotion: Bool {
-        return true // Reduced motion preferences honored
-    }
-}
+// Note: Testing extensions are now defined in AccessibilityManager.swift
 
 // MARK: - ContentSizeCategory Extension
 

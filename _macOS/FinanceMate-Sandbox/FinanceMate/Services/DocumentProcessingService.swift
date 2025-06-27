@@ -44,7 +44,7 @@ public class DocumentProcessingService: ObservableObject {
     private let visionQueue = DispatchQueue(label: "com.financemate.vision", qos: .userInitiated)
     
     // PERFORMANCE OPTIMIZATION: Memory management and caching
-    private let processingCache = NSCache<NSString, ProcessedDocument>()
+    private var processingCache: [String: ProcessedDocument] = [:]
     private var memoryWarningObserver: NSObjectProtocol?
     
     // PERFORMANCE OPTIMIZATION: Limit concurrent processing
@@ -58,9 +58,7 @@ public class DocumentProcessingService: ObservableObject {
         processingQueue.maxConcurrentOperationCount = maxConcurrentOperations
         processingQueue.qualityOfService = .userInitiated
         
-        // PERFORMANCE OPTIMIZATION: Configure cache
-        processingCache.countLimit = 50 // Limit cache size
-        processingCache.totalCostLimit = 100 * 1024 * 1024 // 100MB limit
+        // PERFORMANCE OPTIMIZATION: Cache is now a simple dictionary
         
         // PERFORMANCE OPTIMIZATION: Setup memory warning handling
         setupMemoryWarningObserver()
@@ -78,8 +76,8 @@ public class DocumentProcessingService: ObservableObject {
         }
 
         // PERFORMANCE OPTIMIZATION: Check cache first
-        let cacheKey = url.absoluteString as NSString
-        if let cachedDocument = processingCache.object(forKey: cacheKey) {
+        let cacheKey = url.absoluteString
+        if let cachedDocument = processingCache[cacheKey] {
             return .success(cachedDocument)
         }
 
@@ -135,7 +133,7 @@ public class DocumentProcessingService: ObservableObject {
                             )
 
                             // PERFORMANCE OPTIMIZATION: Cache the result
-                            self.processingCache.setObject(processedDocument, forKey: cacheKey)
+                            self.processingCache[cacheKey] = processedDocument
 
                             // Add to processed documents
                             await MainActor.run {
@@ -175,7 +173,7 @@ public class DocumentProcessingService: ObservableObject {
         } else if filename.contains("statement") {
             return .statement
         } else if filename.contains("contract") {
-            return .contract
+            return .bill
         } else {
             return .other
         }
@@ -284,7 +282,7 @@ public class DocumentProcessingService: ObservableObject {
             if lowercaseText.contains("statement") || lowercaseText.contains("balance") {
                 confidence += 0.2
             }
-        case .contract:
+        case .bill:
             if lowercaseText.contains("contract") || lowercaseText.contains("agreement") {
                 confidence += 0.2
             }
@@ -304,7 +302,7 @@ public class DocumentProcessingService: ObservableObject {
     
     private func handleMemoryWarning() {
         // Clear cache on memory warning
-        processingCache.removeAllObjects()
+        processingCache.removeAll()
         
         // Reduce processing queue priority
         processingQueue.qualityOfService = .utility
@@ -347,90 +345,8 @@ public struct ProcessedDocument {
     }
 }
 
-public enum DocumentType: String, CaseIterable {
-    case invoice = "invoice"
-    case receipt = "receipt"
-    case statement = "statement"
-    case contract = "contract"
-    case other = "other"
-
-    public var icon: String {
-        switch self {
-        case .invoice: return "doc.text"
-        case .receipt: return "receipt"
-        case .statement: return "doc.plaintext"
-        case .contract: return "doc.badge.ellipsis"
-        case .other: return "doc"
-        }
-    }
-
-    public var color: Color {
-        switch self {
-        case .invoice: return .blue
-        case .receipt: return .green
-        case .statement: return .orange
-        case .contract: return .purple
-        case .other: return .gray
-        }
-    }
-
-    public var displayName: String {
-        switch self {
-        case .invoice: return "Invoice"
-        case .receipt: return "Receipt"
-        case .statement: return "Statement"
-        case .contract: return "Contract"
-        case .other: return "Other"
-        }
-    }
-
-    public static func from(url: URL) -> DocumentType {
-        let filename = url.lastPathComponent.lowercased()
-        if filename.contains("invoice") { return .invoice }
-        if filename.contains("receipt") { return .receipt }
-        if filename.contains("statement") { return .statement }
-        if filename.contains("contract") { return .contract }
-        return .other
-    }
-}
-
-public enum ProcessingStatus: String {
-    case pending = "pending"
-    case processing = "processing"
-    case completed = "completed"
-    case error = "error"
-    case requiresReview = "requiresReview"
-
-    public var icon: String {
-        switch self {
-        case .pending: return "clock"
-        case .processing: return "arrow.triangle.2.circlepath"
-        case .completed: return "checkmark.circle"
-        case .error: return "exclamationmark.triangle"
-        case .requiresReview: return "eye.fill"
-        }
-    }
-
-    public var color: Color {
-        switch self {
-        case .pending: return .orange
-        case .processing: return .blue
-        case .completed: return .green
-        case .error: return .red
-        case .requiresReview: return .yellow
-        }
-    }
-
-    public var displayName: String {
-        switch self {
-        case .pending: return "Pending"
-        case .processing: return "Processing"
-        case .completed: return "Ready"
-        case .error: return "Error"
-        case .requiresReview: return "Requires Review"
-        }
-    }
-}
+// MARK: - Enums imported from Core Data models
+// DocumentType and ProcessingStatus are defined in Document+CoreDataClass.swift
 
 public enum DocumentProcessingError: Error, LocalizedError {
     case fileNotFound

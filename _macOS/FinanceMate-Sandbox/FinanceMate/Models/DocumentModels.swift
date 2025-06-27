@@ -16,7 +16,7 @@ enum DocumentFilter: CaseIterable {
     case invoices
     case receipts
     case statements
-    case contracts
+    case bills
 
     var displayName: String {
         switch self {
@@ -24,7 +24,7 @@ enum DocumentFilter: CaseIterable {
         case .invoices: return "Invoices"
         case .receipts: return "Receipts"
         case .statements: return "Statements"
-        case .contracts: return "Contracts"
+        case .bills: return "Bills"
         }
     }
 
@@ -34,7 +34,7 @@ enum DocumentFilter: CaseIterable {
         case .invoices: return .invoice
         case .receipts: return .receipt
         case .statements: return .statement
-        case .contracts: return .contract
+        case .bills: return .bill
         }
     }
 }
@@ -43,7 +43,7 @@ enum UIDocumentType: CaseIterable {
     case invoice
     case receipt
     case statement
-    case contract
+    case bill
     case other
 
     var icon: String {
@@ -51,7 +51,7 @@ enum UIDocumentType: CaseIterable {
         case .invoice: return "doc.text"
         case .receipt: return "receipt"
         case .statement: return "doc.plaintext"
-        case .contract: return "doc.badge.ellipsis"
+        case .bill: return "doc.badge.ellipsis"
         case .other: return "doc"
         }
     }
@@ -61,7 +61,7 @@ enum UIDocumentType: CaseIterable {
         case .invoice: return .blue
         case .receipt: return .green
         case .statement: return .orange
-        case .contract: return .purple
+        case .bill: return .purple
         case .other: return .gray
         }
     }
@@ -71,7 +71,7 @@ enum UIDocumentType: CaseIterable {
         case .invoice: return "Invoice"
         case .receipt: return "Receipt"
         case .statement: return "Statement"
-        case .contract: return "Contract"
+        case .bill: return "Bill"
         case .other: return "Other"
         }
     }
@@ -81,7 +81,7 @@ enum UIDocumentType: CaseIterable {
         if filename.contains("invoice") { return .invoice }
         if filename.contains("receipt") { return .receipt }
         if filename.contains("statement") { return .statement }
-        if filename.contains("contract") { return .contract }
+        if filename.contains("bill") { return .bill }
         return .other
     }
 }
