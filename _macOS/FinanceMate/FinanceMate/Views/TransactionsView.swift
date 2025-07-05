@@ -428,14 +428,14 @@ struct TransactionsView: View {
             // Transaction Details
             VStack(alignment: .leading, spacing: 6) {
                 HStack {
-                    Text(transaction.category ?? "General")
+                    Text(transaction.category)
                         .font(.headline)
                         .foregroundColor(.primary)
                         .lineLimit(1)
                     
                     Spacer()
                     
-                    Text(viewModel.formatDate(transaction.date ?? Date()))
+                    Text(viewModel.formatDate(transaction.date))
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
@@ -641,15 +641,14 @@ struct TransactionsView: View {
             }
             .padding(20)
             .navigationTitle("Filter Transactions")
-            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
+                ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") {
                         showingFilters = false
                     }
                 }
                 
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .confirmationAction) {
                     Button("Done") {
                         showingFilters = false
                     }

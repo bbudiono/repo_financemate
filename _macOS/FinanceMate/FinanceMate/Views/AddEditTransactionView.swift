@@ -74,16 +74,15 @@ struct AddEditTransactionView: View {
                 }
             }
             .navigationTitle("Add Transaction")
-            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
+                ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") {
                         isPresented = false
                     }
                     .accessibilityIdentifier("CancelButton")
                 }
                 
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
                         saveTransaction()
                     }
@@ -173,7 +172,6 @@ struct AddEditTransactionView: View {
                 TextField("0.00", text: $amount)
                     .font(.title2)
                     .fontWeight(.medium)
-                    .keyboardType(.decimalPad)
                     .textFieldStyle(PlainTextFieldStyle())
                     .accessibilityIdentifier("AmountTextField")
                     .onChange(of: amount) { oldValue, newValue in
