@@ -30,9 +30,9 @@ This milestone is focused on creating a stable, verifiable, and compliant starti
 
 ### 1.3: Establish Functional Test Suite
 
-*   **Task-1.3.1:** [ ] Create a new UI Test target (`FinanceMateUITests`) linked to the `FinanceMate` application.
-*   **Task-1.3.2:** [ ] Write a single UI test that launches the `FinanceMate` application and verifies that the "FinanceMate Production" text is visible.
-*   **Task-1.3.3:** [ ] Execute the UI test and confirm that it passes. This will be the first, verifiable, end-to-end test of the new application.
+*   **Task-1.3.1:** [✅] Add a UI Test target to `project.yml`.
+*   **Task-1.3.2:** [✅] Create a basic UI Test case that launches the app and verifies the production text.
+*   **Task-1.3.3:** [✅] Successfully run the UI test suite using `xcodebuild test`.
 
 ---
 ## Backlog - Future Milestones

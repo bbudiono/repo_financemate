@@ -11,22 +11,46 @@
 		2F964B2A58F0EEF8A2F41798 /* FinanceMateApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 410A7E6292E6838B8B31ACC9 /* FinanceMateApp.swift */; };
 		7FC00D441A276278AB875BD6 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7DDB845997FA0B2558FFC85 /* ContentView.swift */; };
 		B4368C63FA45535A2DC3CD86 /* FinanceMateApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 662A4A927241648D838FFF8D /* FinanceMateApp.swift */; };
+		F04428F65AB9FC74728D6A2A /* FinanceMateUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EDE60A858ADA7C1B1091303 /* FinanceMateUITests.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		9F33F263AB5B42C987B2F220 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7507F26843B0E919A679B42F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9BCE076CC14C69F83263D6C5;
+			remoteInfo = FinanceMate;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		410A7E6292E6838B8B31ACC9 /* FinanceMateApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinanceMateApp.swift; sourceTree = "<group>"; };
 		58D5D5FC33EC4AF8BA804084 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		662A4A927241648D838FFF8D /* FinanceMateApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinanceMateApp.swift; sourceTree = "<group>"; };
 		6AD7F62BE980B30C777D9BCC /* FinanceMate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FinanceMate.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9EDE60A858ADA7C1B1091303 /* FinanceMateUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinanceMateUITests.swift; sourceTree = "<group>"; };
+		A27BF3AB4D506A65A051FBED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		A9E9BAB75A2AC15CC3846C01 /* FinanceMateUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FinanceMateUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7DDB845997FA0B2558FFC85 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		EB16A903A72C89B031403998 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		F61A461D166AD2E60C0C5BB0 /* FinanceMate-Sandbox.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "FinanceMate-Sandbox.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
+		45AF28BC788310D6DE1BB7B7 /* FinanceMateUITests */ = {
+			isa = PBXGroup;
+			children = (
+				9EDE60A858ADA7C1B1091303 /* FinanceMateUITests.swift */,
+				A27BF3AB4D506A65A051FBED /* Info.plist */,
+			);
+			path = FinanceMateUITests;
+			sourceTree = "<group>";
+		};
 		664632500DD526A9BDF8015A = {
 			isa = PBXGroup;
 			children = (
+				45AF28BC788310D6DE1BB7B7 /* FinanceMateUITests */,
 				7CE20DB0B842FC5FABC9AF2E /* Sources */,
 				C95C8634859A3485875FF355 /* Sources */,
 				C190AFCE18F9B21044E96663 /* Products */,
@@ -48,6 +72,7 @@
 			children = (
 				F61A461D166AD2E60C0C5BB0 /* FinanceMate-Sandbox.app */,
 				6AD7F62BE980B30C777D9BCC /* FinanceMate.app */,
+				A9E9BAB75A2AC15CC3846C01 /* FinanceMateUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -91,6 +116,24 @@
 			productReference = F61A461D166AD2E60C0C5BB0 /* FinanceMate-Sandbox.app */;
 			productType = "com.apple.product-type.application";
 		};
+		2E29FF99031330C9CE13081A /* FinanceMateUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5105710F0D16728090171802 /* Build configuration list for PBXNativeTarget "FinanceMateUITests" */;
+			buildPhases = (
+				394A73EC3048146A0518C157 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				43293ADB30F80DC7D24D3757 /* PBXTargetDependency */,
+			);
+			name = FinanceMateUITests;
+			packageProductDependencies = (
+			);
+			productName = FinanceMateUITests;
+			productReference = A9E9BAB75A2AC15CC3846C01 /* FinanceMateUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		9BCE076CC14C69F83263D6C5 /* FinanceMate */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3D3FA70917CC37F760050118 /* Build configuration list for PBXNativeTarget "FinanceMate" */;
@@ -117,6 +160,9 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
+					2E29FF99031330C9CE13081A = {
+						TestTargetID = 9BCE076CC14C69F83263D6C5;
+					};
 				};
 			};
 			buildConfigurationList = 06DA17711CD05B771F369D44 /* Build configuration list for PBXProject "FinanceMate" */;
@@ -135,11 +181,20 @@
 			targets = (
 				9BCE076CC14C69F83263D6C5 /* FinanceMate */,
 				00B722C1D764E6BAD21C93D5 /* FinanceMate-Sandbox */,
+				2E29FF99031330C9CE13081A /* FinanceMateUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
+		394A73EC3048146A0518C157 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F04428F65AB9FC74728D6A2A /* FinanceMateUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AB21026E2F69F93017944B0D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -160,7 +215,33 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		43293ADB30F80DC7D24D3757 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9BCE076CC14C69F83263D6C5 /* FinanceMate */;
+			targetProxy = 9F33F263AB5B42C987B2F220 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		322BBA3F396C64DF042A9EBD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = FinanceMateUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.FinanceMateUITests;
+				SDKROOT = macosx;
+				TEST_TARGET_NAME = FinanceMate;
+			};
+			name = Release;
+		};
 		352656F509419077571E4407 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -287,6 +368,24 @@
 			};
 			name = Debug;
 		};
+		C1330F746E5E3439A2DEAD63 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = FinanceMateUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.FinanceMateUITests;
+				SDKROOT = macosx;
+				TEST_TARGET_NAME = FinanceMate;
+			};
+			name = Debug;
+		};
 		E58F593C1EE7BAA2CFDD46CA /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -359,6 +458,15 @@
 			buildConfigurations = (
 				750A36D2D63B2BA81739C099 /* Debug */,
 				3916A50781A842AA9ED2BE7C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		5105710F0D16728090171802 /* Build configuration list for PBXNativeTarget "FinanceMateUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C1330F746E5E3439A2DEAD63 /* Debug */,
+				322BBA3F396C64DF042A9EBD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

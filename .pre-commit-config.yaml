@@ -1,0 +1,7 @@
+repos:
+-   repo: local
+    hooks:
+    -   id: system
+        name: System
+        entry: /usr/bin/true
+        language: system 

@@ -28,4 +28,14 @@ targets:
       properties:
         LSMinimumSystemVersion: "14.0"
         CFBundleName: "$(TARGET_NAME)"
-        CFBundleIdentifier: "$(PRODUCT_BUNDLE_IDENTIFIER)" 
+        CFBundleIdentifier: "$(PRODUCT_BUNDLE_IDENTIFIER)"
+  FinanceMateUITests:
+    type: bundle.ui-testing
+    platform: macOS
+    deploymentTarget: "14.0"
+    sources:
+      - path: FinanceMateUITests
+    dependencies:
+      - target: FinanceMate
+    info:
+      path: FinanceMateUITests/Info.plist

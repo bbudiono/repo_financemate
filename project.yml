@@ -1,0 +1,10 @@
+deploymentTarget: "14.0"
+sources:
+  - path: FinanceMateUITests
+dependencies:
+  - target: FinanceMate
+info:
+  properties:
+    CFBundleName: "$(TARGET_NAME)"
+    CFBundleIdentifier: "$(PRODUCT_BUNDLE_IDENTIFIER)"
+    NSPrincipalClass: "FinanceMateUITests" 
