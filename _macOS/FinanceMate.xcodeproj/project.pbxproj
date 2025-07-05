@@ -1,0 +1,378 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 54;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2701186814CDE270AC1A7424 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB16A903A72C89B031403998 /* ContentView.swift */; };
+		2F964B2A58F0EEF8A2F41798 /* FinanceMateApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 410A7E6292E6838B8B31ACC9 /* FinanceMateApp.swift */; };
+		7FC00D441A276278AB875BD6 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7DDB845997FA0B2558FFC85 /* ContentView.swift */; };
+		B4368C63FA45535A2DC3CD86 /* FinanceMateApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 662A4A927241648D838FFF8D /* FinanceMateApp.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		410A7E6292E6838B8B31ACC9 /* FinanceMateApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinanceMateApp.swift; sourceTree = "<group>"; };
+		58D5D5FC33EC4AF8BA804084 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		662A4A927241648D838FFF8D /* FinanceMateApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinanceMateApp.swift; sourceTree = "<group>"; };
+		6AD7F62BE980B30C777D9BCC /* FinanceMate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FinanceMate.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E7DDB845997FA0B2558FFC85 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		EB16A903A72C89B031403998 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		F61A461D166AD2E60C0C5BB0 /* FinanceMate-Sandbox.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "FinanceMate-Sandbox.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		664632500DD526A9BDF8015A = {
+			isa = PBXGroup;
+			children = (
+				7CE20DB0B842FC5FABC9AF2E /* Sources */,
+				C95C8634859A3485875FF355 /* Sources */,
+				C190AFCE18F9B21044E96663 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		7CE20DB0B842FC5FABC9AF2E /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				58D5D5FC33EC4AF8BA804084 /* Info.plist */,
+				D60DC3A2EFAEF4C96A02DA65 /* FinanceMate */,
+			);
+			name = Sources;
+			path = FinanceMate;
+			sourceTree = "<group>";
+		};
+		C190AFCE18F9B21044E96663 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F61A461D166AD2E60C0C5BB0 /* FinanceMate-Sandbox.app */,
+				6AD7F62BE980B30C777D9BCC /* FinanceMate.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C95C8634859A3485875FF355 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				EB16A903A72C89B031403998 /* ContentView.swift */,
+				662A4A927241648D838FFF8D /* FinanceMateApp.swift */,
+			);
+			name = Sources;
+			path = "FinanceMate-Sandbox/FinanceMate";
+			sourceTree = "<group>";
+		};
+		D60DC3A2EFAEF4C96A02DA65 /* FinanceMate */ = {
+			isa = PBXGroup;
+			children = (
+				E7DDB845997FA0B2558FFC85 /* ContentView.swift */,
+				410A7E6292E6838B8B31ACC9 /* FinanceMateApp.swift */,
+			);
+			path = FinanceMate;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		00B722C1D764E6BAD21C93D5 /* FinanceMate-Sandbox */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D7B0D2595E405B672422BED9 /* Build configuration list for PBXNativeTarget "FinanceMate-Sandbox" */;
+			buildPhases = (
+				AB21026E2F69F93017944B0D /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "FinanceMate-Sandbox";
+			packageProductDependencies = (
+			);
+			productName = "FinanceMate-Sandbox";
+			productReference = F61A461D166AD2E60C0C5BB0 /* FinanceMate-Sandbox.app */;
+			productType = "com.apple.product-type.application";
+		};
+		9BCE076CC14C69F83263D6C5 /* FinanceMate */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3D3FA70917CC37F760050118 /* Build configuration list for PBXNativeTarget "FinanceMate" */;
+			buildPhases = (
+				E728BDA24D7E5D5322C4F5B3 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FinanceMate;
+			packageProductDependencies = (
+			);
+			productName = FinanceMate;
+			productReference = 6AD7F62BE980B30C777D9BCC /* FinanceMate.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		7507F26843B0E919A679B42F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+				};
+			};
+			buildConfigurationList = 06DA17711CD05B771F369D44 /* Build configuration list for PBXProject "FinanceMate" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 664632500DD526A9BDF8015A;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 54;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				9BCE076CC14C69F83263D6C5 /* FinanceMate */,
+				00B722C1D764E6BAD21C93D5 /* FinanceMate-Sandbox */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		AB21026E2F69F93017944B0D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2701186814CDE270AC1A7424 /* ContentView.swift in Sources */,
+				B4368C63FA45535A2DC3CD86 /* FinanceMateApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E728BDA24D7E5D5322C4F5B3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7FC00D441A276278AB875BD6 /* ContentView.swift in Sources */,
+				2F964B2A58F0EEF8A2F41798 /* FinanceMateApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		352656F509419077571E4407 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = FinanceMate/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.example.FinanceMate-Sandbox";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		3916A50781A842AA9ED2BE7C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = FinanceMate/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.FinanceMate;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		3B187CEC887B3AF55AD5E51D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = FinanceMate/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.example.FinanceMate-Sandbox";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		40FAA4664F9812F775A5365B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		750A36D2D63B2BA81739C099 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = FinanceMate/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.FinanceMate;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		E58F593C1EE7BAA2CFDD46CA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		06DA17711CD05B771F369D44 /* Build configuration list for PBXProject "FinanceMate" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				40FAA4664F9812F775A5365B /* Debug */,
+				E58F593C1EE7BAA2CFDD46CA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		3D3FA70917CC37F760050118 /* Build configuration list for PBXNativeTarget "FinanceMate" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				750A36D2D63B2BA81739C099 /* Debug */,
+				3916A50781A842AA9ED2BE7C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		D7B0D2595E405B672422BED9 /* Build configuration list for PBXNativeTarget "FinanceMate-Sandbox" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				352656F509419077571E4407 /* Debug */,
+				3B187CEC887B3AF55AD5E51D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 7507F26843B0E919A679B42F /* Project object */;
+}

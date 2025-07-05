@@ -1,0 +1,31 @@
+name: FinanceMate
+options:
+  bundleIdPrefix: com.example
+targets:
+  FinanceMate:
+    type: application
+    platform: macOS
+    deploymentTarget: "14.0"
+    sources:
+      - path: FinanceMate
+        name: Sources
+        excludes:
+          - "mcp-servers/**"
+          - "perplexity-mcp/**"
+    info:
+      path: FinanceMate/Info.plist
+      properties:
+        LSMinimumSystemVersion: "14.0"
+  FinanceMate-Sandbox:
+    type: application
+    platform: macOS
+    deploymentTarget: "14.0"
+    sources:
+      - path: FinanceMate-Sandbox/FinanceMate
+        name: Sources
+    info:
+      path: FinanceMate/Info.plist # Re-use the same Info.plist for simplicity
+      properties:
+        LSMinimumSystemVersion: "14.0"
+        CFBundleName: "$(TARGET_NAME)"
+        CFBundleIdentifier: "$(PRODUCT_BUNDLE_IDENTIFIER)" 
