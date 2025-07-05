@@ -1,6 +1,6 @@
 # FinanceMate - Master Project Specification
 **Version:** 1.0.0-RC1 (Production Release Candidate)
-**Last Updated:** 2025-07-05
+**Last Updated:** 2025-07-06
 **Status:** PRODUCTION READY - All requirements implemented
 
 ---
@@ -90,6 +90,275 @@ repo_financemate/
 │   └── build_and_sign.sh
 └── README.md
 ```
+
+---
+
+## 2.4. APPLICATION SITEMAP & USER INTERFACE SPECIFICATION
+
+### Main Navigation Structure
+**ContentView** - Primary navigation container with TabView
+```
+ContentView (NavigationView)
+├── TabView
+│   ├── Dashboard Tab [chart.bar.fill icon]
+│   ├── Transactions Tab [list.bullet icon]  
+│   └── Settings Tab [gear icon]
+```
+
+### View Hierarchy & Functionality
+
+#### 2.4.1. Dashboard Tab - Financial Overview
+**File**: `Views/DashboardView.swift`  
+**ViewModel**: `ViewModels/DashboardViewModel.swift`
+
+**Primary Components:**
+```
+DashboardView
+├── Balance Display Card
+│   ├── Current Balance (large text with color coding)
+│   ├── Balance Trend Indicator (positive/negative)
+│   └── Last Updated Timestamp
+├── Quick Statistics Section
+│   ├── Total Income (green)
+│   ├── Total Expenses (red)
+│   └── Transaction Count
+├── Recent Transactions Preview
+│   ├── Last 5 Transactions List
+│   ├── Category Icons
+│   ├── Amount Display
+│   └── "View All" Link → Opens Transactions Tab
+└── Quick Action Buttons
+    ├── "Add Income" Button → Opens AddEditTransactionView Modal
+    ├── "Add Expense" Button → Opens AddEditTransactionView Modal
+    └── "View Reports" Button → Future Enhancement
+```
+
+**User Interactions:**
+- View financial overview at a glance
+- Quick transaction creation via action buttons
+- Navigate to detailed transaction view
+- Real-time balance updates from Core Data
+
+#### 2.4.2. Transactions Tab - Transaction Management
+**File**: `Views/TransactionsView.swift`  
+**ViewModel**: `ViewModels/TransactionsViewModel.swift`
+
+**Primary Components:**
+```
+TransactionsView
+├── Header Section
+│   ├── Title "Transactions" 
+│   ├── Transaction Count "X of Y transactions"
+│   └── Filter Button [line.horizontal.3.decrease.circle]
+├── Search Bar Section
+│   ├── Search TextField with [magnifyingglass] icon
+│   ├── Clear Search Button [xmark.circle.fill] (when active)
+│   └── Add Transaction Button [plus.circle.fill]
+├── Active Filters Section (when filters applied)
+│   ├── Filter Tags Display
+│   ├── Individual Filter Remove Buttons [xmark.circle.fill]
+│   └── "Clear All" Button
+├── Statistics Summary Section
+│   ├── Income Total (green)
+│   ├── Expenses Total (red)  
+│   └── Net Amount (color-coded)
+├── Quick Actions Section
+│   ├── "Add Income" Button [plus.circle.fill]
+│   ├── "Add Expense" Button [minus.circle.fill]
+│   └── "Filter" Button [line.horizontal.3.decrease.circle]
+├── Transactions List Section
+│   ├── Transaction Rows
+│   │   ├── Category Icon (color-coded)
+│   │   ├── Category Name
+│   │   ├── Transaction Note (if present)
+│   │   ├── Date (Australian format DD/MM/YYYY)
+│   │   └── Amount (AUD currency, color-coded)
+│   ├── Empty State View (when no transactions)
+│   │   ├── [list.bullet.clipboard] icon
+│   │   ├── "No transactions found" message
+│   │   └── "Add First Transaction" Button
+│   └── No Results View (when filters applied but no matches)
+│       ├── [doc.text.magnifyingglass] icon
+│       ├── "No matching transactions" message
+│       └── "Clear Filters" Button
+```
+
+**Modal Presentations:**
+- **AddEditTransactionView** - Transaction creation/editing modal
+- **FilterTransactionsView** - Advanced filtering options modal
+
+**User Interactions:**
+- Search transactions by category or note (case-insensitive)
+- Filter by category, date range, amount
+- Create new transactions via multiple entry points
+- Edit existing transactions (swipe/context menu)
+- Delete transactions (swipe gestures)
+- Clear individual or all active filters
+
+#### 2.4.3. Settings Tab - Application Preferences
+**File**: `Views/SettingsView.swift` (Currently placeholder)  
+**Current Status**: SettingsPlaceholderView implemented
+
+**Planned Components:**
+```
+SettingsView (Future Implementation)
+├── Appearance Section
+│   ├── Theme Picker (Light/Dark/System)
+│   └── Glassmorphism Intensity Slider
+├── Localization Section
+│   ├── Currency Selection (AUD default)
+│   ├── Date Format Preferences
+│   └── Number Format Settings  
+├── Data Management Section
+│   ├── Export Data Button
+│   ├── Import Data Button
+│   ├── Clear All Data Button (with confirmation)
+│   └── Backup/Restore Options
+├── Notifications Section
+│   ├── Transaction Reminders Toggle
+│   ├── Low Balance Alerts Toggle
+│   └── Monthly Summary Toggle
+└── About Section
+    ├── App Version Display
+    ├── Build Information
+    ├── Privacy Policy Link
+    └── Support Contact
+```
+
+#### 2.4.4. Modal Views - Secondary Interfaces
+
+##### AddEditTransactionView Modal
+**Trigger**: Multiple entry points from Dashboard and Transactions views  
+**Purpose**: Transaction creation and editing with comprehensive validation
+
+**Components:**
+```
+AddEditTransactionView (Modal Sheet)
+├── Navigation Header
+│   ├── "Cancel" Button (leading)
+│   ├── "Add Transaction" / "Edit Transaction" Title
+│   └── "Save" Button (trailing, enabled when valid)
+├── Form Section
+│   ├── Amount Input Field
+│   │   ├── Currency Symbol (AUD)
+│   │   ├── Decimal Number Input
+│   │   └── Income/Expense Toggle
+│   ├── Category Picker
+│   │   ├── Dropdown Selection
+│   │   └── 12 Predefined Categories
+│   ├── Date Picker
+│   │   ├── Australian Date Format (DD/MM/YYYY)
+│   │   └── Calendar Interface
+│   ├── Notes Text Field
+│   │   ├── Optional Description
+│   │   └── Multi-line Support
+│   └── Income/Expense Switch
+│       ├── Toggle Control
+│       └── Color-coded Indication
+├── Validation Feedback
+│   ├── Real-time Input Validation
+│   ├── Error Message Display
+│   └── Success Confirmation
+└── Action Buttons
+    ├── "Cancel" (dismisses modal)
+    └── "Save Transaction" (validates and saves)
+```
+
+##### FilterTransactionsView Modal  
+**Trigger**: Filter button from Transactions view  
+**Purpose**: Advanced filtering and search options
+
+**Components:**
+```
+FilterTransactionsView (Modal Sheet)
+├── Navigation Header
+│   ├── "Cancel" Button
+│   ├── "Filter Transactions" Title
+│   └── "Done" Button
+├── Category Filter Section
+│   ├── "All" Button (clears category filter)
+│   └── Category Buttons (scrollable horizontal)
+├── Date Range Filter Section
+│   ├── "From" Date Picker
+│   ├── "To" Date Picker
+│   └── "Clear Dates" Button
+├── Quick Filter Options
+│   ├── "This Week" Button
+│   ├── "This Month" Button
+│   ├── "Last 30 Days" Button
+│   └── "This Year" Button
+└── Applied Filters Preview
+    ├── Active Filter Summary
+    └── "Reset All Filters" Button
+```
+
+### 2.4.5. Interactive Elements & Accessibility
+
+**Button Categories:**
+- **Primary Actions**: Add Transaction, Save, Done (glassmorphism .accent style)
+- **Secondary Actions**: Filter, Search, Clear (glassmorphism .secondary style)  
+- **Destructive Actions**: Delete, Clear All Data (red color coding)
+- **Navigation**: Tab items, Cancel, Back (system styling)
+
+**Accessibility Features:**
+- All interactive elements have accessibility identifiers
+- VoiceOver support with descriptive labels
+- Keyboard navigation support
+- High contrast mode compatibility
+- Dynamic type scaling support
+
+**Visual Design System:**
+- **Glassmorphism Effects**: 4 variants (.primary, .secondary, .accent, .minimal)
+- **Color Coding**: Green (income/positive), Red (expenses/negative), Blue (actions)
+- **Typography**: San Francisco font family with semantic sizing
+- **Spacing**: Consistent 8pt grid system throughout
+- **Icons**: SF Symbols for consistency and clarity
+
+### 2.4.6. Data Flow & State Management
+
+**MVVM Architecture Implementation:**
+```
+Model Layer (Core Data)
+├── Transaction Entity
+│   ├── id: UUID
+│   ├── amount: Double  
+│   ├── date: Date
+│   ├── category: String
+│   └── note: String?
+└── PersistenceController
+    ├── Shared Instance
+    ├── Preview Context
+    └── Programmatic Model
+
+ViewModel Layer
+├── DashboardViewModel
+│   ├── @Published totalBalance: Double
+│   ├── @Published transactions: [Transaction]
+│   ├── @Published isLoading: Bool
+│   └── @Published errorMessage: String?
+├── TransactionsViewModel  
+│   ├── @Published transactions: [Transaction]
+│   ├── @Published searchText: String
+│   ├── @Published selectedCategory: String?
+│   ├── @Published startDate: Date?
+│   ├── @Published endDate: Date?
+│   └── Computed: filteredTransactions
+└── SettingsViewModel (Future)
+
+View Layer (SwiftUI)
+├── ContentView (Navigation Container)
+├── DashboardView (Financial Overview)
+├── TransactionsView (Transaction Management)
+├── AddEditTransactionView (Modal Form)
+├── FilterTransactionsView (Modal Filter)
+└── SettingsView (Future Implementation)
+```
+
+**Australian Locale Compliance:**
+- Currency: AUD ($) with proper formatting
+- Date Format: DD/MM/YYYY throughout application
+- Number Format: Australian decimal and thousands separators
+- Locale Identifier: en_AU for all formatting operations
 
 ---
 
