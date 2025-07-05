@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>FinanceMate</key>
+	<array>
+		<dict>
+			<key>architectures</key>
+			<array>
+				<string>arm64</string>
+			</array>
+			<key>buildNumber</key>
+			<string>1</string>
+			<key>certificate</key>
+			<dict>
+				<key>SHA1</key>
+				<string>A2A1B6B45DC104A19B2323A8B94C0C71E731C5D2</string>
+				<key>dateExpires</key>
+				<string>2/2/2027</string>
+				<key>type</key>
+				<string>Developer ID Application</string>
+			</dict>
+			<key>name</key>
+			<string>FinanceMate.app</string>
+			<key>team</key>
+			<dict>
+				<key>id</key>
+				<string>7KV34995HH</string>
+				<key>name</key>
+				<string></string>
+			</dict>
+			<key>versionNumber</key>
+			<string>1.0</string>
+		</dict>
+	</array>
+</dict>
+</plist>

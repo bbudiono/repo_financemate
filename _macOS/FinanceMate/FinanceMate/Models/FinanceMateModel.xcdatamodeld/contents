@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="18122" systemVersion="20.6.0" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Transaction" representedClassName="Transaction" syncable="YES">
+        <attribute name="id" optional="NO" attributeType="UUIDAttributeType"/>
+        <attribute name="date" optional="NO" attributeType="DateAttributeType"/>
+        <attribute name="amount" optional="NO" attributeType="Double"/>
+        <attribute name="category" optional="NO" attributeType="String"/>
+        <attribute name="note" optional="YES" attributeType="String"/>
+    </entity>
+</model> 

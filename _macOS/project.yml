@@ -39,3 +39,33 @@ targets:
       - target: FinanceMate
     info:
       path: FinanceMateUITests/Info.plist
+  FinanceMateTests:
+    type: bundle.unit-test
+    platform: macOS
+    deploymentTarget: "14.0"
+    sources:
+      - path: FinanceMateTests
+    dependencies:
+      - target: FinanceMate
+    info:
+      path: FinanceMateTests/Info.plist
+  FinanceMate-SandboxTests:
+    type: bundle.unit-test
+    platform: macOS
+    deploymentTarget: "14.0"
+    sources:
+      - path: FinanceMate-SandboxTests
+    dependencies:
+      - target: FinanceMate-Sandbox
+    info:
+      path: FinanceMateTests/Info.plist # Re-use existing Info.plist
+  FinanceMate-SandboxUITests:
+    type: bundle.ui-testing
+    platform: macOS
+    deploymentTarget: "14.0"
+    sources:
+      - path: FinanceMate-SandboxUITests
+    dependencies:
+      - target: FinanceMate-Sandbox
+    info:
+      path: FinanceMateUITests/Info.plist # Re-use existing Info.plist

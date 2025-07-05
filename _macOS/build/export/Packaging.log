@@ -1,0 +1,95 @@
+2025-07-05 12:30:04 +0000 [MT] Initial pipeline context: <IDEDistributionProcessingPipelineContext: 0x1140bb9b0; archive(resolved)="<IDEArchive: 0x12d06b810>", distributionTask(resolved)="2", distributionDestination(resolved)="1", distributionMethod(resolved)="<IDEDistributionMethodDeveloperID: 0x113f1c990>", team(resolved)="<IDEProvisioningBasicTeam: 0x115727be0; teamID='7KV34995HH', teamName='(null)'>">
+	Chain (12, self inclusive):
+	<IDEDistributionProcessingPipelineContext: 0x1140bb9b0; archive = "<IDEArchive: 0x12d06b810>", distributionMethod="<IDEDistributionMethodDeveloperID: 0x113f1c990>", team="<IDEProvisioningBasicTeam: 0x115727be0; teamID='7KV34995HH', teamName='(null)'>">
+	<IDEDistributionProcessingPipelineContext: 0x11a00bf10; archive = "<IDEArchive: 0x12d06b810>", distributionMethod="<IDEDistributionMethodDeveloperID: 0x113f1c990>", team="<IDEProvisioningBasicTeam: 0x115727be0; teamID='7KV34995HH', teamName='(null)'>">
+	<IDEDistributionContext: 0x11a00bd00; archive = "<IDEArchive: 0x12d06b810>", distributionMethod="<IDEDistributionMethodDeveloperID: 0x113f1c990>", team="<IDEProvisioningBasicTeam: 0x115727be0; teamID='7KV34995HH', teamName='(null)'>">
+	<IDEDistributionContext: 0x12d789910; archive = "<IDEArchive: 0x12d06b810>", distributionMethod="<IDEDistributionMethodDeveloperID: 0x113f1c990>", team="<IDEProvisioningBasicTeam: 0x115727be0; teamID='7KV34995HH', teamName='(null)'>">
+	<IDEDistributionContext: 0x12d789500; archive = "<IDEArchive: 0x12d06b810>", distributionMethod="<IDEDistributionMethodDeveloperID: 0x113f1c990>", team="<IDEProvisioningBasicTeam: 0x115727be0; teamID='7KV34995HH', teamName='(null)'>">
+	<IDEDistributionContext: 0x12d780540; archive = "<IDEArchive: 0x12d06b810>", distributionMethod="<IDEDistributionMethodDeveloperID: 0x113f1c990>", team="<IDEProvisioningBasicTeam: 0x115727be0; teamID='7KV34995HH', teamName='(null)'>">
+	<IDEDistributionContext: 0x12d3ca150; archive = "<IDEArchive: 0x12d06b810>", distributionMethod="<IDEDistributionMethodDeveloperID: 0x113f1c990>", team="<IDEProvisioningBasicTeam: 0x115727be0; teamID='7KV34995HH', teamName='(null)'>">
+	<IDEDistributionContext: 0x12d3c99c0; archive = "<IDEArchive: 0x12d06b810>", distributionMethod="<IDEDistributionMethodDeveloperID: 0x113f1c990>", team="<IDEProvisioningBasicTeam: 0x115727be0; teamID='7KV34995HH', teamName='(null)'>">
+	<IDEDistributionContext: 0x12d094cd0; archive = "<IDEArchive: 0x12d06b810>", distributionMethod="<IDEDistributionMethodDeveloperID: 0x113f1c990>", team="<IDEProvisioningBasicTeam: 0x115727be0; teamID='7KV34995HH', teamName='(null)'>">
+	<IDEDistributionContext: 0x115722770; archive = "<IDEArchive: 0x12d06b810>", distributionMethod="<IDEDistributionMethodDeveloperID: 0x113f1c990>", team="(null)">
+	<IDEDistributionContext: 0x12d77f320; archive = "<IDEArchive: 0x12d06b810>", distributionMethod="<IDEDistributionMethodDeveloperID: 0x113f1c990>", team="(null)">
+	<IDEDistributionContext: 0x12d0077d0; archive = "<IDEArchive: 0x12d06b810>", distributionMethod="(null)", team="(null)">
+</IDEDistributionProcessingPipelineContext: 0x1140bb9b0>
+2025-07-05 12:30:04 +0000 [MT] Processing step: IDEDistributionCreateDestRootStep
+2025-07-05 12:30:04 +0000 [MT] Processing step: IDEDistributionCopyItemStep
+2025-07-05 12:30:04 +0000 [MT] Running /usr/bin/ditto '-V' '/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/build/FinanceMate.xcarchive/Products/Applications/FinanceMate.app' '/var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/XcodeDistPipeline.~~~7BoUXm/Root/Applications/FinanceMate.app'
+2025-07-05 12:30:04 +0000  >>> Copying /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/build/FinanceMate.xcarchive/Products/Applications/FinanceMate.app 
+2025-07-05 12:30:04 +0000  copying file ./Contents/_CodeSignature/CodeResources ... 
+2025-07-05 12:30:04 +0000  2200 bytes for ./Contents/_CodeSignature/CodeResources
+2025-07-05 12:30:04 +0000  copying file ./Contents/MacOS/FinanceMate ... 
+2025-07-05 12:30:04 +0000  220336 bytes for ./Contents/MacOS/FinanceMate
+2025-07-05 12:30:04 +0000  copying file ./Contents/Info.plist ... 
+2025-07-05 12:30:04 +0000  1373 bytes for ./Contents/Info.plist
+2025-07-05 12:30:04 +0000  copying file ./Contents/PkgInfo ... 
+2025-07-05 12:30:04 +0000  8 bytes for ./Contents/PkgInfo
+2025-07-05 12:30:04 +0000 [MT] /usr/bin/ditto exited with 0
+2025-07-05 12:30:04 +0000 [MT] Processing step: IDEDistributionEmbedProfileStep
+2025-07-05 12:30:04 +0000 [MT] Skipping profile for item: <IDEDistributionItem: 0x12d1bf460; bundleID='com.ablankcanvas.financemate', path='<DVTFilePath:0x12d006f50:'/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/build/FinanceMate.xcarchive/Products/Applications/FinanceMate.app'>', codeSigningInfo='<_DVTCodeSigningInformation_Path: 0x11860eb60; isSigned='1', isAdHocSigned='0', signingCertificate='<DVTSigningCertificate: 0x11576b1c0; name='Apple Development: BERNHARD JOSHUA BUDIONO (ZK86L2658W)', hash='A8828E2953E86E04487E6F43ED714CC07A4C1525', serialNumber='5734EBD4A71A993980FD6A3F618BCD20', certificateKinds='(
+    "1.2.840.113635.100.6.1.12",
+    "1.2.840.113635.100.6.1.2"
+), issueDate='2024-12-30 06:29:46 +0000''>', entitlements='{
+}', teamID='7KV34995HH', identifier='com.ablankcanvas.financemate', executablePath='<DVTFilePath:0x113cb86b0:'/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/build/FinanceMate.xcarchive/Products/Applications/FinanceMate.app/Contents/MacOS/FinanceMate'>', hardenedRuntime='1'>'>
+2025-07-05 12:30:04 +0000 [MT] Processing step: IDEDistributionInfoPlistStep
+2025-07-05 12:30:04 +0000 [MT] Skipping step: IDEDistributionInfoPlistStep because it said so
+2025-07-05 12:30:04 +0000 [MT] Processing step: IDEDistributionAppThinningPlistStep
+2025-07-05 12:30:04 +0000 [MT] Processing step: IDEDistributionSymbolsStep
+2025-07-05 12:30:04 +0000 [MT] Skipping step: IDEDistributionSymbolsStep because it said so
+2025-07-05 12:30:04 +0000 [MT] Processing step: IDEDistributionAppThinningStep
+2025-07-05 12:30:04 +0000 [MT] Skipping step: IDEDistributionAppThinningStep because it said so
+2025-07-05 12:30:04 +0000 [MT] Processing step: IDEDistributionArchThinningStep
+2025-07-05 12:30:04 +0000 [MT] Item /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/build/FinanceMate.xcarchive/Products/Applications/FinanceMate.app doesn't have the entitlement com.apple.developer.web-browser-engine.host enabled, returning ["arm64e"]
+2025-07-05 12:30:04 +0000 [MT] Archs to thin for item /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/build/FinanceMate.xcarchive/Products/Applications/FinanceMate.app are ["arm64e"]
+2025-07-05 12:30:04 +0000 [MT] Running /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/lipo '/var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/XcodeDistPipeline.~~~7BoUXm/Root/Applications/FinanceMate.app/Contents/MacOS/FinanceMate' '-verify_arch' 'arm64e'
+2025-07-05 12:30:04 +0000 [MT] /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/lipo exited with 1
+2025-07-05 12:30:04 +0000 [MT] Skipping architecture thinning for item "FinanceMate" because arch "arm64e" wasn't found
+2025-07-05 12:30:04 +0000 [MT] Processing step: IDEDistributionODRStep
+2025-07-05 12:30:04 +0000 [MT] Processing step: IDEDistributionStripXattrsStep
+2025-07-05 12:30:04 +0000 [MT] Skipping stripping extended attributes because the codesign step will strip them.
+2025-07-05 12:30:04 +0000 [MT] Processing step: IDEDistributionCodesignStep
+2025-07-05 12:30:04 +0000 [MT] Entitlements for <IDEDistributionItem: 0x12d1bf460; bundleID='com.ablankcanvas.financemate', path='<DVTFilePath:0x12d006f50:'/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/build/FinanceMate.xcarchive/Products/Applications/FinanceMate.app'>', codeSigningInfo='<_DVTCodeSigningInformation_Path: 0x11860eb60; isSigned='1', isAdHocSigned='0', signingCertificate='<DVTSigningCertificate: 0x12c706fd0; name='Apple Development: BERNHARD JOSHUA BUDIONO (ZK86L2658W)', hash='A8828E2953E86E04487E6F43ED714CC07A4C1525', serialNumber='5734EBD4A71A993980FD6A3F618BCD20', certificateKinds='(
+    "1.2.840.113635.100.6.1.12",
+    "1.2.840.113635.100.6.1.2"
+), issueDate='2024-12-30 06:29:46 +0000''>', entitlements='{
+}', teamID='7KV34995HH', identifier='com.ablankcanvas.financemate', executablePath='<DVTFilePath:0x113cb86b0:'/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/build/FinanceMate.xcarchive/Products/Applications/FinanceMate.app/Contents/MacOS/FinanceMate'>', hardenedRuntime='1'>'>: {
+}
+2025-07-05 12:30:04 +0000 [MT] Associated App Clip Identifiers Filter: Skipping because "com.apple.developer.associated-appclip-app-identifiers" is not present
+2025-07-05 12:30:04 +0000 [MT] Entitlements for <IDEDistributionItem: 0x12d1bf460; bundleID='com.ablankcanvas.financemate', path='<DVTFilePath:0x12d006f50:'/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/build/FinanceMate.xcarchive/Products/Applications/FinanceMate.app'>', codeSigningInfo='<_DVTCodeSigningInformation_Path: 0x11860eb60; isSigned='1', isAdHocSigned='0', signingCertificate='<DVTSigningCertificate: 0x12d0cd520; name='Apple Development: BERNHARD JOSHUA BUDIONO (ZK86L2658W)', hash='A8828E2953E86E04487E6F43ED714CC07A4C1525', serialNumber='5734EBD4A71A993980FD6A3F618BCD20', certificateKinds='(
+    "1.2.840.113635.100.6.1.12",
+    "1.2.840.113635.100.6.1.2"
+), issueDate='2024-12-30 06:29:46 +0000''>', entitlements='{
+}', teamID='7KV34995HH', identifier='com.ablankcanvas.financemate', executablePath='<DVTFilePath:0x113cb86b0:'/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/build/FinanceMate.xcarchive/Products/Applications/FinanceMate.app/Contents/MacOS/FinanceMate'>', hardenedRuntime='1'>'> are: {
+}
+2025-07-05 12:30:04 +0000 [MT] Writing entitlements for <IDEDistributionItem: 0x12d1bf460; bundleID='com.ablankcanvas.financemate', path='<DVTFilePath:0x12d006f50:'/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/build/FinanceMate.xcarchive/Products/Applications/FinanceMate.app'>', codeSigningInfo='<_DVTCodeSigningInformation_Path: 0x11860eb60; isSigned='1', isAdHocSigned='0', signingCertificate='<DVTSigningCertificate: 0x12d0cd520; name='Apple Development: BERNHARD JOSHUA BUDIONO (ZK86L2658W)', hash='A8828E2953E86E04487E6F43ED714CC07A4C1525', serialNumber='5734EBD4A71A993980FD6A3F618BCD20', certificateKinds='(
+    "1.2.840.113635.100.6.1.12",
+    "1.2.840.113635.100.6.1.2"
+), issueDate='2024-12-30 06:29:46 +0000''>', entitlements='{
+}', teamID='7KV34995HH', identifier='com.ablankcanvas.financemate', executablePath='<DVTFilePath:0x113cb86b0:'/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/build/FinanceMate.xcarchive/Products/Applications/FinanceMate.app/Contents/MacOS/FinanceMate'>', hardenedRuntime='1'>'> to: /var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/XcodeDistPipeline.~~~7BoUXm/entitlements~~~Ggooa8
+2025-07-05 12:30:04 +0000 [MT] invoking codesign: <NSConcreteTask: 0x12d0cc290; launchPath='/usr/bin/codesign', arguments='(
+    "-f",
+    "-s",
+    A2A1B6B45DC104A19B2323A8B94C0C71E731C5D2,
+    "--entitlements",
+    "/var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/XcodeDistPipeline.~~~7BoUXm/entitlements~~~Ggooa8",
+    "--requirements",
+    "=designated => anchor apple generic  and identifier \"$self.identifier\" and ((cert leaf[field.1.2.840.113635.100.6.1.9] exists) or ( certificate 1[field.1.2.840.113635.100.6.2.6] exists and certificate leaf[field.1.2.840.113635.100.6.1.13] exists  and certificate leaf[subject.OU] = \"7KV34995HH\" ))",
+    "--preserve-metadata=identifier,flags,runtime",
+    "--generate-entitlement-der",
+    "--strip-disallowed-xattrs",
+    "-vvv",
+    "/var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/XcodeDistPipeline.~~~7BoUXm/Root/Applications/FinanceMate.app"
+)'>
+2025-07-05 12:30:11 +0000 [MT] codesign output: /var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/XcodeDistPipeline.~~~7BoUXm/Root/Applications/FinanceMate.app: replacing existing signature
+/var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/XcodeDistPipeline.~~~7BoUXm/Root/Applications/FinanceMate.app: signed app bundle with Mach-O thin (arm64) [com.ablankcanvas.financemate]
+2025-07-05 12:30:11 +0000 [MT] Processing step: IDEDistributionZipODRItemStep
+2025-07-05 12:30:11 +0000 [MT] Skipping step: IDEDistributionZipODRItemStep because it said so
+2025-07-05 12:30:11 +0000 [MT] Processing step: IDEDistributionSkipPackagingStep
+2025-07-05 12:30:11 +0000 [MT] Processing step: IDEDistributionAppStoreInformationStep
+2025-07-05 12:30:11 +0000 [MT] Skipping step: IDEDistributionAppStoreInformationStep because it said so
+2025-07-05 12:30:11 +0000 [MT] Processing step: IDEDistributionGenerateProcessedDistributionItems
+2025-07-05 12:30:11 +0000 [MT] IDEDistributionItem init <DVTFilePath:0x12d4d89f0:'/var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/XcodeDistPipeline.~~~7BoUXm/Root/Applications/FinanceMate.app'>
+2025-07-05 12:30:11 +0000 [MT] [OPTIONAL] Didn't find embedded provisioning profile for <DVTFilePath:0x12d4d89f0:'/var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/XcodeDistPipeline.~~~7BoUXm/Root/Applications/FinanceMate.app'>: Error Domain=NSCocoaErrorDomain Code=4 "No file at <DVTFilePath:0x11575d080:'/var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/XcodeDistPipeline.~~~7BoUXm/Root/Applications/FinanceMate.app/Contents/embedded.provisionprofile'>" UserInfo={NSLocalizedDescription=No file at <DVTFilePath:0x11575d080:'/var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/XcodeDistPipeline.~~~7BoUXm/Root/Applications/FinanceMate.app/Contents/embedded.provisionprofile'>}
+2025-07-05 12:30:11 +0000 [MT] Processing step: IDEDistributionCreateManifestStep
+2025-07-05 12:30:11 +0000 [MT] Skipping step: IDEDistributionCreateManifestStep because it said so

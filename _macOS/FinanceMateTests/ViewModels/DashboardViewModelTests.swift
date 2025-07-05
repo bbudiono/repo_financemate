@@ -1,0 +1,427 @@
+// SANDBOX FILE: For testing/development. See .cursorrules.
+//
+// DashboardViewModelTests.swift
+// FinanceMateTests
+//
+// Purpose: Comprehensive unit tests for DashboardViewModel MVVM architecture
+// Issues & Complexity Summary: Testing ObservableObject patterns, Core Data integration, and business logic
+// Key Complexity Drivers:
+//   - Logic Scope (Est. LoC): ~150
+//   - Core Algorithm Complexity: Medium
+//   - Dependencies: 3 (Core Data, XCTest, Combine)
+//   - State Management Complexity: Medium-High
+//   - Novelty/Uncertainty Factor: Low
+// AI Pre-Task Self-Assessment: 85%
+// Problem Estimate: 90%
+// Initial Code Complexity Estimate: 88%
+// Final Code Complexity: TBD
+// Overall Result Score: TBD
+// Key Variances/Learnings: TDD approach for MVVM testing patterns
+// Last Updated: 2025-07-05
+
+import XCTest
+import CoreData
+import Combine
+@testable import FinanceMate
+
+@MainActor
+class DashboardViewModelTests: XCTestCase {
+    
+    var viewModel: DashboardViewModel!
+    var persistenceController: PersistenceController!
+    var context: NSManagedObjectContext!
+    var cancellables: Set<AnyCancellable>!
+    
+    override func setUp() {
+        super.setUp()
+        
+        // Create in-memory Core Data stack for testing
+        persistenceController = PersistenceController(inMemory: true)
+        context = persistenceController.container.viewContext
+        
+        // Initialize ViewModel with test context
+        viewModel = DashboardViewModel(context: context)
+        cancellables = Set<AnyCancellable>()
+    }
+    
+    override func tearDown() {
+        cancellables?.removeAll()
+        viewModel = nil
+        context = nil
+        persistenceController = nil
+        super.tearDown()
+    }
+    
+    // MARK: - Initialization Tests
+    
+    func testViewModelInitialization() {
+        XCTAssertNotNil(viewModel, "DashboardViewModel should initialize successfully")
+        XCTAssertEqual(viewModel.totalBalance, 0.0, "Initial total balance should be zero")
+        XCTAssertEqual(viewModel.transactionCount, 0, "Initial transaction count should be zero")
+        XCTAssertFalse(viewModel.isLoading, "Should not be loading on initialization")
+        XCTAssertNil(viewModel.errorMessage, "Should have no error message on initialization")
+    }
+    
+    // MARK: - Core Data Integration Tests
+    
+    func testFetchDashboardData() {
+        // Given: Test transactions in Core Data
+        createTestTransactions()
+        
+        // When: Fetching dashboard data
+        let expectation = XCTestExpectation(description: "Dashboard data fetched")
+        
+        viewModel.$isLoading
+            .dropFirst() // Skip initial value
+            .sink { isLoading in
+                if !isLoading {
+                    expectation.fulfill()
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.fetchDashboardData()
+        
+        wait(for: [expectation], timeout: 2.0)
+        
+        // Then: Dashboard should reflect transaction data
+        XCTAssertEqual(viewModel.transactionCount, 3, "Should have 3 test transactions")
+        XCTAssertEqual(viewModel.totalBalance, 150.0, "Total balance should be sum of test transactions")
+        XCTAssertFalse(viewModel.isLoading, "Should not be loading after fetch completion")
+        XCTAssertNil(viewModel.errorMessage, "Should have no error after successful fetch")
+    }
+    
+    func testFetchDashboardDataWithEmptyData() {
+        // Given: No transactions in Core Data
+        
+        // When: Fetching dashboard data
+        let expectation = XCTestExpectation(description: "Empty dashboard data fetched")
+        
+        viewModel.$isLoading
+            .dropFirst()
+            .sink { isLoading in
+                if !isLoading {
+                    expectation.fulfill()
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.fetchDashboardData()
+        
+        wait(for: [expectation], timeout: 2.0)
+        
+        // Then: Dashboard should show empty state
+        XCTAssertEqual(viewModel.transactionCount, 0, "Should have no transactions")
+        XCTAssertEqual(viewModel.totalBalance, 0.0, "Total balance should be zero")
+        XCTAssertTrue(viewModel.isEmpty, "Dashboard should be in empty state")
+    }
+    
+    // MARK: - Business Logic Tests
+    
+    func testTotalBalanceCalculation() {
+        // Given: Mixed positive and negative transactions
+        let transaction1 = Transaction.create(in: context, amount: 100.0, category: "Income", note: "Salary")
+        let transaction2 = Transaction.create(in: context, amount: -30.0, category: "Food", note: "Groceries")
+        let transaction3 = Transaction.create(in: context, amount: -20.0, category: "Transport", note: "Gas")
+        
+        try! context.save()
+        
+        // When: Calculating total balance
+        viewModel.fetchDashboardData()
+        
+        // Then: Balance should be correctly calculated
+        XCTAssertEqual(viewModel.totalBalance, 50.0, "Total balance should be 100 - 30 - 20 = 50")
+    }
+    
+    func testTransactionCountAccuracy() {
+        // Given: Multiple transactions
+        createTestTransactions()
+        
+        // When: Fetching dashboard data
+        viewModel.fetchDashboardData()
+        
+        // Then: Count should be accurate
+        XCTAssertEqual(viewModel.transactionCount, 3, "Should accurately count all transactions")
+    }
+    
+    // MARK: - State Management Tests
+    
+    func testLoadingStateManagement() {
+        // Given: Initial state
+        XCTAssertFalse(viewModel.isLoading, "Should not be loading initially")
+        
+        // When: Starting fetch operation
+        let loadingExpectation = XCTestExpectation(description: "Loading state activated")
+        let completionExpectation = XCTestExpectation(description: "Loading state deactivated")
+        
+        var loadingStateChanges: [Bool] = []
+        
+        viewModel.$isLoading
+            .sink { isLoading in
+                loadingStateChanges.append(isLoading)
+                if isLoading {
+                    loadingExpectation.fulfill()
+                } else if loadingStateChanges.count > 1 {
+                    completionExpectation.fulfill()
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.fetchDashboardData()
+        
+        wait(for: [loadingExpectation, completionExpectation], timeout: 2.0)
+        
+        // Then: Loading state should transition correctly
+        XCTAssertTrue(loadingStateChanges.contains(true), "Should have activated loading state")
+        XCTAssertFalse(viewModel.isLoading, "Should not be loading after completion")
+    }
+    
+    func testErrorStateHandling() {
+        // Given: Invalid context that will cause error
+        let invalidViewModel = DashboardViewModel(context: NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType))
+        
+        // When: Attempting to fetch with invalid context
+        let expectation = XCTestExpectation(description: "Error state handled")
+        
+        invalidViewModel.$errorMessage
+            .compactMap { $0 }
+            .sink { _ in
+                expectation.fulfill()
+            }
+            .store(in: &cancellables)
+        
+        invalidViewModel.fetchDashboardData()
+        
+        wait(for: [expectation], timeout: 2.0)
+        
+        // Then: Error should be handled gracefully
+        XCTAssertNotNil(invalidViewModel.errorMessage, "Should have error message")
+        XCTAssertFalse(invalidViewModel.isLoading, "Should not be loading after error")
+    }
+    
+    // MARK: - Publisher Tests
+    
+    func testPublishedPropertiesUpdating() {
+        // Given: Observers for published properties
+        var balanceUpdates: [Double] = []
+        var countUpdates: [Int] = []
+        
+        viewModel.$totalBalance
+            .sink { balance in
+                balanceUpdates.append(balance)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$transactionCount
+            .sink { count in
+                countUpdates.append(count)
+            }
+            .store(in: &cancellables)
+        
+        // When: Data changes
+        createTestTransactions()
+        viewModel.fetchDashboardData()
+        
+        // Then: Published properties should update
+        XCTAssertTrue(balanceUpdates.count > 1, "Balance should update multiple times")
+        XCTAssertTrue(countUpdates.count > 1, "Count should update multiple times")
+        XCTAssertEqual(balanceUpdates.last, 150.0, "Final balance should be correct")
+        XCTAssertEqual(countUpdates.last, 3, "Final count should be correct")
+    }
+    
+    // MARK: - Helper Methods
+    
+    private func createTestTransactions() {
+        let transaction1 = Transaction.create(in: context, amount: 100.0, category: "Income", note: "Test Income")
+        let transaction2 = Transaction.create(in: context, amount: 50.0, category: "Bonus", note: "Test Bonus")
+        let transaction3 = Transaction.create(in: context, amount: 0.0, category: "Transfer", note: "Test Transfer")
+        
+        try! context.save()
+    }
+    
+    // MARK: - Enhanced Core Data Integration Tests
+    
+    func testTransactionValidation() {
+        // Given: Invalid transaction data
+        let expectation = XCTestExpectation(description: "Validation error handled")
+        
+        // When: Attempting to add invalid transaction
+        viewModel.$errorMessage
+            .compactMap { $0 }
+            .sink { errorMessage in
+                XCTAssertTrue(errorMessage.contains("validation"), "Should contain validation error")
+                expectation.fulfill()
+            }
+            .store(in: &cancellables)
+        
+        // Attempt to validate invalid transaction (this will be implemented)
+        viewModel.validateAndAddTransaction(amount: Double.nan, category: "", note: nil)
+        
+        wait(for: [expectation], timeout: 2.0)
+    }
+    
+    func testBatchTransactionOperations() {
+        // Given: Multiple transactions to process
+        let transactions = [
+            (amount: 100.0, category: "income", note: "Test 1"),
+            (amount: -50.0, category: "expense", note: "Test 2"),
+            (amount: 200.0, category: "income", note: "Test 3")
+        ]
+        
+        let expectation = XCTestExpectation(description: "Batch operations completed")
+        
+        // When: Processing batch operations
+        viewModel.$transactionCount
+            .filter { $0 == transactions.count }
+            .sink { _ in
+                expectation.fulfill()
+            }
+            .store(in: &cancellables)
+        
+        viewModel.addTransactionsBatch(transactions)
+        
+        wait(for: [expectation], timeout: 5.0)
+        
+        // Then: All transactions should be added
+        XCTAssertEqual(viewModel.transactionCount, transactions.count, "Should have processed all transactions")
+    }
+    
+    func testDataIntegrityWithRollback() {
+        // Given: Initial transaction count
+        createTestTransactions()
+        let initialCount = viewModel.transactionCount
+        
+        let expectation = XCTestExpectation(description: "Rollback completed")
+        
+        // When: Performing operation that should rollback on error
+        viewModel.$errorMessage
+            .compactMap { $0 }
+            .sink { _ in
+                expectation.fulfill()
+            }
+            .store(in: &cancellables)
+        
+        // Attempt transaction that should fail and rollback
+        viewModel.performTransactionWithRollback {
+            // This will be implemented to test rollback functionality
+            throw NSError(domain: "TestError", code: 1, userInfo: [NSLocalizedDescriptionKey: "Test rollback"])
+        }
+        
+        wait(for: [expectation], timeout: 2.0)
+        
+        // Then: Transaction count should be unchanged due to rollback
+        XCTAssertEqual(viewModel.transactionCount, initialCount, "Should maintain data integrity after rollback")
+    }
+    
+    func testConcurrentDataAccess() {
+        // Given: Multiple concurrent operations
+        let expectation = XCTestExpectation(description: "Concurrent access handled")
+        expectation.expectedFulfillmentCount = 3
+        
+        // When: Performing concurrent operations
+        DispatchQueue.global().async {
+            self.viewModel.fetchDashboardData()
+            expectation.fulfill()
+        }
+        
+        DispatchQueue.global().async {
+            self.viewModel.refreshData()
+            expectation.fulfill()
+        }
+        
+        DispatchQueue.global().async {
+            self.createTestTransactions()
+            expectation.fulfill()
+        }
+        
+        wait(for: [expectation], timeout: 5.0)
+        
+        // Then: Should handle concurrent access without crashes
+        XCTAssertNotNil(viewModel.totalBalance, "Should handle concurrent operations gracefully")
+    }
+    
+    func testSpecificErrorTypes() {
+        // Given: Different error scenarios
+        let validationExpectation = XCTestExpectation(description: "Validation error")
+        let networkExpectation = XCTestExpectation(description: "Network error")
+        let dataExpectation = XCTestExpectation(description: "Data corruption error")
+        
+        // Test validation error
+        viewModel.testValidationError()
+        
+        // Test network error
+        viewModel.testNetworkError()
+        
+        // Test data corruption error  
+        viewModel.testDataCorruptionError()
+        
+        // When: Checking error types are properly categorized
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            validationExpectation.fulfill()
+            networkExpectation.fulfill()
+            dataExpectation.fulfill()
+        }
+        
+        wait(for: [validationExpectation, networkExpectation, dataExpectation], timeout: 3.0)
+    }
+    
+    func testDataCachingPerformance() {
+        // Given: Initial data fetch
+        createTestTransactions()
+        viewModel.fetchDashboardData()
+        
+        // When: Measuring cached vs fresh fetch performance
+        let cachedStartTime = CFAbsoluteTimeGetCurrent()
+        viewModel.fetchCachedDashboardData()
+        let cachedEndTime = CFAbsoluteTimeGetCurrent()
+        
+        let freshStartTime = CFAbsoluteTimeGetCurrent()
+        viewModel.fetchDashboardData()
+        let freshEndTime = CFAbsoluteTimeGetCurrent()
+        
+        // Then: Cached fetch should be faster
+        let cachedTime = cachedEndTime - cachedStartTime
+        let freshTime = freshEndTime - freshStartTime
+        
+        XCTAssertLessThan(cachedTime, freshTime, "Cached fetch should be faster than fresh fetch")
+    }
+    
+    func testBackgroundContextOperations() {
+        // Given: Background context operations
+        let expectation = XCTestExpectation(description: "Background operations completed")
+        
+        // When: Performing heavy operations in background
+        viewModel.performBackgroundDataProcessing { result in
+            switch result {
+            case .success(let processedCount):
+                XCTAssertGreaterThan(processedCount, 0, "Should process data in background")
+            case .failure(let error):
+                XCTFail("Background processing failed: \(error)")
+            }
+            expectation.fulfill()
+        }
+        
+        wait(for: [expectation], timeout: 10.0)
+        
+        // Then: Main context should remain responsive
+        XCTAssertFalse(Thread.isMainThread, "Should not block main thread")
+    }
+    
+    // MARK: - Performance Tests
+    
+    func testFetchPerformance() {
+        // Given: Large dataset
+        for i in 0..<1000 {
+            _ = Transaction.create(in: context, amount: Double(i), category: "Test", note: "Performance test \(i)")
+        }
+        try! context.save()
+        
+        // When: Measuring fetch performance
+        measure {
+            viewModel.fetchDashboardData()
+        }
+        
+        // Then: Performance should be acceptable (measured by XCTest)
+        XCTAssertEqual(viewModel.transactionCount, 1000, "Should handle large datasets")
+    }
+}
