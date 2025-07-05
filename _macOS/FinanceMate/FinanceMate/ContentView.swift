@@ -38,8 +38,8 @@ struct ContentView: View {
                     }
                     .accessibilityIdentifier("Dashboard")
                 
-                // Transactions Tab (placeholder for future implementation)
-                TransactionPlaceholderView()
+                // Transactions Tab
+                TransactionsView(context: viewContext)
                     .tabItem {
                         Image(systemName: "list.bullet")
                         Text("Transactions")
@@ -67,26 +67,6 @@ struct ContentView: View {
 
 // MARK: - Placeholder Views for Future Implementation
 
-private struct TransactionPlaceholderView: View {
-    var body: some View {
-        VStack(spacing: 16) {
-            Image(systemName: "list.bullet.circle")
-                .font(.system(size: 48))
-                .foregroundColor(.secondary)
-            
-            Text("Transactions")
-                .font(.title2)
-                .fontWeight(.semibold)
-            
-            Text("Transaction management coming soon")
-                .font(.caption)
-                .foregroundColor(.secondary)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .glassmorphism(.secondary, cornerRadius: 16)
-        .padding()
-    }
-}
 
 private struct SettingsPlaceholderView: View {
     var body: some View {

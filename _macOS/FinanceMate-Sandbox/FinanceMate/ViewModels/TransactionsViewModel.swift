@@ -22,14 +22,70 @@
 import Foundation
 import CoreData
 import SwiftUI
+import Combine
+
+/**
+ * TransactionsViewModel.swift
+ *
+ * Purpose: Manages the state and business logic for the TransactionsView.
+ * Issues & Complexity Summary: Handles fetching, filtering, and searching of financial transactions.
+ * Key Complexity Drivers:
+ *   - Logic Scope (Est. LoC): ~150
+ *   - Core Algorithm Complexity: High
+ *   - Dependencies: 2 New (CoreData, Combine)
+ *   - State Management Complexity: Medium
+ *   - Novelty/Uncertainty Factor: Low
+ * AI Pre-Task Self-Assessment: 90%
+ * Problem Estimate: 70%
+ * Initial Code Complexity Estimate: 80%
+ * Final Code Complexity: TBD
+ * Overall Result Score: TBD
+ * Key Variances/Learnings: TBD
+ * Last Updated: 2025-07-06
+ */
 
 @MainActor
 class TransactionsViewModel: ObservableObject {
-    private let context: NSManagedObjectContext
-    
     @Published var transactions: [Transaction] = []
+    @Published var searchText: String = ""
+    @Published var filteredTransactionCount: Int = 0
+    @Published var totalTransactionCount: Int = 0
+    @Published var selectedCategory: String?
+    @Published var startDate: Date?
+    @Published var endDate: Date?
     @Published var isLoading: Bool = false
+
+    var filteredTransactions: [Transaction] {
+        var filtered = transactions
+        
+        // Apply search filter (case-insensitive)
+        if !searchText.isEmpty {
+            filtered = filtered.filter { transaction in
+                transaction.category.lowercased().contains(searchText.lowercased()) ||
+                transaction.note?.lowercased().contains(searchText.lowercased()) == true
+            }
+        }
+        
+        // Apply category filter
+        if let selectedCategory = selectedCategory {
+            filtered = filtered.filter { $0.category == selectedCategory }
+        }
+        
+        // Apply date range filter
+        if let startDate = startDate {
+            filtered = filtered.filter { $0.date >= startDate }
+        }
+        
+        if let endDate = endDate {
+            filtered = filtered.filter { $0.date <= endDate }
+        }
+        
+        return filtered.sorted { $0.date > $1.date }
+    }
+
     @Published var errorMessage: String? = nil
+    
+    private let context: NSManagedObjectContext
     
     init(context: NSManagedObjectContext) {
         self.context = context
@@ -43,11 +99,18 @@ class TransactionsViewModel: ObservableObject {
         request.sortDescriptors = [NSSortDescriptor(keyPath: \Transaction.date, ascending: false)]
         
         do {
-            transactions = try context.fetch(request)
-            isLoading = false
+            let fetchedTransactions = try context.fetch(request)
+            DispatchQueue.main.async {
+                self.transactions = fetchedTransactions
+                self.totalTransactionCount = fetchedTransactions.count
+                self.filteredTransactionCount = self.filteredTransactions.count
+                self.isLoading = false
+            }
         } catch {
-            errorMessage = "Failed to fetch transactions: \(error.localizedDescription)"
-            isLoading = false
+            DispatchQueue.main.async {
+                self.errorMessage = "Failed to fetch transactions: \(error.localizedDescription)"
+                self.isLoading = false
+            }
         }
     }
     
@@ -65,6 +128,58 @@ class TransactionsViewModel: ObservableObject {
             fetchTransactions()
         } catch {
             errorMessage = "Failed to create transaction: \(error.localizedDescription)"
+        }
+    }
+
+    func formatCurrencyForDisplay(_ amount: Double) -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.locale = Locale(identifier: "en_AU") // Australian locale
+        formatter.currencyCode = "AUD"
+        return formatter.string(from: NSNumber(value: amount)) ?? "$0.00"
+    }
+
+    func resetFilters() {
+        searchText = ""
+        selectedCategory = nil
+        startDate = nil
+        endDate = nil
+        filteredTransactionCount = filteredTransactions.count
+    }
+
+    func formatCurrency(_ amount: Double) -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.locale = Locale(identifier: "en_AU") // Australian locale
+        formatter.currencyCode = "AUD"
+        return formatter.string(from: NSNumber(value: amount)) ?? "$0.00"
+    }
+
+    func formatDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_AU") // Australian locale
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        return formatter.string(from: date)
+    }
+    
+    // MARK: - Transaction Management
+    
+    func deleteTransaction(_ transaction: Transaction) {
+        context.delete(transaction)
+        
+        do {
+            try context.save()
+            fetchTransactions() // Refresh the list
+        } catch {
+            errorMessage = "Failed to delete transaction: \(error.localizedDescription)"
+        }
+    }
+    
+    func deleteTransactions(at offsets: IndexSet) {
+        for index in offsets {
+            let transaction = filteredTransactions[index]
+            deleteTransaction(transaction)
         }
     }
 } 

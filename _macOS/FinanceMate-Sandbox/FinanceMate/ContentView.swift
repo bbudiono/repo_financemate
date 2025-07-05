@@ -25,7 +25,6 @@ import CoreData
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @StateObject private var dashboardViewModel = DashboardViewModel()
-    @StateObject private var transactionsViewModel = TransactionsViewModel(context: PersistenceController.shared.container.viewContext)
     
     var body: some View {
         NavigationView {
@@ -41,9 +40,7 @@ struct ContentView: View {
                     .accessibilityIdentifier("Dashboard")
                 
                 // Transactions Tab
-                TransactionsView()
-                    .environmentObject(transactionsViewModel)
-                    .environment(\.managedObjectContext, viewContext)
+                TransactionsView(context: viewContext)
                     .tabItem {
                         Image(systemName: "list.bullet")
                         Text("Transactions")
@@ -60,7 +57,6 @@ struct ContentView: View {
             }
             .onAppear {
                 dashboardViewModel.setPersistenceContext(viewContext)
-                transactionsViewModel.setPersistenceContext(viewContext)
                 Task {
                     await dashboardViewModel.fetchDashboardData()
                 }

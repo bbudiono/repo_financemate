@@ -15,6 +15,10 @@
 		2B37EF5E2BA52029B8E507EE /* DashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4644212388479F3F7BF7B7DE /* DashboardViewModel.swift */; };
 		2F964B2A58F0EEF8A2F41798 /* FinanceMateApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 410A7E6292E6838B8B31ACC9 /* FinanceMateApp.swift */; };
 		367DABD88FB44283D6A54544 /* TransactionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E6B07F1FBE1C5755A4FE3F /* TransactionsViewModel.swift */; };
+		25E1A4A0009D4E86A514BDE0 /* TransactionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12A4667FC12C467998B0A1B8 /* TransactionsView.swift */; };
+		4F2B70E89AE549E3AEFA2F86 /* AddEditTransactionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994F717BD0FE4003BE6D8E12 /* AddEditTransactionView.swift */; };
+		3A2B1C0D9E8F765432100123 /* AddEditTransactionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6789012345678 /* AddEditTransactionView.swift */; };
+		7F6E5D4C3B2A109876543210 /* TransactionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C8D7E6F5A4321098765432 /* TransactionsView.swift */; };
 		5A9CF29F20C1CA2BE4BE9B6C /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEBE0108D7643FFC7037489E /* DashboardView.swift */; };
 		699D623E08FB451D9D223D51 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F296CE01C635993EC3978BB7 /* PersistenceController.swift */; };
 		7FC00D441A276278AB875BD6 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7DDB845997FA0B2558FFC85 /* ContentView.swift */; };
@@ -93,6 +97,10 @@
 		E7E40ABD77656855B2EBDA57 /* DashboardViewUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewUITests.swift; sourceTree = "<group>"; };
 		EB16A903A72C89B031403998 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		F296CE01C635993EC3978BB7 /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
+		12A4667FC12C467998B0A1B8 /* TransactionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsView.swift; sourceTree = "<group>"; };
+		994F717BD0FE4003BE6D8E12 /* AddEditTransactionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEditTransactionView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6789012345678 /* AddEditTransactionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEditTransactionView.swift; sourceTree = "<group>"; };
+		B9C8D7E6F5A4321098765432 /* TransactionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsView.swift; sourceTree = "<group>"; };
 		F3E6B07F1FBE1C5755A4FE3F /* TransactionsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsViewModel.swift; sourceTree = "<group>"; };
 		F61A461D166AD2E60C0C5BB0 /* FinanceMate-Sandbox.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "FinanceMate-Sandbox.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FE009BDDF914C8A1D4B4DF4F /* FinanceMate-SandboxTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "FinanceMate-SandboxTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -179,6 +187,8 @@
 			isa = PBXGroup;
 			children = (
 				88211B32F54FEC04C1A3EE94 /* DashboardView.swift */,
+				994F717BD0FE4003BE6D8E12 /* AddEditTransactionView.swift */,
+				12A4667FC12C467998B0A1B8 /* TransactionsView.swift */,
 				D930C6316FF88FC1E6BCF1AC /* GlassmorphismModifier.swift */,
 			);
 			path = Views;
@@ -196,6 +206,8 @@
 			isa = PBXGroup;
 			children = (
 				BEBE0108D7643FFC7037489E /* DashboardView.swift */,
+				A1B2C3D4E5F6789012345678 /* AddEditTransactionView.swift */,
+				B9C8D7E6F5A4321098765432 /* TransactionsView.swift */,
 				982B53D81E11C5895738D2D8 /* GlassmorphismModifier.swift */,
 			);
 			path = Views;
@@ -457,6 +469,8 @@
 			files = (
 				2701186814CDE270AC1A7424 /* ContentView.swift in Sources */,
 				5A9CF29F20C1CA2BE4BE9B6C /* DashboardView.swift in Sources */,
+				7F6E5D4C3B2A109876543210 /* TransactionsView.swift in Sources */,
+				3A2B1C0D9E8F765432100123 /* AddEditTransactionView.swift in Sources */,
 				F09E9EB567C3E5224B4A75A9 /* DashboardViewModel.swift in Sources */,
 				B4368C63FA45535A2DC3CD86 /* FinanceMateApp.swift in Sources */,
 				9799CFE5F4EFE5B0EA4F3FB4 /* GlassmorphismModifier.swift in Sources */,
@@ -473,7 +487,10 @@
 			files = (
 				7FC00D441A276278AB875BD6 /* ContentView.swift in Sources */,
 				A66AE32C45175DC5CD75106C /* DashboardView.swift in Sources */,
+				25E1A4A0009D4E86A514BDE0 /* TransactionsView.swift in Sources */,
+				4F2B70E89AE549E3AEFA2F86 /* AddEditTransactionView.swift in Sources */,
 				2B37EF5E2BA52029B8E507EE /* DashboardViewModel.swift in Sources */,
+				367DABD88FB44283D6A54544 /* TransactionsViewModel.swift in Sources */,
 				2F964B2A58F0EEF8A2F41798 /* FinanceMateApp.swift in Sources */,
 				DDEBF69E356484B3589F299E /* GlassmorphismModifier.swift in Sources */,
 				E70C7B685A1D67B84A2456CE /* PersistenceController.swift in Sources */,

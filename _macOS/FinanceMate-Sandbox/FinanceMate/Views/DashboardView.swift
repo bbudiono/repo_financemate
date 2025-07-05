@@ -38,29 +38,42 @@ struct DashboardView: View {
     // MARK: - Main Body
     
     var body: some View {
-        ScrollView {
-            LazyVStack(spacing: 20) {
-                // Dashboard Header
-                dashboardHeader
-                
-                // Balance Card
-                balanceCard
-                
-                // Quick Stats Cards
-                quickStatsSection
-                
-                // Recent Transactions
-                if !viewModel.recentTransactions.isEmpty {
-                    recentTransactionsSection
+        ZStack(alignment: .topTrailing) {
+            ScrollView {
+                LazyVStack(spacing: 20) {
+                    // Dashboard Header
+                    dashboardHeader
+                    
+                    // Balance Card
+                    balanceCard
+                    
+                    // Quick Stats Cards
+                    quickStatsSection
+                    
+                    // Recent Transactions
+                    if !viewModel.recentTransactions.isEmpty {
+                        recentTransactionsSection
+                    }
+                    
+                    // Action Buttons
+                    actionButtonsSection
                 }
-                
-                // Action Buttons
-                actionButtonsSection
+                .padding()
             }
-            .padding()
+            .accessibilityIdentifier("DashboardView")
+            .background(dashboardBackground)
+            #if SANDBOX
+            Text("SANDBOX")
+                .font(.caption)
+                .fontWeight(.bold)
+                .foregroundColor(.white)
+                .padding(8)
+                .background(Color.red.opacity(0.8))
+                .cornerRadius(8)
+                .padding([.top, .trailing], 16)
+                .accessibilityIdentifier("SandboxBadge")
+            #endif
         }
-        .accessibilityIdentifier("DashboardView")
-        .background(dashboardBackground)
         .onAppear {
             viewModel.fetchDashboardData()
         }
@@ -279,6 +292,7 @@ struct DashboardView: View {
             }
         }
         .padding(.vertical, 4)
+        .accessibilityIdentifier("TransactionRow_\(transaction.id.uuidString)")
     }
     
     // MARK: - Action Buttons Section
@@ -324,6 +338,7 @@ struct DashboardView: View {
             )
         }
         .buttonStyle(.plain)
+        .accessibilityIdentifier(title.replacingOccurrences(of: " ", with: "") + "Button")
     }
     
     // MARK: - Helper Views and Computed Properties

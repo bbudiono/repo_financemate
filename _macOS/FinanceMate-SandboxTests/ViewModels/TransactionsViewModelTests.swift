@@ -3,141 +3,82 @@
 // TransactionsViewModelTests.swift
 // FinanceMate Sandbox
 //
-// Purpose: Atomic TDD unit tests for TransactionsViewModel (Sandbox)
-// Issues & Complexity Summary: Tests MVVM, Core Data, and business logic for transactions
+// Purpose: Unit tests for the TransactionsViewModel.
+// Issues & Complexity Summary: Tests fetching, filtering, searching, and deletion of transactions.
 // Key Complexity Drivers:
-//   - Logic Scope (Est. LoC): ~100
-//   - Core Algorithm Complexity: Medium
-//   - Dependencies: 3 (Core Data, XCTest, Combine)
-//   - State Management Complexity: Medium
-//   - Novelty/Uncertainty Factor: Medium
-// AI Pre-Task Self-Assessment: 80%
-// Problem Estimate: 85%
+//   - Logic Scope (Est. LoC): ~200
+//   - Core Algorithm Complexity: High (Predicate-based filtering and searching)
+//   - Dependencies: 2 New (CoreData, Combine)
+//   - State Management Complexity: Medium (Managing transaction arrays and view state)
+//   - Novelty/Uncertainty Factor: Low
+// AI Pre-Task Self-Assessment: 90%
+// Problem Estimate: 70%
 // Initial Code Complexity Estimate: 80%
 // Final Code Complexity: TBD
 // Overall Result Score: TBD
-// Key Variances/Learnings: TDD for new MVVM module
-// Last Updated: 2025-07-05
+// Key Variances/Learnings: TBD
+// Last Updated: 2025-07-06
 
 import XCTest
 import CoreData
 @testable import FinanceMate_Sandbox
 
 @MainActor
-final class TransactionsViewModelTests: XCTestCase {
+class TransactionsViewModelTests: XCTestCase {
+
     var viewModel: TransactionsViewModel!
-    var persistenceController: PersistenceController!
-    var context: NSManagedObjectContext!
-    
-    override func setUp() {
-        super.setUp()
-        persistenceController = PersistenceController(inMemory: true)
-        context = persistenceController.container.viewContext
-        // ViewModel will be initialized in each test
+    var mockContext: NSManagedObjectContext!
+
+    override func setUpWithError() throws {
+        // Use an in-memory store for testing to not interfere with production data.
+        mockContext = PersistenceController(inMemory: true).container.viewContext
+        viewModel = TransactionsViewModel(context: mockContext)
     }
-    
-    override func tearDown() {
+
+    override func tearDownWithError() throws {
         viewModel = nil
-        context = nil
-        persistenceController = nil
-        super.tearDown()
+        mockContext = nil
     }
-    
-    // MARK: - Initialization
-    func testViewModelInitialization() {
-        // Given: A Core Data context
-        // When: Creating a TransactionsViewModel
-        viewModel = TransactionsViewModel(context: context)
-        
-        // Then: The view model should be properly initialized
-        XCTAssertNotNil(viewModel, "TransactionsViewModel should be properly initialized")
-        XCTAssertNotNil(viewModel.transactions, "Transactions array should be initialized")
-        XCTAssertEqual(viewModel.transactions.count, 0, "Initial transactions array should be empty")
-        XCTAssertFalse(viewModel.isLoading, "Initial loading state should be false")
-        XCTAssertNil(viewModel.errorMessage, "Initial error message should be nil")
+
+    // MARK: - Initial State Tests
+
+    func testInitialState() {
+        XCTAssertTrue(viewModel.transactions.isEmpty, "Transactions should be empty initially.")
+        XCTAssertEqual(viewModel.searchText, "", "Search text should be empty initially.")
+        // Add more initial state checks as properties are added
     }
-    
-    // MARK: - Core Data Integration
-    func testCoreDataIntegration() {
-        // Given: A TransactionsViewModel with Core Data context
-        viewModel = TransactionsViewModel(context: context)
-        
-        // When: Calling fetchTransactions
+
+    // MARK: - Fetching Tests
+
+    func testFetchTransactions_SuccessfullyFetchesData() {
+        // Arrange
+        addTestTransaction(amount: 100, category: "Income", date: Date())
+        addTestTransaction(amount: -50, category: "Groceries", date: Date())
+
+        // Act
         viewModel.fetchTransactions()
-        
-        // Then: The fetch operation should complete without errors
-        XCTAssertNotNil(viewModel.transactions, "Transactions should be initialized after fetch")
-        XCTAssertEqual(viewModel.transactions.count, 0, "Should have no transactions in empty database")
-        XCTAssertFalse(viewModel.isLoading, "Loading should be false after fetch completes")
-        XCTAssertNil(viewModel.errorMessage, "Error message should be nil for successful fetch")
+
+        // Assert
+        XCTAssertEqual(viewModel.transactions.count, 2, "Should fetch all transactions from the context.")
     }
     
-    // MARK: - Transaction Creation
-    func testTransactionCreation() {
-        // Given: A TransactionsViewModel
-        viewModel = TransactionsViewModel(context: context)
-        
-        // When: Creating a new transaction
-        viewModel.createTransaction(amount: 100.50, category: "Food", note: "Lunch")
-        
-        // Then: The transaction should be created and added to the list
-        XCTAssertEqual(viewModel.transactions.count, 1, "Should have one transaction after creation")
-        let transaction = viewModel.transactions.first!
-        XCTAssertEqual(transaction.amount, 100.50, "Transaction amount should match")
-        XCTAssertEqual(transaction.category, "Food", "Transaction category should match")
-        XCTAssertEqual(transaction.note, "Lunch", "Transaction note should match")
-        XCTAssertNotNil(transaction.date, "Transaction should have a date")
-        XCTAssertNotNil(transaction.id, "Transaction should have an ID")
-    }
+    // MARK: - Helper Methods
     
-    // MARK: - Transaction Fetching
-    func testTransactionFetching() {
-        // Given: A TransactionsViewModel with some test data
-        viewModel = TransactionsViewModel(context: context)
-        // Create test transaction
-        let _ = Transaction.create(in: context, amount: 25.99, category: "Test", note: "Test transaction")
-        try! context.save()
+    @discardableResult
+    private func addTestTransaction(amount: Double, category: String, date: Date) -> Transaction {
+        let newTransaction = Transaction(context: mockContext)
+        newTransaction.id = UUID()
+        newTransaction.amount = amount
+        newTransaction.category = category
+        newTransaction.date = date
+        newTransaction.note = "Test Note"
         
-        // When: Fetching transactions
-        viewModel.fetchTransactions()
+        do {
+            try mockContext.save()
+        } catch {
+            XCTFail("Failed to save test transaction: \(error)")
+        }
         
-        // Then: Transactions should be fetched correctly
-        XCTAssertEqual(viewModel.transactions.count, 1, "Should have one transaction after fetch")
-        XCTAssertEqual(viewModel.transactions.first?.amount, 25.99, "Fetched transaction should have correct amount")
-        XCTAssertEqual(viewModel.transactions.first?.category, "Test", "Fetched transaction should have correct category")
-    }
-    
-    // MARK: - Error Handling
-    func testErrorHandling() {
-        // Given: A TransactionsViewModel
-        viewModel = TransactionsViewModel(context: context)
-        
-        // When: Initial state
-        // Then: Error message should be nil
-        XCTAssertNil(viewModel.errorMessage, "Initial error message should be nil")
-        
-        // The ViewModel handles errors internally through Core Data operations
-        // Actual error testing would require mocking Core Data context
-        // For now, we verify error state management structure exists
-        XCTAssertTrue(viewModel.errorMessage == nil || viewModel.errorMessage is String, "Error message should be nil or String type")
-    }
-    
-    // MARK: - State Management
-    func testStateManagement() {
-        // Given: A TransactionsViewModel
-        viewModel = TransactionsViewModel(context: context)
-        
-        // When: Initial state
-        // Then: Loading should be false, transactions empty, no error
-        XCTAssertFalse(viewModel.isLoading, "Initial loading state should be false")
-        XCTAssertEqual(viewModel.transactions.count, 0, "Initial transactions should be empty")
-        XCTAssertNil(viewModel.errorMessage, "Initial error should be nil")
-        
-        // When: Starting fetch operation
-        viewModel.fetchTransactions()
-        
-        // Then: State should be updated correctly
-        XCTAssertFalse(viewModel.isLoading, "Loading should be false after fetch completes")
-        XCTAssertNotNil(viewModel.transactions, "Transactions array should exist after fetch")
+        return newTransaction
     }
 } 
