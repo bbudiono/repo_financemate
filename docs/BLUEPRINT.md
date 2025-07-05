@@ -1,1 +1,0 @@
-[DEPRECATED] This document is out of date. Refer to docs/System_Status.md for evidence-based project status.

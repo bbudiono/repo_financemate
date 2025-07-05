@@ -1,5 +1,0 @@
-[2025-05-20T09:58:04] Starting buildable SwiftUI app creation for production at /Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate
-[2025-05-20T09:58:04] Building app with xcodebuild...
-Command line invocation:
-    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project "/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_docketmate/_macOS/DocketMate/DocketMate.xcodeproj" -scheme DocketMate -configuration Debug clean build
-
