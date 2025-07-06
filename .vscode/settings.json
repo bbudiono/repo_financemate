@@ -1,3 +1,15 @@
 {
-    "sweetpad.build.xcodeWorkspacePath": "_macOS/FinanceMate.xcodeproj/project.xcworkspace"
+    "sweetpad.build.xcodeWorkspacePath": "_macOS/FinanceMate.xcodeproj/project.xcworkspace",
+    "sweetpad.build.scheme": "FinanceMate",
+    "sweetpad.build.destination": "platform=macOS",
+    "sweetpad.build.configuration": "Debug",
+    "sweetpad.sourcekit.toolchain": "default",
+    "sweetpad.build.buildRoot": "/Users/bernhardbudiono/Library/Developer/Xcode/DerivedData/FinanceMate-fwbqcnjwjvdjcycepscbrwsnbvql",
+    "swift.path": "/usr/bin/swift",
+    "sourcekit-lsp.serverPath": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/sourcekit-lsp",
+    "files.exclude": {
+        "**/build": true,
+        "**/DerivedData": true,
+        "**/.DS_Store": true
+    }
 }

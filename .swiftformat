@@ -1,0 +1,49 @@
+# SwiftFormat Configuration for FinanceMate
+# Updated: 2025-07-06
+
+# Indentation
+--indent 4
+--tabwidth 4
+--smarttabs enabled
+
+# Line length
+--maxwidth 120
+
+# Spacing
+--trimwhitespace always
+--voidtype void
+
+# Imports
+--importgrouping alphabetized
+
+# Formatting options
+--allman false
+--wraparguments before-first
+--wrapparameters before-first
+--wrapcollections before-first
+--closingparen balanced
+--commas always
+--decimalgrouping 3,4
+--binarygrouping 4,8
+--hexgrouping 4,8
+--fractiongrouping disabled
+--exponentgrouping disabled
+
+# Swift conventions
+--self remove
+--redundanttype inferred
+--redundantclosure always
+--redundantget always
+--redundantparens always
+--redundantvoidsreturn always
+--redundantoptionalbinding always
+
+# Disabled rules (preserve specific patterns)
+--disable blankLinesAtStartOfScope
+--disable blankLinesAtEndOfScope
+--disable unusedArguments
+
+# Enable specific rules
+--enable isEmpty
+--enable sortedImports
+--enable duplicateImports
