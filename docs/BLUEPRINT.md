@@ -1,130 +1,243 @@
-# FinanceMate - Master Project Specification
-**Version:** 2.0.0
+# FinanceMate - Wealth Management Platform Specification
+**Version:** 3.0.0
 **Last Updated:** 2025-07-06
-**Status:** PRODUCTION READY (Phase 1) - Evolving to Document Processing Platform
+**Status:** Phase 1 Complete (Core Financial Management) - Evolving to Wealth Management Platform
 **Current Phase:** Core Financial Management ✅
-**Next Phase:** Document Processing & OCR 🎯
+**Next Phase:** Secure Data Aggregation & Multi-Entity Foundations 🎯
 
 ---
 
 ## 🎯 EXECUTIVE SUMMARY
 
-### Current Status: ✅ PRODUCTION READY (Phase 1)
-FinanceMate has achieved **Production Release Candidate 1.0.0** status for Phase 1 (Core Financial Management) with all requirements implemented, comprehensive testing complete, and automated build pipeline established. The application is **99% ready for production deployment** with only 2 manual Xcode configuration steps remaining.
-
 ### Project Vision
-**To revolutionize financial document management for small businesses, accountants, freelancers, and individuals by evolving from a robust personal finance manager into an intelligent, automated solution for extracting, organizing, and integrating data from invoices, receipts, and dockets into preferred spreadsheet and accounting workflows.**
+To be the central command center for personal and family wealth, empowering users to aggregate all their financial data automatically, gain deep insights from line-item level details, manage complex tax entities, and make informed investment and life decisions. The platform will evolve from a robust personal finance manager into a comprehensive wealth management solution with collaborative features for family members and financial professionals.
 
-### Phase 1 Achievements ✅
+### Current Status: ✅ PHASE 1 COMPLETE
+FinanceMate has achieved **Production Release Candidate 1.0.0** status for Phase 1 (Core Financial Management) with:
 - ✅ **Complete Financial Management**: Dashboard, transactions, settings
 - ✅ **MVVM Architecture**: Professional-grade with 100% test coverage
 - ✅ **Glassmorphism UI**: Modern Apple-style design with accessibility
 - ✅ **Production Infrastructure**: Automated build pipeline
 - ✅ **Comprehensive Testing**: 75+ test cases
 
-### Future Phases (Planned)
-- 🎯 **Phase 2**: OCR & Document Processing
-- 📊 **Phase 3**: Cloud Integration (Office365, Google Sheets)
-- 🚀 **Phase 4**: Advanced Analytics & AI Features
+### Core User Journeys (Future Vision)
+1. **Aggregation:** User securely links all bank accounts, credit cards, investment portfolios (Shares, Crypto), and loans
+2. **Categorization & Review:** Platform automatically ingests transactions with intelligent categorization and entity splitting
+3. **Analysis & Planning:** Comprehensive dashboards for spending, net wealth, and financial goal progress
+4. **Reporting & Export:** Generate professional reports for tax purposes, wealth statements, and financial planning
+
+### Development Phases
+- ✅ **Phase 1**: Core Financial Management (COMPLETE)
+- 🎯 **Phase 2**: Secure Data Aggregation, Transaction Management & Multi-Entity Foundations
+- 📊 **Phase 3**: Advanced OCR, Investment Tracking & Collaborative Workspaces
+- 🚀 **Phase 4**: Wealth Dashboards, Real Estate Analysis & Financial Goal Setting
+- ✨ **Phase 5**: Predictive Analytics, Scenario Modeling & Automated Financial Advice
+
+---
+
+## 🚀 USER REQUIREMENTS
+
+This section captures the core feature set with tracking for implementation status.
+
+### Phase 1 Requirements (✅ COMPLETE)
+- **Requirement ID:** `UR-001`
+  - **Requirement:** Create native macOS application with modern SwiftUI interface
+  - **Status:** `Complete`
+  - **Evidence:** Production-ready application with glassmorphism design
+
+- **Requirement ID:** `UR-002`
+  - **Requirement:** Implement comprehensive transaction management with CRUD operations
+  - **Status:** `Complete`
+  - **Evidence:** Full transaction lifecycle with Core Data persistence
+
+- **Requirement ID:** `UR-003`
+  - **Requirement:** Provide financial dashboard with balance tracking and summaries
+  - **Status:** `Complete`
+  - **Evidence:** Real-time balance calculations with transaction analytics
+
+- **Requirement ID:** `UR-004`
+  - **Requirement:** Support multiple currencies with Australian locale as default
+  - **Status:** `Complete`
+  - **Evidence:** Multi-currency support with en_AU/AUD compliance
+
+### Phase 2 Requirements (🎯 NEXT)
+- **Requirement ID:** `UR-101`
+  - **Requirement:** Securely connect to Australian bank and credit card accounts to automatically sync transaction data
+  - **Status:** `Pending`
+  - **Dependencies:** Basiq/Plaid API integration, OAuth implementation
+
+- **Requirement ID:** `UR-102`
+  - **Requirement:** Allow users to create and manage distinct financial "Entities" (e.g., "Personal," "Smith Family Trust," "My Business")
+  - **Status:** `Pending`
+  - **Dependencies:** Enhanced data model, UI for entity management
+
+- **Requirement ID:** `UR-103`
+  - **Requirement:** Implement Role-Based Access Control (RBAC) with predefined roles: Owner, Contributor, Viewer
+  - **Status:** `Pending`
+  - **Dependencies:** Authentication system, permission management
+
+### Phase 3 Requirements
+- **Requirement ID:** `UR-104`
+  - **Requirement:** Scan receipts/invoices and extract line-item details with OCR
+  - **Status:** `Pending`
+  - **Dependencies:** Apple Vision framework, document processing pipeline
+
+- **Requirement ID:** `UR-105`
+  - **Requirement:** Track investment portfolios including shares (ASX/NASDAQ) and cryptocurrencies
+  - **Status:** `Pending`
+  - **Dependencies:** Broker API integrations, portfolio data model
+
+### Phase 4 Requirements
+- **Requirement ID:** `UR-106`
+  - **Requirement:** Generate "Net Wealth" report consolidating all assets and liabilities
+  - **Status:** `Pending`
+  - **Dependencies:** Asset/liability tracking, reporting engine
+
+- **Requirement ID:** `UR-107`
+  - **Requirement:** Integrate with CoreLogic API for real estate analysis
+  - **Status:** `Pending`
+  - **Dependencies:** CoreLogic partnership, property data model
+
+### Phase 5 Requirements
+- **Requirement ID:** `UR-108`
+  - **Requirement:** Create tax-specific categories with entity-based reporting
+  - **Status:** `Pending`
+  - **Dependencies:** Advanced categorization, tax rule engine
 
 ---
 
 ## 1. PROJECT OVERVIEW
 
 ### 1.1. Project Name
-**FinanceMate** - Financial Document Management Platform for macOS
+**FinanceMate** - Wealth Management Platform
 
-### 1.2. Project Evolution
-- **Phase 1** (COMPLETE): Personal Financial Management
-- **Phase 2** (NEXT): Document Processing & OCR
-- **Phase 3**: Cloud Integration & Synchronization
-- **Phase 4**: AI-Powered Analytics & Insights
+### 1.2. Target Audience & Personas
 
-### 1.3. Target Audience
-#### Current Users (Phase 1)
-- macOS users seeking secure, local-first financial management
-- Individuals tracking personal finances
+#### Current Users (Phase 1) ✅
+- **Individual Finance Tracker**
+  - **Goals:** Track personal expenses, monitor spending, maintain budgets
+  - **Key Needs:** Simple transaction management, clear financial overview
 
-#### Future Users (Phase 2+)
-- Small business owners
-- Accountants and bookkeepers
-- Freelancers and contractors
-- Tax professionals
+#### Future Personas (Phase 2+)
+- **Persona 1: The Household CEO (Primary User)**
+  - **Goals:** Single source of truth for family finances, tax optimization, property planning, investment tracking
+  - **Key Needs:** Automated data aggregation, multi-entity support, net wealth tracking
+  - **Access Level:** Full platform access, all entities
 
-### 1.4. Key Success Metrics
-#### Phase 1 (Current) ✅
-- **Production Readiness**: 100% completion of readiness checklist
-- **Code Quality**: Zero compiler warnings, high test coverage
-- **User Experience**: Responsive, accessible, intuitive UI
-- **Security**: Local-first storage with robust security
-- **Performance**: Fast launch times, efficient operations
+- **Persona 2: The Contributor (Spouse/Partner)**
+  - **Goals:** Help manage household budget without accessing sensitive investment data
+  - **Key Needs:** Simple interface for transaction categorization
+  - **Access Level:** Limited to specific entities, transaction management
 
-#### Phase 2+ (Future)
-- **OCR Accuracy**: >95% extraction accuracy
-- **Time Savings**: 80% reduction in manual data entry
-- **Integration Success**: Seamless cloud synchronization
-- **User Adoption**: Active usage metrics
-- **Revenue Generation**: Subscription/licensing targets
+- **Persona 3: The Advisor (Accountant/Financial Planner)**
+  - **Goals:** Efficient access to client financial data for tax and planning
+  - **Key Needs:** Read-only access, robust reporting, data export capabilities
+  - **Access Level:** Viewer permissions for designated entities
 
 ---
 
 ## 2. TECHNICAL ARCHITECTURE
 
-### 2.1. Current Technology Stack (Phase 1) ✅
-- **Platform**: Native macOS application
-- **Minimum OS**: macOS 14.0+
-- **UI Framework**: SwiftUI with glassmorphism design
-- **Architecture**: MVVM (Model-View-ViewModel)
-- **Data Persistence**: Core Data (programmatic model)
-- **Language**: Swift 5.9+
-- **Build System**: Xcode 15.0+ with automation
-
-### 2.2. Future Technology Stack (Phase 2+)
-#### Document Processing
-- **OCR Engine**: Apple Vision Framework (primary)
-- **Fallback OCR**: Tesseract OCR
-- **PDF Processing**: PDFKit
-- **Image Processing**: Core Image
-
-#### Cloud Services & APIs
-- **Spreadsheet Integration**: 
-  - Microsoft Graph API (Office365)
-  - Google Sheets API
-- **Email Integration**: Gmail API
-- **Authentication**: OAuth 2.0
-- **LLM Integration**:
-  - OpenAI API
-  - Anthropic Claude API
-  - Google Gemini API
-
-#### Security Infrastructure
-- **Credential Storage**: macOS Keychain
-- **Network Security**: Certificate pinning
-- **Data Encryption**: AES-256
-- **Secure Communication**: TLS 1.3+
-
-### 2.3. System Architecture
+### 2.1. Current Architecture (Phase 1) ✅
+**Local-First macOS Application**
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                    FinanceMate macOS App                     │
 ├─────────────────────────────────────────────────────────────┤
 │                    Presentation Layer                        │
 │  ┌─────────────┐  ┌──────────────┐  ┌─────────────────┐   │
-│  │  Dashboard  │  │ Transactions │  │ Document Proc.  │   │
-│  │    View     │  │     View     │  │   View (P2)     │   │
+│  │  Dashboard  │  │ Transactions │  │    Settings     │   │
+│  │    View     │  │     View     │  │      View       │   │
 │  └─────────────┘  └──────────────┘  └─────────────────┘   │
 ├─────────────────────────────────────────────────────────────┤
 │                    Business Logic Layer                      │
 │  ┌─────────────┐  ┌──────────────┐  ┌─────────────────┐   │
-│  │ ViewModels  │  │   Services   │  │ OCR Service(P2) │   │
+│  │ ViewModels  │  │   Services   │  │    Utilities    │   │
 │  └─────────────┘  └──────────────┘  └─────────────────┘   │
 ├─────────────────────────────────────────────────────────────┤
 │                      Data Layer                              │
 │  ┌─────────────┐  ┌──────────────┐  ┌─────────────────┐   │
-│  │  Core Data  │  │   Keychain   │  │ Cloud Sync (P3) │   │
+│  │  Core Data  │  │   Keychain   │  │  UserDefaults   │   │
 │  └─────────────┘  └──────────────┘  └─────────────────┘   │
 └─────────────────────────────────────────────────────────────┘
 ```
+
+### 2.2. Target Architecture (Phase 2+): Client-Server Model
+**Multi-Platform with Secure Cloud Backend**
+```
+┌─────────────────────────────────────────────────────────────┐
+│                         CLIENTS                              │
+│ ┌───────────┐   ┌───────────┐   ┌────────────┐            │
+│ │ macOS App │   │  iOS App  │   │  Web App   │            │
+│ └───────────┘   └───────────┘   └────────────┘            │
+└─────────────────────────────────────────────────────────────┘
+                          | (Secure API Gateway)
+┌─────────────────────────────────────────────────────────────┐
+│                   FinanceMate Cloud Backend                  │
+├─────────────────────────────────────────────────────────────┤
+│  Business Logic: User Mgmt, RBAC, Entities, Reporting      │
+├─────────────────────────────────────────────────────────────┤
+│  Core Services:                                             │
+│  ┌──────────────┐ ┌───────────┐ ┌───────────┐ ┌─────────┐│
+│  │Data Aggregation│ │OCR Service│ │Inv.Tracking│ │Analytics││
+│  │(Basiq/Plaid)  │ │(Vision AI)│ │(APIs)      │ │Engine   ││
+│  └──────────────┘ └───────────┘ └───────────┘ └─────────┘│
+├─────────────────────────────────────────────────────────────┤
+│  Data Layer:                                                │
+│  ┌──────────────┐ ┌───────────┐ ┌───────────┐            │
+│  │  PostgreSQL  │ │   Redis   │ │    S3     │            │
+│  │  (Primary)   │ │  (Cache)  │ │ (Storage) │            │
+│  └──────────────┘ └───────────┘ └───────────┘            │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### 2.3. Technology Stack Evolution
+
+#### Current Stack (Phase 1) ✅
+- **Platform**: Native macOS application
+- **UI Framework**: SwiftUI with glassmorphism design
+- **Architecture**: MVVM (Model-View-ViewModel)
+- **Data Persistence**: Core Data (programmatic model)
+- **Language**: Swift 5.9+
+- **Build System**: Xcode 15.0+
+
+#### Target Stack (Phase 2+)
+- **Frontend Clients**: 
+  - Native macOS (SwiftUI) - Enhanced from Phase 1
+  - Native iOS (SwiftUI) - New
+  - Web (React/Vue) - Future
+- **Backend**: 
+  - Go/Python for high-performance financial processing
+  - GraphQL API for flexible client queries
+- **Database**: 
+  - PostgreSQL (primary - relational integrity)
+  - Redis (caching layer)
+  - S3 (document storage)
+- **Infrastructure**: 
+  - AWS/GCP with multi-region support
+  - Kubernetes for container orchestration
+- **Data Aggregation**: 
+  - Basiq API (Australian focus)
+  - Plaid API (international reach)
+- **Authentication**: 
+  - OAuth 2.0 with MFA
+  - Auth0/AWS Cognito
+
+### 2.4. Data Schema (PostgreSQL Model)
+
+| Table | Key Columns | Relationships | Description |
+|-------|-------------|---------------|-------------|
+| **users** | `id`, `email`, `password_hash`, `mfa_secret` | | Master user accounts with security |
+| **roles** | `id`, `name`, `permissions` | | System roles: owner, contributor, viewer |
+| **user_entity_roles** | `user_id`, `entity_id`, `role_id` | → users, entities, roles | Permission mapping |
+| **entities** | `id`, `name`, `type`, `owner_id` | → users | Financial entities (Personal, Business, Trust) |
+| **accounts** | `id`, `name`, `type`, `institution`, `entity_id` | → entities | Bank/investment accounts |
+| **transactions** | `id`, `amount`, `description`, `date`, `account_id`, `entity_id` | → accounts, entities | Financial transactions |
+| **line_items** | `id`, `description`, `quantity`, `price`, `transaction_id` | → transactions | Receipt/invoice details |
+| **categories** | `id`, `name`, `type`, `tax_deductible` | | Transaction categories |
+| **assets** | `id`, `name`, `type`, `current_value`, `entity_id` | → entities | Properties, investments |
+| **liabilities** | `id`, `name`, `type`, `balance`, `entity_id` | → entities | Mortgages, loans |
+| **documents** | `id`, `type`, `s3_url`, `transaction_id` | → transactions | Receipts, invoices |
 
 ---
 
@@ -132,492 +245,564 @@ FinanceMate has achieved **Production Release Candidate 1.0.0** status for Phase
 
 ### 3.1. Phase 1: Core Financial Management ✅ COMPLETE
 
-#### Dashboard
-- **Real-time Balance**: Live financial overview
-- **Transaction Summaries**: Recent history with indicators
-- **Financial Status**: Clear positive/negative display
-- **Quick Actions**: Add income/expense shortcuts
+#### Implemented Features
+- **Dashboard Analytics**
+  - Real-time balance tracking
+  - Income/expense summaries
+  - Transaction trends
+  - Quick action buttons
 
-#### Transaction Management
-- **Full CRUD**: Create, read, update, delete
-- **Smart Categories**: 12 predefined categories
-- **Search & Filter**: Real-time search, category/date filters
-- **Australian Locale**: en_AU with AUD currency
+- **Transaction Management**
+  - Full CRUD operations
+  - 12 predefined categories
+  - Advanced search and filtering
+  - Date range selection
+  - Australian locale (en_AU/AUD)
 
-#### Settings & Preferences
-- **Theme Support**: Light, dark, system modes
-- **Currency Config**: Multi-currency (AUD default)
-- **Notifications**: Customizable preferences
-- **Data Export**: Export transaction data
+- **Settings & Preferences**
+  - Theme customization (Light/Dark/System)
+  - Multi-currency support
+  - Notification preferences
+  - Data export capabilities
 
-### 3.2. Phase 2: Document Processing & OCR 🎯 NEXT
+### 3.2. Phase 2: Data Aggregation & Multi-Entity 🎯 NEXT
 
-#### Document Import
-- **Drag & Drop**: Direct file import
-- **File Upload**: Multi-format support (PDF, JPG, PNG, HEIC)
-- **Batch Processing**: Multiple documents
-- **Document Preview**: Inline viewing
+#### Secure User Onboarding
+- Enhanced authentication with MFA
+- Terms of service and privacy policy
+- Guided setup wizard
+- Entity creation flow
 
-#### OCR Processing
-- **Text Extraction**: Line item detection
-- **Field Recognition**: Amount, date, vendor, category
-- **Accuracy Validation**: Confidence scoring
-- **Manual Correction**: Edit extracted data
+#### Data Aggregation
+- **Bank Connection Flow**
+  - Institution selection UI
+  - OAuth consent process
+  - Account selection and mapping
+  - Initial 12-month sync
+  - Daily automated updates
 
-#### Data Mapping
-- **Smart Matching**: AI-powered field mapping
-- **Custom Columns**: User-defined spreadsheet columns
-- **Template System**: Save mapping templates
-- **Validation Rules**: Data integrity checks
+- **Transaction Enhancement**
+  - Automatic categorization
+  - Merchant enrichment
+  - Duplicate detection
+  - Split transaction support
 
-### 3.3. Phase 3: Cloud Integration & Sync 📊
+#### Entity Management
+- **Entity Types**
+  - Personal (default)
+  - Business
+  - Trust
+  - Investment
+  - Custom
 
-#### Spreadsheet Integration
-- **Office365 Excel**: Real-time sync via Graph API
-- **Google Sheets**: Direct integration
-- **Column Mapping**: Flexible field mapping
-- **Bi-directional Sync**: Two-way data flow
+- **Entity Features**
+  - Separate dashboards
+  - Transaction filtering
+  - Report generation
+  - Access control
 
-#### Email Integration
-- **Gmail Connect**: OAuth authentication
-- **Auto-Import**: Invoice/receipt detection
-- **Smart Filtering**: Document type recognition
-- **Attachment Processing**: Automatic OCR
+### 3.3. Phase 3: OCR & Investment Tracking
 
-#### Collaboration Features
-- **Multi-Entity Support**: Business/personal separation
-- **Shared Workspaces**: Team collaboration
-- **Permission Management**: Role-based access
-- **Audit Trail**: Change tracking
+#### Document Processing
+- **Receipt/Invoice OCR**
+  - Drag-and-drop upload
+  - Mobile app scanning
+  - Line-item extraction
+  - Automatic matching to transactions
+  - Manual review interface
 
-### 3.4. Phase 4: Advanced Features 🚀
+#### Investment Portfolio
+- **Broker Integrations**
+  - CommSec (ASX)
+  - Stake (US Markets)
+  - Interactive Brokers
+  - Cryptocurrency exchanges
 
-#### Analytics & Insights
-- **Spending Patterns**: AI-powered analysis
-- **Trend Detection**: Anomaly identification
-- **Budget Recommendations**: Smart suggestions
-- **Tax Optimization**: Category insights
+- **Portfolio Features**
+  - Real-time valuations
+  - Performance tracking
+  - Dividend tracking
+  - Tax reporting
 
-#### Automation
-- **Rule Engine**: Custom automation rules
-- **Recurring Transactions**: Pattern detection
-- **Smart Categorization**: ML-based classification
-- **Scheduled Reports**: Automated generation
+#### Collaborative Workspaces
+- **Access Management**
+  - Email-based invitations
+  - Role assignment
+  - Entity-specific permissions
+  - Activity logging
 
-#### Enterprise Features
-- **Multi-Currency**: Real-time conversion
-- **Advanced Security**: 2FA, biometric auth
-- **API Access**: Developer integration
-- **White Label**: Custom branding
+### 3.4. Phase 4: Wealth Management & Goals
 
----
+#### Net Wealth Dashboard
+- **Comprehensive View**
+  - Total assets vs liabilities
+  - Historical wealth progression
+  - Asset allocation breakdown
+  - Currency consolidation
 
-## 4. APPLICATION SITEMAP & UI SPECIFICATION
+#### Real Estate Integration
+- **CoreLogic Features**
+  - Property valuation updates
+  - Rental yield analysis
+  - Market comparisons
+  - Suburb insights
 
-### 4.1. Current Navigation Structure (Phase 1) ✅
+#### Financial Goals
+- **Goal Types**
+  - Property purchase
+  - Retirement planning
+  - Investment targets
+  - Debt reduction
 
-```
-ContentView (NavigationView)
-├── TabView
-│   ├── Dashboard Tab [chart.bar.fill]
-│   │   └── DashboardView
-│   │       ├── Balance Card
-│   │       ├── Quick Stats
-│   │       ├── Recent Transactions
-│   │       └── Action Buttons
-│   │
-│   ├── Transactions Tab [list.bullet]
-│   │   └── TransactionsView
-│   │       ├── Search & Filter
-│   │       ├── Stats Summary
-│   │       ├── Transaction List
-│   │       └── Add Transaction → Modal
-│   │
-│   └── Settings Tab [gear]
-│       └── SettingsView
-│           ├── Theme Settings
-│           ├── Currency Settings
-│           ├── Notifications
-│           └── Data Management
-```
+- **Goal Features**
+  - Progress tracking
+  - Scenario modeling
+  - Milestone alerts
+  - Strategy recommendations
 
-### 4.2. Future Navigation Structure (Phase 2+) 🎯
+### 3.5. Phase 5: Advanced Analytics & AI
 
-```
-ContentView (NavigationView)
-├── Sidebar Navigation (macOS Style)
-│   ├── Dashboard [chart.bar.fill]
-│   ├── Transactions [list.bullet]
-│   ├── Documents [doc.text] (NEW)
-│   │   ├── Import Documents
-│   │   ├── Processing Queue
-│   │   ├── Document Library
-│   │   └── OCR Review
-│   ├── Spreadsheets [tablecells] (NEW)
-│   │   ├── Column Mapping
-│   │   ├── Connected Sheets
-│   │   └── Sync Status
-│   ├── Analytics [chart.pie] (NEW)
-│   ├── Integrations [link] (NEW)
-│   └── Settings [gear]
-```
+#### Predictive Analytics
+- Spending forecasts
+- Cash flow projections
+- Investment recommendations
+- Tax optimization suggestions
 
-### 4.3. New Views for Phase 2+
-
-#### Document Processing View
-```
-DocumentProcessingView
-├── Import Section
-│   ├── Drag & Drop Zone
-│   ├── File Browser
-│   └── Camera Capture (Future)
-├── Processing Queue
-│   ├── Document Thumbnails
-│   ├── OCR Progress
-│   └── Status Indicators
-├── Review Section
-│   ├── Original Document
-│   ├── Extracted Data
-│   ├── Confidence Scores
-│   └── Edit Controls
-└── Export Actions
-    ├── Save to Transactions
-    ├── Export to Spreadsheet
-    └── Save Template
-```
-
-#### Spreadsheet Integration View
-```
-SpreadsheetIntegrationView
-├── Connection Manager
-│   ├── Add Service (Google/Office365)
-│   ├── Active Connections
-│   └── Permission Status
-├── Column Mapper
-│   ├── Source Fields
-│   ├── Target Columns
-│   ├── Mapping Rules
-│   └── Preview
-├── Sync Dashboard
-│   ├── Last Sync
-│   ├── Pending Changes
-│   ├── Conflict Resolution
-│   └── Sync Now
-└── Templates
-    ├── Saved Mappings
-    ├── Create Template
-    └── Import/Export
-```
+#### Automated Insights
+- Subscription detection
+- Unusual transaction alerts
+- Budget recommendations
+- Savings opportunities
 
 ---
 
-## 5. DEVELOPMENT ROADMAP
+## 4. DEVELOPMENT ROADMAP
 
-### 5.1. Phase 1: Core Financial Management ✅ COMPLETE
+### 4.1. Phase 1: Core Platform ✅ COMPLETE
 **Timeline**: Completed
-**Status**: Production Ready (99% - pending 2 manual configs)
-
+**Status**: Production Ready (1.0.0-RC1)
 **Deliverables**:
-- ✅ Personal finance tracking
+- ✅ macOS application
 - ✅ Transaction management
 - ✅ Dashboard analytics
-- ✅ Settings & preferences
 - ✅ 75+ test cases
-- ✅ Production build pipeline
+- ✅ Production pipeline
 
-### 5.2. Phase 2: Document Processing & OCR 🎯 NEXT
-**Timeline**: Q3 2025 (Estimated 3-4 months)
-**Status**: Planning
+### 4.2. Phase 2: Data Aggregation & Multi-Entity (3-4 months)
+**Timeline**: Q3 2025
+**Epics**:
+- [ ] Backend infrastructure setup
+- [ ] Authentication system with MFA
+- [ ] Basiq/Plaid integration
+- [ ] Entity management system
+- [ ] Enhanced macOS client
+- [ ] API gateway implementation
 
-**Deliverables**:
-- [ ] Apple Vision OCR integration
-- [ ] Document import interface
-- [ ] Data extraction pipeline
-- [ ] Field mapping system
-- [ ] OCR accuracy testing
-- [ ] Template management
+**Key Milestones**:
+- Month 1: Backend setup, authentication
+- Month 2: Data aggregation integration
+- Month 3: Entity system, client updates
+- Month 4: Testing, security audit
 
-**Technical Tasks**:
-1. Research & prototype OCR with Apple Vision
-2. Design document processing pipeline
-3. Implement extraction algorithms
-4. Build review/correction UI
-5. Create mapping system
-6. Develop template engine
+### 4.3. Phase 3: OCR & Investments (3-4 months)
+**Timeline**: Q4 2025
+**Epics**:
+- [ ] OCR service implementation
+- [ ] Document storage system
+- [ ] Investment API integrations
+- [ ] RBAC implementation
+- [ ] iOS app development
+- [ ] Collaboration features
 
-### 5.3. Phase 3: Cloud Integration 📊
-**Timeline**: Q4 2025 (Estimated 2-3 months)
-**Status**: Future
+### 4.4. Phase 4: Wealth & Real Estate (2-3 months)
+**Timeline**: Q1 2026
+**Epics**:
+- [ ] Net wealth calculations
+- [ ] CoreLogic integration
+- [ ] Goal setting module
+- [ ] Advanced reporting
+- [ ] Web app MVP
 
-**Deliverables**:
-- [ ] OAuth 2.0 implementation
-- [ ] Microsoft Graph API integration
-- [ ] Google Sheets API integration
-- [ ] Sync engine development
-- [ ] Conflict resolution
-- [ ] Email integration (Gmail)
-
-### 5.4. Phase 4: Advanced Features 🚀
-**Timeline**: 2026
-**Status**: Future
-
-**Deliverables**:
-- [ ] AI-powered analytics
-- [ ] LLM integration
-- [ ] Advanced automation
-- [ ] Enterprise features
-- [ ] API development
-- [ ] Cross-platform expansion
+### 4.5. Phase 5: AI & Analytics (Ongoing)
+**Timeline**: Q2 2026+
+**Epics**:
+- [ ] ML pipeline setup
+- [ ] Predictive models
+- [ ] Automated insights
+- [ ] Scenario engine
+- [ ] Advisory features
 
 ---
 
-## 6. TESTING & QUALITY ASSURANCE
+## 5. TESTING & QUALITY ASSURANCE
 
-### 6.1. Current Test Coverage (Phase 1) ✅
+### 5.1. Current Test Coverage (Phase 1) ✅
 - **Unit Tests**: 45+ test cases (>90% coverage)
 - **UI Tests**: 30+ test cases
 - **Integration Tests**: Core Data validation
 - **Performance Tests**: 1000+ transaction loads
 - **Accessibility Tests**: VoiceOver compliance
 
-### 6.2. Future Test Requirements (Phase 2+)
+### 5.2. Enhanced Testing Strategy (Phase 2+)
 
-#### OCR Testing Strategy
-- **Accuracy Testing**: 
-  - Test corpus: 100+ sample documents
-  - Target accuracy: >95% for standard invoices
-  - Edge cases: Poor quality, skewed, handwritten
-- **Performance Testing**:
-  - Processing speed: <3 seconds per page
-  - Batch processing: 50+ documents
-  - Memory efficiency
+#### Test Categories
+- **Unit Tests**: Business logic, data transformations, API contracts
+- **Integration Tests**: Service interactions, API gateway flows
+- **End-to-End Tests**: Complete user journeys
+- **Security Tests**: Penetration testing, vulnerability scanning
+- **Performance Tests**: Load testing, stress testing
+- **Contract Tests**: API compatibility (Pact)
 
-#### Integration Testing
-- **API Testing**:
-  - Mock services for development
-  - Rate limit handling
-  - Error recovery
-  - Offline capability
-- **Sync Testing**:
-  - Conflict scenarios
-  - Data integrity
-  - Performance under load
+#### Test Environments
+- **Local**: Developer machines
+- **CI/CD**: Automated pipeline
+- **Staging**: Production-like
+- **UAT**: User acceptance
+- **Production**: Monitoring only
 
-### 6.3. Test Data Management
-```
-docs/TestData/
-├── OCR_Samples/
-│   ├── Invoices/
-│   ├── Receipts/
-│   ├── Dockets/
-│   └── Edge_Cases/
-├── API_Mocks/
-├── Performance_Data/
-└── Accessibility_Tests/
-```
+### 5.3. Quality Metrics
+- Code coverage: >90%
+- API response time: <200ms (p95)
+- UI responsiveness: 60fps
+- Error rate: <0.1%
+- Security score: A+ rating
 
 ---
 
-## 7. SECURITY & COMPLIANCE
+## 6. SECURITY & COMPLIANCE
 
-### 7.1. Current Security (Phase 1) ✅
-- **Local Storage**: Core Data encryption
-- **App Sandbox**: Enabled
-- **Hardened Runtime**: Configured
-- **Code Signing**: Developer ID ready
+### 6.1. Authentication & Authorization
+- **Multi-Factor Authentication**: Mandatory for all accounts
+- **OAuth 2.0**: Industry standard for third-party integrations
+- **JWT Tokens**: Short-lived access tokens with refresh
+- **Role-Based Access Control**: Granular permissions per entity
+- **Session Management**: Secure session handling with timeout
 
-### 7.2. Future Security (Phase 2+)
+### 6.2. Data Protection
+- **Encryption**:
+  - At rest: AES-256
+  - In transit: TLS 1.3+
+  - Key management: AWS KMS/Cloud KMS
+- **API Security**:
+  - Read-only keys where possible
+  - Key rotation policy
+  - Rate limiting
+  - IP whitelisting (optional)
+- **Data Isolation**:
+  - Entity-level separation
+  - Row-level security
+  - Audit logging
 
-#### Authentication & Authorization
-- **OAuth 2.0**: Industry standard
-- **Token Management**: Secure refresh
-- **Biometric Auth**: Touch ID/Face ID
-- **2FA Support**: Time-based OTP
+### 6.3. Compliance Framework
+- **Australian Standards**:
+  - Privacy Act 1988
+  - Australian Privacy Principles (APP)
+  - Consumer Data Right (CDR)
+- **International Standards**:
+  - SOC 2 Type II
+  - ISO 27001
+  - GDPR (future)
+- **Financial Standards**:
+  - PCI DSS (payment processing)
+  - Open Banking compliance
 
-#### Data Protection
-- **Keychain Storage**: API keys, tokens
-- **Encryption**: AES-256 for documents
-- **Secure Communication**: TLS 1.3+
-- **Zero-Knowledge**: Optional for sensitive data
-
-#### Compliance
-- **GDPR**: EU data protection
-- **CCPA**: California privacy
-- **SOC 2**: Enterprise compliance
-- **HIPAA**: Healthcare data (future)
-
----
-
-## 8. API & INTEGRATION SPECIFICATIONS
-
-### 8.1. Microsoft Graph API (Phase 3)
-**Purpose**: Office365 Excel integration
-**Authentication**: OAuth 2.0
-**Key Endpoints**:
-- `/me/drive/items/{id}/workbook/worksheets`
-- `/me/drive/items/{id}/workbook/tables`
-- `/me/drive/items/{id}/workbook/worksheets/{id}/range`
-
-### 8.2. Google Sheets API (Phase 3)
-**Purpose**: Google Sheets integration
-**Authentication**: OAuth 2.0
-**Key Operations**:
-- `spreadsheets.values.update`
-- `spreadsheets.values.batchUpdate`
-- `spreadsheets.create`
-
-### 8.3. LLM APIs (Phase 2)
-**Purpose**: Intelligent field mapping
-**Providers**:
-- OpenAI (GPT-4)
-- Anthropic (Claude)
-- Google (Gemini)
-
-**Use Cases**:
-- Document classification
-- Field extraction hints
-- Category suggestions
-- Anomaly detection
-
-### 8.4. Gmail API (Phase 3)
-**Purpose**: Email attachment processing
-**Key Operations**:
-- `messages.list` with filters
-- `messages.attachments.get`
-- `labels.create` for organization
+### 6.4. Security Practices
+- Regular penetration testing
+- Dependency scanning
+- Code security analysis
+- Security awareness training
+- Incident response plan
+- Disaster recovery procedures
 
 ---
 
-## 9. BUILD & DEPLOYMENT
+## 7. API & INTEGRATION SPECIFICATIONS
 
-### 9.1. Current Build System (Phase 1) ✅
-- **Build Tools**: Xcode 15.0+ with xcodebuild
-- **Build Script**: `scripts/build_and_sign.sh`
-- **Export Options**: `_macOS/ExportOptions.plist`
-- **Distribution**: Direct signed .app bundle
+### 7.1. Financial Data Aggregation
 
-### 9.2. Deployment Evolution
+#### Basiq API (Australian Focus)
+- **Purpose**: Connect to AU financial institutions
+- **Authentication**: OAuth 2.0
+- **Key Endpoints**:
+  - `POST /users` - Create user
+  - `POST /connections` - Link institution
+  - `GET /accounts` - List accounts
+  - `GET /transactions` - Sync transactions
+- **Rate Limits**: 1000 requests/hour
+
+#### Plaid API (International)
+- **Purpose**: Global institution coverage
+- **Products**: Transactions, Assets, Investments
+- **Key Features**:
+  - Real-time balance
+  - Enhanced transactions
+  - Investment holdings
+  - Identity verification
+
+### 7.2. Investment & Trading APIs
+
+#### Broker Integrations
+- **CommSec**: Via secure file export/import
+- **Stake**: REST API for portfolio data
+- **Interactive Brokers**: FIX protocol
+- **Sharesight**: Portfolio tracking API
+
+#### Cryptocurrency Exchanges
+- **Binance**: REST/WebSocket APIs
+- **Coinbase**: OAuth integration
+- **Kraken**: REST API with signing
+
+### 7.3. Real Estate & Valuation
+
+#### CoreLogic API
+- **Purpose**: Property data and valuations
+- **Key Endpoints**:
+  - Property search
+  - Automated valuations
+  - Sales history
+  - Suburb profiles
+  - Rental estimates
+- **Data Points**:
+  - Current market value
+  - Historical prices
+  - Comparable sales
+  - Demographic data
+
+### 7.4. Intelligence & Analytics
+
+#### LLM Integration
+- **Providers**:
+  - OpenAI GPT-4
+  - Anthropic Claude
+  - Google Gemini
+- **Use Cases**:
+  - Transaction categorization
+  - Receipt parsing assistance
+  - Financial insights
+  - Natural language queries
+- **Security**:
+  - No PII in prompts
+  - Response validation
+  - Rate limiting
+
+---
+
+## 8. USER INTERFACE EVOLUTION
+
+### 8.1. Current UI (Phase 1) ✅
+- **Design System**: Glassmorphism
+- **Navigation**: Tab-based
+- **Platform**: macOS only
+- **Accessibility**: Full VoiceOver support
+
+### 8.2. Enhanced UI (Phase 2+)
+- **Design Evolution**:
+  - Maintain glassmorphism aesthetics
+  - Add data visualization components
+  - Implement responsive layouts
+  - Create unified design system
+
+- **Navigation Enhancement**:
+  - Sidebar navigation (macOS)
+  - Tab bar (iOS)
+  - Responsive menu (Web)
+  - Quick actions
+  - Global search
+
+- **New Components**:
+  - Entity switcher
+  - Connection status indicators
+  - Sync progress displays
+  - Collaboration avatars
+  - Permission badges
+
+### 8.3. Platform-Specific Considerations
+
+#### macOS (Enhanced)
+- Native menu bar integration
+- Keyboard shortcuts
+- Multi-window support
+- Touch Bar support
+- Notification Center
+
+#### iOS (New)
+- Face ID/Touch ID
+- Widget support
+- Share extensions
+- Camera integration
+- Haptic feedback
+
+#### Web (Future)
+- Progressive Web App
+- Responsive design
+- Browser notifications
+- Offline support
+- Cross-browser compatibility
+
+---
+
+## 9. OPERATIONAL CONSIDERATIONS
+
+### 9.1. Deployment Strategy
 
 #### Phase 1 (Current)
 - Direct distribution
-- Manual installation
+- Manual updates
+- Local data only
 
-#### Phase 2 (App Store)
-- Mac App Store submission
-- Sandboxed environment
-- Review compliance
+#### Phase 2+ (Cloud)
+- **Infrastructure**:
+  - Multi-region deployment
+  - Auto-scaling groups
+  - Load balancers
+  - CDN for static assets
 
-#### Phase 3 (Enterprise)
-- Volume licensing
-- MDM support
-- Custom deployment
+- **Deployment Pipeline**:
+  - Blue-green deployments
+  - Canary releases
+  - Feature flags
+  - Rollback capability
 
-### 9.3. CI/CD Pipeline (Future)
-```yaml
-Pipeline:
-  - Build
-  - Unit Tests
-  - UI Tests
-  - OCR Tests (Phase 2)
-  - Integration Tests
-  - Security Scan
-  - Archive
-  - Notarize
-  - Deploy
-```
+### 9.2. Monitoring & Analytics
 
----
+#### Application Monitoring
+- Performance metrics (APM)
+- Error tracking (Sentry)
+- User analytics (Mixpanel)
+- Custom dashboards
 
-## 10. PROJECT MANAGEMENT
+#### Business Metrics
+- User acquisition
+- Feature adoption
+- Retention rates
+- Revenue metrics
 
-### 10.1. Repository Structure
-```
-repo_financemate/
-├── _macOS/                    # Platform-specific code
-│   ├── FinanceMate/          # Production app
-│   ├── FinanceMate-Sandbox/  # Development environment
-│   └── FinanceMate.xcodeproj
-├── docs/                      # Documentation
-│   ├── BLUEPRINT.md          # This document
-│   ├── TASKS.md              # Task tracking
-│   ├── DEVELOPMENT_LOG.md    # Development history
-│   └── TestData/             # OCR test samples
-├── scripts/                   # Automation
-└── README.md                 # Project overview
-```
-
-### 10.2. Branching Strategy
-- **main**: Production releases
-- **develop**: Integration branch
-- **feature/***: New features
-- **phase/***: Major phase development
-
-### 10.3. Task Management
-- **Current**: Local `TASKS.md`
-- **Future**: TaskMaster-AI integration
-- **Tracking**: GitHub Issues
-- **Planning**: Milestone-based
+### 9.3. Support Structure
+- In-app help system
+- Knowledge base
+- Email support
+- Community forum
+- Priority support (premium)
 
 ---
 
-## 11. RISKS & MITIGATIONS
+## 10. BUSINESS MODEL EVOLUTION
+
+### 10.1. Current Model (Phase 1)
+- One-time purchase
+- Direct distribution
+- Individual licenses
+
+### 10.2. Future Model (Phase 2+)
+
+#### Pricing Tiers
+- **Basic** (Free):
+  - 1 entity
+  - Manual transactions
+  - Basic reports
+
+- **Personal** ($9.99/month):
+  - 3 entities
+  - Bank connections (2)
+  - OCR (50/month)
+  - Email support
+
+- **Family** ($19.99/month):
+  - Unlimited entities
+  - Unlimited connections
+  - Unlimited OCR
+  - Collaboration (5 users)
+  - Priority support
+
+- **Professional** ($49.99/month):
+  - Everything in Family
+  - API access
+  - Advanced analytics
+  - Custom reports
+  - Dedicated support
+
+### 10.3. Revenue Streams
+- Subscription revenue (primary)
+- Transaction fees (premium features)
+- Partner commissions (financial products)
+- Enterprise licenses
+- API usage fees
+
+---
+
+## 11. RISK ANALYSIS & MITIGATION
 
 ### 11.1. Technical Risks
-**OCR Accuracy**
-- Risk: Poor document quality
-- Mitigation: Multiple OCR engines, manual review
 
-**API Changes**
-- Risk: Breaking changes
-- Mitigation: Version pinning, adapters
-
-**Performance**
-- Risk: Large document sets
-- Mitigation: Async processing, caching
+| Risk | Impact | Likelihood | Mitigation |
+|------|--------|------------|------------|
+| Data breach | High | Medium | Encryption, security audits, insurance |
+| API deprecation | Medium | High | Multiple providers, abstraction layer |
+| Scaling issues | Medium | Medium | Cloud architecture, load testing |
+| Integration failures | Low | High | Retry logic, fallback options |
 
 ### 11.2. Business Risks
-**Scope Creep**
-- Risk: Feature bloat
-- Mitigation: Phased approach, MVP focus
 
-**Competition**
-- Risk: Market saturation
-- Mitigation: Unique features, superior UX
+| Risk | Impact | Likelihood | Mitigation |
+|------|--------|------------|------------|
+| Regulatory changes | High | Medium | Legal counsel, compliance team |
+| Competition | Medium | High | Unique features, superior UX |
+| User adoption | High | Medium | Freemium model, marketing |
+| Partner dependencies | Medium | Medium | Multiple partners, contracts |
 
----
-
-## 12. GLOSSARY
-
-- **MVVM**: Model-View-ViewModel architecture
-- **OCR**: Optical Character Recognition
-- **Glassmorphism**: UI design with transparency/blur
-- **Core Data**: Apple's persistence framework
-- **LLM**: Large Language Model
-- **OAuth**: Open Authorization protocol
-- **API**: Application Programming Interface
-- **CI/CD**: Continuous Integration/Deployment
+### 11.3. Mitigation Strategies
+- Regular security assessments
+- Disaster recovery planning
+- Legal compliance reviews
+- User feedback loops
+- Agile development process
+- Financial reserves
 
 ---
 
-## 13. APPENDICES
+## 12. SUCCESS METRICS
 
-### 13.1. OCR Test Data Requirements
-The project includes standard test data at `docs/TestData/` containing:
-- Sample invoices (various formats)
-- Receipt images (different qualities)
-- Edge cases (skewed, low contrast)
-- Performance test sets
+### 12.1. Technical KPIs
+- System uptime: >99.9%
+- API latency: <200ms
+- Error rate: <0.1%
+- Test coverage: >90%
+- Security score: A+
 
-### 13.2. Research References
-- Apple Vision Framework Documentation
-- Microsoft Graph API Reference
-- Google Sheets API Guide
-- OAuth 2.0 Best Practices
+### 12.2. Business KPIs
+- Monthly Active Users (MAU)
+- Customer Acquisition Cost (CAC)
+- Monthly Recurring Revenue (MRR)
+- Net Promoter Score (NPS)
+- Churn rate: <5%
+
+### 12.3. User Satisfaction
+- App store rating: >4.5
+- Support ticket resolution: <24h
+- Feature adoption rate: >60%
+- User retention: >80% (6 months)
 
 ---
 
-**FinanceMate** is evolving from a production-ready personal finance manager into a comprehensive financial document management platform. This specification guides both current operations and future development.
+## 13. GLOSSARY
+
+- **RBAC**: Role-Based Access Control - Permission system based on user roles
+- **MFA**: Multi-Factor Authentication - Additional security beyond passwords
+- **Entity**: Distinct financial unit for separating finances (Personal, Business, etc.)
+- **Aggregator**: Service that connects to banks (Basiq, Plaid)
+- **OCR**: Optical Character Recognition - Extract text from images
+- **CDR**: Consumer Data Right - Australian open banking framework
+- **APM**: Application Performance Monitoring
+- **KPI**: Key Performance Indicator
+- **MAU**: Monthly Active Users
+- **MRR**: Monthly Recurring Revenue
+- **CAC**: Customer Acquisition Cost
+- **NPS**: Net Promoter Score
 
 ---
 
-*Version 2.0.0 - Comprehensive vision with phased implementation*
+**FinanceMate** is evolving from a production-ready personal finance manager into a comprehensive wealth management platform. This specification guides both current operations and the transformation into a multi-platform, collaborative financial command center.
+
+---
+
+*Version 3.0.0 - Wealth Management Platform Vision with Phased Implementation*
