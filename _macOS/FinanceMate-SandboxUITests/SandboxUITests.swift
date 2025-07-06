@@ -30,11 +30,16 @@ final class SandboxUITests: XCTestCase {
         app = XCUIApplication()
         
         // Target the Sandbox app specifically
-        app.launchArguments = ["UI_TESTING"]
+        app.launchArguments = ["UI_TESTING", "--headless"]
+        app.launchEnvironment["HEADLESS_MODE"] = "1"
         app.launch()
         
-        // Allow time for app launch and initial data loading
-        Thread.sleep(forTimeInterval: 2.0)
+        // Wait for app launch and initial data loading using expectation
+        let appLaunchExpectation = expectation(description: "Sandbox app launch complete")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            appLaunchExpectation.fulfill()
+        }
+        wait(for: [appLaunchExpectation], timeout: 10.0)
     }
     
     override func tearDownWithError() throws {
@@ -137,8 +142,12 @@ final class SandboxUITests: XCTestCase {
             dashboardTab.tap()
         }
         
-        // Wait for content to load
-        Thread.sleep(forTimeInterval: 2.0)
+        // Wait for content to load using expectation
+        let contentLoadExpectation = expectation(description: "Sandbox content loaded")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            contentLoadExpectation.fulfill()
+        }
+        wait(for: [contentLoadExpectation], timeout: 10.0)
         
         // Take screenshot of Sandbox environment
         let screenshot = app.screenshot()

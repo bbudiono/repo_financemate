@@ -172,8 +172,12 @@ final class DashboardViewUITests: XCTestCase {
             // Tap and verify response
             refreshButton.tap()
             
-            // Allow time for refresh to complete
-            Thread.sleep(forTimeInterval: 2.0)
+            // Wait for refresh to complete using expectation
+            let refreshCompleteExpectation = expectation(description: "Refresh operation complete")
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                refreshCompleteExpectation.fulfill()
+            }
+            wait(for: [refreshCompleteExpectation], timeout: 10.0)
             
             // Verify dashboard still exists after refresh
             let dashboardView = app.scrollViews["DashboardView"]
@@ -220,8 +224,12 @@ final class DashboardViewUITests: XCTestCase {
         // Navigate back to dashboard
         navigateToDashboard()
         
-        // Wait for content to load
-        Thread.sleep(forTimeInterval: 2.0)
+        // Wait for content to load using expectation
+        let contentLoadExpectation = expectation(description: "Dashboard content loaded")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            contentLoadExpectation.fulfill()
+        }
+        wait(for: [contentLoadExpectation], timeout: 10.0)
         
         // Take screenshot for visual regression testing
         let screenshot = app.screenshot()
