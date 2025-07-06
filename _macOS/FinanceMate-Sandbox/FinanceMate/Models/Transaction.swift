@@ -2,7 +2,7 @@
 import Foundation
 import CoreData
 
-@objc(Transaction)
+@objc(SandboxTransaction)
 public class Transaction: NSManagedObject, Identifiable {
     @NSManaged public var id: UUID
     @NSManaged public var date: Date

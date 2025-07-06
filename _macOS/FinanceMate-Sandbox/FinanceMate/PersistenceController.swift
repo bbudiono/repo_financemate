@@ -38,10 +38,43 @@ struct PersistenceController {
     let container: NSPersistentContainer
 
     init(inMemory: Bool = false) {
-        let modelURL = Bundle.main.url(forResource: "FinanceMateModel", withExtension: "momd")
-        guard let modelURL = modelURL, let model = NSManagedObjectModel(contentsOf: modelURL) else {
-            fatalError("Failed to load Core Data model from FinanceMateModel.xcdatamodeld")
-        }
+        // Create a programmatic Core Data model
+        let model = NSManagedObjectModel()
+        
+        // Create Transaction entity
+        let transactionEntity = NSEntityDescription()
+        transactionEntity.name = "Transaction"
+        transactionEntity.managedObjectClassName = "SandboxTransaction"
+        
+        // Add attributes
+        let idAttribute = NSAttributeDescription()
+        idAttribute.name = "id"
+        idAttribute.attributeType = .UUIDAttributeType
+        idAttribute.isOptional = false
+        
+        let dateAttribute = NSAttributeDescription()
+        dateAttribute.name = "date"
+        dateAttribute.attributeType = .dateAttributeType
+        dateAttribute.isOptional = false
+        
+        let amountAttribute = NSAttributeDescription()
+        amountAttribute.name = "amount"
+        amountAttribute.attributeType = .doubleAttributeType
+        amountAttribute.isOptional = false
+        
+        let categoryAttribute = NSAttributeDescription()
+        categoryAttribute.name = "category"
+        categoryAttribute.attributeType = .stringAttributeType
+        categoryAttribute.isOptional = false
+        
+        let noteAttribute = NSAttributeDescription()
+        noteAttribute.name = "note"
+        noteAttribute.attributeType = .stringAttributeType
+        noteAttribute.isOptional = true
+        
+        transactionEntity.properties = [idAttribute, dateAttribute, amountAttribute, categoryAttribute, noteAttribute]
+        model.entities = [transactionEntity]
+        
         container = NSPersistentContainer(name: "FinanceMateModel", managedObjectModel: model)
         if inMemory {
             container.persistentStoreDescriptions.first?.url = URL(fileURLWithPath: "/dev/null")
