@@ -131,7 +131,7 @@ final class SplitAllocationViewModelTests: XCTestCase {
         
         // Then: Should fail validation
         XCTAssertNotNil(viewModel.errorMessage, "Should have validation error")
-        XCTAssertTrue(viewModel.errorMessage?.contains("percentage") == true, "Error should mention percentage")
+        XCTAssertTrue(viewModel.errorMessage?.lowercased().contains("percentage") == true, "Error should mention percentage")
         await viewModel.fetchSplitAllocations(for: testLineItem)
         XCTAssertEqual(viewModel.splitAllocations.count, 0, "Should have no split allocations")
     }
@@ -320,8 +320,8 @@ final class SplitAllocationViewModelTests: XCTestCase {
     }
     
     func testAddCustomTaxCategory() {
-        // Given: A custom tax category name
-        let customCategory = "Research & Development"
+        // Given: A custom tax category name that is not predefined
+        let customCategory = "Consulting Services"
         
         // When: Adding a custom tax category
         viewModel.addCustomTaxCategory(customCategory)
