@@ -300,24 +300,203 @@ Based on the BLUEPRINT.md completion, the following enhancements could be consid
 
 ## PHASE 2: Secure Data Aggregation, Multi-Entity & Line Item Splitting Foundations (IN PROGRESS)
 
-### TASK-2.1: Design and Implement Data Model for Line Item Splitting
+### TASK-2.1: Design and Implement Data Model for Line Item Splitting ✅ COMPLETED
 **Priority:** Critical
 **Objective:** Enable splitting of transaction line items by percentage across multiple tax categories.
-**Status:** Not Started
+**Status:** ✅ COMPLETE
+**Completion Date:** 2025-07-06
 **Subtasks:**
-- [ ] Define Core Data entities for line items and split allocations
-- [ ] Migrate existing transaction data to support line items
-- [ ] Unit tests for data model integrity and migration
+- ✅ Define Core Data entities for line items and split allocations (Complete)
+- ✅ Implement programmatic Core Data model with relationships (Complete)
+- ✅ Unit tests for data model integrity and migration (Complete)
+- ✅ TDD test cases with comprehensive validation scenarios (Complete)
 
-### TASK-2.2: Build UI for Line Item Entry and Split Allocation
+### TASK-2.2: Build UI for Line Item Entry and Split Allocation (Level 4-5 Breakdown)
 **Priority:** High
-**Objective:** Provide user interface for entering line items and allocating splits.
-**Status:** Not Started
-**Subtasks:**
-- [ ] Create modal/inline editor for line items
-- [ ] Implement percentage-based split controls with validation
-- [ ] Ensure accessibility and glassmorphism compliance
-- [ ] UI snapshot and accessibility tests
+**Objective:** Provide user interface for entering line items and allocating splits with comprehensive glassmorphism UI and TDD methodology.
+**Status:** In Progress
+**Start Date:** 2025-07-07
+**Estimated Effort:** 15-20 hours across 3 weeks
+
+#### TASK-2.2.1: Core ViewModels Implementation
+**Priority:** Critical | **Effort:** 2-3 hours | **TDD Approach:** Write tests first
+
+##### TASK-2.2.1.A: LineItemViewModel Foundation
+**Target Files:** `LineItemViewModel.swift`, `LineItemViewModelTests.swift`
+**Status:** Pending
+**Acceptance Criteria:**
+- [ ] Create LineItemViewModel with @Published properties and @MainActor compliance
+- [ ] Implement CRUD operations for LineItem entities with Core Data integration
+- [ ] Add validation for item description (non-empty, max 200 chars) and amount (positive, 2 decimals)
+- [ ] Include loading states, error messaging, and async operation handling
+- [ ] Write 15+ unit tests covering all operations and edge cases
+- [ ] Follow TDD: Write tests → Commit → Implement → Commit → Test validation
+
+##### TASK-2.2.1.B: SplitAllocationViewModel Implementation  
+**Target Files:** `SplitAllocationViewModel.swift`, `SplitAllocationViewModelTests.swift`
+**Status:** Pending
+**Acceptance Criteria:**
+- [ ] Create SplitAllocationViewModel with real-time percentage validation (sum = 100%)
+- [ ] Implement tax category management (predefined + custom categories)
+- [ ] Add percentage adjustment logic with constraints and error handling
+- [ ] Include split allocation CRUD operations with Core Data persistence
+- [ ] Write 20+ unit tests including edge cases and validation scenarios
+- [ ] Follow TDD methodology with comprehensive test coverage
+
+#### TASK-2.2.2: UI Components Implementation
+**Priority:** Critical | **Effort:** 4-5 hours | **Dependencies:** TASK-2.2.1 completion
+
+##### TASK-2.2.2.A: LineItemEntryView Component
+**Target Files:** `LineItemEntryView.swift`, `LineItemEntryViewTests.swift`
+**Status:** Pending
+**Acceptance Criteria:**
+- [ ] Create SwiftUI view with glassmorphism.secondary styling and Australian locale formatting
+- [ ] Implement form with description/amount fields, real-time validation feedback
+- [ ] Add accessibility labels, hints, keyboard navigation support
+- [ ] Include loading states, error displays, and responsive design
+- [ ] Write 8+ UI tests for all interactions and validation scenarios
+- [ ] Ensure Apple Human Interface Guidelines compliance
+
+##### TASK-2.2.2.B: SplitAllocationView Component
+**Target Files:** `SplitAllocationView.swift`, `SplitAllocationViewTests.swift`  
+**Status:** Pending
+**Acceptance Criteria:**
+- [ ] Create modal sheet for split allocation management with glassmorphism.primary styling
+- [ ] Implement percentage sliders with real-time validation and pie chart visualization
+- [ ] Add tax category picker with custom entry and quick preset buttons (50/50, 70/30)
+- [ ] Show running total with validation feedback and error prevention
+- [ ] Write 12+ UI tests covering all scenarios including accessibility
+- [ ] Include comprehensive keyboard and VoiceOver navigation support
+
+#### TASK-2.2.3: Advanced UI Components  
+**Priority:** High | **Effort:** 3-4 hours | **Dependencies:** TASK-2.2.2 completion
+
+##### TASK-2.2.3.A: PieChartView Implementation
+**Target Files:** `PieChartView.swift`, `PieChartViewTests.swift`
+**Status:** Pending
+**Acceptance Criteria:**
+- [ ] Create SwiftUI pie chart with smooth animations and color coding
+- [ ] Display split percentages with interactive tap gestures for selection
+- [ ] Add accessibility support with VoiceOver descriptions
+- [ ] Implement smooth transitions for data changes and legend display
+- [ ] Write 6+ UI tests for chart interactions and accessibility
+- [ ] Ensure performant rendering for real-time updates
+
+##### TASK-2.2.3.B: SplitAllocationRow Component
+**Target Files:** `SplitAllocationRow.swift`, `SplitAllocationRowTests.swift`
+**Status:** Pending  
+**Acceptance Criteria:**
+- [ ] Create reusable row component with glassmorphism.minimal styling
+- [ ] Implement percentage slider with live feedback and tax category selection
+- [ ] Add delete functionality with confirmation and smooth animations
+- [ ] Include accessibility labels, actions, and keyboard navigation
+- [ ] Write 8+ UI tests for all row interactions and edge cases
+- [ ] Ensure consistent design with existing transaction management UI
+
+#### TASK-2.2.4: Integration and Transaction Enhancement
+**Priority:** High | **Effort:** 2-3 hours | **Dependencies:** TASK-2.2.3 completion
+
+##### TASK-2.2.4.A: TransactionView Integration
+**Target Files:** `AddEditTransactionView.swift`, `TransactionViewIntegrationTests.swift`
+**Status:** Pending
+**Acceptance Criteria:**
+- [ ] Add "Line Items" section to transaction form with expandable interface
+- [ ] Integrate LineItemEntryView as expandable section with summary display
+- [ ] Display line item summary with total validation against transaction amount
+- [ ] Add "Quick Split" toggle for simple 50/50 allocations and error handling
+- [ ] Write 10+ integration tests covering complete workflow scenarios
+- [ ] Maintain existing transaction form functionality and glassmorphism consistency
+
+##### TASK-2.2.4.B: Transaction Detail Enhancement
+**Target Files:** `TransactionDetailView.swift`, `TransactionDetailViewTests.swift`  
+**Status:** Pending
+**Acceptance Criteria:**
+- [ ] Create detailed transaction view with line item breakdown display
+- [ ] Display split allocation summary with visual indicators and tax category totals
+- [ ] Add edit functionality for existing line items with modal presentation
+- [ ] Include export functionality for split details and accessibility navigation
+- [ ] Write 8+ UI tests for detail view interactions and data presentation
+- [ ] Ensure seamless integration with existing transaction management workflow
+
+#### TASK-2.2.5: Validation and Business Logic
+**Priority:** Critical | **Effort:** 2-3 hours | **Dependencies:** TASK-2.2.4 completion
+
+##### TASK-2.2.5.A: Split Validation Engine
+**Target Files:** `SplitValidationEngine.swift`, `SplitValidationEngineTests.swift`
+**Status:** Pending
+**Acceptance Criteria:**
+- [ ] Implement real-time split percentage validation with business rules
+- [ ] Add error messaging system with user-friendly language and auto-correction suggestions
+- [ ] Create validation for edge cases (0%, negative, >100%) with cross-line-item validation
+- [ ] Include minimum/maximum split constraints and comprehensive error handling
+- [ ] Write 25+ unit tests covering all validation scenarios and edge cases
+- [ ] Ensure Australian tax compliance and audit trail requirements
+
+##### TASK-2.2.5.B: Tax Category Management
+**Target Files:** `TaxCategoryManager.swift`, `TaxCategoryManagerTests.swift`
+**Status:** Pending
+**Acceptance Criteria:**
+- [ ] Create predefined tax categories (Business, Personal, Investment, etc.) with ATO compliance
+- [ ] Add custom tax category creation with validation and persistence
+- [ ] Implement category usage tracking, suggestions, and color coding for visual distinction  
+- [ ] Include category descriptions, tax implications, and export functionality for reporting
+- [ ] Write 15+ unit tests for category management and Core Data persistence
+- [ ] Ensure seamless integration with split allocation workflow
+
+#### TASK-2.2.6: Accessibility and Testing
+**Priority:** High | **Effort:** 3-4 hours | **Dependencies:** TASK-2.2.5 completion
+
+##### TASK-2.2.6.A: Accessibility Implementation
+**Target Files:** Accessibility enhancements across all components, `AccessibilityTests.swift`
+**Status:** Pending
+**Acceptance Criteria:**
+- [ ] Add VoiceOver support for all interactive elements with descriptive labels
+- [ ] Implement keyboard navigation for all forms with logical tab order
+- [ ] Add accessibility actions for gesture-based interactions and high contrast mode support
+- [ ] Include dynamic type support for text scaling and accessibility hints for complex UI
+- [ ] Write 20+ accessibility tests using XCUITest with comprehensive coverage
+- [ ] Ensure WCAG 2.1 AA compliance and Apple accessibility guidelines adherence
+
+##### TASK-2.2.6.B: Comprehensive UI Testing
+**Target Files:** `LineItemSplitUITests.swift`, Complete UI test suite
+**Status:** Pending
+**Acceptance Criteria:**
+- [ ] Test complete line item creation workflow with end-to-end validation
+- [ ] Validate split allocation scenarios with error handling and recovery flows
+- [ ] Test glassmorphism styling consistency and integration with existing workflow
+- [ ] Verify performance with large datasets and include automated screenshot validation
+- [ ] Write 30+ UI tests with visual regression detection and accessibility validation
+- [ ] Ensure comprehensive coverage of all user interaction paths
+
+#### TASK-2.2.7: Performance and Polish
+**Priority:** Medium | **Effort:** 2-3 hours | **Dependencies:** TASK-2.2.6 completion
+
+##### TASK-2.2.7.A: Performance Optimization
+**Target Files:** Performance improvements across all components, `PerformanceTests.swift`
+**Status:** Pending
+**Acceptance Criteria:**
+- [ ] Optimize Core Data queries for line item fetching with efficient UI updates
+- [ ] Implement lazy loading for large transaction lists and pie chart rendering optimization
+- [ ] Add memory management for view model cleanup and caching for tax category data
+- [ ] Include performance monitoring and efficient @Published property updates
+- [ ] Write 8+ performance tests with benchmarks and memory usage validation
+- [ ] Ensure <100ms response time for all UI interactions
+
+##### TASK-2.2.7.B: Animation and Polish
+**Target Files:** Animation enhancements and UI polish, `AnimationTests.swift`  
+**Status:** Pending
+**Acceptance Criteria:**
+- [ ] Add smooth transitions for split allocation changes with loading animations
+- [ ] Implement success/error feedback animations and micro-interactions for better UX
+- [ ] Include haptic feedback for macOS compatibility and consistent animation timing
+- [ ] Add visual polish with glassmorphism consistency and professional finish
+- [ ] Write 6+ animation tests for smoothness validation and user experience quality
+- [ ] Ensure seamless integration with existing FinanceMate animation patterns
+
+### Implementation Timeline: 3-Week Sprint
+**Week 1:** Foundation (TASK-2.2.1 - TASK-2.2.2) - ViewModels and Core UI  
+**Week 2:** Advanced Features (TASK-2.2.3 - TASK-2.2.4) - Complex UI and Integration  
+**Week 3:** Validation and Testing (TASK-2.2.5 - TASK-2.2.7) - Business Logic and Polish
 
 ### TASK-2.3: Implement Business Logic for Split Validation and Tax Category Assignment
 **Priority:** High

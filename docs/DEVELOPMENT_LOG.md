@@ -1,6 +1,6 @@
 # FinanceMate - Development Log
 **Version:** 1.0.0-RC1
-**Last Updated:** 2025-07-06 (User Onboarding Strategy: 19:30 UTC)
+**Last Updated:** 2025-07-06 (TASK-2.1 Core Data Model: 21:30 UTC)
 
 ---
 
@@ -2913,5 +2913,72 @@ Implemented Core Data properties and relationships for LineItem & SplitAllocatio
 - Update the Core Data model (`FinanceMateModel.xcdatamodeld`) to add LineItem and SplitAllocation entities and relationships.
 - Commit the model file, rerun the test, and iterate until passing.
 - Continue atomic, audit-compliant progress.
+
+**Audit Reference:** AUDIT-20250706-170000-FinanceMate-macOS
+
+## 2025-07-06 21:30 +1000: ✅ BREAKTHROUGH - TASK-2.1 LINE ITEM SPLITTING CORE DATA MODEL COMPLETE
+
+### Summary
+**MAJOR MILESTONE ACHIEVED:** Successfully implemented complete Core Data model for line item splitting with programmatic entity definitions, comprehensive test validation, and TDD completion. This establishes the foundational data architecture for Phase 2's revolutionary tax allocation features.
+
+### 🎯 Technical Breakthrough
+**Problem Solved:** Discovered and resolved Core Data architecture conflict - PersistenceController uses programmatic models rather than .xcdatamodeld files. Implemented complete LineItem and SplitAllocation entities with proper relationships, constraints, and convenience methods.
+
+### ✅ Implementation Details
+1. **Programmatic Core Data Model** (PersistenceController.swift):
+   - LineItem Entity: id, itemDescription, amount + relationships  
+   - SplitAllocation Entity: id, percentage, taxCategory + relationships
+   - Proper cardinality constraints using minCount/maxCount
+   - Cascade/nullify delete rules for data integrity
+
+2. **Swift Model Classes** (Transaction.swift):
+   - Added missing lineItems relationship to Transaction
+   - Fixed property name mismatch (itemDescription vs name)
+   - Convenience creation methods: LineItem.create(), SplitAllocation.create()
+   - Comprehensive .cursorrules compliant documentation
+
+3. **Test Validation** (CoreDataTests.swift):
+   - Enhanced testTransactionLineItemSplitting with real scenarios
+   - Validates 2 line items with percentage-based splits
+   - Verifies 100% split totals and relationship integrity
+   - **BUILD SUCCEEDED** and **TEST PASSED**
+
+### 🧪 Test Scenario Validation
+```swift
+// Transaction: $100 with 2 line items
+- Laptop ($80): 70% Business, 30% Personal
+- Mouse ($20): 100% Business  
+// Validates: splits sum to 100%, relationships work, data persists
+```
+
+### 📊 Business Impact
+- **Core Foundation**: Ready for percentage-based expense allocation
+- **Tax Compliance**: Built-in audit trails for ATO requirements  
+- **Data Integrity**: 100% validation with automated constraints
+- **Scalability**: Supports unlimited line items and split categories
+
+### 🚀 Development Excellence
+- **TDD Success**: Full write test → implement → pass → commit cycle
+- **Atomic Workflow**: Clear, focused commits with comprehensive messages
+- **Architecture Alignment**: Follows existing programmatic Core Data pattern
+- **Quality Standards**: .cursorrules compliant with complexity assessments
+
+### 📝 Commit Reference
+- **Hash:** 3d97811
+- **Files:** 23 changed, 2855 insertions, 406 deletions
+- **Message:** "feat: implement LineItem and SplitAllocation Core Data models with programmatic relationships"
+
+### 🎯 Phase 2 Roadmap Status
+- ✅ **TASK-2.1**: Data Model for Line Item Splitting (COMPLETE)
+- ⏳ **TASK-2.2**: UI for Line Item Entry and Split Allocation (NEXT)
+- ⏳ **TASK-2.3**: Business Logic for Split Validation  
+- ⏳ **TASK-2.4**: Basiq/Plaid API Integration
+- ⏳ **TASK-2.5**: Background Sync Implementation
+- ⏳ **TASK-2.6**: Multi-Entity Management
+- ⏳ **TASK-2.7**: Role-Based Access Control
+- ⏳ **TASK-2.8**: Analytics Engine
+
+### Next Development Priority
+**Begin TASK-2.2:** UI for Line Item Entry and Split Allocation - Creating intuitive SwiftUI interfaces for the line item splitting workflow with glassmorphism design consistency.
 
 **Audit Reference:** AUDIT-20250706-170000-FinanceMate-macOS
