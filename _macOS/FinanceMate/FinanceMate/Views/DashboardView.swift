@@ -18,8 +18,8 @@
 // Key Variances/Learnings: Clean MVVM integration with glassmorphism design system
 // Last Updated: 2025-07-05
 
-import SwiftUI
 import CoreData
+import SwiftUI
 
 /// Dashboard view displaying financial overview with glassmorphism styling
 ///
@@ -30,29 +30,29 @@ import CoreData
 /// - Loading states and error handling
 /// - Responsive layout with glassmorphism design
 struct DashboardView: View {
-    
+
     @EnvironmentObject private var viewModel: DashboardViewModel
     @Environment(\.colorScheme) private var colorScheme
-    
+
     // MARK: - Main Body
-    
+
     var body: some View {
         ScrollView {
             LazyVStack(spacing: 20) {
                 // Dashboard Header
                 dashboardHeader
-                
+
                 // Balance Card
                 balanceCard
-                
+
                 // Quick Stats Cards
                 quickStatsSection
-                
+
                 // Recent Transactions
                 if !viewModel.recentTransactions.isEmpty {
                     recentTransactionsSection
                 }
-                
+
                 // Action Buttons
                 actionButtonsSection
             }
@@ -76,9 +76,9 @@ struct DashboardView: View {
             }
         }
     }
-    
+
     // MARK: - Dashboard Header
-    
+
     private var dashboardHeader: some View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
@@ -86,14 +86,14 @@ struct DashboardView: View {
                     .font(.largeTitle)
                     .fontWeight(.bold)
                     .foregroundColor(.primary)
-                
+
                 Text("Financial Overview")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
-            
+
             Spacer()
-            
+
             // Refresh Button
             Button(action: {
                 viewModel.refreshData()
@@ -107,9 +107,9 @@ struct DashboardView: View {
         }
         .padding(.horizontal, 4)
     }
-    
+
     // MARK: - Balance Card
-    
+
     private var balanceCard: some View {
         VStack(spacing: 16) {
             // Balance Header
@@ -117,33 +117,33 @@ struct DashboardView: View {
                 Image(systemName: viewModel.balanceIcon)
                     .font(.title2)
                     .foregroundColor(viewModel.balanceColor)
-                
+
                 Text("Total Balance")
                     .font(.headline)
                     .foregroundColor(.primary)
-                
+
                 Spacer()
             }
-            
+
             // Balance Amount
             HStack {
                 Text(viewModel.formattedTotalBalance)
                     .font(.system(size: 36, weight: .bold, design: .rounded))
                     .foregroundColor(viewModel.balanceColor)
                     .accessibilityIdentifier("BalanceDisplay")
-                
+
                 Spacer()
             }
-            
+
             // Balance Subtitle
             HStack {
                 Text(viewModel.transactionCountDescription)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
                     .accessibilityIdentifier("TransactionCount")
-                
+
                 Spacer()
-                
+
                 if viewModel.isLoading {
                     ProgressView()
                         .scaleEffect(0.8)
@@ -154,11 +154,13 @@ struct DashboardView: View {
         .glassmorphism(.primary, cornerRadius: 16)
         .accessibilityIdentifier("BalanceCard")
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("Total balance: \(viewModel.formattedTotalBalance), \(viewModel.transactionCountDescription)")
+        .accessibilityLabel(
+            "Total balance: \(viewModel.formattedTotalBalance), \(viewModel.transactionCountDescription)"
+        )
     }
-    
+
     // MARK: - Quick Stats Section
-    
+
     private var quickStatsSection: some View {
         HStack(spacing: 16) {
             // Transaction Count Stat
@@ -168,7 +170,7 @@ struct DashboardView: View {
                 icon: "list.bullet.rectangle",
                 color: .blue
             )
-            
+
             // Average Transaction Stat
             quickStatCard(
                 title: "Average",
@@ -176,7 +178,7 @@ struct DashboardView: View {
                 icon: "chart.line.uptrend.xyaxis",
                 color: .green
             )
-            
+
             // Status Indicator
             quickStatCard(
                 title: "Status",
@@ -186,18 +188,18 @@ struct DashboardView: View {
             )
         }
     }
-    
+
     private func quickStatCard(title: String, value: String, icon: String, color: Color) -> some View {
         VStack(spacing: 8) {
             Image(systemName: icon)
                 .font(.title2)
                 .foregroundColor(color)
-            
+
             Text(value)
                 .font(.headline)
                 .fontWeight(.semibold)
                 .multilineTextAlignment(.center)
-            
+
             Text(title)
                 .font(.caption)
                 .foregroundColor(.secondary)
@@ -208,9 +210,9 @@ struct DashboardView: View {
         .padding(.horizontal, 12)
         .glassmorphism(.secondary, cornerRadius: 12)
     }
-    
+
     // MARK: - Recent Transactions Section
-    
+
     private var recentTransactionsSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             // Section Header
@@ -218,9 +220,9 @@ struct DashboardView: View {
                 Text("Recent Transactions")
                     .font(.headline)
                     .foregroundColor(.primary)
-                
+
                 Spacer()
-                
+
                 Button("View All") {
                     // TODO: Navigate to full transactions view
                 }
@@ -228,7 +230,7 @@ struct DashboardView: View {
                 .foregroundColor(.blue)
             }
             .padding(.horizontal, 4)
-            
+
             // Transactions List
             VStack(spacing: 8) {
                 ForEach(viewModel.recentTransactions.prefix(5), id: \.id) { transaction in
@@ -240,7 +242,7 @@ struct DashboardView: View {
             .accessibilityIdentifier("RecentTransactionsCard")
         }
     }
-    
+
     private func recentTransactionRow(_ transaction: Transaction) -> some View {
         HStack {
             // Transaction Category Icon
@@ -248,13 +250,13 @@ struct DashboardView: View {
                 .font(.title3)
                 .foregroundColor(.blue)
                 .frame(width: 24, height: 24)
-            
+
             // Transaction Details
             VStack(alignment: .leading, spacing: 2) {
                 Text(transaction.category)
                     .font(.subheadline)
                     .fontWeight(.medium)
-                
+
                 if let note = transaction.note, !note.isEmpty {
                     Text(note)
                         .font(.caption)
@@ -262,16 +264,16 @@ struct DashboardView: View {
                         .lineLimit(1)
                 }
             }
-            
+
             Spacer()
-            
+
             // Transaction Amount and Date
             VStack(alignment: .trailing, spacing: 2) {
                 Text(viewModel.formatCurrency(transaction.amount))
                     .font(.subheadline)
                     .fontWeight(.semibold)
                     .foregroundColor(transaction.amount >= 0 ? .green : .red)
-                
+
                 Text(transaction.date.formatted(date: .abbreviated, time: .omitted))
                     .font(.caption)
                     .foregroundColor(.secondary)
@@ -279,9 +281,9 @@ struct DashboardView: View {
         }
         .padding(.vertical, 4)
     }
-    
+
     // MARK: - Action Buttons Section
-    
+
     private var actionButtonsSection: some View {
         HStack(spacing: 16) {
             // Add Transaction Button
@@ -292,7 +294,7 @@ struct DashboardView: View {
             ) {
                 // TODO: Navigate to add transaction
             }
-            
+
             // View Reports Button
             actionButton(
                 title: "View Reports",
@@ -303,13 +305,13 @@ struct DashboardView: View {
             }
         }
     }
-    
+
     private func actionButton(title: String, icon: String, color: Color, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             HStack {
                 Image(systemName: icon)
                     .font(.title3)
-                
+
                 Text(title)
                     .font(.subheadline)
                     .fontWeight(.medium)
@@ -324,12 +326,12 @@ struct DashboardView: View {
         }
         .buttonStyle(.plain)
     }
-    
+
     // MARK: - Helper Views and Computed Properties
-    
+
     private var dashboardBackground: some View {
         LinearGradient(
-            colors: colorScheme == .light ? 
+            colors: colorScheme == .light ?
                 [Color.blue.opacity(0.1), Color.purple.opacity(0.1)] :
                 [Color.blue.opacity(0.2), Color.purple.opacity(0.2)],
             startPoint: .topLeading,
@@ -338,15 +340,15 @@ struct DashboardView: View {
         .ignoresSafeArea()
         .accessibilityIdentifier("GlassmorphismContainer")
     }
-    
+
     private var averageTransactionValue: String {
         guard viewModel.transactionCount > 0 else { return "$0.00" }
         let average = viewModel.totalBalance / Double(viewModel.transactionCount)
         return viewModel.formatCurrency(average)
     }
-    
+
     // MARK: - Helper Functions
-    
+
     private func categoryIcon(for category: String) -> String {
         switch category.lowercased() {
         case "food", "dining":

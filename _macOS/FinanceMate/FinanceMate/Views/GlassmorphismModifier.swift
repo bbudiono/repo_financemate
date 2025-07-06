@@ -21,10 +21,10 @@
 import SwiftUI
 
 /// Glassmorphism visual effect modifier providing modern translucent design
-/// 
+///
 /// This modifier creates glass-like visual effects with configurable blur, opacity,
 /// and border characteristics that adapt to light/dark modes.
-/// 
+///
 /// Example usage:
 /// ```swift
 /// VStack { content }
@@ -33,19 +33,19 @@ import SwiftUI
 struct GlassmorphismModifier: ViewModifier {
     let style: GlassmorphismStyle
     let cornerRadius: CGFloat
-    
+
     @Environment(\.colorScheme) private var colorScheme
-    
+
     /// Available glassmorphism styles with different visual intensities
     enum GlassmorphismStyle {
-        case primary    // Main containers - strongest effect
-        case secondary  // Nested elements - moderate effect  
-        case accent     // Important highlights - enhanced visibility
-        case minimal    // Subtle overlays - lightest effect
-        case ultraThin  // Ultra-light transparency - maximum see-through
-        case thick      // Heavy glass effect - maximum opacity
-        case vibrant    // Enhanced color saturation and vibrancy
-        
+        case primary // Main containers - strongest effect
+        case secondary // Nested elements - moderate effect
+        case accent // Important highlights - enhanced visibility
+        case minimal // Subtle overlays - lightest effect
+        case ultraThin // Ultra-light transparency - maximum see-through
+        case thick // Heavy glass effect - maximum opacity
+        case vibrant // Enhanced color saturation and vibrancy
+
         /// Material background appropriate for the style
         var material: Material {
             switch self {
@@ -65,7 +65,7 @@ struct GlassmorphismModifier: ViewModifier {
                 return .ultraThinMaterial
             }
         }
-        
+
         /// Border opacity based on style
         var borderOpacity: Double {
             switch self {
@@ -78,7 +78,7 @@ struct GlassmorphismModifier: ViewModifier {
             case .vibrant: return 0.35
             }
         }
-        
+
         /// Shadow radius for the style
         var shadowRadius: CGFloat {
             switch self {
@@ -91,7 +91,7 @@ struct GlassmorphismModifier: ViewModifier {
             case .vibrant: return 14
             }
         }
-        
+
         /// Dynamic blur radius for enhanced effects
         var blurRadius: CGFloat {
             switch self {
@@ -104,7 +104,7 @@ struct GlassmorphismModifier: ViewModifier {
             case .vibrant: return 12
             }
         }
-        
+
         /// Saturation multiplier for color effects
         var saturationMultiplier: Double {
             switch self {
@@ -117,7 +117,7 @@ struct GlassmorphismModifier: ViewModifier {
             case .vibrant: return 2.0
             }
         }
-        
+
         /// Edge highlight intensity
         var edgeHighlightOpacity: Double {
             switch self {
@@ -131,7 +131,7 @@ struct GlassmorphismModifier: ViewModifier {
             }
         }
     }
-    
+
     func body(content: Content) -> some View {
         content
             .background(
@@ -140,7 +140,7 @@ struct GlassmorphismModifier: ViewModifier {
                     RoundedRectangle(cornerRadius: cornerRadius)
                         .fill(style.material)
                         .saturation(style.saturationMultiplier)
-                    
+
                     // Edge highlight effect
                     RoundedRectangle(cornerRadius: cornerRadius)
                         .strokeBorder(
@@ -148,7 +148,7 @@ struct GlassmorphismModifier: ViewModifier {
                                 colors: [
                                     .white.opacity(style.edgeHighlightOpacity),
                                     .clear,
-                                    .white.opacity(style.edgeHighlightOpacity * 0.3)
+                                    .white.opacity(style.edgeHighlightOpacity * 0.3),
                                 ],
                                 startPoint: .topLeading,
                                 endPoint: .bottomTrailing
@@ -181,7 +181,7 @@ struct GlassmorphismModifier: ViewModifier {
 /// Convenient View extension for applying glassmorphism effects
 extension View {
     /// Applies glassmorphism visual effect to the view
-    /// 
+    ///
     /// - Parameters:
     ///   - style: The glassmorphism style intensity
     ///   - cornerRadius: Corner radius for the effect (default: 12)
@@ -207,7 +207,7 @@ struct GlassmorphismPreviewContainer: View {
                 endPoint: .bottomTrailing
             )
             .ignoresSafeArea()
-            
+
             LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 2), spacing: 16) {
                 // Primary style example
                 VStack {
@@ -219,7 +219,7 @@ struct GlassmorphismPreviewContainer: View {
                 }
                 .padding()
                 .glassmorphism(.primary, cornerRadius: 16)
-                
+
                 // Secondary style example
                 VStack {
                     Text("Secondary")
@@ -230,7 +230,7 @@ struct GlassmorphismPreviewContainer: View {
                 }
                 .padding()
                 .glassmorphism(.secondary, cornerRadius: 12)
-                
+
                 // Accent style example
                 VStack {
                     Text("Accent")
@@ -241,7 +241,7 @@ struct GlassmorphismPreviewContainer: View {
                 }
                 .padding()
                 .glassmorphism(.accent, cornerRadius: 8)
-                
+
                 // Minimal style example
                 VStack {
                     Text("Minimal")
@@ -252,7 +252,7 @@ struct GlassmorphismPreviewContainer: View {
                 }
                 .padding()
                 .glassmorphism(.minimal, cornerRadius: 6)
-                
+
                 // Ultra Thin style example
                 VStack {
                     Text("Ultra Thin")
@@ -263,7 +263,7 @@ struct GlassmorphismPreviewContainer: View {
                 }
                 .padding()
                 .glassmorphism(.ultraThin, cornerRadius: 10)
-                
+
                 // Thick style example
                 VStack {
                     Text("Thick")
@@ -274,7 +274,7 @@ struct GlassmorphismPreviewContainer: View {
                 }
                 .padding()
                 .glassmorphism(.thick, cornerRadius: 14)
-                
+
                 // Vibrant style example
                 VStack {
                     Text("Vibrant")

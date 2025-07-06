@@ -18,13 +18,13 @@
 // Key Variances/Learnings: Simplified to proper MVVM navigation pattern
 // Last Updated: 2025-07-05
 
-import SwiftUI
 import CoreData
+import SwiftUI
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @StateObject private var dashboardViewModel = DashboardViewModel()
-    
+
     var body: some View {
         NavigationView {
             TabView {
@@ -37,7 +37,7 @@ struct ContentView: View {
                         Text("Dashboard")
                     }
                     .accessibilityIdentifier("Dashboard")
-                
+
                 // Transactions Tab
                 TransactionsView(context: viewContext)
                     .tabItem {
@@ -45,7 +45,7 @@ struct ContentView: View {
                         Text("Transactions")
                     }
                     .accessibilityIdentifier("Transactions")
-                
+
                 // Settings Tab (placeholder for future implementation)
                 SettingsPlaceholderView()
                     .tabItem {
@@ -67,18 +67,17 @@ struct ContentView: View {
 
 // MARK: - Placeholder Views for Future Implementation
 
-
 private struct SettingsPlaceholderView: View {
     var body: some View {
         VStack(spacing: 16) {
             Image(systemName: "gear.circle")
                 .font(.system(size: 48))
                 .foregroundColor(.secondary)
-            
+
             Text("Settings")
                 .font(.title2)
                 .fontWeight(.semibold)
-            
+
             Text("App settings coming soon")
                 .font(.caption)
                 .foregroundColor(.secondary)
@@ -92,4 +91,4 @@ private struct SettingsPlaceholderView: View {
 #Preview {
     ContentView()
         .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
-} 
+}

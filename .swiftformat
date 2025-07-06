@@ -32,11 +32,6 @@
 # Swift conventions
 --self remove
 --redundanttype inferred
---redundantclosure always
---redundantget always
---redundantparens always
---redundantvoidsreturn always
---redundantoptionalbinding always
 
 # Disabled rules (preserve specific patterns)
 --disable blankLinesAtStartOfScope

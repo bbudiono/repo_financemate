@@ -1,42 +1,42 @@
-import SwiftUI
 import Foundation
+import SwiftUI
 
 /*
-* Purpose: SplitAllocationView for managing split allocations with pie chart visualization, real-time validation, and comprehensive tax category management
-* Issues & Complexity Summary: Complex modal UI with pie chart, percentage sliders, real-time validation, and Australian tax category system
-* Key Complexity Drivers:
-  - Logic Scope (Est. LoC): ~600
-  - Core Algorithm Complexity: High (Pie chart rendering, real-time validation, complex interactions)
-  - Dependencies: 6 (SwiftUI, Foundation, SplitAllocationViewModel, GlassmorphismModifier, Custom pie chart, Tax categories)
-  - State Management Complexity: High (@State properties with real-time validation and animation)
-  - Novelty/Uncertainty Factor: High (Custom pie chart, complex percentage validation UI)
-* AI Pre-Task Self-Assessment (Est. Solution Difficulty %): 90%
-* Problem Estimate (Inherent Problem Difficulty %): 95%
-* Initial Code Complexity Estimate %: 90%
-* Justification for Estimates: Complex modal UI with custom pie chart, real-time percentage validation, and advanced tax category management
-* Final Code Complexity (Actual %): 98% (Extremely high due to custom pie chart, real-time validation, and comprehensive interactive features)
-* Overall Result Score (Success & Quality %): 97% (Exceptional implementation exceeding original requirements)
-* Key Variances/Learnings: Successfully implemented sophisticated custom SwiftUI pie chart with animations, complex percentage validation system, and comprehensive tax category management with Australian compliance
-* Last Updated: 2025-07-07
-*/
+ * Purpose: SplitAllocationView for managing split allocations with pie chart visualization, real-time validation, and comprehensive tax category management
+ * Issues & Complexity Summary: Complex modal UI with pie chart, percentage sliders, real-time validation, and Australian tax category system
+ * Key Complexity Drivers:
+   - Logic Scope (Est. LoC): ~600
+   - Core Algorithm Complexity: High (Pie chart rendering, real-time validation, complex interactions)
+   - Dependencies: 6 (SwiftUI, Foundation, SplitAllocationViewModel, GlassmorphismModifier, Custom pie chart, Tax categories)
+   - State Management Complexity: High (@State properties with real-time validation and animation)
+   - Novelty/Uncertainty Factor: High (Custom pie chart, complex percentage validation UI)
+ * AI Pre-Task Self-Assessment (Est. Solution Difficulty %): 90%
+ * Problem Estimate (Inherent Problem Difficulty %): 95%
+ * Initial Code Complexity Estimate %: 90%
+ * Justification for Estimates: Complex modal UI with custom pie chart, real-time percentage validation, and advanced tax category management
+ * Final Code Complexity (Actual %): 98% (Extremely high due to custom pie chart, real-time validation, and comprehensive interactive features)
+ * Overall Result Score (Success & Quality %): 97% (Exceptional implementation exceeding original requirements)
+ * Key Variances/Learnings: Successfully implemented sophisticated custom SwiftUI pie chart with animations, complex percentage validation system, and comprehensive tax category management with Australian compliance
+ * Last Updated: 2025-07-07
+ */
 
 /// SwiftUI view for managing split allocations with comprehensive visualization and validation
 struct SplitAllocationView: View {
     @ObservedObject var viewModel: SplitAllocationViewModel
     let lineItem: LineItem
     @Binding var isPresented: Bool
-    
+
     @State private var selectedSplitID: UUID?
-    @State private var showingAddCustomCategory: Bool = false
-    @State private var newCustomCategory: String = ""
-    @State private var showingQuickSplitOptions: Bool = false
-    @State private var animateChart: Bool = false
-    
+    @State private var showingAddCustomCategory = false
+    @State private var newCustomCategory = ""
+    @State private var showingQuickSplitOptions = false
+    @State private var animateChart = false
+
     private let pieChartColors: [Color] = [
-        .blue, .green, .orange, .purple, .red, .pink, 
-        .yellow, .indigo, .teal, .mint, .cyan, .brown
+        .blue, .green, .orange, .purple, .red, .pink,
+        .yellow, .indigo, .teal, .mint, .cyan, .brown,
     ]
-    
+
     var body: some View {
         NavigationView {
             ZStack {
@@ -45,35 +45,35 @@ struct SplitAllocationView: View {
                     gradient: Gradient(colors: [
                         Color.purple.opacity(0.08),
                         Color.blue.opacity(0.05),
-                        Color.clear
+                        Color.clear,
                     ]),
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 )
                 .ignoresSafeArea()
-                
+
                 ScrollView {
                     VStack(spacing: 24) {
                         // Header Section
                         headerSection
-                        
+
                         // Pie Chart Visualization
                         pieChartSection
-                        
+
                         // Current Splits List
                         if !viewModel.splitAllocations.isEmpty {
                             currentSplitsSection
                         }
-                        
+
                         // Add New Split Section
                         addSplitSection
-                        
+
                         // Quick Actions Section
                         quickActionsSection
-                        
+
                         // Validation Summary
                         validationSummarySection
-                        
+
                         Spacer(minLength: 50)
                     }
                     .padding(.horizontal, 24)
@@ -88,14 +88,17 @@ struct SplitAllocationView: View {
                     }
                     .accessibilityLabel("Cancel split allocation")
                 }
-                
+
                 ToolbarItem(placement: .primaryAction) {
                     Button("Done") {
                         isPresented = false
                     }
                     .disabled(!viewModel.isValidSplit)
                     .accessibilityLabel("Finish split allocation")
-                    .accessibilityHint(viewModel.isValidSplit ? "Saves current split allocation" : "Cannot save - splits must total 100%")
+                    .accessibilityHint(
+                        viewModel
+                            .isValidSplit ? "Saves current split allocation" : "Cannot save - splits must total 100%"
+                    )
                 }
             }
             .task {
@@ -112,9 +115,9 @@ struct SplitAllocationView: View {
             }
         }
     }
-    
+
     // MARK: - Header Section
-    
+
     private var headerSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
@@ -123,43 +126,43 @@ struct SplitAllocationView: View {
                         .font(.title2)
                         .fontWeight(.bold)
                         .foregroundColor(.primary)
-                    
+
                     Text("\(lineItem.itemDescription) - \(viewModel.formatCurrency(lineItem.amount))")
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                 }
-                
+
                 Spacer()
-                
+
                 if viewModel.isLoading {
                     ProgressView()
                         .scaleEffect(0.8)
                         .accessibilityLabel("Loading split allocations")
                 }
             }
-            
+
             // Validation Status Indicator
             HStack {
                 Circle()
                     .fill(viewModel.isValidSplit ? Color.green : Color.orange)
                     .frame(width: 8, height: 8)
-                
+
                 Text(validationStatusText)
                     .font(.caption)
                     .foregroundColor(viewModel.isValidSplit ? .green : .orange)
-                
+
                 Spacer()
-                
+
                 Text(viewModel.formatPercentage(viewModel.totalPercentage))
                     .font(.caption.weight(.semibold))
                     .foregroundColor(viewModel.isValidSplit ? .green : .orange)
             }
-            
+
             if let errorMessage = viewModel.errorMessage {
                 HStack {
                     Image(systemName: "exclamationmark.triangle.fill")
                         .foregroundColor(.red)
-                    
+
                     Text(errorMessage)
                         .font(.caption)
                         .foregroundColor(.red)
@@ -171,16 +174,16 @@ struct SplitAllocationView: View {
         .padding(.vertical, 16)
         .padding(.horizontal, 20)
     }
-    
+
     // MARK: - Pie Chart Section
-    
+
     private var pieChartSection: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Visual Overview")
                 .font(.headline)
                 .fontWeight(.semibold)
                 .foregroundColor(.primary)
-            
+
             HStack {
                 // Pie Chart
                 ZStack {
@@ -189,12 +192,12 @@ struct SplitAllocationView: View {
                         Circle()
                             .stroke(Color.gray.opacity(0.3), lineWidth: 2)
                             .frame(width: 160, height: 160)
-                        
+
                         VStack {
                             Image(systemName: "chart.pie")
                                 .font(.title2)
                                 .foregroundColor(.gray)
-                            
+
                             Text("No splits yet")
                                 .font(.caption)
                                 .foregroundColor(.gray)
@@ -204,9 +207,9 @@ struct SplitAllocationView: View {
                             .frame(width: 160, height: 160)
                     }
                 }
-                
+
                 Spacer()
-                
+
                 // Legend
                 if !viewModel.splitAllocations.isEmpty {
                     VStack(alignment: .leading, spacing: 8) {
@@ -221,7 +224,7 @@ struct SplitAllocationView: View {
         .padding(.vertical, 16)
         .padding(.horizontal, 20)
     }
-    
+
     private var pieChart: some View {
         ZStack {
             ForEach(Array(viewModel.splitAllocations.enumerated()), id: \.element.id) { index, split in
@@ -236,13 +239,13 @@ struct SplitAllocationView: View {
                     selectedSplitID = split.id
                 }
             }
-            
+
             // Center text
             VStack {
                 Text(viewModel.formatPercentage(viewModel.totalPercentage))
                     .font(.headline.weight(.bold))
                     .foregroundColor(.primary)
-                
+
                 Text("allocated")
                     .font(.caption)
                     .foregroundColor(.secondary)
@@ -250,23 +253,23 @@ struct SplitAllocationView: View {
         }
         .accessibilityLabel("Pie chart showing split allocation percentages")
     }
-    
+
     private func legendItem(split: SplitAllocation, color: Color) -> some View {
         HStack(spacing: 8) {
             Circle()
                 .fill(color)
                 .frame(width: 12, height: 12)
-            
+
             VStack(alignment: .leading, spacing: 2) {
                 Text(split.taxCategory)
                     .font(.caption.weight(.medium))
                     .foregroundColor(.primary)
-                
+
                 Text(viewModel.formatPercentage(split.percentage))
                     .font(.caption2)
                     .foregroundColor(.secondary)
             }
-            
+
             Spacer()
         }
         .background(selectedSplitID == split.id ? Color.blue.opacity(0.1) : Color.clear)
@@ -275,16 +278,16 @@ struct SplitAllocationView: View {
             selectedSplitID = split.id
         }
     }
-    
+
     // MARK: - Current Splits Section
-    
+
     private var currentSplitsSection: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Current Splits")
                 .font(.headline)
                 .fontWeight(.semibold)
                 .foregroundColor(.primary)
-            
+
             LazyVStack(spacing: 12) {
                 ForEach(Array(viewModel.splitAllocations.enumerated()), id: \.element.id) { index, split in
                     splitRow(split: split, color: pieChartColors[index % pieChartColors.count])
@@ -295,32 +298,32 @@ struct SplitAllocationView: View {
         .padding(.vertical, 16)
         .padding(.horizontal, 20)
     }
-    
+
     private func splitRow(split: SplitAllocation, color: Color) -> some View {
         HStack {
             // Color indicator
             Circle()
                 .fill(color)
                 .frame(width: 16, height: 16)
-            
+
             VStack(alignment: .leading, spacing: 4) {
                 Text(split.taxCategory)
                     .font(.subheadline.weight(.medium))
                     .foregroundColor(.primary)
-                
+
                 Text(viewModel.formatCurrency(viewModel.calculateAmount(for: split.percentage, of: lineItem)))
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
-            
+
             Spacer()
-            
+
             // Percentage slider
             VStack(alignment: .trailing, spacing: 4) {
                 Text(viewModel.formatPercentage(split.percentage))
                     .font(.caption.weight(.semibold))
                     .foregroundColor(.primary)
-                
+
                 Slider(
                     value: Binding(
                         get: { split.percentage },
@@ -331,13 +334,13 @@ struct SplitAllocationView: View {
                             }
                         }
                     ),
-                    in: 0...100,
+                    in: 0 ... 100,
                     step: 0.25
                 )
                 .frame(width: 100)
                 .accentColor(color)
             }
-            
+
             // Delete button
             Button(action: {
                 Task {
@@ -359,23 +362,23 @@ struct SplitAllocationView: View {
             selectedSplitID = split.id
         }
     }
-    
+
     // MARK: - Add Split Section
-    
+
     private var addSplitSection: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Add Split")
                 .font(.headline)
                 .fontWeight(.semibold)
                 .foregroundColor(.primary)
-            
+
             VStack(spacing: 16) {
                 // Tax Category Picker
                 taxCategoryPicker
-                
+
                 // Percentage Slider
                 percentageSlider
-                
+
                 // Add Button
                 addSplitButton
             }
@@ -384,7 +387,7 @@ struct SplitAllocationView: View {
         .padding(.vertical, 16)
         .padding(.horizontal, 20)
     }
-    
+
     private var taxCategoryPicker: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
@@ -392,9 +395,9 @@ struct SplitAllocationView: View {
                     .font(.subheadline)
                     .fontWeight(.medium)
                     .foregroundColor(.primary)
-                
+
                 Spacer()
-                
+
                 Button("Add Custom") {
                     showingAddCustomCategory = true
                 }
@@ -402,7 +405,7 @@ struct SplitAllocationView: View {
                 .foregroundColor(.blue)
                 .accessibilityLabel("Add custom tax category")
             }
-            
+
             Menu {
                 ForEach(viewModel.availableTaxCategories, id: \.self) { category in
                     Button(category) {
@@ -413,9 +416,9 @@ struct SplitAllocationView: View {
                 HStack {
                     Text(viewModel.selectedTaxCategory.isEmpty ? "Select Category" : viewModel.selectedTaxCategory)
                         .foregroundColor(viewModel.selectedTaxCategory.isEmpty ? .gray : .primary)
-                    
+
                     Spacer()
-                    
+
                     Image(systemName: "chevron.down")
                         .foregroundColor(.gray)
                         .font(.caption)
@@ -428,7 +431,7 @@ struct SplitAllocationView: View {
             .accessibilityLabel("Select tax category")
         }
     }
-    
+
     private var percentageSlider: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
@@ -436,41 +439,44 @@ struct SplitAllocationView: View {
                     .font(.subheadline)
                     .fontWeight(.medium)
                     .foregroundColor(.primary)
-                
+
                 Spacer()
-                
+
                 VStack(alignment: .trailing, spacing: 2) {
                     Text(viewModel.formatPercentage(viewModel.newSplitPercentage))
                         .font(.subheadline.weight(.semibold))
                         .foregroundColor(.primary)
-                    
-                    Text(viewModel.formatCurrency(viewModel.calculateAmount(for: viewModel.newSplitPercentage, of: lineItem)))
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+
+                    Text(viewModel.formatCurrency(viewModel.calculateAmount(
+                        for: viewModel.newSplitPercentage,
+                        of: lineItem
+                    )))
+                    .font(.caption)
+                    .foregroundColor(.secondary)
                 }
             }
-            
+
             Slider(
                 value: $viewModel.newSplitPercentage,
-                in: 0...viewModel.remainingPercentage,
+                in: 0 ... viewModel.remainingPercentage,
                 step: 0.25
             )
             .accentColor(.blue)
-            
+
             HStack {
                 Text("0%")
                     .font(.caption)
                     .foregroundColor(.gray)
-                
+
                 Spacer()
-                
+
                 Text("Available: \(viewModel.formatPercentage(viewModel.remainingPercentage))")
                     .font(.caption)
                     .foregroundColor(.gray)
             }
         }
     }
-    
+
     private var addSplitButton: some View {
         Button(action: {
             Task {
@@ -484,7 +490,7 @@ struct SplitAllocationView: View {
                 } else {
                     Image(systemName: "plus.circle.fill")
                 }
-                
+
                 Text("Add Split")
                     .fontWeight(.medium)
             }
@@ -498,21 +504,21 @@ struct SplitAllocationView: View {
         .accessibilityLabel("Add split allocation")
         .accessibilityHint("Adds a new split with selected category and percentage")
     }
-    
+
     // MARK: - Quick Actions Section
-    
+
     private var quickActionsSection: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Quick Actions")
                 .font(.headline)
                 .fontWeight(.semibold)
                 .foregroundColor(.primary)
-            
+
             HStack(spacing: 12) {
                 quickActionButton(title: "50/50 Split", action: {
                     showingQuickSplitOptions = true
                 })
-                
+
                 quickActionButton(title: "Clear All", action: {
                     Task {
                         await viewModel.clearAllSplits(for: lineItem)
@@ -524,8 +530,12 @@ struct SplitAllocationView: View {
         .padding(.vertical, 12)
         .padding(.horizontal, 16)
     }
-    
-    private func quickActionButton(title: String, action: @escaping () -> Void, isDestructive: Bool = false) -> some View {
+
+    private func quickActionButton(
+        title: String,
+        action: @escaping () -> Void,
+        isDestructive: Bool = false
+    ) -> some View {
         Button(action: action) {
             Text(title)
                 .font(.subheadline.weight(.medium))
@@ -537,29 +547,29 @@ struct SplitAllocationView: View {
         }
         .accessibilityLabel(title)
     }
-    
+
     // MARK: - Validation Summary Section
-    
+
     private var validationSummarySection: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Summary")
                 .font(.headline)
                 .fontWeight(.semibold)
                 .foregroundColor(.primary)
-            
+
             VStack(spacing: 8) {
                 summaryRow(
                     label: "Total Allocated",
                     value: viewModel.formatPercentage(viewModel.totalPercentage),
                     isHighlighted: !viewModel.isValidSplit
                 )
-                
+
                 summaryRow(
                     label: "Remaining",
                     value: viewModel.formatPercentage(viewModel.remainingPercentage),
                     isRemaining: true
                 )
-                
+
                 summaryRow(
                     label: "Line Item Amount",
                     value: viewModel.formatCurrency(lineItem.amount),
@@ -571,35 +581,41 @@ struct SplitAllocationView: View {
         .padding(.vertical, 16)
         .padding(.horizontal, 20)
     }
-    
-    private func summaryRow(label: String, value: String, isTotal: Bool = false, isHighlighted: Bool = false, isRemaining: Bool = false) -> some View {
+
+    private func summaryRow(
+        label: String,
+        value: String,
+        isTotal: Bool = false,
+        isHighlighted: Bool = false,
+        isRemaining: Bool = false
+    ) -> some View {
         HStack {
             Text(label)
                 .font(isTotal ? .subheadline.weight(.semibold) : .subheadline)
                 .foregroundColor(.primary)
-            
+
             Spacer()
-            
+
             Text(value)
                 .font(isTotal ? .subheadline.weight(.bold) : .subheadline)
                 .foregroundColor(
                     isHighlighted ? .orange :
-                    isRemaining ? (viewModel.remainingPercentage < 0 ? .red : .green) :
-                    .primary
+                        isRemaining ? (viewModel.remainingPercentage < 0 ? .red : .green) :
+                        .primary
                 )
         }
         .padding(.vertical, 4)
     }
-    
+
     // MARK: - Sheet Views
-    
+
     private var addCustomCategorySheet: some View {
         NavigationView {
             VStack(spacing: 24) {
                 TextField("Category Name", text: $newCustomCategory)
                     .textFieldStyle(.roundedBorder)
                     .accessibilityLabel("Custom category name")
-                
+
                 Button("Add Category") {
                     viewModel.addCustomTaxCategory(newCustomCategory)
                     viewModel.selectedTaxCategory = newCustomCategory
@@ -608,7 +624,7 @@ struct SplitAllocationView: View {
                 }
                 .disabled(newCustomCategory.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 .buttonStyle(.borderedProminent)
-                
+
                 Spacer()
             }
             .padding()
@@ -624,7 +640,7 @@ struct SplitAllocationView: View {
             }
         }
     }
-    
+
     private var quickSplitActionSheet: ActionSheet {
         ActionSheet(
             title: Text("Quick Split Options"),
@@ -632,21 +648,31 @@ struct SplitAllocationView: View {
             buttons: [
                 .default(Text("50/50 Business/Personal")) {
                     Task {
-                        await viewModel.applyQuickSplit(.fiftyFifty, primaryCategory: "Business", secondaryCategory: "Personal", to: lineItem)
+                        await viewModel.applyQuickSplit(
+                            .fiftyFifty,
+                            primaryCategory: "Business",
+                            secondaryCategory: "Personal",
+                            to: lineItem
+                        )
                     }
                 },
                 .default(Text("70/30 Business/Personal")) {
                     Task {
-                        await viewModel.applyQuickSplit(.seventyThirty, primaryCategory: "Business", secondaryCategory: "Personal", to: lineItem)
+                        await viewModel.applyQuickSplit(
+                            .seventyThirty,
+                            primaryCategory: "Business",
+                            secondaryCategory: "Personal",
+                            to: lineItem
+                        )
                     }
                 },
-                .cancel()
+                .cancel(),
             ]
         )
     }
-    
+
     // MARK: - Computed Properties
-    
+
     private var validationStatusText: String {
         if viewModel.splitAllocations.isEmpty {
             return "No splits allocated"
@@ -658,27 +684,27 @@ struct SplitAllocationView: View {
             return "Under-allocated"
         }
     }
-    
+
     private var canAddSplit: Bool {
         return !viewModel.selectedTaxCategory.isEmpty &&
-               viewModel.newSplitPercentage > 0 &&
-               viewModel.remainingPercentage >= viewModel.newSplitPercentage
+            viewModel.newSplitPercentage > 0 &&
+            viewModel.remainingPercentage >= viewModel.newSplitPercentage
     }
-    
+
     // MARK: - Helper Methods
-    
+
     private func startAngle(for index: Int) -> Double {
         let total = viewModel.totalPercentage
         guard total > 0 else { return 0 }
-        
+
         let previousPercentages = viewModel.splitAllocations.prefix(index).reduce(0.0) { $0 + $1.percentage }
         return (previousPercentages / total) * 360 - 90
     }
-    
+
     private func endAngle(for index: Int) -> Double {
         let total = viewModel.totalPercentage
         guard total > 0 else { return 0 }
-        
+
         let upToCurrentPercentages = viewModel.splitAllocations.prefix(index + 1).reduce(0.0) { $0 + $1.percentage }
         return (upToCurrentPercentages / total) * 360 - 90
     }
@@ -690,11 +716,11 @@ struct PieSlice: Shape {
     let startAngle: Double
     let endAngle: Double
     let color: Color
-    
+
     func path(in rect: CGRect) -> Path {
         let center = CGPoint(x: rect.midX, y: rect.midY)
         let radius = min(rect.width, rect.height) / 2
-        
+
         var path = Path()
         path.move(to: center)
         path.addArc(
@@ -705,13 +731,13 @@ struct PieSlice: Shape {
             clockwise: false
         )
         path.closeSubpath()
-        
+
         return path
     }
 }
 
 extension PieSlice: View {
     var body: some View {
-        self.fill(color)
+        fill(color)
     }
 }

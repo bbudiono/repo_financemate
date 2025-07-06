@@ -1,10 +1,10 @@
+import Combine
 import Foundation
 import SwiftUI
-import Combine
 
 /**
  * SettingsViewModel.swift
- * 
+ *
  * Purpose: MVVM ViewModel for user settings and preferences management
  * Issues & Complexity Summary: Handles theme, currency, and notification preferences with UserDefaults persistence
  * Key Complexity Drivers:
@@ -24,73 +24,80 @@ import Combine
 
 @MainActor
 class SettingsViewModel: ObservableObject {
-    
+
     // MARK: - Published Properties
-    
+
     @Published var theme: String {
         didSet {
             userDefaults.set(theme, forKey: "theme")
         }
     }
-    
+
     @Published var currency: String {
         didSet {
             userDefaults.set(currency, forKey: "currency")
         }
     }
-    
+
     @Published var notifications: Bool {
         didSet {
             userDefaults.set(notifications, forKey: "notifications")
         }
     }
-    
-    @Published var isLoading: Bool = false
+
+    @Published var isLoading = false
     @Published var errorMessage: String?
-    
+
     // MARK: - Private Properties
-    
+
     private let userDefaults: UserDefaults
-    
+
     // MARK: - Constants
-    
+
     private enum Defaults {
         static let theme = "System"
-        static let currency = "AUD"  // Australian Dollar default for Australian locale compliance
+        static let currency = "AUD" // Australian Dollar default for Australian locale compliance
         static let notifications = true
     }
-    
+
     private enum Keys {
         static let theme = "theme"
         static let currency = "currency"
         static let notifications = "notifications"
     }
-    
+
     // MARK: - Available Options
-    
+
     static let availableThemes = ["System", "Light", "Dark"]
-    static let availableCurrencies = ["AUD", "USD", "EUR", "GBP", "JPY", "CAD"]  // AUD first for Australian locale compliance
-    
+    static let availableCurrencies = [
+        "AUD",
+        "USD",
+        "EUR",
+        "GBP",
+        "JPY",
+        "CAD",
+    ] // AUD first for Australian locale compliance
+
     // MARK: - Initialization
-    
+
     init(userDefaults: UserDefaults = .standard) {
         self.userDefaults = userDefaults
-        
+
         // Load saved settings or use defaults
-        self.theme = userDefaults.string(forKey: Keys.theme) ?? Defaults.theme
-        self.currency = userDefaults.string(forKey: Keys.currency) ?? Defaults.currency
-        
+        theme = userDefaults.string(forKey: Keys.theme) ?? Defaults.theme
+        currency = userDefaults.string(forKey: Keys.currency) ?? Defaults.currency
+
         // Handle bool default value properly
         if userDefaults.object(forKey: Keys.notifications) == nil {
-            self.notifications = Defaults.notifications
+            notifications = Defaults.notifications
             userDefaults.set(Defaults.notifications, forKey: Keys.notifications)
         } else {
-            self.notifications = userDefaults.bool(forKey: Keys.notifications)
+            notifications = userDefaults.bool(forKey: Keys.notifications)
         }
     }
-    
+
     // MARK: - Public Methods
-    
+
     /// Reset all settings to default values
     func resetSettings() {
         theme = Defaults.theme
@@ -98,20 +105,20 @@ class SettingsViewModel: ObservableObject {
         notifications = Defaults.notifications
         clearError()
     }
-    
+
     /// Clear any error state
     func clearError() {
         errorMessage = nil
     }
-    
+
     /// Validate current settings
     func validateSettings() -> Bool {
-        return Self.availableThemes.contains(theme) && 
-               Self.availableCurrencies.contains(currency)
+        return Self.availableThemes.contains(theme) &&
+            Self.availableCurrencies.contains(currency)
     }
-    
+
     // MARK: - Helper Methods
-    
+
     /// Get display name for current theme
     func themeDisplayName() -> String {
         switch theme {
@@ -125,7 +132,7 @@ class SettingsViewModel: ObservableObject {
             return theme
         }
     }
-    
+
     /// Get currency symbol for current currency
     func currencySymbol() -> String {
         switch currency {
@@ -145,7 +152,7 @@ class SettingsViewModel: ObservableObject {
             return currency
         }
     }
-    
+
     /// Apply current theme to the environment
     func applyTheme() -> ColorScheme? {
         switch theme {
@@ -157,7 +164,7 @@ class SettingsViewModel: ObservableObject {
             return nil // System default
         }
     }
-    
+
     /// Save all settings (explicit save method)
     func saveSettings() {
         userDefaults.set(theme, forKey: Keys.theme)
@@ -165,28 +172,30 @@ class SettingsViewModel: ObservableObject {
         userDefaults.set(notifications, forKey: Keys.notifications)
         userDefaults.synchronize()
     }
-    
+
     /// Export settings as dictionary
     func exportSettings() -> [String: Any] {
         return [
             "theme": theme,
             "currency": currency,
-            "notifications": notifications
+            "notifications": notifications,
         ]
     }
-    
+
     /// Import settings from dictionary
     func importSettings(from data: [String: Any]) {
         if let newTheme = data["theme"] as? String,
-           Self.availableThemes.contains(newTheme) {
+           Self.availableThemes.contains(newTheme)
+        {
             theme = newTheme
         }
-        
+
         if let newCurrency = data["currency"] as? String,
-           Self.availableCurrencies.contains(newCurrency) {
+           Self.availableCurrencies.contains(newCurrency)
+        {
             currency = newCurrency
         }
-        
+
         if let newNotifications = data["notifications"] as? Bool {
             notifications = newNotifications
         }

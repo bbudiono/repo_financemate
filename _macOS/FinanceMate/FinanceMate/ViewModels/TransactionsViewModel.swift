@@ -19,65 +19,65 @@
 // Key Variances/Learnings: TDD approach enabled comprehensive transaction management implementation
 // Last Updated: 2025-07-06
 
-import Foundation
-import CoreData
-import SwiftUI
 import Combine
+import CoreData
+import Foundation
+import SwiftUI
 
 @MainActor
 class TransactionsViewModel: ObservableObject {
     @Published var transactions: [Transaction] = []
-    @Published var searchText: String = ""
-    @Published var filteredTransactionCount: Int = 0
-    @Published var totalTransactionCount: Int = 0
+    @Published var searchText = ""
+    @Published var filteredTransactionCount = 0
+    @Published var totalTransactionCount = 0
     @Published var selectedCategory: String?
     @Published var startDate: Date?
     @Published var endDate: Date?
-    @Published var isLoading: Bool = false
+    @Published var isLoading = false
 
     var filteredTransactions: [Transaction] {
         var filtered = transactions
-        
+
         // Apply search filter (case-insensitive)
         if !searchText.isEmpty {
             filtered = filtered.filter { transaction in
                 transaction.category.lowercased().contains(searchText.lowercased()) ||
-                transaction.note?.lowercased().contains(searchText.lowercased()) == true
+                    transaction.note?.lowercased().contains(searchText.lowercased()) == true
             }
         }
-        
+
         // Apply category filter
         if let selectedCategory = selectedCategory {
             filtered = filtered.filter { $0.category == selectedCategory }
         }
-        
+
         // Apply date range filter
         if let startDate = startDate {
             filtered = filtered.filter { $0.date >= startDate }
         }
-        
+
         if let endDate = endDate {
             filtered = filtered.filter { $0.date <= endDate }
         }
-        
+
         return filtered.sorted { $0.date > $1.date }
     }
 
     @Published var errorMessage: String? = nil
-    
+
     private let context: NSManagedObjectContext
-    
+
     init(context: NSManagedObjectContext) {
         self.context = context
     }
-    
+
     func fetchTransactions() {
         isLoading = true
         errorMessage = nil
-        
+
         let request: NSFetchRequest<Transaction> = Transaction.fetchRequest()
         request.sortDescriptors = [NSSortDescriptor(keyPath: \Transaction.date, ascending: false)]
-        
+
         do {
             let fetchedTransactions = try context.fetch(request)
             DispatchQueue.main.async {
@@ -93,7 +93,7 @@ class TransactionsViewModel: ObservableObject {
             }
         }
     }
-    
+
     func createTransaction(amount: Double, category: String, note: String?) {
         let _ = Transaction.create(
             in: context,
@@ -101,7 +101,7 @@ class TransactionsViewModel: ObservableObject {
             category: category,
             note: note
         )
-        
+
         do {
             try context.save()
             // Refresh the transactions list
@@ -142,12 +142,12 @@ class TransactionsViewModel: ObservableObject {
         formatter.timeStyle = .none
         return formatter.string(from: date)
     }
-    
+
     // MARK: - Transaction Management
-    
+
     func deleteTransaction(_ transaction: Transaction) {
         context.delete(transaction)
-        
+
         do {
             try context.save()
             fetchTransactions() // Refresh the list
@@ -155,7 +155,7 @@ class TransactionsViewModel: ObservableObject {
             errorMessage = "Failed to delete transaction: \(error.localizedDescription)"
         }
     }
-    
+
     func deleteTransactions(at offsets: IndexSet) {
         for index in offsets {
             let transaction = filteredTransactions[index]

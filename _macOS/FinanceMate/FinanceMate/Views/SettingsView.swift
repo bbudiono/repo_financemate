@@ -2,7 +2,7 @@ import SwiftUI
 
 /**
  * SettingsView.swift
- * 
+ *
  * Purpose: SwiftUI view for application settings and user preferences
  * Issues & Complexity Summary: Glassmorphism UI with theme, currency, and notification controls
  * Key Complexity Drivers:
@@ -23,40 +23,40 @@ import SwiftUI
 struct SettingsView: View {
     @EnvironmentObject var settingsViewModel: SettingsViewModel
     @Environment(\.colorScheme) var colorScheme
-    
+
     var body: some View {
         GeometryReader { geometry in
             ZStack {
                 // Background gradient
                 LinearGradient(
                     gradient: Gradient(colors: [
-                        colorScheme == .dark ? 
+                        colorScheme == .dark ?
                             Color.black.opacity(0.9) : Color.white.opacity(0.9),
-                        colorScheme == .dark ? 
-                            Color.blue.opacity(0.3) : Color.blue.opacity(0.1)
+                        colorScheme == .dark ?
+                            Color.blue.opacity(0.3) : Color.blue.opacity(0.1),
                     ]),
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 )
                 .ignoresSafeArea()
-                
+
                 ScrollView {
                     VStack(spacing: 20) {
                         // Header
                         headerSection
-                        
+
                         // Theme Settings
                         themeSection
-                        
+
                         // Currency Settings
                         currencySection
-                        
+
                         // Notification Settings
                         notificationSection
-                        
+
                         // Actions Section
                         actionsSection
-                        
+
                         Spacer()
                     }
                     .padding()
@@ -68,21 +68,21 @@ struct SettingsView: View {
         .preferredColorScheme(settingsViewModel.applyTheme())
         .accessibilityIdentifier("SettingsView")
     }
-    
+
     // MARK: - Header Section
-    
+
     private var headerSection: some View {
         VStack(spacing: 12) {
             Image(systemName: "gearshape.fill")
                 .font(.system(size: 50))
                 .foregroundColor(.blue)
                 .accessibilityIdentifier("SettingsIcon")
-            
+
             Text("Application Settings")
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .foregroundColor(.primary)
-            
+
             Text("Customize your FinanceMate experience")
                 .font(.subheadline)
                 .foregroundColor(.secondary)
@@ -91,9 +91,9 @@ struct SettingsView: View {
         .modifier(GlassmorphismModifier(.primary))
         .accessibilityIdentifier("SettingsHeader")
     }
-    
+
     // MARK: - Theme Section
-    
+
     private var themeSection: some View {
         VStack(alignment: .leading, spacing: 16) {
             HStack {
@@ -104,7 +104,7 @@ struct SettingsView: View {
                     .fontWeight(.semibold)
                 Spacer()
             }
-            
+
             VStack(spacing: 12) {
                 ForEach(SettingsViewModel.availableThemes, id: \.self) { theme in
                     themeRow(theme: theme)
@@ -114,7 +114,7 @@ struct SettingsView: View {
         .modifier(GlassmorphismModifier(.secondary))
         .accessibilityIdentifier("ThemeSection")
     }
-    
+
     private func themeRow(theme: String) -> some View {
         HStack {
             Circle()
@@ -125,19 +125,19 @@ struct SettingsView: View {
                         .stroke(Color.blue, lineWidth: 2)
                 )
                 .accessibilityIdentifier("ThemeSelector_\(theme)")
-            
+
             VStack(alignment: .leading, spacing: 2) {
                 Text(theme)
                     .font(.body)
                     .fontWeight(.medium)
-                
+
                 Text(themeDescription(for: theme))
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
-            
+
             Spacer()
-            
+
             if settingsViewModel.theme == theme {
                 Image(systemName: "checkmark")
                     .foregroundColor(.blue)
@@ -155,7 +155,7 @@ struct SettingsView: View {
         .accessibilityLabel("Theme option: \(theme)")
         .accessibilityHint("Tap to select \(theme) theme")
     }
-    
+
     private func themeDescription(for theme: String) -> String {
         switch theme {
         case "System":
@@ -168,9 +168,9 @@ struct SettingsView: View {
             return "Unknown theme"
         }
     }
-    
+
     // MARK: - Currency Section
-    
+
     private var currencySection: some View {
         VStack(alignment: .leading, spacing: 16) {
             HStack {
@@ -181,11 +181,11 @@ struct SettingsView: View {
                     .fontWeight(.semibold)
                 Spacer()
             }
-            
+
             LazyVGrid(columns: [
                 GridItem(.flexible()),
                 GridItem(.flexible()),
-                GridItem(.flexible())
+                GridItem(.flexible()),
             ], spacing: 12) {
                 ForEach(SettingsViewModel.availableCurrencies, id: \.self) { currency in
                     currencyCard(currency: currency)
@@ -195,14 +195,14 @@ struct SettingsView: View {
         .modifier(GlassmorphismModifier(.secondary))
         .accessibilityIdentifier("CurrencySection")
     }
-    
+
     private func currencyCard(currency: String) -> some View {
         VStack(spacing: 8) {
             Text(settingsViewModel.currencySymbol())
                 .font(.title2)
                 .fontWeight(.bold)
                 .foregroundColor(settingsViewModel.currency == currency ? .white : .primary)
-            
+
             Text(currency)
                 .font(.caption)
                 .fontWeight(.medium)
@@ -212,13 +212,18 @@ struct SettingsView: View {
         .frame(maxWidth: .infinity)
         .background(
             RoundedRectangle(cornerRadius: 12)
-                .fill(settingsViewModel.currency == currency ? 
-                      Color.blue.gradient : Color.clear)
+                .fill(
+                    settingsViewModel.currency == currency ?
+                        Color.blue.gradient : Color.clear
+                )
         )
         .overlay(
             RoundedRectangle(cornerRadius: 12)
-                .stroke(settingsViewModel.currency == currency ? 
-                       Color.blue : Color.gray.opacity(0.3), lineWidth: 1)
+                .stroke(
+                    settingsViewModel.currency == currency ?
+                        Color.blue : Color.gray.opacity(0.3),
+                    lineWidth: 1
+                )
         )
         .contentShape(Rectangle())
         .onTapGesture {
@@ -230,9 +235,9 @@ struct SettingsView: View {
         .accessibilityLabel("Currency: \(currency)")
         .accessibilityHint("Tap to select \(currency) as default currency")
     }
-    
+
     // MARK: - Notification Section
-    
+
     private var notificationSection: some View {
         VStack(alignment: .leading, spacing: 16) {
             HStack {
@@ -243,20 +248,20 @@ struct SettingsView: View {
                     .fontWeight(.semibold)
                 Spacer()
             }
-            
+
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Enable Notifications")
                         .font(.body)
                         .fontWeight(.medium)
-                    
+
                     Text("Receive alerts and reminders")
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
-                
+
                 Spacer()
-                
+
                 Toggle("", isOn: $settingsViewModel.notifications)
                     .toggleStyle(SwitchToggleStyle(tint: .blue))
                     .accessibilityIdentifier("NotificationToggle")
@@ -266,9 +271,9 @@ struct SettingsView: View {
         .modifier(GlassmorphismModifier(.secondary))
         .accessibilityIdentifier("NotificationSection")
     }
-    
+
     // MARK: - Actions Section
-    
+
     private var actionsSection: some View {
         VStack(spacing: 16) {
             // Reset Settings Button
@@ -281,7 +286,7 @@ struct SettingsView: View {
                     Image(systemName: "arrow.clockwise")
                         .font(.body)
                         .fontWeight(.semibold)
-                    
+
                     Text("Reset to Defaults")
                         .font(.body)
                         .fontWeight(.semibold)
@@ -300,7 +305,7 @@ struct SettingsView: View {
             }
             .accessibilityIdentifier("ResetSettingsButton")
             .accessibilityLabel("Reset all settings to default values")
-            
+
             // Save Settings Button
             Button(action: {
                 settingsViewModel.saveSettings()
@@ -309,7 +314,7 @@ struct SettingsView: View {
                     Image(systemName: "checkmark.circle.fill")
                         .font(.body)
                         .fontWeight(.semibold)
-                    
+
                     Text("Save Settings")
                         .font(.body)
                         .fontWeight(.semibold)
@@ -345,14 +350,14 @@ struct SettingsView_Previews: PreviewProvider {
             }
             .preferredColorScheme(.light)
             .previewDisplayName("Light Mode")
-            
+
             NavigationView {
                 SettingsView()
                     .environmentObject(SettingsViewModel())
             }
             .preferredColorScheme(.dark)
             .previewDisplayName("Dark Mode")
-            
+
             NavigationView {
                 SettingsView()
                     .environmentObject({

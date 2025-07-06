@@ -1,5 +1,5 @@
-import SwiftUI
 import CoreData
+import SwiftUI
 
 @main
 struct FinanceMateApp: App {
@@ -10,4 +10,4 @@ struct FinanceMateApp: App {
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
         }
     }
-} 
+}

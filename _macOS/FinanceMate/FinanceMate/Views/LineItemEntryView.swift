@@ -1,44 +1,44 @@
-import SwiftUI
 import Foundation
+import SwiftUI
 
 /*
-* Purpose: LineItemEntryView for adding and managing line items with glassmorphism styling and Australian locale formatting
-* Issues & Complexity Summary: SwiftUI form with real-time validation, accessibility support, LineItemViewModel integration, and comprehensive transaction balance validation
-* Key Complexity Drivers:
-  - Logic Scope (Est. LoC): ~521 (Actual implementation)
-  - Core Algorithm Complexity: High (Form validation, real-time feedback, balance validation, CRUD operations)
-  - Dependencies: 6 (SwiftUI, Foundation, LineItemViewModel, GlassmorphismModifier, Transaction entities, Core Data)
-  - State Management Complexity: High (@State properties with validation, @FocusState, async operations)
-  - Novelty/Uncertainty Factor: Medium (Complex form with real-time validation and accessibility)
-* AI Pre-Task Self-Assessment (Est. Solution Difficulty %): 80%
-* Problem Estimate (Inherent Problem Difficulty %): 85%
-* Initial Code Complexity Estimate %: 80%
-* Justification for Estimates: SwiftUI form with glassmorphism styling, real-time validation, accessibility compliance, and transaction integration
-* Final Code Complexity (Actual %): 92% (Higher due to comprehensive validation and accessibility features)
-* Overall Result Score (Success & Quality %): 95% (Excellent implementation with comprehensive features)
-* Key Variances/Learnings: Successfully implemented complex form validation with real-time feedback, comprehensive accessibility support, and seamless transaction integration
-* Last Updated: 2025-07-06 (TASK-2.2.2.A Complete)
-*/
+ * Purpose: LineItemEntryView for adding and managing line items with glassmorphism styling and Australian locale formatting
+ * Issues & Complexity Summary: SwiftUI form with real-time validation, accessibility support, LineItemViewModel integration, and comprehensive transaction balance validation
+ * Key Complexity Drivers:
+   - Logic Scope (Est. LoC): ~521 (Actual implementation)
+   - Core Algorithm Complexity: High (Form validation, real-time feedback, balance validation, CRUD operations)
+   - Dependencies: 6 (SwiftUI, Foundation, LineItemViewModel, GlassmorphismModifier, Transaction entities, Core Data)
+   - State Management Complexity: High (@State properties with validation, @FocusState, async operations)
+   - Novelty/Uncertainty Factor: Medium (Complex form with real-time validation and accessibility)
+ * AI Pre-Task Self-Assessment (Est. Solution Difficulty %): 80%
+ * Problem Estimate (Inherent Problem Difficulty %): 85%
+ * Initial Code Complexity Estimate %: 80%
+ * Justification for Estimates: SwiftUI form with glassmorphism styling, real-time validation, accessibility compliance, and transaction integration
+ * Final Code Complexity (Actual %): 92% (Higher due to comprehensive validation and accessibility features)
+ * Overall Result Score (Success & Quality %): 95% (Excellent implementation with comprehensive features)
+ * Key Variances/Learnings: Successfully implemented complex form validation with real-time feedback, comprehensive accessibility support, and seamless transaction integration
+ * Last Updated: 2025-07-06 (TASK-2.2.2.A Complete)
+ */
 
 /// SwiftUI view for entering and managing line items with comprehensive validation and accessibility support
 struct LineItemEntryView: View {
     @ObservedObject var viewModel: LineItemViewModel
     let transaction: Transaction
     @Binding var isPresented: Bool
-    
-    @State private var itemDescription: String = ""
-    @State private var amount: String = ""
-    @State private var showingValidationError: Bool = false
-    @State private var validationMessage: String = ""
-    @State private var isEditing: Bool = false
-    
+
+    @State private var itemDescription = ""
+    @State private var amount = ""
+    @State private var showingValidationError = false
+    @State private var validationMessage = ""
+    @State private var isEditing = false
+
     @FocusState private var focusedField: Field?
-    
+
     private enum Field: Hashable {
         case description
         case amount
     }
-    
+
     var body: some View {
         NavigationView {
             ZStack {
@@ -47,32 +47,32 @@ struct LineItemEntryView: View {
                     gradient: Gradient(colors: [
                         Color.green.opacity(0.05),
                         Color.blue.opacity(0.03),
-                        Color.clear
+                        Color.clear,
                     ]),
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 )
                 .ignoresSafeArea()
-                
+
                 ScrollView {
                     VStack(spacing: 24) {
                         // Header Section
                         headerSection
-                        
+
                         // Line Items List Section
                         if !viewModel.lineItems.isEmpty {
                             lineItemsListSection
                         }
-                        
+
                         // Add New Line Item Section
                         addLineItemSection
-                        
+
                         // Summary Section
                         summarySection
-                        
+
                         // Action Buttons
                         actionButtonsSection
-                        
+
                         Spacer(minLength: 50)
                     }
                     .padding(.horizontal, 24)
@@ -87,7 +87,7 @@ struct LineItemEntryView: View {
                     }
                     .accessibilityLabel("Close line items view")
                 }
-                
+
                 ToolbarItem(placement: .primaryAction) {
                     Button("Done") {
                         isPresented = false
@@ -99,15 +99,15 @@ struct LineItemEntryView: View {
                 await viewModel.fetchLineItems(for: transaction)
             }
             .alert("Validation Error", isPresented: $showingValidationError) {
-                Button("OK") { }
+                Button("OK") {}
             } message: {
                 Text(validationMessage)
             }
         }
     }
-    
+
     // MARK: - Header Section
-    
+
     private var headerSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
@@ -116,26 +116,26 @@ struct LineItemEntryView: View {
                         .font(.title2)
                         .fontWeight(.bold)
                         .foregroundColor(.primary)
-                    
+
                     Text("Split \(viewModel.formatCurrency(transaction.amount)) across multiple items")
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                 }
-                
+
                 Spacer()
-                
+
                 if viewModel.isLoading {
                     ProgressView()
                         .scaleEffect(0.8)
                         .accessibilityLabel("Loading line items")
                 }
             }
-            
+
             if let errorMessage = viewModel.errorMessage {
                 HStack {
                     Image(systemName: "exclamationmark.triangle.fill")
                         .foregroundColor(.orange)
-                    
+
                     Text(errorMessage)
                         .font(.caption)
                         .foregroundColor(.orange)
@@ -147,16 +147,16 @@ struct LineItemEntryView: View {
         .padding(.vertical, 16)
         .padding(.horizontal, 20)
     }
-    
+
     // MARK: - Line Items List Section
-    
+
     private var lineItemsListSection: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Current Line Items")
                 .font(.headline)
                 .fontWeight(.semibold)
                 .foregroundColor(.primary)
-            
+
             LazyVStack(spacing: 12) {
                 ForEach(viewModel.lineItems, id: \.id) { lineItem in
                     lineItemRow(lineItem)
@@ -167,7 +167,7 @@ struct LineItemEntryView: View {
         .padding(.vertical, 16)
         .padding(.horizontal, 20)
     }
-    
+
     private func lineItemRow(_ lineItem: LineItem) -> some View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
@@ -175,26 +175,26 @@ struct LineItemEntryView: View {
                     .font(.subheadline)
                     .fontWeight(.medium)
                     .foregroundColor(.primary)
-                
+
                 Text("Amount: \(viewModel.formatCurrency(lineItem.amount))")
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
-            
+
             Spacer()
-            
-            if lineItem.splitAllocations.count > 0 {
+
+            if !lineItem.splitAllocations.isEmpty {
                 HStack(spacing: 4) {
                     Image(systemName: "chart.pie.fill")
                         .font(.caption)
                         .foregroundColor(.blue)
-                    
+
                     Text("\(lineItem.splitAllocations.count) splits")
                         .font(.caption)
                         .foregroundColor(.blue)
                 }
             }
-            
+
             Button(action: {
                 Task {
                     await viewModel.deleteLineItem(lineItem)
@@ -212,23 +212,23 @@ struct LineItemEntryView: View {
         .background(Color.gray.opacity(0.1))
         .cornerRadius(8)
     }
-    
+
     // MARK: - Add Line Item Section
-    
+
     private var addLineItemSection: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Add Line Item")
                 .font(.headline)
                 .fontWeight(.semibold)
                 .foregroundColor(.primary)
-            
+
             VStack(spacing: 16) {
                 // Description Field
                 descriptionField
-                
+
                 // Amount Field
                 amountField
-                
+
                 // Add Button
                 addButton
             }
@@ -237,7 +237,7 @@ struct LineItemEntryView: View {
         .padding(.vertical, 16)
         .padding(.horizontal, 20)
     }
-    
+
     private var descriptionField: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
@@ -245,14 +245,14 @@ struct LineItemEntryView: View {
                     .font(.subheadline)
                     .fontWeight(.medium)
                     .foregroundColor(.primary)
-                
+
                 Spacer()
-                
+
                 Text("\(itemDescription.count)/200")
                     .font(.caption)
                     .foregroundColor(itemDescription.count > 200 ? .red : .secondary)
             }
-            
+
             TextField("Enter item description...", text: $itemDescription)
                 .textFieldStyle(.roundedBorder)
                 .focused($focusedField, equals: .description)
@@ -266,7 +266,7 @@ struct LineItemEntryView: View {
                 .accessibilityHint("Enter a description for this line item")
         }
     }
-    
+
     private var amountField: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
@@ -274,16 +274,16 @@ struct LineItemEntryView: View {
                     .font(.subheadline)
                     .fontWeight(.medium)
                     .foregroundColor(.primary)
-                
+
                 Spacer()
-                
+
                 if !amount.isEmpty, let amountValue = Double(amount) {
                     Text(viewModel.formatCurrency(amountValue))
                         .font(.caption)
                         .foregroundColor(.green)
                 }
             }
-            
+
             TextField("0.00", text: $amount)
                 .textFieldStyle(.roundedBorder)
                 .keyboardType(.decimalPad)
@@ -295,7 +295,7 @@ struct LineItemEntryView: View {
                 .accessibilityHint("Enter the amount for this line item")
         }
     }
-    
+
     private var addButton: some View {
         Button(action: {
             Task {
@@ -309,7 +309,7 @@ struct LineItemEntryView: View {
                 } else {
                     Image(systemName: "plus.circle.fill")
                 }
-                
+
                 Text("Add Line Item")
                     .fontWeight(.medium)
             }
@@ -323,40 +323,40 @@ struct LineItemEntryView: View {
         .accessibilityLabel("Add new line item")
         .accessibilityHint("Adds the line item with entered description and amount")
     }
-    
+
     // MARK: - Summary Section
-    
+
     private var summarySection: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Summary")
                 .font(.headline)
                 .fontWeight(.semibold)
                 .foregroundColor(.primary)
-            
+
             VStack(spacing: 8) {
                 summaryRow(
                     label: "Transaction Total",
                     value: viewModel.formatCurrency(transaction.amount),
                     isTotal: true
                 )
-                
+
                 summaryRow(
                     label: "Line Items Total",
                     value: viewModel.formatCurrency(viewModel.calculateTotalAmount()),
                     isHighlighted: !isBalanced
                 )
-                
+
                 summaryRow(
                     label: "Remaining",
                     value: viewModel.formatCurrency(transaction.amount - viewModel.calculateTotalAmount()),
                     isRemaining: true
                 )
-                
+
                 if !isBalanced {
                     HStack {
                         Image(systemName: "exclamationmark.triangle.fill")
                             .foregroundColor(.orange)
-                        
+
                         Text("Line items don't match transaction total")
                             .font(.caption)
                             .foregroundColor(.orange)
@@ -369,28 +369,34 @@ struct LineItemEntryView: View {
         .padding(.vertical, 16)
         .padding(.horizontal, 20)
     }
-    
-    private func summaryRow(label: String, value: String, isTotal: Bool = false, isHighlighted: Bool = false, isRemaining: Bool = false) -> some View {
+
+    private func summaryRow(
+        label: String,
+        value: String,
+        isTotal: Bool = false,
+        isHighlighted: Bool = false,
+        isRemaining: Bool = false
+    ) -> some View {
         HStack {
             Text(label)
                 .font(isTotal ? .subheadline.weight(.semibold) : .subheadline)
                 .foregroundColor(.primary)
-            
+
             Spacer()
-            
+
             Text(value)
                 .font(isTotal ? .subheadline.weight(.bold) : .subheadline)
                 .foregroundColor(
                     isHighlighted ? .orange :
-                    isRemaining ? (transaction.amount - viewModel.calculateTotalAmount() < 0 ? .red : .green) :
-                    .primary
+                        isRemaining ? (transaction.amount - viewModel.calculateTotalAmount() < 0 ? .red : .green) :
+                        .primary
                 )
         }
         .padding(.vertical, 4)
     }
-    
+
     // MARK: - Action Buttons Section
-    
+
     private var actionButtonsSection: some View {
         VStack(spacing: 12) {
             Button(action: {
@@ -410,7 +416,7 @@ struct LineItemEntryView: View {
             .disabled(viewModel.lineItems.isEmpty)
             .accessibilityLabel("Manage split allocations")
             .accessibilityHint("Opens split allocation management for line items")
-            
+
             Button(action: {
                 Task {
                     await clearAllLineItems()
@@ -435,38 +441,38 @@ struct LineItemEntryView: View {
         .padding(.vertical, 12)
         .padding(.horizontal, 16)
     }
-    
+
     // MARK: - Computed Properties
-    
+
     private var isFormValid: Bool {
         return !itemDescription.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
-               itemDescription.count <= 200 &&
-               !amount.isEmpty &&
-               Double(amount) != nil &&
-               (Double(amount) ?? 0) > 0
+            itemDescription.count <= 200 &&
+            !amount.isEmpty &&
+            Double(amount) != nil &&
+            (Double(amount) ?? 0) > 0
     }
-    
+
     private var isBalanced: Bool {
         let tolerance = 0.01
         return abs(transaction.amount - viewModel.calculateTotalAmount()) < tolerance
     }
-    
+
     // MARK: - Methods
-    
+
     private func validateInput() {
         if !itemDescription.isEmpty && itemDescription.count > 200 {
             validationMessage = "Description must be 200 characters or less"
             showingValidationError = true
             return
         }
-        
+
         if !amount.isEmpty {
             if Double(amount) == nil {
                 validationMessage = "Please enter a valid amount"
                 showingValidationError = true
                 return
             }
-            
+
             if let amountValue = Double(amount), amountValue <= 0 {
                 validationMessage = "Amount must be greater than zero"
                 showingValidationError = true
@@ -474,44 +480,45 @@ struct LineItemEntryView: View {
             }
         }
     }
-    
+
     private func addLineItem() async {
         guard isFormValid else { return }
-        
+
         guard let amountValue = Double(amount) else {
             validationMessage = "Please enter a valid amount"
             showingValidationError = true
             return
         }
-        
+
         // Check if adding this amount would exceed transaction total
         let newTotal = viewModel.calculateTotalAmount() + amountValue
         if newTotal > transaction.amount {
-            validationMessage = "Line items total cannot exceed transaction amount of \(viewModel.formatCurrency(transaction.amount))"
+            validationMessage =
+                "Line items total cannot exceed transaction amount of \(viewModel.formatCurrency(transaction.amount))"
             showingValidationError = true
             return
         }
-        
+
         // Set the view model's new line item data
         viewModel.newLineItem.itemDescription = itemDescription.trimmingCharacters(in: .whitespacesAndNewlines)
         viewModel.newLineItem.amount = amountValue
-        
+
         // Add the line item
         await viewModel.addLineItem(to: transaction)
-        
+
         // Check for errors
         if let errorMessage = viewModel.errorMessage {
             validationMessage = errorMessage
             showingValidationError = true
             return
         }
-        
+
         // Clear form on success
         itemDescription = ""
         amount = ""
         focusedField = .description
     }
-    
+
     private func clearAllLineItems() async {
         // Delete all line items
         for lineItem in viewModel.lineItems {
