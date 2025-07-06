@@ -29,16 +29,62 @@ public class Transaction: NSManagedObject, Identifiable {
     @NSManaged public var note: String?
 }
 
-// MARK: - Phase 2: Line Item Splitting Models (TDD placeholder)
+// MARK: - Phase 2: Line Item Splitting Models (Core Data implementation)
 
 /// Represents a single line item within a transaction (e.g., "Laptop", "Mouse").
-/// Will be linked to Transaction and have multiple SplitAllocations.
-class LineItem: NSManagedObject {
-    // Properties and relationships to be implemented
+/// Linked to Transaction and has multiple SplitAllocations.
+///
+/*
+* Purpose: LineItem model for itemized transaction details and split allocations.
+* Issues & Complexity Summary: Introduces one-to-many relationship with SplitAllocation and many-to-one with Transaction.
+* Key Complexity Drivers:
+  - Logic Scope (Est. LoC): ~40
+  - Core Algorithm Complexity: Low (model only)
+  - Dependencies: SplitAllocation, Transaction
+  - State Management Complexity: Med (relationship integrity)
+  - Novelty/Uncertainty Factor: Med (multi-level Core Data relationships)
+* AI Pre-Task Self-Assessment (Est. Solution Difficulty %): 60%
+* Problem Estimate (Inherent Problem Difficulty %): 65%
+* Initial Code Complexity Estimate %: 60%
+* Justification for Estimates: Standard Core Data relationships, but new for this codebase
+* Final Code Complexity (Actual %): [TBD]
+* Overall Result Score (Success & Quality %): [TBD]
+* Key Variances/Learnings: [TBD]
+* Last Updated: 2025-07-06
+*/
+@objc(LineItem)
+public class LineItem: NSManagedObject, Identifiable {
+    @NSManaged public var id: UUID
+    @NSManaged public var name: String
+    @NSManaged public var amount: Double
+    @NSManaged public var transaction: Transaction
+    @NSManaged public var splitAllocations: Set<SplitAllocation>
 }
 
 /// Represents a split allocation for a line item (e.g., 70% Business, 30% Personal).
-/// Will be linked to LineItem and reference a tax category and percentage.
-class SplitAllocation: NSManagedObject {
-    // Properties and relationships to be implemented
+/// Linked to LineItem and references a tax category and percentage.
+/*
+* Purpose: SplitAllocation model for assigning a percentage of a line item to a tax category.
+* Issues & Complexity Summary: Enforces sum-to-100% constraint at the business logic layer.
+* Key Complexity Drivers:
+  - Logic Scope (Est. LoC): ~30
+  - Core Algorithm Complexity: Low (model only)
+  - Dependencies: LineItem
+  - State Management Complexity: Low
+  - Novelty/Uncertainty Factor: Low
+* AI Pre-Task Self-Assessment (Est. Solution Difficulty %): 40%
+* Problem Estimate (Inherent Problem Difficulty %): 45%
+* Initial Code Complexity Estimate %: 40%
+* Justification for Estimates: Simple model, but critical for downstream validation
+* Final Code Complexity (Actual %): [TBD]
+* Overall Result Score (Success & Quality %): [TBD]
+* Key Variances/Learnings: [TBD]
+* Last Updated: 2025-07-06
+*/
+@objc(SplitAllocation)
+public class SplitAllocation: NSManagedObject, Identifiable {
+    @NSManaged public var id: UUID
+    @NSManaged public var percentage: Double
+    @NSManaged public var taxCategory: String
+    @NSManaged public var lineItem: LineItem
 } 
