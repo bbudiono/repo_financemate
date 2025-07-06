@@ -13,12 +13,6 @@
 		2701186814CDE270AC1A7424 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB16A903A72C89B031403998 /* ContentView.swift */; };
 		29D1858EBCCBABB5AB0043A8 /* Transaction+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BCAF7C498E04948893CAE3 /* Transaction+CoreDataProperties.swift */; };
 		2B37EF5E2BA52029B8E507EE /* DashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4644212388479F3F7BF7B7DE /* DashboardViewModel.swift */; };
-		FEDCBA0987654321FEDCBA01 /* LineItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCDEF0123456789ABCDEF01 /* LineItemViewModel.swift */; };
-		FEDCBA0987654321FEDCBA02 /* SplitAllocationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCDEF0123456789ABCDEF02 /* SplitAllocationViewModel.swift */; };
-		FEDCBA0987654321FEDCBA03 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCDEF0123456789ABCDEF03 /* SettingsViewModel.swift */; };
-		FEDCBA0987654321FEDCBA04 /* LineItemViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCDEF0123456789ABCDEF04 /* LineItemViewModelTests.swift */; };
-		FEDCBA0987654321FEDCBA05 /* SplitAllocationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCDEF0123456789ABCDEF05 /* SplitAllocationViewModelTests.swift */; };
-
 		2F964B2A58F0EEF8A2F41798 /* FinanceMateApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 410A7E6292E6838B8B31ACC9 /* FinanceMateApp.swift */; };
 		367DABD88FB44283D6A54544 /* TransactionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E6B07F1FBE1C5755A4FE3F /* TransactionsViewModel.swift */; };
 		25E1A4A0009D4E86A514BDE0 /* TransactionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12A4667FC12C467998B0A1B8 /* TransactionsView.swift */; };
@@ -30,9 +24,6 @@
 		7FC00D441A276278AB875BD6 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7DDB845997FA0B2558FFC85 /* ContentView.swift */; };
 		9799CFE5F4EFE5B0EA4F3FB4 /* GlassmorphismModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 982B53D81E11C5895738D2D8 /* GlassmorphismModifier.swift */; };
 		A66AE32C45175DC5CD75106C /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88211B32F54FEC04C1A3EE94 /* DashboardView.swift */; };
-		VIEWBUILD987654321BUILD01 /* LineItemEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = VIEWREF0123456789VIEWREF01 /* LineItemEntryView.swift */; };
-		VIEWBUILD987654321BUILD02 /* SplitAllocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = VIEWREF0123456789VIEWREF02 /* SplitAllocationView.swift */; };
-
 		AFDEE79B69BB56B3AF284F3D /* DashboardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34A9211E42A352FF0EE7BB3 /* DashboardViewModelTests.swift */; };
 		B4368C63FA45535A2DC3CD86 /* FinanceMateApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 662A4A927241648D838FFF8D /* FinanceMateApp.swift */; };
 		D8522A3F30A034F05E3C65CD /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 335D8B1ACC194508B2AD00FB /* Transaction.swift */; };
@@ -43,11 +34,7 @@
 		F09E9EB567C3E5224B4A75A9 /* DashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEBC2B26C6C3E10D334445AC /* DashboardViewModel.swift */; };
 		F650BAE9C9FDD9E4C659D39B /* TransactionsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16E5FC92E8729141B4E8A759 /* TransactionsViewModelTests.swift */; };
 		FE33C3C2F62DDCABD4669850 /* DashboardViewUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7E40ABD77656855B2EBDA57 /* DashboardViewUITests.swift */; };
-		CD08C67EA986459AA50F9A53 /* LineItem+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D640B0CF03F149259D4B7168 /* LineItem+CoreDataClass.swift */; };
-		977EBABEEE0B427C8B5E6C23 /* LineItem+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20AEABA51A04450A47D811C /* LineItem+CoreDataProperties.swift */; };
-		2FE829CEF1AD43FE8B3917EF /* SplitAllocation+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9142439AEB0144D6AD57275A /* SplitAllocation+CoreDataClass.swift */; };
-		CCE5731C54B747DF8F46989B /* SplitAllocation+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7D61EA8420A47BE9AFBA841 /* SplitAllocation+CoreDataProperties.swift */; };
-	/* End PBXBuildFile section */
+/* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
 		0E63A1EB361AFBF04C96881B /* PBXContainerItemProxy */ = {
@@ -88,12 +75,6 @@
 		3C16290D7272817AAF689EF1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		410A7E6292E6838B8B31ACC9 /* FinanceMateApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinanceMateApp.swift; sourceTree = "<group>"; };
 		4644212388479F3F7BF7B7DE /* DashboardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewModel.swift; sourceTree = "<group>"; };
-		ABCDEF0123456789ABCDEF01 /* LineItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineItemViewModel.swift; sourceTree = "<group>"; };
-		ABCDEF0123456789ABCDEF02 /* SplitAllocationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitAllocationViewModel.swift; sourceTree = "<group>"; };
-		ABCDEF0123456789ABCDEF03 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
-		ABCDEF0123456789ABCDEF04 /* LineItemViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineItemViewModelTests.swift; sourceTree = "<group>"; };
-		ABCDEF0123456789ABCDEF05 /* SplitAllocationViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitAllocationViewModelTests.swift; sourceTree = "<group>"; };
-
 		58D5D5FC33EC4AF8BA804084 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		5B3687C5B96D2D8D3FD5D021 /* Transaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transaction.swift; sourceTree = "<group>"; };
 		662A4A927241648D838FFF8D /* FinanceMateApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinanceMateApp.swift; sourceTree = "<group>"; };
@@ -101,9 +82,6 @@
 		6AD7F62BE980B30C777D9BCC /* FinanceMate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FinanceMate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8602766C1FC946F731EDB095 /* Transaction+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Transaction+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		88211B32F54FEC04C1A3EE94 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
-		VIEWREF0123456789VIEWREF01 /* LineItemEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineItemEntryView.swift; sourceTree = "<group>"; };
-		VIEWREF0123456789VIEWREF02 /* SplitAllocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitAllocationView.swift; sourceTree = "<group>"; };
-
 		982B53D81E11C5895738D2D8 /* GlassmorphismModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassmorphismModifier.swift; sourceTree = "<group>"; };
 		9EDE60A858ADA7C1B1091303 /* FinanceMateUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinanceMateUITests.swift; sourceTree = "<group>"; };
 		A27BF3AB4D506A65A051FBED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -126,19 +104,13 @@
 		F3E6B07F1FBE1C5755A4FE3F /* TransactionsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsViewModel.swift; sourceTree = "<group>"; };
 		F61A461D166AD2E60C0C5BB0 /* FinanceMate-Sandbox.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "FinanceMate-Sandbox.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FE009BDDF914C8A1D4B4DF4F /* FinanceMate-SandboxTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "FinanceMate-SandboxTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		D640B0CF03F149259D4B7168 /* LineItem+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LineItem+CoreDataClass.swift"; sourceTree = "<group>"; };
-		E20AEABA51A04450A47D811C /* LineItem+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LineItem+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		9142439AEB0144D6AD57275A /* SplitAllocation+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SplitAllocation+CoreDataClass.swift"; sourceTree = "<group>"; };
-		B7D61EA8420A47BE9AFBA841 /* SplitAllocation+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SplitAllocation+CoreDataProperties.swift"; sourceTree = "<group>"; };
-	/* End PBXFileReference section */
+/* End PBXFileReference section */
 
 /* Begin PBXGroup section */
 		2973720C2939DD407F7C44AB /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
 				B34A9211E42A352FF0EE7BB3 /* DashboardViewModelTests.swift */,
-				ABCDEF0123456789ABCDEF04 /* LineItemViewModelTests.swift */,
-				ABCDEF0123456789ABCDEF05 /* SplitAllocationViewModelTests.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -199,11 +171,7 @@
 			children = (
 				335D8B1ACC194508B2AD00FB /* Transaction.swift */,
 				20BCAF7C498E04948893CAE3 /* Transaction+CoreDataProperties.swift */,
-			
-				D640B0CF03F149259D4B7168 /* LineItem+CoreDataClass.swift */,
-				E20AEABA51A04450A47D811C /* LineItem+CoreDataProperties.swift */,
-				9142439AEB0144D6AD57275A /* SplitAllocation+CoreDataClass.swift */,
-				B7D61EA8420A47BE9AFBA841 /* SplitAllocation+CoreDataProperties.swift */,);
+			);
 			path = Models;
 			sourceTree = "<group>";
 		};
@@ -211,9 +179,6 @@
 			isa = PBXGroup;
 			children = (
 				4644212388479F3F7BF7B7DE /* DashboardViewModel.swift */,
-				ABCDEF0123456789ABCDEF01 /* LineItemViewModel.swift */,
-				ABCDEF0123456789ABCDEF02 /* SplitAllocationViewModel.swift */,
-				ABCDEF0123456789ABCDEF03 /* SettingsViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -222,8 +187,6 @@
 			isa = PBXGroup;
 			children = (
 				88211B32F54FEC04C1A3EE94 /* DashboardView.swift */,
-				VIEWREF0123456789VIEWREF01 /* LineItemEntryView.swift */,
-				VIEWREF0123456789VIEWREF02 /* SplitAllocationView.swift */,
 				994F717BD0FE4003BE6D8E12 /* AddEditTransactionView.swift */,
 				12A4667FC12C467998B0A1B8 /* TransactionsView.swift */,
 				D930C6316FF88FC1E6BCF1AC /* GlassmorphismModifier.swift */,
@@ -497,8 +460,6 @@
 			files = (
 				132B821DC9AFE622A644C547 /* CoreDataTests.swift in Sources */,
 				AFDEE79B69BB56B3AF284F3D /* DashboardViewModelTests.swift in Sources */,
-				FEDCBA0987654321FEDCBA04 /* LineItemViewModelTests.swift in Sources */,
-				FEDCBA0987654321FEDCBA05 /* SplitAllocationViewModelTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -526,14 +487,9 @@
 			files = (
 				7FC00D441A276278AB875BD6 /* ContentView.swift in Sources */,
 				A66AE32C45175DC5CD75106C /* DashboardView.swift in Sources */,
-				VIEWBUILD987654321BUILD01 /* LineItemEntryView.swift in Sources */,
-				VIEWBUILD987654321BUILD02 /* SplitAllocationView.swift in Sources */,
 				25E1A4A0009D4E86A514BDE0 /* TransactionsView.swift in Sources */,
 				4F2B70E89AE549E3AEFA2F86 /* AddEditTransactionView.swift in Sources */,
 				2B37EF5E2BA52029B8E507EE /* DashboardViewModel.swift in Sources */,
-				FEDCBA0987654321FEDCBA01 /* LineItemViewModel.swift in Sources */,
-				FEDCBA0987654321FEDCBA02 /* SplitAllocationViewModel.swift in Sources */,
-				FEDCBA0987654321FEDCBA03 /* SettingsViewModel.swift in Sources */,
 				367DABD88FB44283D6A54544 /* TransactionsViewModel.swift in Sources */,
 				2F964B2A58F0EEF8A2F41798 /* FinanceMateApp.swift in Sources */,
 				DDEBF69E356484B3589F299E /* GlassmorphismModifier.swift in Sources */,

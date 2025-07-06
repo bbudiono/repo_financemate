@@ -27,6 +27,7 @@ public class Transaction: NSManagedObject, Identifiable {
     @NSManaged public var amount: Double
     @NSManaged public var category: String
     @NSManaged public var note: String?
+    @NSManaged public var createdAt: Date
     @NSManaged public var lineItems: Set<LineItem>
 }
 

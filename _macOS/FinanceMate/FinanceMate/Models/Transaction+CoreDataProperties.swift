@@ -15,6 +15,7 @@ extension Transaction {
         let transaction = Transaction(context: context)
         transaction.id = UUID()
         transaction.date = Date()
+        transaction.createdAt = Date()
         transaction.amount = amount
         transaction.category = category
         transaction.note = note

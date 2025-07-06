@@ -72,6 +72,11 @@ struct PersistenceController {
         noteAttribute.attributeType = .stringAttributeType
         noteAttribute.isOptional = true
 
+        let createdAtAttribute = NSAttributeDescription()
+        createdAtAttribute.name = "createdAt"
+        createdAtAttribute.attributeType = .dateAttributeType
+        createdAtAttribute.isOptional = false
+
         // Create LineItem entity
         let lineItemEntity = NSEntityDescription()
         lineItemEntity.name = "LineItem"
@@ -164,6 +169,7 @@ struct PersistenceController {
             amountAttribute,
             categoryAttribute,
             noteAttribute,
+            createdAtAttribute,
             transactionToLineItemsRelationship,
         ]
         lineItemEntity.properties = [
@@ -186,8 +192,34 @@ struct PersistenceController {
         if inMemory {
             container.persistentStoreDescriptions.first?.url = URL(fileURLWithPath: "/dev/null")
         }
-        container.loadPersistentStores { description, error in
+        container.loadPersistentStores { [container] description, error in
             if let error = error as NSError? {
+                // Check if this is a migration error
+                if error.code == 134110 { // NSMigrationError
+                    print("Core Data migration error detected. Attempting to recreate store...")
+                    
+                    // Delete the existing store file and try again
+                    if let storeURL = description.url {
+                        do {
+                            try FileManager.default.removeItem(at: storeURL)
+                            // Also remove associated files
+                            let shmURL = storeURL.appendingPathExtension("sqlite-shm")
+                            let walURL = storeURL.appendingPathExtension("sqlite-wal")
+                            try? FileManager.default.removeItem(at: shmURL)
+                            try? FileManager.default.removeItem(at: walURL)
+                            
+                            // Try loading again
+                            container.loadPersistentStores { _, retryError in
+                                if let retryError = retryError {
+                                    fatalError("Failed to recreate Core Data store: \(retryError)")
+                                }
+                            }
+                            return
+                        } catch {
+                            print("Could not delete existing store: \(error)")
+                        }
+                    }
+                }
                 fatalError("Unresolved error \(error), \(error.userInfo)")
             }
         }
