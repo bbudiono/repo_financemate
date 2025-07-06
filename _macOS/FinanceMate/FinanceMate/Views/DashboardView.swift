@@ -49,9 +49,7 @@ struct DashboardView: View {
                 quickStatsSection
 
                 // Recent Transactions
-                if !viewModel.recentTransactions.isEmpty {
-                    recentTransactionsSection
-                }
+                recentTransactionsSection
 
                 // Action Buttons
                 actionButtonsSection
@@ -220,6 +218,7 @@ struct DashboardView: View {
                 Text("Recent Transactions")
                     .font(.headline)
                     .foregroundColor(.primary)
+                    .accessibilityIdentifier("Recent Transactions")
 
                 Spacer()
 
@@ -228,13 +227,32 @@ struct DashboardView: View {
                 }
                 .font(.subheadline)
                 .foregroundColor(.blue)
+                .accessibilityIdentifier("ViewAllTransactions")
             }
             .padding(.horizontal, 4)
 
-            // Transactions List
+            // Transactions List or Empty State
             VStack(spacing: 8) {
-                ForEach(viewModel.recentTransactions.prefix(5), id: \.id) { transaction in
-                    recentTransactionRow(transaction)
+                if viewModel.recentTransactions.isEmpty {
+                    // Empty State
+                    VStack(spacing: 8) {
+                        Image(systemName: "list.bullet.rectangle")
+                            .font(.title2)
+                            .foregroundColor(.secondary)
+                        Text("No transactions yet")
+                            .font(.body)
+                            .foregroundColor(.secondary)
+                        Text("Your recent transactions will appear here")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .multilineTextAlignment(.center)
+                    }
+                    .padding()
+                    .accessibilityIdentifier("EmptyTransactionsMessage")
+                } else {
+                    ForEach(viewModel.recentTransactions.prefix(5), id: \.id) { transaction in
+                        recentTransactionRow(transaction)
+                    }
                 }
             }
             .padding(16)
