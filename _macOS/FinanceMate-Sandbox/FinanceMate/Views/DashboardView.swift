@@ -258,14 +258,14 @@ struct DashboardView: View {
     private func recentTransactionRow(_ transaction: Transaction) -> some View {
         HStack {
             // Transaction Category Icon
-            Image(systemName: categoryIcon(for: transaction.category ?? "Other"))
+            Image(systemName: categoryIcon(for: transaction.category))
                 .font(.title3)
                 .foregroundColor(.blue)
                 .frame(width: 24, height: 24)
             
             // Transaction Details
             VStack(alignment: .leading, spacing: 2) {
-                Text(transaction.category ?? "Uncategorized")
+                Text(transaction.category)
                     .font(.subheadline)
                     .fontWeight(.medium)
                 

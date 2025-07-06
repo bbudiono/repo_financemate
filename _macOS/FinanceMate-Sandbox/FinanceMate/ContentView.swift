@@ -57,9 +57,7 @@ struct ContentView: View {
             }
             .onAppear {
                 dashboardViewModel.setPersistenceContext(viewContext)
-                Task {
-                    await dashboardViewModel.fetchDashboardData()
-                }
+                dashboardViewModel.fetchDashboardData()
             }
         }
         .navigationTitle("FinanceMate Sandbox")
