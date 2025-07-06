@@ -10,7 +10,7 @@
 ## 🎯 EXECUTIVE SUMMARY
 
 ### Project Vision
-To be the central command center for personal and family wealth, empowering users to aggregate all their financial data automatically, gain deep insights from line-item level details, **proportionally allocate expenses across multiple tax categories**, manage complex financial entities, and make informed investment and life decisions. The platform will be collaborative, allowing for secure, permission-based access for family members and financial professionals.
+To be the central command center for personal and family wealth, empowering users to aggregate all their financial data automatically, gain deep insights from line-item level details, **proportionally allocate expenses across multiple tax categories**, manage complex financial entities, and make informed investment and life decisions. The platform will be collaborative, allowing for secure, permission-based access for family members and financial professionals. Multi-currency support with tax rules and financial rules specific to region.
 
 ### Current Status: ✅ PHASE 1 COMPLETE
 FinanceMate has achieved **Production Release Candidate 1.0.0** status for Phase 1 (Core Financial Management) with:
@@ -269,7 +269,7 @@ This section captures the core feature set with tracking for implementation stat
 
 - **Settings & Preferences**
   - Theme customization (Light/Dark/System)
-  - Multi-currency support
+  - Multi-currency support (ensure/validate currency is being applied correctly)
   - Notification preferences
   - Data export capabilities
 

@@ -294,4 +294,85 @@ Based on the BLUEPRINT.md completion, the following enhancements could be consid
 
 ---
 
+*Last updated: 2025-07-06 - Production Release Candidate 1.0.0 Status*
+
+---
+
+## PHASE 2: Secure Data Aggregation, Multi-Entity & Line Item Splitting Foundations (IN PROGRESS)
+
+### TASK-2.1: Design and Implement Data Model for Line Item Splitting
+**Priority:** Critical
+**Objective:** Enable splitting of transaction line items by percentage across multiple tax categories.
+**Status:** Not Started
+**Subtasks:**
+- [ ] Define Core Data entities for line items and split allocations
+- [ ] Migrate existing transaction data to support line items
+- [ ] Unit tests for data model integrity and migration
+
+### TASK-2.2: Build UI for Line Item Entry and Split Allocation
+**Priority:** High
+**Objective:** Provide user interface for entering line items and allocating splits.
+**Status:** Not Started
+**Subtasks:**
+- [ ] Create modal/inline editor for line items
+- [ ] Implement percentage-based split controls with validation
+- [ ] Ensure accessibility and glassmorphism compliance
+- [ ] UI snapshot and accessibility tests
+
+### TASK-2.3: Implement Business Logic for Split Validation and Tax Category Assignment
+**Priority:** High
+**Objective:** Real-time validation and assignment of splits to tax categories.
+**Status:** Not Started
+**Subtasks:**
+- [ ] Ensure total split sums to 100%
+- [ ] Allow user-defined tax categories
+- [ ] Unit and integration tests for split logic
+
+### TASK-2.4: Integrate Basiq/Plaid API for Secure Bank Sync
+**Priority:** High
+**Objective:** Securely connect to Australian bank/card accounts and sync transactions.
+**Status:** Not Started
+**Subtasks:**
+- [ ] Implement OAuth flow for account connection
+- [ ] Store/refresh tokens securely (Keychain)
+- [ ] Unit tests for API integration and error handling
+
+### TASK-2.5: Implement Background Sync and Transaction Import
+**Priority:** Medium
+**Objective:** Periodic sync and mapping of imported transactions.
+**Status:** Not Started
+**Subtasks:**
+- [ ] Schedule periodic sync jobs
+- [ ] Parse/map imported transactions to local model
+- [ ] Tests for sync reliability and data mapping
+
+### TASK-2.6: Extend Data Model for Multi-Entity Management
+**Priority:** Medium
+**Objective:** Support multiple financial entities and entity assignment.
+**Status:** Not Started
+**Subtasks:**
+- [ ] Add entity assignment to transactions/line items
+- [ ] UI for entity management (add/edit/delete)
+- [ ] Tests for entity assignment/filtering
+
+### TASK-2.7: Implement Role-Based Access Control (RBAC)
+**Priority:** Medium
+**Objective:** Owner, Contributor, Viewer roles with permission enforcement.
+**Status:** Not Started
+**Subtasks:**
+- [ ] Define roles/permissions in backend
+- [ ] UI for inviting users/assigning roles
+- [ ] Tests for permission enforcement
+
+### TASK-2.8: Build Analytics Engine for Split-Based Reporting
+**Priority:** Medium
+**Objective:** Aggregate/report data by tax category, entity, and time period.
+**Status:** Not Started
+**Subtasks:**
+- [ ] Aggregate data by tax category/entity/time
+- [ ] Generate summary/exportable reports
+- [ ] Unit/integration tests for analytics accuracy
+
+---
+
 *Last updated: 2025-07-06 - Production Release Candidate 1.0.0 Status* 

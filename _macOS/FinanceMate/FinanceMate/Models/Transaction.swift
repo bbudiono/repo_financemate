@@ -27,6 +27,7 @@ public class Transaction: NSManagedObject, Identifiable {
     @NSManaged public var amount: Double
     @NSManaged public var category: String
     @NSManaged public var note: String?
+    @NSManaged public var lineItems: Set<LineItem>
 }
 
 // MARK: - Phase 2: Line Item Splitting Models (Core Data implementation)
@@ -55,7 +56,7 @@ public class Transaction: NSManagedObject, Identifiable {
 @objc(LineItem)
 public class LineItem: NSManagedObject, Identifiable {
     @NSManaged public var id: UUID
-    @NSManaged public var name: String
+    @NSManaged public var itemDescription: String
     @NSManaged public var amount: Double
     @NSManaged public var transaction: Transaction
     @NSManaged public var splitAllocations: Set<SplitAllocation>
@@ -87,4 +88,43 @@ public class SplitAllocation: NSManagedObject, Identifiable {
     @NSManaged public var percentage: Double
     @NSManaged public var taxCategory: String
     @NSManaged public var lineItem: LineItem
+}
+
+// MARK: - Convenience Methods
+
+extension LineItem {
+    @nonobjc public class func fetchRequest() -> NSFetchRequest<LineItem> {
+        return NSFetchRequest<LineItem>(entityName: "LineItem")
+    }
+    
+    static func create(in context: NSManagedObjectContext, 
+                      itemDescription: String, 
+                      amount: Double, 
+                      transaction: Transaction) -> LineItem {
+        let lineItem = LineItem(context: context)
+        lineItem.id = UUID()
+        lineItem.itemDescription = itemDescription
+        lineItem.amount = amount
+        lineItem.transaction = transaction
+        lineItem.splitAllocations = Set<SplitAllocation>()
+        return lineItem
+    }
+}
+
+extension SplitAllocation {
+    @nonobjc public class func fetchRequest() -> NSFetchRequest<SplitAllocation> {
+        return NSFetchRequest<SplitAllocation>(entityName: "SplitAllocation")
+    }
+    
+    static func create(in context: NSManagedObjectContext,
+                      percentage: Double,
+                      taxCategory: String,
+                      lineItem: LineItem) -> SplitAllocation {
+        let splitAllocation = SplitAllocation(context: context)
+        splitAllocation.id = UUID()
+        splitAllocation.percentage = percentage
+        splitAllocation.taxCategory = taxCategory
+        splitAllocation.lineItem = lineItem
+        return splitAllocation
+    }
 } 

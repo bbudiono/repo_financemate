@@ -72,8 +72,97 @@ struct PersistenceController {
         noteAttribute.attributeType = .stringAttributeType
         noteAttribute.isOptional = true
         
-        transactionEntity.properties = [idAttribute, dateAttribute, amountAttribute, categoryAttribute, noteAttribute]
-        model.entities = [transactionEntity]
+        // Create LineItem entity
+        let lineItemEntity = NSEntityDescription()
+        lineItemEntity.name = "LineItem"
+        lineItemEntity.managedObjectClassName = "LineItem"
+        
+        // LineItem attributes
+        let lineItemIdAttribute = NSAttributeDescription()
+        lineItemIdAttribute.name = "id"
+        lineItemIdAttribute.attributeType = .UUIDAttributeType
+        lineItemIdAttribute.isOptional = false
+        
+        let itemDescriptionAttribute = NSAttributeDescription()
+        itemDescriptionAttribute.name = "itemDescription"
+        itemDescriptionAttribute.attributeType = .stringAttributeType
+        itemDescriptionAttribute.isOptional = false
+        
+        let lineItemAmountAttribute = NSAttributeDescription()
+        lineItemAmountAttribute.name = "amount"
+        lineItemAmountAttribute.attributeType = .doubleAttributeType
+        lineItemAmountAttribute.isOptional = false
+        
+        lineItemEntity.properties = [lineItemIdAttribute, itemDescriptionAttribute, lineItemAmountAttribute]
+        
+        // Create SplitAllocation entity
+        let splitAllocationEntity = NSEntityDescription()
+        splitAllocationEntity.name = "SplitAllocation"
+        splitAllocationEntity.managedObjectClassName = "SplitAllocation"
+        
+        // SplitAllocation attributes
+        let splitIdAttribute = NSAttributeDescription()
+        splitIdAttribute.name = "id"
+        splitIdAttribute.attributeType = .UUIDAttributeType
+        splitIdAttribute.isOptional = false
+        
+        let percentageAttribute = NSAttributeDescription()
+        percentageAttribute.name = "percentage"
+        percentageAttribute.attributeType = .doubleAttributeType
+        percentageAttribute.isOptional = false
+        
+        let taxCategoryAttribute = NSAttributeDescription()
+        taxCategoryAttribute.name = "taxCategory"
+        taxCategoryAttribute.attributeType = .stringAttributeType
+        taxCategoryAttribute.isOptional = false
+        
+        splitAllocationEntity.properties = [splitIdAttribute, percentageAttribute, taxCategoryAttribute]
+        
+        // Create relationships
+        // Transaction -> LineItems (one-to-many)
+        let transactionToLineItemsRelationship = NSRelationshipDescription()
+        transactionToLineItemsRelationship.name = "lineItems"
+        transactionToLineItemsRelationship.destinationEntity = lineItemEntity
+        transactionToLineItemsRelationship.minCount = 0
+        transactionToLineItemsRelationship.maxCount = 0 // 0 means unlimited for to-many
+        transactionToLineItemsRelationship.deleteRule = .cascadeDeleteRule
+        
+        // LineItem -> Transaction (many-to-one)
+        let lineItemToTransactionRelationship = NSRelationshipDescription()
+        lineItemToTransactionRelationship.name = "transaction"
+        lineItemToTransactionRelationship.destinationEntity = transactionEntity
+        lineItemToTransactionRelationship.minCount = 1
+        lineItemToTransactionRelationship.maxCount = 1
+        lineItemToTransactionRelationship.deleteRule = .nullifyDeleteRule
+        
+        // LineItem -> SplitAllocations (one-to-many)
+        let lineItemToSplitAllocationsRelationship = NSRelationshipDescription()
+        lineItemToSplitAllocationsRelationship.name = "splitAllocations"
+        lineItemToSplitAllocationsRelationship.destinationEntity = splitAllocationEntity
+        lineItemToSplitAllocationsRelationship.minCount = 0
+        lineItemToSplitAllocationsRelationship.maxCount = 0 // 0 means unlimited for to-many
+        lineItemToSplitAllocationsRelationship.deleteRule = .cascadeDeleteRule
+        
+        // SplitAllocation -> LineItem (many-to-one)
+        let splitAllocationToLineItemRelationship = NSRelationshipDescription()
+        splitAllocationToLineItemRelationship.name = "lineItem"
+        splitAllocationToLineItemRelationship.destinationEntity = lineItemEntity
+        splitAllocationToLineItemRelationship.minCount = 1
+        splitAllocationToLineItemRelationship.maxCount = 1
+        splitAllocationToLineItemRelationship.deleteRule = .nullifyDeleteRule
+        
+        // Set up inverse relationships
+        transactionToLineItemsRelationship.inverseRelationship = lineItemToTransactionRelationship
+        lineItemToTransactionRelationship.inverseRelationship = transactionToLineItemsRelationship
+        lineItemToSplitAllocationsRelationship.inverseRelationship = splitAllocationToLineItemRelationship
+        splitAllocationToLineItemRelationship.inverseRelationship = lineItemToSplitAllocationsRelationship
+        
+        // Add relationships to entities
+        transactionEntity.properties = [idAttribute, dateAttribute, amountAttribute, categoryAttribute, noteAttribute, transactionToLineItemsRelationship]
+        lineItemEntity.properties = [lineItemIdAttribute, itemDescriptionAttribute, lineItemAmountAttribute, lineItemToTransactionRelationship, lineItemToSplitAllocationsRelationship]
+        splitAllocationEntity.properties = [splitIdAttribute, percentageAttribute, taxCategoryAttribute, splitAllocationToLineItemRelationship]
+        
+        model.entities = [transactionEntity, lineItemEntity, splitAllocationEntity]
         
         container = NSPersistentContainer(name: "FinanceMateModel", managedObjectModel: model)
         if inMemory {

@@ -6,5 +6,19 @@
         <attribute name="amount" optional="NO" attributeType="Double"/>
         <attribute name="category" optional="NO" attributeType="String"/>
         <attribute name="note" optional="YES" attributeType="String"/>
+        <relationship name="lineItems" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="LineItem" inverseName="transaction"/>
+    </entity>
+    <entity name="LineItem" representedClassName="LineItem" syncable="YES">
+        <attribute name="id" optional="NO" attributeType="UUIDAttributeType"/>
+        <attribute name="itemDescription" optional="NO" attributeType="String"/>
+        <attribute name="amount" optional="NO" attributeType="Double"/>
+        <relationship name="transaction" optional="NO" maxCount="1" deletionRule="Nullify" destinationEntity="Transaction" inverseName="lineItems"/>
+        <relationship name="splitAllocations" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="SplitAllocation" inverseName="lineItem"/>
+    </entity>
+    <entity name="SplitAllocation" representedClassName="SplitAllocation" syncable="YES">
+        <attribute name="id" optional="NO" attributeType="UUIDAttributeType"/>
+        <attribute name="percentage" optional="NO" attributeType="Double"/>
+        <attribute name="taxCategory" optional="NO" attributeType="String"/>
+        <relationship name="lineItem" optional="NO" maxCount="1" deletionRule="Nullify" destinationEntity="LineItem" inverseName="splitAllocations"/>
     </entity>
 </model> 
