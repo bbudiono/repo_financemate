@@ -1,16 +1,16 @@
 # FinanceMate - Wealth Management Platform Specification
-**Version:** 3.0.0
+**Version:** 4.0.0
 **Last Updated:** 2025-07-06
-**Status:** Phase 1 Complete (Core Financial Management) - Evolving to Wealth Management Platform
+**Status:** Inception & Design (Refined) - Line Item Splitting Core Feature
 **Current Phase:** Core Financial Management ✅
-**Next Phase:** Secure Data Aggregation & Multi-Entity Foundations 🎯
+**Next Phase:** Secure Data Aggregation, Multi-Entity & Line Item Splitting Foundations 🎯
 
 ---
 
 ## 🎯 EXECUTIVE SUMMARY
 
 ### Project Vision
-To be the central command center for personal and family wealth, empowering users to aggregate all their financial data automatically, gain deep insights from line-item level details, manage complex tax entities, and make informed investment and life decisions. The platform will evolve from a robust personal finance manager into a comprehensive wealth management solution with collaborative features for family members and financial professionals.
+To be the central command center for personal and family wealth, empowering users to aggregate all their financial data automatically, gain deep insights from line-item level details, **proportionally allocate expenses across multiple tax categories**, manage complex financial entities, and make informed investment and life decisions. The platform will be collaborative, allowing for secure, permission-based access for family members and financial professionals.
 
 ### Current Status: ✅ PHASE 1 COMPLETE
 FinanceMate has achieved **Production Release Candidate 1.0.0** status for Phase 1 (Core Financial Management) with:
@@ -20,18 +20,18 @@ FinanceMate has achieved **Production Release Candidate 1.0.0** status for Phase
 - ✅ **Production Infrastructure**: Automated build pipeline
 - ✅ **Comprehensive Testing**: 75+ test cases
 
-### Core User Journeys (Future Vision)
+### Core User Journeys (Enhanced Vision)
 1. **Aggregation:** User securely links all bank accounts, credit cards, investment portfolios (Shares, Crypto), and loans
-2. **Categorization & Review:** Platform automatically ingests transactions with intelligent categorization and entity splitting
-3. **Analysis & Planning:** Comprehensive dashboards for spending, net wealth, and financial goal progress
-4. **Reporting & Export:** Generate professional reports for tax purposes, wealth statements, and financial planning
+2. **Categorization & Splitting:** The platform automatically ingests transactions. The user (or a collaborator) reviews and categorizes expenses. For any transaction, they can drill down to its line items and **split the cost of each item by percentage across multiple tax categories (e.g., 70% Business, 30% Personal)**
+3. **Analysis & Planning:** The user reviews dashboards covering spending, net wealth, and progress towards financial goals, with accurate tax category allocations
+4. **Reporting & Export:** The user (or their accountant) generates highly accurate reports for tax purposes, net wealth statements, or expense summaries, built from the precise allocated splits
 
 ### Development Phases
 - ✅ **Phase 1**: Core Financial Management (COMPLETE)
-- 🎯 **Phase 2**: Secure Data Aggregation, Transaction Management & Multi-Entity Foundations
-- 📊 **Phase 3**: Advanced OCR, Investment Tracking & Collaborative Workspaces
-- 🚀 **Phase 4**: Wealth Dashboards, Real Estate Analysis & Financial Goal Setting
-- ✨ **Phase 5**: Predictive Analytics, Scenario Modeling & Automated Financial Advice
+- 🎯 **Phase 2**: Secure Data Aggregation, Transaction Management, Multi-Entity & **Line Item Splitting Foundations**
+- 📊 **Phase 3**: Advanced OCR, Investment Tracking (Shares/Crypto) & Collaborative Workspaces
+- 🚀 **Phase 4**: Wealth Dashboards, Real Estate Analysis (CoreLogic Integration) & Financial Goal Setting
+- ✨ **Phase 5**: Predictive Analytics, Scenario Modeling & Automated Financial Advice Engine
 
 ---
 
@@ -60,56 +60,62 @@ This section captures the core feature set with tracking for implementation stat
   - **Status:** `Complete`
   - **Evidence:** Multi-currency support with en_AU/AUD compliance
 
-### Phase 2 Requirements (🎯 NEXT)
+### Phase 2 Requirements (🎯 NEXT - Critical Line Item Splitting)
+- **Requirement ID:** `UR-109` **[NEW - CRITICAL FEATURE]**
+  - **Requirement:** For any transaction line item, allow the user to split its cost by percentage across multiple user-defined tax categories (e.g., "Work Use", "Personal Use")
+  - **Status:** `Pending`
+  - **Dependencies:** Enhanced data model, split allocation UI, real-time validation
+  - **Business Impact:** Core differentiator for tax optimization and expense allocation
+
 - **Requirement ID:** `UR-101`
   - **Requirement:** Securely connect to Australian bank and credit card accounts to automatically sync transaction data
   - **Status:** `Pending`
   - **Dependencies:** Basiq/Plaid API integration, OAuth implementation
 
 - **Requirement ID:** `UR-102`
-  - **Requirement:** Allow users to create and manage distinct financial "Entities" (e.g., "Personal," "Smith Family Trust," "My Business")
+  - **Requirement:** Allow users to create and manage distinct financial "Entities" (e.g., "Personal," "Smith Family Trust," "My Business"). Every transaction must be assignable to an entity
   - **Status:** `Pending`
   - **Dependencies:** Enhanced data model, UI for entity management
 
 - **Requirement ID:** `UR-103`
-  - **Requirement:** Implement Role-Based Access Control (RBAC) with predefined roles: Owner, Contributor, Viewer
+  - **Requirement:** Implement Role-Based Access Control (RBAC) system with predefined roles: Owner, Contributor (e.g., Spouse for categorizing), and Viewer (e.g., Accountant for reports)
   - **Status:** `Pending`
   - **Dependencies:** Authentication system, permission management
 
 ### Phase 3 Requirements
 - **Requirement ID:** `UR-104`
-  - **Requirement:** Scan receipts/invoices and extract line-item details with OCR
+  - **Requirement:** Scan receipts/invoices and extract line-item details (item description, quantity, price), associating them with a parent transaction
   - **Status:** `Pending`
   - **Dependencies:** Apple Vision framework, document processing pipeline
 
 - **Requirement ID:** `UR-105`
-  - **Requirement:** Track investment portfolios including shares (ASX/NASDAQ) and cryptocurrencies
+  - **Requirement:** Track investment portfolios, including shares (ASX/NASDAQ) and cryptocurrencies, by integrating with broker/exchange APIs (e.g., Stake, CommSec, Binance)
   - **Status:** `Pending`
   - **Dependencies:** Broker API integrations, portfolio data model
 
 ### Phase 4 Requirements
 - **Requirement ID:** `UR-106`
-  - **Requirement:** Generate "Net Wealth" report consolidating all assets and liabilities
+  - **Requirement:** Generate a "Net Wealth" report by consolidating all linked assets and liabilities
   - **Status:** `Pending`
   - **Dependencies:** Asset/liability tracking, reporting engine
 
 - **Requirement ID:** `UR-107`
-  - **Requirement:** Integrate with CoreLogic API for real estate analysis
+  - **Requirement:** Integrate with CoreLogic API to pull property data for real estate analysis and wealth tracking
   - **Status:** `Pending`
   - **Dependencies:** CoreLogic partnership, property data model
 
 ### Phase 5 Requirements
 - **Requirement ID:** `UR-108`
-  - **Requirement:** Create tax-specific categories with entity-based reporting
+  - **Requirement:** Create tax-specific categories and generate summary reports groupable by financial entity
   - **Status:** `Pending`
-  - **Dependencies:** Advanced categorization, tax rule engine
+  - **Dependencies:** Advanced categorization, tax rule engine built on line item splits
 
 ---
 
 ## 1. PROJECT OVERVIEW
 
 ### 1.1. Project Name
-**FinanceMate** - Wealth Management Platform
+**FinanceMate** - Wealth Management Platform with Advanced Tax Allocation
 
 ### 1.2. Target Audience & Personas
 
@@ -118,21 +124,21 @@ This section captures the core feature set with tracking for implementation stat
   - **Goals:** Track personal expenses, monitor spending, maintain budgets
   - **Key Needs:** Simple transaction management, clear financial overview
 
-#### Future Personas (Phase 2+)
+#### Enhanced Future Personas (Phase 2+)
 - **Persona 1: The Household CEO (Primary User)**
-  - **Goals:** Single source of truth for family finances, tax optimization, property planning, investment tracking
-  - **Key Needs:** Automated data aggregation, multi-entity support, net wealth tracking
-  - **Access Level:** Full platform access, all entities
+  - **Goals:** Single source of truth for all family finances, wants to **flawlessly allocate shared expenses for tax optimization**, plan for large purchases (real estate), and track investment performance
+  - **Key Needs:** Automated data aggregation, **line-item splitting with percentage allocation**, multi-entity support, net wealth tracking
+  - **Access Level:** Full platform access, all entities, split template creation
 
 - **Persona 2: The Contributor (Spouse/Partner)**
-  - **Goals:** Help manage household budget without accessing sensitive investment data
-  - **Key Needs:** Simple interface for transaction categorization
-  - **Access Level:** Limited to specific entities, transaction management
+  - **Goals:** Help manage the household budget and correctly categorize shared purchases without complex calculations
+  - **Key Needs:** Simple interface to view transactions, assign categories, and apply pre-defined split templates (e.g., "Internet Bill - 50/50 Split")
+  - **Access Level:** Limited to specific entities, transaction management, pre-configured split templates
 
 - **Persona 3: The Advisor (Accountant/Financial Planner)**
-  - **Goals:** Efficient access to client financial data for tax and planning
-  - **Key Needs:** Read-only access, robust reporting, data export capabilities
-  - **Access Level:** Viewer permissions for designated entities
+  - **Goals:** Read-only access to a client's financial data with **confidence that expense allocations are accurate and documented at the source transaction**
+  - **Key Needs:** Filtered data access, robust reporting based on precise splits, and detailed data export (CSV/PDF)
+  - **Access Level:** Viewer permissions for designated entities, comprehensive reporting access
 
 ---
 
@@ -163,30 +169,31 @@ This section captures the core feature set with tracking for implementation stat
 ```
 
 ### 2.2. Target Architecture (Phase 2+): Client-Server Model
-**Multi-Platform with Secure Cloud Backend**
+**Multi-Platform with Secure Cloud Backend and Line Item Processing**
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                         CLIENTS                              │
 │ ┌───────────┐   ┌───────────┐   ┌────────────┐            │
 │ │ macOS App │   │  iOS App  │   │  Web App   │            │
+│ │ +Splitting│   │ +Splitting│   │ +Splitting │            │
 │ └───────────┘   └───────────┘   └────────────┘            │
 └─────────────────────────────────────────────────────────────┘
                           | (Secure API Gateway)
 ┌─────────────────────────────────────────────────────────────┐
 │                   FinanceMate Cloud Backend                  │
 ├─────────────────────────────────────────────────────────────┤
-│  Business Logic: User Mgmt, RBAC, Entities, Reporting      │
+│  Business Logic: User Mgmt, RBAC, Entities, Tax Splitting  │
 ├─────────────────────────────────────────────────────────────┤
 │  Core Services:                                             │
 │  ┌──────────────┐ ┌───────────┐ ┌───────────┐ ┌─────────┐│
-│  │Data Aggregation│ │OCR Service│ │Inv.Tracking│ │Analytics││
-│  │(Basiq/Plaid)  │ │(Vision AI)│ │(APIs)      │ │Engine   ││
+│  │Data Aggregation│ │OCR Service│ │Split Engine│ │Analytics││
+│  │(Basiq/Plaid)  │ │(Vision AI)│ │(Tax Alloc.)│ │Engine   ││
 │  └──────────────┘ └───────────┘ └───────────┘ └─────────┘│
 ├─────────────────────────────────────────────────────────────┤
 │  Data Layer:                                                │
 │  ┌──────────────┐ ┌───────────┐ ┌───────────┐            │
 │  │  PostgreSQL  │ │   Redis   │ │    S3     │            │
-│  │  (Primary)   │ │  (Cache)  │ │ (Storage) │            │
+│  │ +Split Tables│ │  (Cache)  │ │ (Storage) │            │
 │  └──────────────┘ └───────────┘ └───────────┘            │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -203,27 +210,19 @@ This section captures the core feature set with tracking for implementation stat
 
 #### Target Stack (Phase 2+)
 - **Frontend Clients**: 
-  - Native macOS (SwiftUI) - Enhanced from Phase 1
-  - Native iOS (SwiftUI) - New
-  - Web (React/Vue) - Future
+  - Native macOS (SwiftUI) - Enhanced with splitting UI
+  - Native iOS (SwiftUI) - New with touch-optimized splitting
+  - Web (React/Vue) - Future with responsive splitting interface
 - **Backend**: 
   - Go/Python for high-performance financial processing
-  - GraphQL API for flexible client queries
+  - GraphQL API for flexible split queries
+  - Specialized splitting calculation engine
 - **Database**: 
-  - PostgreSQL (primary - relational integrity)
-  - Redis (caching layer)
-  - S3 (document storage)
-- **Infrastructure**: 
-  - AWS/GCP with multi-region support
-  - Kubernetes for container orchestration
-- **Data Aggregation**: 
-  - Basiq API (Australian focus)
-  - Plaid API (international reach)
-- **Authentication**: 
-  - OAuth 2.0 with MFA
-  - Auth0/AWS Cognito
+  - PostgreSQL (primary - optimized for split calculations)
+  - Redis (caching split templates and frequent queries)
+  - S3 (document storage with OCR metadata)
 
-### 2.4. Data Schema (PostgreSQL Model)
+### 2.4. Enhanced Data Schema (PostgreSQL Model) **[CRITICAL UPDATE]**
 
 | Table | Key Columns | Relationships | Description |
 |-------|-------------|---------------|-------------|
@@ -231,13 +230,22 @@ This section captures the core feature set with tracking for implementation stat
 | **roles** | `id`, `name`, `permissions` | | System roles: owner, contributor, viewer |
 | **user_entity_roles** | `user_id`, `entity_id`, `role_id` | → users, entities, roles | Permission mapping |
 | **entities** | `id`, `name`, `type`, `owner_id` | → users | Financial entities (Personal, Business, Trust) |
+| **tax_categories** **[NEW]** | `id`, `name`, `entity_id`, `color`, `description` | → entities | **User-defined categories for splitting (e.g., "Work", "Personal")** |
 | **accounts** | `id`, `name`, `type`, `institution`, `entity_id` | → entities | Bank/investment accounts |
-| **transactions** | `id`, `amount`, `description`, `date`, `account_id`, `entity_id` | → accounts, entities | Financial transactions |
-| **line_items** | `id`, `description`, `quantity`, `price`, `transaction_id` | → transactions | Receipt/invoice details |
-| **categories** | `id`, `name`, `type`, `tax_deductible` | | Transaction categories |
+| **transactions** | `id`, `amount`, `description`, `date`, `account_id`, `entity_id` | → accounts, entities | Financial transactions (maps to invoice/receipt) |
+| **line_items** | `id`, `description`, `quantity`, `price`, `transaction_id` | → transactions | Individual item from receipt/invoice |
+| **line_item_splits** **[NEW - CRITICAL]** | `id`, `line_item_id`, `tax_category_id`, `percentage` | → line_items, tax_categories | **Core expense allocation table** |
+| **split_templates** **[NEW]** | `id`, `name`, `entity_id`, `created_by` | → entities, users | **Reusable split configurations** |
+| **template_splits** **[NEW]** | `id`, `template_id`, `tax_category_id`, `percentage` | → split_templates, tax_categories | **Template allocation details** |
 | **assets** | `id`, `name`, `type`, `current_value`, `entity_id` | → entities | Properties, investments |
 | **liabilities** | `id`, `name`, `type`, `balance`, `entity_id` | → entities | Mortgages, loans |
 | **documents** | `id`, `type`, `s3_url`, `transaction_id` | → transactions | Receipts, invoices |
+
+#### Key Data Integrity Rules
+- **line_item_splits.percentage**: Must sum to 100.00 for each line_item_id
+- **tax_categories**: Unique within entity scope
+- **split_templates**: Reusable across transactions within entity
+- **Audit Trail**: All split changes logged with timestamp and user
 
 ---
 
@@ -265,13 +273,13 @@ This section captures the core feature set with tracking for implementation stat
   - Notification preferences
   - Data export capabilities
 
-### 3.2. Phase 2: Data Aggregation & Multi-Entity 🎯 NEXT
+### 3.2. Phase 2: Data Aggregation, Multi-Entity & **Line Item Splitting** 🎯 NEXT
 
 #### Secure User Onboarding
 - Enhanced authentication with MFA
 - Terms of service and privacy policy
 - Guided setup wizard
-- Entity creation flow
+- Entity creation flow with default tax categories
 
 #### Data Aggregation
 - **Bank Connection Flow**
@@ -287,29 +295,56 @@ This section captures the core feature set with tracking for implementation stat
   - Duplicate detection
   - Split transaction support
 
+#### **Line Item Splitting System [CORE FEATURE]**
+- **Tax Category Management**
+  - Entity-specific category creation
+  - Color-coded categorization
+  - Default categories (Personal, Business, Investment)
+  - Custom category creation with descriptions
+
+- **Split Allocation Interface**
+  - **Real-time Percentage Validation**: UI ensures splits total 100%
+  - **Visual Split Designer**: Drag-and-drop or slider-based allocation
+  - **Split Templates**: Save common allocations (e.g., "Office Supplies - 80/20")
+  - **Bulk Apply**: Apply templates to multiple line items
+  - **Undo/Redo**: Full operation history for split changes
+
+- **Split Template System**
+  - **Template Library**: Pre-built templates for common scenarios
+  - **Custom Templates**: User-created templates with names and descriptions
+  - **Smart Suggestions**: AI-suggested templates based on merchant/item type
+  - **Template Sharing**: Share templates within entity (family/business)
+
 #### Entity Management
 - **Entity Types**
-  - Personal (default)
-  - Business
-  - Trust
-  - Investment
-  - Custom
+  - Personal (default with Personal/Business categories)
+  - Business (with detailed tax categories)
+  - Trust (with beneficiary allocations)
+  - Investment (with asset class splits)
+  - Custom (user-defined)
 
 - **Entity Features**
-  - Separate dashboards
-  - Transaction filtering
-  - Report generation
-  - Access control
+  - Separate dashboards with split analytics
+  - Transaction filtering by entity
+  - Split-based report generation
+  - Access control per entity
 
-### 3.3. Phase 3: OCR & Investment Tracking
+### 3.3. Phase 3: Advanced OCR & Investment Tracking
 
-#### Document Processing
+#### Document Processing with AI Split Suggestions
 - **Receipt/Invoice OCR**
   - Drag-and-drop upload
   - Mobile app scanning
-  - Line-item extraction
+  - Line-item extraction with confidence scores
   - Automatic matching to transactions
   - Manual review interface
+
+- **AI-Powered Split Suggestions**
+  - **Merchant-Based Suggestions**: "Officeworks" → Business/Personal split
+  - **Item-Type Analysis**: "Office Chair" → 100% Business
+  - **Historical Learning**: Learn from user's previous split patterns
+  - **Confidence Scoring**: Show AI confidence in suggestions
+  - **One-Click Apply**: Accept AI suggestions with single tap
 
 #### Investment Portfolio
 - **Broker Integrations**
@@ -318,61 +353,61 @@ This section captures the core feature set with tracking for implementation stat
   - Interactive Brokers
   - Cryptocurrency exchanges
 
-- **Portfolio Features**
+- **Portfolio Features with Entity Allocation**
   - Real-time valuations
-  - Performance tracking
-  - Dividend tracking
-  - Tax reporting
+  - Performance tracking by entity
+  - Dividend allocation across entities
+  - Tax reporting with split-based calculations
 
 #### Collaborative Workspaces
 - **Access Management**
   - Email-based invitations
-  - Role assignment
+  - Role assignment with split permissions
   - Entity-specific permissions
-  - Activity logging
+  - Activity logging for splits and changes
 
-### 3.4. Phase 4: Wealth Management & Goals
+### 3.4. Phase 4: Wealth Management & Advanced Reporting
 
 #### Net Wealth Dashboard
-- **Comprehensive View**
-  - Total assets vs liabilities
+- **Comprehensive View with Split Analytics**
+  - Total assets vs liabilities by entity
   - Historical wealth progression
-  - Asset allocation breakdown
+  - Asset allocation breakdown with tax implications
   - Currency consolidation
 
-#### Real Estate Integration
-- **CoreLogic Features**
-  - Property valuation updates
-  - Rental yield analysis
-  - Market comparisons
-  - Suburb insights
+#### Enhanced Reporting Engine **[BUILT ON SPLITS]**
+- **Tax-Optimized Reports**
+  - **Split-Based Tax Summary**: Aggregate all splits by tax category
+  - **Entity Profit/Loss**: Accurate P&L based on precise allocations
+  - **Deduction Maximization**: Identify optimization opportunities
+  - **Audit Trail Reports**: Complete documentation of all split decisions
 
-#### Financial Goals
+- **Professional Report Formats**
+  - **Accountant-Ready Exports**: CSV/PDF with split details
+  - **Tax Office Compliance**: ATO-formatted reports
+  - **Custom Report Builder**: User-defined report templates
+  - **Real-Time Updates**: Reports update as splits are modified
+
+#### Financial Goals with Split Awareness
 - **Goal Types**
-  - Property purchase
-  - Retirement planning
-  - Investment targets
-  - Debt reduction
+  - Property purchase (with entity allocation)
+  - Retirement planning (with tax efficiency)
+  - Investment targets (with split optimization)
+  - Debt reduction (with tax deduction strategies)
 
-- **Goal Features**
-  - Progress tracking
-  - Scenario modeling
-  - Milestone alerts
-  - Strategy recommendations
+### 3.5. Phase 5: Advanced Analytics & Predictive Intelligence
 
-### 3.5. Phase 5: Advanced Analytics & AI
-
-#### Predictive Analytics
-- Spending forecasts
-- Cash flow projections
-- Investment recommendations
-- Tax optimization suggestions
+#### Predictive Analytics with Split Intelligence
+- **Split Pattern Analysis**: Identify inconsistent allocations
+- **Tax Optimization Recommendations**: Suggest better split strategies
+- **Cash Flow Forecasting**: Entity-specific projections
+- **Investment Allocation Advice**: Optimal entity placement for assets
 
 #### Automated Insights
-- Subscription detection
-- Unusual transaction alerts
-- Budget recommendations
-- Savings opportunities
+- **Split Anomaly Detection**: Flag unusual allocation patterns
+- **Compliance Monitoring**: Alert for potential tax issues
+- **Budget Recommendations**: Entity-specific budget suggestions
+- **Savings Opportunities**: Identify tax-efficient restructuring
 
 ---
 
@@ -388,49 +423,59 @@ This section captures the core feature set with tracking for implementation stat
 - ✅ 75+ test cases
 - ✅ Production pipeline
 
-### 4.2. Phase 2: Data Aggregation & Multi-Entity (3-4 months)
-**Timeline**: Q3 2025
+### 4.2. Phase 2: Data Aggregation, Multi-Entity & Line Item Splitting (4-5 months)
+**Timeline**: Q3-Q4 2025
+**Priority**: **CRITICAL - Core Differentiator**
 **Epics**:
-- [ ] Backend infrastructure setup
-- [ ] Authentication system with MFA
-- [ ] Basiq/Plaid integration
-- [ ] Entity management system
-- [ ] Enhanced macOS client
-- [ ] API gateway implementation
+- [ ] **Split Engine Development** (Month 1-2)
+  - Database schema implementation
+  - Split calculation engine
+  - Real-time validation system
+  - Template management system
+- [ ] **Split UI/UX Implementation** (Month 2-3)
+  - Visual split designer
+  - Template interface
+  - Bulk operations
+  - Mobile-responsive design
+- [ ] Backend infrastructure setup (Month 1-4)
+- [ ] Authentication system with MFA (Month 2-3)
+- [ ] Basiq/Plaid integration (Month 3-4)
+- [ ] Entity management system (Month 3-4)
+- [ ] Enhanced macOS client (Month 4-5)
 
 **Key Milestones**:
-- Month 1: Backend setup, authentication
-- Month 2: Data aggregation integration
-- Month 3: Entity system, client updates
-- Month 4: Testing, security audit
+- Month 1: Split engine core development
+- Month 2: UI prototype and testing
+- Month 3: Bank integration and entity system
+- Month 4: Full feature integration testing
+- Month 5: Production deployment and user onboarding
 
 ### 4.3. Phase 3: OCR & Investments (3-4 months)
-**Timeline**: Q4 2025
-**Epics**:
-- [ ] OCR service implementation
-- [ ] Document storage system
-- [ ] Investment API integrations
-- [ ] RBAC implementation
-- [ ] iOS app development
-- [ ] Collaboration features
-
-### 4.4. Phase 4: Wealth & Real Estate (2-3 months)
 **Timeline**: Q1 2026
 **Epics**:
-- [ ] Net wealth calculations
+- [ ] OCR service with AI split suggestions
+- [ ] Document storage system
+- [ ] Investment API integrations with entity allocation
+- [ ] RBAC implementation
+- [ ] iOS app development with split UI
+- [ ] Collaboration features
+
+### 4.4. Phase 4: Wealth & Advanced Reporting (2-3 months)
+**Timeline**: Q2 2026
+**Epics**:
+- [ ] Split-based reporting engine
+- [ ] Advanced tax optimization tools
 - [ ] CoreLogic integration
-- [ ] Goal setting module
-- [ ] Advanced reporting
+- [ ] Professional report templates
 - [ ] Web app MVP
 
-### 4.5. Phase 5: AI & Analytics (Ongoing)
-**Timeline**: Q2 2026+
+### 4.5. Phase 5: AI & Predictive Analytics (Ongoing)
+**Timeline**: Q3 2026+
 **Epics**:
-- [ ] ML pipeline setup
-- [ ] Predictive models
-- [ ] Automated insights
-- [ ] Scenario engine
-- [ ] Advisory features
+- [ ] ML-powered split optimization
+- [ ] Predictive tax planning
+- [ ] Automated compliance monitoring
+- [ ] Advanced scenario modeling
 
 ---
 
@@ -443,82 +488,71 @@ This section captures the core feature set with tracking for implementation stat
 - **Performance Tests**: 1000+ transaction loads
 - **Accessibility Tests**: VoiceOver compliance
 
-### 5.2. Enhanced Testing Strategy (Phase 2+)
+### 5.2. Enhanced Testing Strategy (Phase 2+ with Splitting)
 
-#### Test Categories
-- **Unit Tests**: Business logic, data transformations, API contracts
-- **Integration Tests**: Service interactions, API gateway flows
-- **End-to-End Tests**: Complete user journeys
-- **Security Tests**: Penetration testing, vulnerability scanning
-- **Performance Tests**: Load testing, stress testing
-- **Contract Tests**: API compatibility (Pact)
+#### Split-Specific Test Categories
+- **Split Calculation Tests**: Percentage validation, rounding precision
+- **Template Tests**: Creation, application, modification workflows
+- **Bulk Operation Tests**: Mass template application, split updates
+- **Real-time Validation Tests**: UI responsiveness, error handling
+- **Data Integrity Tests**: Database constraints, audit trail verification
 
-#### Test Environments
-- **Local**: Developer machines
-- **CI/CD**: Automated pipeline
-- **Staging**: Production-like
-- **UAT**: User acceptance
-- **Production**: Monitoring only
+#### Performance Testing for Splits
+- **Split Query Performance**: <50ms for split calculations
+- **Template Application**: <100ms for bulk template application
+- **Report Generation**: <2s for complex split-based reports
+- **UI Responsiveness**: 60fps during split interface interactions
 
-### 5.3. Quality Metrics
-- Code coverage: >90%
+### 5.3. Quality Metrics (Enhanced)
+- Code coverage: >95% (including split engine)
+- Split calculation accuracy: 100% (to 2 decimal places)
 - API response time: <200ms (p95)
 - UI responsiveness: 60fps
-- Error rate: <0.1%
+- Error rate: <0.05%
 - Security score: A+ rating
 
 ---
 
 ## 6. SECURITY & COMPLIANCE
 
-### 6.1. Authentication & Authorization
+### 6.1. Authentication & Authorization (Enhanced for Splits)
 - **Multi-Factor Authentication**: Mandatory for all accounts
 - **OAuth 2.0**: Industry standard for third-party integrations
 - **JWT Tokens**: Short-lived access tokens with refresh
-- **Role-Based Access Control**: Granular permissions per entity
-- **Session Management**: Secure session handling with timeout
+- **Role-Based Access Control**: Granular permissions per entity and split access
+- **Split Permissions**: Fine-grained control over who can modify allocations
 
-### 6.2. Data Protection
+### 6.2. Data Protection (Split-Aware)
 - **Encryption**:
-  - At rest: AES-256
+  - At rest: AES-256 (including split data)
   - In transit: TLS 1.3+
   - Key management: AWS KMS/Cloud KMS
-- **API Security**:
-  - Read-only keys where possible
-  - Key rotation policy
-  - Rate limiting
-  - IP whitelisting (optional)
-- **Data Isolation**:
-  - Entity-level separation
-  - Row-level security
-  - Audit logging
+- **Split Data Security**:
+  - Entity-level isolation for splits
+  - Encrypted split templates
+  - Audit logging for all split changes
+  - Tamper detection for split modifications
 
-### 6.3. Compliance Framework
+### 6.3. Compliance Framework (Tax-Focused)
 - **Australian Standards**:
   - Privacy Act 1988
   - Australian Privacy Principles (APP)
   - Consumer Data Right (CDR)
+  - **Australian Taxation Office (ATO) Requirements**
 - **International Standards**:
   - SOC 2 Type II
   - ISO 27001
   - GDPR (future)
-- **Financial Standards**:
+- **Financial & Tax Standards**:
   - PCI DSS (payment processing)
-  - Open Banking compliance
-
-### 6.4. Security Practices
-- Regular penetration testing
-- Dependency scanning
-- Code security analysis
-- Security awareness training
-- Incident response plan
-- Disaster recovery procedures
+  - **Tax Record Keeping Requirements**
+  - **Audit Trail Standards**
 
 ---
 
 ## 7. API & INTEGRATION SPECIFICATIONS
 
-### 7.1. Financial Data Aggregation
+### 7.1. Financial Data Aggregation (Enhanced)
 
 #### Basiq API (Australian Focus)
 - **Purpose**: Connect to AU financial institutions
@@ -526,68 +560,58 @@ This section captures the core feature set with tracking for implementation stat
 - **Key Endpoints**:
   - `POST /users` - Create user
   - `POST /connections` - Link institution
-  - `GET /accounts` - List accounts
-  - `GET /transactions` - Sync transactions
+  - **`GET /accounts` - List accounts with split context**
+  - **`GET /transactions` - Sync transactions for split processing**
 - **Rate Limits**: 1000 requests/hour
+- **Split Integration**: Automatic line item detection for common merchants
 
 #### Plaid API (International)
 - **Purpose**: Global institution coverage
 - **Products**: Transactions, Assets, Investments
-- **Key Features**:
+- **Enhanced Features**:
   - Real-time balance
-  - Enhanced transactions
-  - Investment holdings
+  - **Enhanced transactions with merchant categorization**
+  - Investment holdings with entity allocation
   - Identity verification
 
-### 7.2. Investment & Trading APIs
+### 7.2. Split-Specific APIs **[NEW SECTION]**
 
-#### Broker Integrations
-- **CommSec**: Via secure file export/import
-- **Stake**: REST API for portfolio data
-- **Interactive Brokers**: FIX protocol
-- **Sharesight**: Portfolio tracking API
+#### Split Calculation Engine
+- **Purpose**: Core allocation processing
+- **Key Operations**:
+  - `POST /splits/calculate` - Process percentage allocations
+  - `GET /splits/validate` - Real-time validation
+  - `POST /splits/templates` - Template management
+  - `GET /splits/suggestions` - AI-powered recommendations
 
-#### Cryptocurrency Exchanges
-- **Binance**: REST/WebSocket APIs
-- **Coinbase**: OAuth integration
-- **Kraken**: REST API with signing
-
-### 7.3. Real Estate & Valuation
-
-#### CoreLogic API
-- **Purpose**: Property data and valuations
+#### Reporting API
+- **Purpose**: Split-based report generation
 - **Key Endpoints**:
-  - Property search
-  - Automated valuations
-  - Sales history
-  - Suburb profiles
-  - Rental estimates
-- **Data Points**:
-  - Current market value
-  - Historical prices
-  - Comparable sales
-  - Demographic data
+  - `GET /reports/tax-summary` - Aggregate split data
+  - `GET /reports/entity-profit-loss` - Entity-specific P&L
+  - `POST /reports/custom` - User-defined reports
+  - `GET /reports/audit-trail` - Complete split history
 
-### 7.4. Intelligence & Analytics
+### 7.3. Intelligence & Analytics (Split-Enhanced)
 
-#### LLM Integration
+#### LLM Integration for Split Suggestions
 - **Providers**:
-  - OpenAI GPT-4
-  - Anthropic Claude
-  - Google Gemini
+  - OpenAI GPT-4 (for split pattern analysis)
+  - Anthropic Claude (for tax optimization suggestions)
+  - Google Gemini (for natural language queries)
 - **Use Cases**:
-  - Transaction categorization
-  - Receipt parsing assistance
-  - Financial insights
-  - Natural language queries
+  - **Intelligent split suggestions based on merchant/item**
+  - **Historical pattern analysis for consistency**
+  - **Tax optimization recommendations**
+  - **Natural language split queries**
 - **Security**:
   - No PII in prompts
-  - Response validation
-  - Rate limiting
+  - Anonymized transaction patterns only
+  - Response validation for split accuracy
 
 ---
 
-## 8. USER INTERFACE EVOLUTION
+## 8. USER INTERFACE EVOLUTION (Split-Focused)
 
 ### 8.1. Current UI (Phase 1) ✅
 - **Design System**: Glassmorphism
@@ -595,214 +619,181 @@ This section captures the core feature set with tracking for implementation stat
 - **Platform**: macOS only
 - **Accessibility**: Full VoiceOver support
 
-### 8.2. Enhanced UI (Phase 2+)
-- **Design Evolution**:
-  - Maintain glassmorphism aesthetics
-  - Add data visualization components
-  - Implement responsive layouts
-  - Create unified design system
+### 8.2. Enhanced UI with Split Interface (Phase 2+)
 
-- **Navigation Enhancement**:
-  - Sidebar navigation (macOS)
-  - Tab bar (iOS)
-  - Responsive menu (Web)
-  - Quick actions
-  - Global search
+#### Split Designer Interface
+- **Visual Split Allocator**:
+  - Pie chart visualization of splits
+  - Percentage sliders with real-time feedback
+  - Color-coded tax categories
+  - Drag-and-drop percentage adjustment
 
-- **New Components**:
-  - Entity switcher
-  - Connection status indicators
-  - Sync progress displays
-  - Collaboration avatars
-  - Permission badges
+- **Template Management**:
+  - Template library with search
+  - Quick-apply buttons
+  - Template preview before application
+  - Bulk selection for mass application
 
-### 8.3. Platform-Specific Considerations
+- **Split Validation**:
+  - Real-time percentage total display
+  - Error highlighting for invalid splits
+  - Auto-suggest for rounding discrepancies
+  - Undo/redo functionality
 
-#### macOS (Enhanced)
-- Native menu bar integration
-- Keyboard shortcuts
-- Multi-window support
-- Touch Bar support
-- Notification Center
+#### New Components for Splitting
+- **Split Progress Indicators**: Show completion status
+- **Entity Switchers**: Quick context switching
+- **Category Color Coding**: Consistent visual identity
+- **Split History**: Timeline of allocation changes
+- **Collaboration Indicators**: Show who made split changes
 
-#### iOS (New)
-- Face ID/Touch ID
-- Widget support
-- Share extensions
-- Camera integration
-- Haptic feedback
+### 8.3. Platform-Specific Split Considerations
 
-#### Web (Future)
-- Progressive Web App
-- Responsive design
-- Browser notifications
-- Offline support
-- Cross-browser compatibility
+#### macOS (Enhanced with Splits)
+- **Advanced Split Interface**: Full-featured split designer
+- **Keyboard Shortcuts**: Quick percentage entry
+- **Multi-window Support**: Compare splits across transactions
+- **Menu Bar Integration**: Quick split status
 
----
+#### iOS (New with Touch-Optimized Splits)
+- **Touch-First Split UI**: Gesture-based percentage adjustment
+- **Simplified Templates**: Mobile-optimized template selection
+- **Quick Split Actions**: Swipe gestures for common splits
+- **Haptic Feedback**: Tactile confirmation of split changes
 
-## 9. OPERATIONAL CONSIDERATIONS
-
-### 9.1. Deployment Strategy
-
-#### Phase 1 (Current)
-- Direct distribution
-- Manual updates
-- Local data only
-
-#### Phase 2+ (Cloud)
-- **Infrastructure**:
-  - Multi-region deployment
-  - Auto-scaling groups
-  - Load balancers
-  - CDN for static assets
-
-- **Deployment Pipeline**:
-  - Blue-green deployments
-  - Canary releases
-  - Feature flags
-  - Rollback capability
-
-### 9.2. Monitoring & Analytics
-
-#### Application Monitoring
-- Performance metrics (APM)
-- Error tracking (Sentry)
-- User analytics (Mixpanel)
-- Custom dashboards
-
-#### Business Metrics
-- User acquisition
-- Feature adoption
-- Retention rates
-- Revenue metrics
-
-### 9.3. Support Structure
-- In-app help system
-- Knowledge base
-- Email support
-- Community forum
-- Priority support (premium)
+#### Web (Future with Responsive Splits)
+- **Responsive Split Designer**: Adaptive to screen size
+- **Collaborative Editing**: Real-time split collaboration
+- **Advanced Reporting**: Web-optimized report builder
+- **Cross-browser Compatibility**: Consistent split experience
 
 ---
 
-## 10. BUSINESS MODEL EVOLUTION
+## 9. BUSINESS MODEL EVOLUTION (Split-Enhanced)
 
-### 10.1. Current Model (Phase 1)
+### 9.1. Current Model (Phase 1)
 - One-time purchase
 - Direct distribution
 - Individual licenses
 
-### 10.2. Future Model (Phase 2+)
+### 9.2. Future Model with Split Premium Features (Phase 2+)
 
-#### Pricing Tiers
+#### Pricing Tiers (Split-Aware)
 - **Basic** (Free):
   - 1 entity
   - Manual transactions
-  - Basic reports
+  - Basic 2-way splits only
+  - 3 tax categories maximum
 
 - **Personal** ($9.99/month):
   - 3 entities
   - Bank connections (2)
-  - OCR (50/month)
-  - Email support
+  - **Unlimited splits and categories**
+  - **5 split templates**
+  - Basic split reports
 
 - **Family** ($19.99/month):
   - Unlimited entities
   - Unlimited connections
-  - Unlimited OCR
+  - **Advanced split templates**
+  - **Collaborative split editing**
+  - **Professional split reports**
   - Collaboration (5 users)
-  - Priority support
 
 - **Professional** ($49.99/month):
   - Everything in Family
-  - API access
-  - Advanced analytics
-  - Custom reports
+  - **AI-powered split suggestions**
+  - **Advanced tax optimization**
+  - **Custom report builder**
+  - **Split audit trails**
+  - API access for splits
   - Dedicated support
 
-### 10.3. Revenue Streams
-- Subscription revenue (primary)
-- Transaction fees (premium features)
-- Partner commissions (financial products)
-- Enterprise licenses
-- API usage fees
+### 9.3. Revenue Streams (Split-Enhanced)
+- **Subscription revenue** (primary - split features drive upgrades)
+- **Professional services** (split setup and optimization consulting)
+- **Partner commissions** (accounting software integrations)
+- **Enterprise licenses** (advanced split management for businesses)
+- **API usage fees** (split calculation engine licensing)
 
 ---
 
-## 11. RISK ANALYSIS & MITIGATION
+## 10. SUCCESS METRICS (Split-Focused)
 
-### 11.1. Technical Risks
-
-| Risk | Impact | Likelihood | Mitigation |
-|------|--------|------------|------------|
-| Data breach | High | Medium | Encryption, security audits, insurance |
-| API deprecation | Medium | High | Multiple providers, abstraction layer |
-| Scaling issues | Medium | Medium | Cloud architecture, load testing |
-| Integration failures | Low | High | Retry logic, fallback options |
-
-### 11.2. Business Risks
-
-| Risk | Impact | Likelihood | Mitigation |
-|------|--------|------------|------------|
-| Regulatory changes | High | Medium | Legal counsel, compliance team |
-| Competition | Medium | High | Unique features, superior UX |
-| User adoption | High | Medium | Freemium model, marketing |
-| Partner dependencies | Medium | Medium | Multiple partners, contracts |
-
-### 11.3. Mitigation Strategies
-- Regular security assessments
-- Disaster recovery planning
-- Legal compliance reviews
-- User feedback loops
-- Agile development process
-- Financial reserves
-
----
-
-## 12. SUCCESS METRICS
-
-### 12.1. Technical KPIs
+### 10.1. Technical KPIs (Split-Enhanced)
 - System uptime: >99.9%
+- **Split calculation accuracy: 100% (to 2 decimal places)**
+- **Split UI responsiveness: <100ms for real-time validation**
 - API latency: <200ms
 - Error rate: <0.1%
-- Test coverage: >90%
-- Security score: A+
+- Test coverage: >95%
 
-### 12.2. Business KPIs
+### 10.2. Business KPIs (Split-Driven)
+- **Split feature adoption rate: >80% of active users**
+- **Template usage: Average 5+ templates per user**
+- **Professional tier conversion: 15% driven by split features**
 - Monthly Active Users (MAU)
 - Customer Acquisition Cost (CAC)
 - Monthly Recurring Revenue (MRR)
 - Net Promoter Score (NPS)
 - Churn rate: <5%
 
-### 12.3. User Satisfaction
+### 10.3. User Satisfaction (Split-Specific)
+- **Split accuracy satisfaction: >95%**
+- **Template utility rating: >4.5/5**
+- **Tax preparation time savings: >60%**
 - App store rating: >4.5
 - Support ticket resolution: <24h
 - Feature adoption rate: >60%
-- User retention: >80% (6 months)
 
 ---
 
-## 13. GLOSSARY
+## 11. RISK ANALYSIS & MITIGATION (Split-Focused)
+
+### 11.1. Technical Risks (Split-Specific)
+
+| Risk | Impact | Likelihood | Mitigation |
+|------|--------|------------|------------|
+| Split calculation errors | High | Low | Extensive testing, audit trails, user verification |
+| Performance with complex splits | Medium | Medium | Optimized algorithms, caching, lazy loading |
+| Data integrity in split tables | High | Low | Database constraints, validation, backup systems |
+| UI complexity for splits | Medium | High | User testing, progressive disclosure, tutorials |
+
+### 11.2. Business Risks (Split-Related)
+
+| Risk | Impact | Likelihood | Mitigation |
+|------|--------|------------|------------|
+| **Tax compliance issues** | High | Medium | Legal review, ATO consultation, audit trails |
+| **Accounting professional resistance** | Medium | Medium | Professional demos, integration benefits |
+| **Feature complexity overwhelming users** | Medium | High | Progressive onboarding, smart defaults |
+| **Competition copying split features** | Low | High | Patent consideration, superior UX, AI integration |
+
+### 11.3. Mitigation Strategies (Split-Focused)
+- **Tax professional advisory board** for compliance guidance
+- **Extensive split validation testing** before any release
+- **User education program** for proper split usage
+- **Professional integration partnerships** with accounting software
+- **Continuous monitoring** of split accuracy and usage patterns
+
+---
+
+## 12. GLOSSARY (Split-Enhanced)
 
 - **RBAC**: Role-Based Access Control - Permission system based on user roles
 - **MFA**: Multi-Factor Authentication - Additional security beyond passwords
 - **Entity**: Distinct financial unit for separating finances (Personal, Business, etc.)
+- **Tax Category**: User-defined classification for expense allocation (e.g., "Business", "Personal")
+- **Line Item Split**: Percentage-based allocation of a single expense across multiple tax categories
+- **Split Template**: Reusable allocation pattern (e.g., "Office Supplies - 80% Business, 20% Personal")
+- **Split Engine**: Core calculation system for processing percentage allocations
 - **Aggregator**: Service that connects to banks (Basiq, Plaid)
 - **OCR**: Optical Character Recognition - Extract text from images
 - **CDR**: Consumer Data Right - Australian open banking framework
-- **APM**: Application Performance Monitoring
-- **KPI**: Key Performance Indicator
-- **MAU**: Monthly Active Users
-- **MRR**: Monthly Recurring Revenue
-- **CAC**: Customer Acquisition Cost
-- **NPS**: Net Promoter Score
 
 ---
 
-**FinanceMate** is evolving from a production-ready personal finance manager into a comprehensive wealth management platform. This specification guides both current operations and the transformation into a multi-platform, collaborative financial command center.
+**FinanceMate** is evolving from a production-ready personal finance manager into a comprehensive wealth management platform with **advanced tax allocation capabilities**. The line item splitting system positions FinanceMate as the premier solution for users requiring precise expense allocation for tax optimization, business accounting, and family financial management.
 
 ---
 
-*Version 3.0.0 - Wealth Management Platform Vision with Phased Implementation*
+*Version 4.0.0 - Wealth Management Platform with Advanced Line Item Splitting and Tax Allocation*
