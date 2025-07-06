@@ -127,7 +127,7 @@ This section captures the core feature set with tracking for implementation stat
 #### Enhanced Future Personas (Phase 2+)
 - **Persona 1: The Household CEO (Primary User)**
   - **Goals:** Single source of truth for all family finances, wants to **flawlessly allocate shared expenses for tax optimization**, plan for large purchases (real estate), and track investment performance
-  - **Key Needs:** Automated data aggregation, **line-item splitting with percentage allocation**, multi-entity support, net wealth tracking
+  - **Key Needs:** Automated data aggregation, **line-item splitting with percentage allocation**, multi-entity support, net wealth tracking. Database should include source data, urls, attachments, links, etc.
   - **Access Level:** Full platform access, all entities, split template creation
 
 - **Persona 2: The Contributor (Spouse/Partner)**
