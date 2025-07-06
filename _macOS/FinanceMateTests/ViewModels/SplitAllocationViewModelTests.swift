@@ -345,8 +345,8 @@ final class SplitAllocationViewModelTests: XCTestCase {
     }
     
     func testRemoveCustomTaxCategory() {
-        // Given: An existing custom category
-        let customCategory = "Travel"
+        // Given: An existing custom category (using a non-predefined category)
+        let customCategory = "CustomTravel"
         viewModel.addCustomTaxCategory(customCategory)
         XCTAssertTrue(viewModel.customCategories.contains(customCategory), "Category should be added")
         

@@ -108,7 +108,7 @@ final class LineItemViewModelTests: XCTestCase {
         
         // Then: Should fail validation
         XCTAssertNotNil(viewModel.errorMessage, "Should have validation error")
-        XCTAssertTrue(viewModel.errorMessage?.contains("description") == true, "Error should mention description")
+        XCTAssertTrue(viewModel.errorMessage?.contains("Description") == true, "Error should mention Description")
         await viewModel.fetchLineItems(for: testTransaction)
         XCTAssertEqual(viewModel.lineItems.count, 0, "Should have no line items")
     }
@@ -123,7 +123,7 @@ final class LineItemViewModelTests: XCTestCase {
         
         // Then: Should fail validation
         XCTAssertNotNil(viewModel.errorMessage, "Should have validation error")
-        XCTAssertTrue(viewModel.errorMessage?.contains("amount") == true, "Error should mention amount")
+        XCTAssertTrue(viewModel.errorMessage?.contains("Amount") == true, "Error should mention Amount")
         await viewModel.fetchLineItems(for: testTransaction)
         XCTAssertEqual(viewModel.lineItems.count, 0, "Should have no line items")
     }
