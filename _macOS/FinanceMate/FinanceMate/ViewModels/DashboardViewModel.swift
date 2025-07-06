@@ -64,8 +64,9 @@ class DashboardViewModel: ObservableObject {
     var formattedTotalBalance: String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
-        formatter.currencyCode = "USD"
-        return formatter.string(from: NSNumber(value: totalBalance)) ?? "$0.00"
+        formatter.locale = Locale(identifier: "en_AU") // Australian locale
+        formatter.currencyCode = "AUD"
+        return formatter.string(from: NSNumber(value: totalBalance)) ?? "A$0.00"
     }
     
     /// Transaction count description for UI display

@@ -56,7 +56,7 @@ class SettingsViewModel: ObservableObject {
     
     private enum Defaults {
         static let theme = "System"
-        static let currency = "USD"
+        static let currency = "AUD"  // Australian Dollar default for Australian locale compliance
         static let notifications = true
     }
     
@@ -69,7 +69,7 @@ class SettingsViewModel: ObservableObject {
     // MARK: - Available Options
     
     static let availableThemes = ["System", "Light", "Dark"]
-    static let availableCurrencies = ["USD", "EUR", "GBP", "JPY", "AUD", "CAD"]
+    static let availableCurrencies = ["AUD", "USD", "EUR", "GBP", "JPY", "CAD"]  // AUD first for Australian locale compliance
     
     // MARK: - Initialization
     
