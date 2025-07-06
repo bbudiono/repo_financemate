@@ -22,6 +22,7 @@ The Line Item Splitting system is **95% complete** with all code implementation 
 ### Files Requiring Configuration
 1. `LineItemViewModel.swift` + `LineItemViewModelTests.swift`
 2. `SplitAllocationViewModel.swift` + `SplitAllocationViewModelTests.swift`
+3. `AnalyticsEngine.swift` + `AnalyticsEngineTests.swift` (Analytics Engine Foundation)
 
 ---
 
@@ -47,7 +48,14 @@ open _macOS/FinanceMate.xcodeproj
 4. **Add to Target**: In "Target Membership" section, check ✅ **FinanceMate**
 5. **Verify**: Ensure only "FinanceMate" is checked (not FinanceMate-Sandbox)
 
-### Step 4: Configure Test Files
+### Step 4: Configure AnalyticsEngine
+1. **Locate File**: Navigate to `_macOS/FinanceMate/FinanceMate/Analytics/AnalyticsEngine.swift`
+2. **Select File**: Click on `AnalyticsEngine.swift` in Project Navigator
+3. **Open File Inspector**: Press `⌘⌥0` or select View → Inspectors → File Inspector
+4. **Add to Target**: In "Target Membership" section, check ✅ **FinanceMate**
+5. **Verify**: Ensure only "FinanceMate" is checked (not FinanceMate-Sandbox)
+
+### Step 5: Configure Test Files
 1. **LineItemViewModelTests.swift**:
    - Location: `_macOS/FinanceMateTests/ViewModels/LineItemViewModelTests.swift`
    - Target: Check ✅ **FinanceMateTests**
@@ -56,7 +64,11 @@ open _macOS/FinanceMate.xcodeproj
    - Location: `_macOS/FinanceMateTests/ViewModels/SplitAllocationViewModelTests.swift`
    - Target: Check ✅ **FinanceMateTests**
 
-### Step 5: Verify Configuration
+3. **AnalyticsEngineTests.swift**:
+   - Location: `_macOS/FinanceMateTests/Analytics/AnalyticsEngineTests.swift`
+   - Target: Check ✅ **FinanceMateTests**
+
+### Step 6: Verify Configuration
 ```bash
 # Test build compilation
 xcodebuild -project _macOS/FinanceMate.xcodeproj -scheme FinanceMate -configuration Debug build
@@ -71,12 +83,14 @@ xcodebuild -project _macOS/FinanceMate.xcodeproj -scheme FinanceMate -configurat
 ### ✅ File Target Membership
 - [ ] `LineItemViewModel.swift` → FinanceMate target
 - [ ] `SplitAllocationViewModel.swift` → FinanceMate target
+- [ ] `AnalyticsEngine.swift` → FinanceMate target
 - [ ] `LineItemViewModelTests.swift` → FinanceMateTests target
 - [ ] `SplitAllocationViewModelTests.swift` → FinanceMateTests target
+- [ ] `AnalyticsEngineTests.swift` → FinanceMateTests target
 
 ### ✅ Build Verification
 - [ ] Clean build completes without errors
-- [ ] All tests pass (75+ test cases)
+- [ ] All tests pass (95+ test cases including analytics)
 - [ ] Line item UI components compile successfully
 - [ ] No missing import statements or dependencies
 
