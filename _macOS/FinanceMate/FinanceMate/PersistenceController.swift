@@ -163,6 +163,12 @@ struct PersistenceController {
         splitAllocationToLineItemRelationship.inverseRelationship = lineItemToSplitAllocationsRelationship
 
         // Add relationships to entities
+        // Add entityId attribute to Transaction for multi-entity support
+        let entityIdAttribute = NSAttributeDescription()
+        entityIdAttribute.name = "entityId"
+        entityIdAttribute.attributeType = .UUIDAttributeType
+        entityIdAttribute.isOptional = false
+        
         transactionEntity.properties = [
             idAttribute,
             dateAttribute,
@@ -170,6 +176,7 @@ struct PersistenceController {
             categoryAttribute,
             noteAttribute,
             createdAtAttribute,
+            entityIdAttribute,
             transactionToLineItemsRelationship,
         ]
         lineItemEntity.properties = [
@@ -186,9 +193,258 @@ struct PersistenceController {
             splitAllocationToLineItemRelationship,
         ]
 
-        model.entities = [transactionEntity, lineItemEntity, splitAllocationEntity]
+        // Create FinancialEntity entity
+        let financialEntityEntity = NSEntityDescription()
+        financialEntityEntity.name = "FinancialEntity"
+        financialEntityEntity.managedObjectClassName = "FinancialEntity"
+        
+        // FinancialEntity attributes
+        let entityIdAttr = NSAttributeDescription()
+        entityIdAttr.name = "id"
+        entityIdAttr.attributeType = .UUIDAttributeType
+        entityIdAttr.isOptional = false
+        
+        let entityNameAttr = NSAttributeDescription()
+        entityNameAttr.name = "name"
+        entityNameAttr.attributeType = .stringAttributeType
+        entityNameAttr.isOptional = false
+        
+        let entityTypeAttr = NSAttributeDescription()
+        entityTypeAttr.name = "entityType"
+        entityTypeAttr.attributeType = .stringAttributeType
+        entityTypeAttr.isOptional = false
+        
+        let abnAttr = NSAttributeDescription()
+        abnAttr.name = "abn"
+        abnAttr.attributeType = .stringAttributeType
+        abnAttr.isOptional = true
+        
+        let createdDateAttr = NSAttributeDescription()
+        createdDateAttr.name = "createdDate"
+        createdDateAttr.attributeType = .dateAttributeType
+        createdDateAttr.isOptional = false
+        
+        let isActiveAttr = NSAttributeDescription()
+        isActiveAttr.name = "isActive"
+        isActiveAttr.attributeType = .booleanAttributeType
+        isActiveAttr.isOptional = false
+        
+        let parentEntityIdAttr = NSAttributeDescription()
+        parentEntityIdAttr.name = "parentEntityId"
+        parentEntityIdAttr.attributeType = .UUIDAttributeType
+        parentEntityIdAttr.isOptional = true
+        
+        let gstRegisteredAttr = NSAttributeDescription()
+        gstRegisteredAttr.name = "gstRegistered"
+        gstRegisteredAttr.attributeType = .booleanAttributeType
+        gstRegisteredAttr.isOptional = false
+        
+        // Create SMSFEntityDetails entity
+        let smsfDetailsEntity = NSEntityDescription()
+        smsfDetailsEntity.name = "SMSFEntityDetails"
+        smsfDetailsEntity.managedObjectClassName = "SMSFEntityDetails"
+        
+        // SMSFEntityDetails attributes
+        let smsfIdAttr = NSAttributeDescription()
+        smsfIdAttr.name = "id"
+        smsfIdAttr.attributeType = .UUIDAttributeType
+        smsfIdAttr.isOptional = false
+        
+        let smsfAbnAttr = NSAttributeDescription()
+        smsfAbnAttr.name = "abn"
+        smsfAbnAttr.attributeType = .stringAttributeType
+        smsfAbnAttr.isOptional = false
+        
+        let trustDeedDateAttr = NSAttributeDescription()
+        trustDeedDateAttr.name = "trustDeedDate"
+        trustDeedDateAttr.attributeType = .dateAttributeType
+        trustDeedDateAttr.isOptional = false
+        
+        let investmentStrategyDateAttr = NSAttributeDescription()
+        investmentStrategyDateAttr.name = "investmentStrategyDate"
+        investmentStrategyDateAttr.attributeType = .dateAttributeType
+        investmentStrategyDateAttr.isOptional = false
+        
+        let lastAuditDateAttr = NSAttributeDescription()
+        lastAuditDateAttr.name = "lastAuditDate"
+        lastAuditDateAttr.attributeType = .dateAttributeType
+        lastAuditDateAttr.isOptional = true
+        
+        let nextAuditDueDateAttr = NSAttributeDescription()
+        nextAuditDueDateAttr.name = "nextAuditDueDate"
+        nextAuditDueDateAttr.attributeType = .dateAttributeType
+        nextAuditDueDateAttr.isOptional = false
+        
+        // Create CrossEntityTransaction entity
+        let crossEntityTransactionEntity = NSEntityDescription()
+        crossEntityTransactionEntity.name = "CrossEntityTransaction"
+        crossEntityTransactionEntity.managedObjectClassName = "CrossEntityTransaction"
+        
+        // CrossEntityTransaction attributes
+        let crossTxnIdAttr = NSAttributeDescription()
+        crossTxnIdAttr.name = "id"
+        crossTxnIdAttr.attributeType = .UUIDAttributeType
+        crossTxnIdAttr.isOptional = false
+        
+        let fromEntityIdAttr = NSAttributeDescription()
+        fromEntityIdAttr.name = "fromEntityId"
+        fromEntityIdAttr.attributeType = .UUIDAttributeType
+        fromEntityIdAttr.isOptional = false
+        
+        let toEntityIdAttr = NSAttributeDescription()
+        toEntityIdAttr.name = "toEntityId"
+        toEntityIdAttr.attributeType = .UUIDAttributeType
+        toEntityIdAttr.isOptional = false
+        
+        let crossAmountAttr = NSAttributeDescription()
+        crossAmountAttr.name = "amount"
+        crossAmountAttr.attributeType = .doubleAttributeType
+        crossAmountAttr.isOptional = false
+        
+        let crossDescriptionAttr = NSAttributeDescription()
+        crossDescriptionAttr.name = "description"
+        crossDescriptionAttr.attributeType = .stringAttributeType
+        crossDescriptionAttr.isOptional = false
+        
+        let transactionDateAttr = NSAttributeDescription()
+        transactionDateAttr.name = "transactionDate"
+        transactionDateAttr.attributeType = .dateAttributeType
+        transactionDateAttr.isOptional = false
+        
+        let transactionTypeAttr = NSAttributeDescription()
+        transactionTypeAttr.name = "transactionType"
+        transactionTypeAttr.attributeType = .stringAttributeType
+        transactionTypeAttr.isOptional = false
+        
+        let auditTrailAttr = NSAttributeDescription()
+        auditTrailAttr.name = "auditTrail"
+        auditTrailAttr.attributeType = .binaryDataAttributeType
+        auditTrailAttr.isOptional = true
+        
+        // Create relationships
+        // Transaction -> FinancialEntity (many-to-one)
+        let transactionToEntityRelationship = NSRelationshipDescription()
+        transactionToEntityRelationship.name = "entity"
+        transactionToEntityRelationship.destinationEntity = financialEntityEntity
+        transactionToEntityRelationship.minCount = 1
+        transactionToEntityRelationship.maxCount = 1
+        transactionToEntityRelationship.deleteRule = .nullifyDeleteRule
+        
+        // FinancialEntity -> Transactions (one-to-many)
+        let entityToTransactionsRelationship = NSRelationshipDescription()
+        entityToTransactionsRelationship.name = "transactions"
+        entityToTransactionsRelationship.destinationEntity = transactionEntity
+        entityToTransactionsRelationship.minCount = 0
+        entityToTransactionsRelationship.maxCount = 0
+        entityToTransactionsRelationship.deleteRule = .cascadeDeleteRule
+        
+        // FinancialEntity -> ChildEntities (one-to-many)
+        let entityToChildEntitiesRelationship = NSRelationshipDescription()
+        entityToChildEntitiesRelationship.name = "childEntities"
+        entityToChildEntitiesRelationship.destinationEntity = financialEntityEntity
+        entityToChildEntitiesRelationship.minCount = 0
+        entityToChildEntitiesRelationship.maxCount = 0
+        entityToChildEntitiesRelationship.deleteRule = .cascadeDeleteRule
+        
+        // FinancialEntity -> CrossEntityTransactions (one-to-many)
+        let entityToCrossTransactionsRelationship = NSRelationshipDescription()
+        entityToCrossTransactionsRelationship.name = "crossEntityTransactions"
+        entityToCrossTransactionsRelationship.destinationEntity = crossEntityTransactionEntity
+        entityToCrossTransactionsRelationship.minCount = 0
+        entityToCrossTransactionsRelationship.maxCount = 0
+        entityToCrossTransactionsRelationship.deleteRule = .cascadeDeleteRule
+        
+        // FinancialEntity -> SMSFEntityDetails (one-to-one)
+        let entityToSMSFDetailsRelationship = NSRelationshipDescription()
+        entityToSMSFDetailsRelationship.name = "smsfDetails"
+        entityToSMSFDetailsRelationship.destinationEntity = smsfDetailsEntity
+        entityToSMSFDetailsRelationship.minCount = 0
+        entityToSMSFDetailsRelationship.maxCount = 1
+        entityToSMSFDetailsRelationship.deleteRule = .cascadeDeleteRule
+        
+        // SMSFEntityDetails -> FinancialEntity (one-to-one)
+        let smsfDetailsToEntityRelationship = NSRelationshipDescription()
+        smsfDetailsToEntityRelationship.name = "entity"
+        smsfDetailsToEntityRelationship.destinationEntity = financialEntityEntity
+        smsfDetailsToEntityRelationship.minCount = 1
+        smsfDetailsToEntityRelationship.maxCount = 1
+        smsfDetailsToEntityRelationship.deleteRule = .nullifyDeleteRule
+        
+        // CrossEntityTransaction -> FromEntity (many-to-one)
+        let crossTxnToFromEntityRelationship = NSRelationshipDescription()
+        crossTxnToFromEntityRelationship.name = "fromEntity"
+        crossTxnToFromEntityRelationship.destinationEntity = financialEntityEntity
+        crossTxnToFromEntityRelationship.minCount = 1
+        crossTxnToFromEntityRelationship.maxCount = 1
+        crossTxnToFromEntityRelationship.deleteRule = .nullifyDeleteRule
+        
+        // CrossEntityTransaction -> ToEntity (many-to-one)
+        let crossTxnToToEntityRelationship = NSRelationshipDescription()
+        crossTxnToToEntityRelationship.name = "toEntity"
+        crossTxnToToEntityRelationship.destinationEntity = financialEntityEntity
+        crossTxnToToEntityRelationship.minCount = 1
+        crossTxnToToEntityRelationship.maxCount = 1
+        crossTxnToToEntityRelationship.deleteRule = .nullifyDeleteRule
+        
+        // Set up inverse relationships
+        transactionToEntityRelationship.inverseRelationship = entityToTransactionsRelationship
+        entityToTransactionsRelationship.inverseRelationship = transactionToEntityRelationship
+        entityToSMSFDetailsRelationship.inverseRelationship = smsfDetailsToEntityRelationship
+        smsfDetailsToEntityRelationship.inverseRelationship = entityToSMSFDetailsRelationship
+        
+        // Update entity properties
+        financialEntityEntity.properties = [
+            entityIdAttr,
+            entityNameAttr,
+            entityTypeAttr,
+            abnAttr,
+            createdDateAttr,
+            isActiveAttr,
+            parentEntityIdAttr,
+            gstRegisteredAttr,
+            entityToTransactionsRelationship,
+            entityToChildEntitiesRelationship,
+            entityToCrossTransactionsRelationship,
+            entityToSMSFDetailsRelationship
+        ]
+        
+        smsfDetailsEntity.properties = [
+            smsfIdAttr,
+            smsfAbnAttr,
+            trustDeedDateAttr,
+            investmentStrategyDateAttr,
+            lastAuditDateAttr,
+            nextAuditDueDateAttr,
+            smsfDetailsToEntityRelationship
+        ]
+        
+        crossEntityTransactionEntity.properties = [
+            crossTxnIdAttr,
+            fromEntityIdAttr,
+            toEntityIdAttr,
+            crossAmountAttr,
+            crossDescriptionAttr,
+            transactionDateAttr,
+            transactionTypeAttr,
+            auditTrailAttr,
+            crossTxnToFromEntityRelationship,
+            crossTxnToToEntityRelationship
+        ]
+        
+        // Add entity relationship to transaction
+        transactionEntity.properties.append(transactionToEntityRelationship)
+        
+        model.entities = [
+            transactionEntity, 
+            lineItemEntity, 
+            splitAllocationEntity,
+            financialEntityEntity,
+            smsfDetailsEntity,
+            crossEntityTransactionEntity
+        ]
 
-        container = NSPersistentContainer(name: "FinanceMateModel", managedObjectModel: model)
+        // Use only the programmatic model, not the .xcdatamodeld file
+        container = NSPersistentContainer(name: "FinanceMateDataStore", managedObjectModel: model)
         if inMemory {
             container.persistentStoreDescriptions.first?.url = URL(fileURLWithPath: "/dev/null")
         }
