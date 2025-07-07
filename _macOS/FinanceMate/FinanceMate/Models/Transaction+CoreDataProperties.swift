@@ -5,6 +5,10 @@ extension Transaction {
     @nonobjc public class func fetchRequest() -> NSFetchRequest<Transaction> {
         return NSFetchRequest<Transaction>(entityName: "Transaction")
     }
+    
+    @nonobjc public override class func entity() -> NSEntityDescription {
+        return NSEntityDescription.entity(forEntityName: "Transaction", in: PersistenceController.shared.container.viewContext)!
+    }
 
     static func create(
         in context: NSManagedObjectContext,

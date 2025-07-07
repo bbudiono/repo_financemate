@@ -97,6 +97,10 @@ extension LineItem {
     @nonobjc public class func fetchRequest() -> NSFetchRequest<LineItem> {
         return NSFetchRequest<LineItem>(entityName: "LineItem")
     }
+    
+    @nonobjc public override class func entity() -> NSEntityDescription {
+        return NSEntityDescription.entity(forEntityName: "LineItem", in: PersistenceController.shared.container.viewContext)!
+    }
 
     static func create(
         in context: NSManagedObjectContext,
@@ -117,6 +121,10 @@ extension LineItem {
 extension SplitAllocation {
     @nonobjc public class func fetchRequest() -> NSFetchRequest<SplitAllocation> {
         return NSFetchRequest<SplitAllocation>(entityName: "SplitAllocation")
+    }
+    
+    @nonobjc public override class func entity() -> NSEntityDescription {
+        return NSEntityDescription.entity(forEntityName: "SplitAllocation", in: PersistenceController.shared.container.viewContext)!
     }
 
     static func create(

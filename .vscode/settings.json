@@ -10,6 +10,79 @@
     "files.exclude": {
         "**/build": true,
         "**/DerivedData": true,
-        "**/.DS_Store": true
+        "**/.DS_Store": true,
+        "**/.build": true,
+        "**/xcuserdata": true
+    },
+    "files.associations": {
+        "*.swift": "swift",
+        "*.xcconfig": "text",
+        "CLAUDE.md": "markdown",
+        "BLUEPRINT.md": "markdown"
+    },
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": true,
+        "source.fixAll": true
+    },
+    "terminal.integrated.cwd": "${workspaceFolder}/_macOS",
+    "explorer.fileNesting.enabled": true,
+    "explorer.fileNesting.patterns": {
+        "*.swift": "${capture}Tests.swift, ${capture}UITests.swift",
+        "CLAUDE.md": "CLAUDE.local.md",
+        "README.md": "docs/ARCHITECTURE.md, docs/BUILDING.md, docs/TASKS.md"
+    },
+    "search.exclude": {
+        "**/DerivedData": true,
+        "**/.build": true,
+        "**/build": true,
+        "**/xcuserdata": true,
+        "**/temp": false
+    },
+    "swift.diagnostics": true,
+    "swift.autocompletion": true,
+    "swift.format.on.save": true,
+    "git.defaultCloneDirectory": "${workspaceFolder}",
+    "git.ignoreLimitWarning": true,
+    "git.autofetch": true,
+    "sweetpad.enableBuildServer": true,
+    "sweetpad.enableSourceKitLSP": true,
+    "sweetpad.debug.lldb.enable": true,
+    "sweetpad.test.enable": true,
+    "sweetpad.build.parallelJobs": 8,
+    "editor.rulers": [80, 120],
+    "editor.wordWrap": "wordWrapColumn",
+    "editor.wordWrapColumn": 120,
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false,
+    "editor.minimap.enabled": false,
+    "workbench.editor.enablePreview": false,
+    "workbench.editor.revealIfOpen": true,
+    "workbench.tree.indent": 12,
+    "markdown.preview.scrollEditorWithPreview": true,
+    "markdown.preview.scrollPreviewWithEditor": true,
+    "todo-tree.tree.showScanModeButton": false,
+    "todo-tree.highlights.enabled": true,
+    "todo-tree.highlights.defaultHighlight": {
+        "foreground": "green",
+        "background": "yellow",
+        "opacity": 50,
+        "borderRadius": "2px",
+        "fontWeight": "bold"
+    },
+    "todo-tree.highlights.customHighlight": {
+        "TODO": {
+            "foreground": "black",
+            "background": "yellow"
+        },
+        "FIXME": {
+            "foreground": "white",
+            "background": "red"
+        },
+        "NOTE": {
+            "foreground": "white",
+            "background": "blue"
+        }
     }
 }
