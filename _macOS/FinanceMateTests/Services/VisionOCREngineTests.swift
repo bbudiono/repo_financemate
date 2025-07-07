@@ -263,4 +263,101 @@ final class VisionOCREngineTests: XCTestCase {
         return VisionOCREngine.createTestResult(text: text, confidence: confidence)
     }
     
+    /// Creates a test image with rendered text for OCR testing
+    private func createTestImageWithText(_ text: String) throws -> CGImage {
+        let size = CGSize(width: 400, height: 600)
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+        let context = CGContext(data: nil, 
+                              width: Int(size.width), 
+                              height: Int(size.height), 
+                              bitsPerComponent: 8, 
+                              bytesPerRow: 0, 
+                              space: colorSpace, 
+                              bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)!
+        
+        // White background
+        context.setFillColor(CGColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0))
+        context.fill(CGRect(origin: .zero, size: size))
+        
+        // Black text
+        context.setFillColor(CGColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0))
+        
+        // Create attributed string for text rendering
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: NSFont.systemFont(ofSize: 16),
+            .foregroundColor: NSColor.black
+        ]
+        
+        let attributedString = NSAttributedString(string: text, attributes: attributes)
+        let line = CTLineCreateWithAttributedString(attributedString)
+        
+        // Render text
+        context.textPosition = CGPoint(x: 20, y: size.height - 50)
+        CTLineDraw(line, context)
+        
+        guard let cgImage = context.makeImage() else {
+            throw NSError(domain: "TestImageCreation", code: 1, userInfo: [NSLocalizedDescriptionKey: "Failed to create test image"])
+        }
+        
+        return cgImage
+    }
+    
+    /// Creates a blurry test image for quality testing
+    private func createBlurryTestImage() throws -> CGImage {
+        let baseImage = try createTestImageWithText("BLURRY TEXT $25.50")
+        
+        // Apply blur filter
+        let ciImage = CIImage(cgImage: baseImage)
+        let filter = CIFilter(name: "CIGaussianBlur")!
+        filter.setValue(ciImage, forKey: kCIInputImageKey)
+        filter.setValue(3.0, forKey: kCIInputRadiusKey)
+        
+        let context = CIContext()
+        guard let outputImage = filter.outputImage,
+              let cgImage = context.createCGImage(outputImage, from: outputImage.extent) else {
+            throw NSError(domain: "TestImageCreation", code: 2, userInfo: [NSLocalizedDescriptionKey: "Failed to create blurry test image"])
+        }
+        
+        return cgImage
+    }
+    
+    /// Creates an empty test image for error testing
+    private func createEmptyTestImage() throws -> CGImage {
+        let size = CGSize(width: 100, height: 100)
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+        let context = CGContext(data: nil, 
+                              width: Int(size.width), 
+                              height: Int(size.height), 
+                              bitsPerComponent: 8, 
+                              bytesPerRow: 0, 
+                              space: colorSpace, 
+                              bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)!
+        
+        // Solid white background with no text
+        context.setFillColor(CGColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0))
+        context.fill(CGRect(origin: .zero, size: size))
+        
+        guard let cgImage = context.makeImage() else {
+            throw NSError(domain: "TestImageCreation", code: 3, userInfo: [NSLocalizedDescriptionKey: "Failed to create empty test image"])
+        }
+        
+        return cgImage
+    }
+    
+    /// Gets current memory usage in MB for performance testing
+    private func getMemoryUsage() -> Double {
+        var info = mach_task_basic_info()
+        var count = mach_msg_type_number_t(MemoryLayout<mach_task_basic_info>.size) / 4
+        
+        let result = withUnsafeMutablePointer(to: &info) {
+            $0.withMemoryRebound(to: integer_t.self, capacity: 1) {
+                task_info(mach_task_self_, task_flavor_t(MACH_TASK_BASIC_INFO), $0, &count)
+            }
+        }
+        
+        guard result == KERN_SUCCESS else { return 0.0 }
+        
+        return Double(info.resident_size) / 1024.0 / 1024.0 // Convert to MB
+    }
+    
 }
