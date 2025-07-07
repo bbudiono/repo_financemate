@@ -72,7 +72,7 @@ final class LineItemViewModel: ObservableObject {
             isLoading = true
             errorMessage = nil
 
-            let lineItem = LineItem.create(
+            _ = LineItem.create(
                 in: context,
                 itemDescription: newLineItem.itemDescription.trimmingCharacters(in: .whitespacesAndNewlines),
                 amount: newLineItem.amount,

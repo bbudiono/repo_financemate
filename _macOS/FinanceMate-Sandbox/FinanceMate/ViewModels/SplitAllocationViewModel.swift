@@ -120,7 +120,7 @@ final class SplitAllocationViewModel: ObservableObject {
             isLoading = true
             errorMessage = nil
 
-            let splitAllocation = SplitAllocation.create(
+            _ = SplitAllocation.create(
                 in: context,
                 percentage: newSplitPercentage,
                 taxCategory: selectedTaxCategory.trimmingCharacters(in: .whitespacesAndNewlines),

@@ -686,9 +686,7 @@ struct AddEditTransactionView: View {
                 try PersistenceController.shared.container.viewContext.save()
 
                 // Refresh the viewModel's transaction list
-                Task {
-                    await viewModel.fetchTransactions()
-                }
+                viewModel.fetchTransactions()
             } catch {
                 showValidationError("Failed to save transaction: \(error.localizedDescription)")
                 return
