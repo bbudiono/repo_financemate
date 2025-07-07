@@ -87,11 +87,94 @@ This section captures the core feature set with tracking for implementation stat
   - **Requirement:** Scan receipts/invoices and extract line-item details (item description, quantity, price), associating them with a parent transaction
   - **Status:** `Pending`
   - **Dependencies:** Apple Vision framework, document processing pipeline
+  - **Technical Architecture:**
+    - **Apple Vision Framework**: VNDocumentCameraViewController + VNRecognizeTextRequest
+    - **Machine Learning Pipeline**: Custom CoreML models for receipt classification
+    - **Data Extraction Engine**: Multi-stage text recognition and validation
+    - **Integration Workflow**: Camera → Processing → Transaction Matching → Review
+  - **Implementation Components:**
+    1. **Document Capture System**
+       - Native camera integration with auto-detection
+       - Batch processing for multiple receipts
+       - Image quality validation and enhancement
+       - Document type classification (Receipt/Invoice/Statement)
+    2. **Text Recognition Engine**
+       - VNRecognizeTextRequest with accuracy optimization
+       - Multi-language support (English/Australian formats)
+       - Currency and date format validation
+       - Merchant identification and matching
+    3. **Line Item Extraction**
+       - Table structure recognition for itemized receipts
+       - Product/service description parsing
+       - Quantity, unit price, and total extraction
+       - Tax component identification (GST/VAT)
+    4. **Transaction Matching Algorithm**
+       - Fuzzy matching against existing transactions
+       - Amount tolerance and date range validation
+       - Merchant name normalization
+       - Confidence scoring and manual review queue
 
 - **Requirement ID:** `UR-105`
   - **Requirement:** Track investment portfolios, including shares (ASX/NASDAQ) and cryptocurrencies, by integrating with broker/exchange APIs (e.g., Stake, CommSec, Binance)
   - **Status:** `Pending`
   - **Dependencies:** Broker API integrations, portfolio data model
+  - **Broker Integration Architecture:**
+    - **Australian Markets**: CommSec API, NAB Trade, ANZ Share Investing
+    - **International Markets**: Interactive Brokers, Stake, Superhero
+    - **Cryptocurrency**: Binance, Coinbase Pro, Kraken APIs
+    - **Data Aggregation**: Real-time and historical data synthesis
+  - **Portfolio Management Features:**
+    1. **Real-Time Data Integration**
+       - WebSocket connections for live price feeds
+       - Portfolio valuation updates (1-minute intervals)
+       - Currency conversion (AUD/USD/EUR/BTC)
+       - Market hours awareness and offline caching
+    2. **Holdings Management**
+       - Multi-broker portfolio consolidation
+       - Corporate actions tracking (dividends, splits, mergers)
+       - Cost basis calculation with tax optimization
+       - Performance attribution analysis
+    3. **Risk Assessment Engine**
+       - Portfolio diversification analysis
+       - Asset allocation visualization
+       - Correlation analysis across holdings
+       - Value-at-Risk (VaR) calculations
+    4. **Tax Optimization Features**
+       - Capital gains/loss tracking
+       - Dividend imputation credit calculations
+       - Tax lot identification for optimal selling
+       - Year-end tax report generation
+
+- **Requirement ID:** `UR-102B`
+  - **Requirement:** Advanced Multi-Entity Management with enterprise-grade features building on UR-102 foundations
+  - **Status:** `Pending`
+  - **Dependencies:** Basic entity system (UR-102), enhanced data architecture, RBAC system
+  - **Enhanced Data Architecture:**
+    - **Entity Hierarchies**: Parent-child entity relationships
+    - **Cross-Entity Reporting**: Consolidated and separate views
+    - **Permission Inheritance**: Role-based access with entity scoping
+    - **Data Isolation**: Secure entity data separation
+  - **Entity Management Features:**
+    1. **Entity Type Support**
+       - Personal entities (Individual, Joint accounts)
+       - Business entities (Sole Trader, Company, Partnership)
+       - Investment entities (Family Trust, SMSF, Investment Club)
+       - Special purpose vehicles (Property trusts, Trading entities)
+    2. **Advanced Access Control**
+       - Granular permission system (Read/Write/Admin per entity)
+       - Professional access (Accountant view-only with specific entities)
+       - Family sharing with limited access controls
+       - Audit trail for all entity access and modifications
+    3. **Cross-Entity Analytics**
+       - Consolidated financial reporting
+       - Entity performance comparison
+       - Tax optimization across entities
+       - Transfer tracking between entities
+    4. **Compliance Features**
+       - Entity-specific tax rules and reporting
+       - Regulatory compliance checking
+       - Automated compliance reporting
+       - Professional advisor integration
 
 ### Phase 4 Requirements
 - **Requirement ID:** `UR-106`

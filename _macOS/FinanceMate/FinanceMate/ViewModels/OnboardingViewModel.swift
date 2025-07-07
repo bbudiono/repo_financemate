@@ -253,12 +253,13 @@ final class OnboardingViewModel: ObservableObject {
             let currentDate = Date()
             
             for i in 0..<15 {
-                let transaction = Transaction(context: context)
-                transaction.id = UUID()
-                transaction.amount = Double.random(in: 50...2000)
+                let transaction = Transaction.create(
+                    in: context,
+                    amount: Double.random(in: 50...2000),
+                    category: sampleCategories[i % sampleCategories.count],
+                    note: "Sample - \(sampleDescriptions[i % sampleDescriptions.count])"
+                )
                 transaction.date = calendar.date(byAdding: .day, value: -i * 3, to: currentDate)!
-                transaction.category = sampleCategories[i % sampleCategories.count]
-                transaction.note = "Sample - \(sampleDescriptions[i % sampleDescriptions.count])"
                 
                 // Create line items for some transactions
                 if i % 3 == 0 {
@@ -354,12 +355,12 @@ final class OnboardingViewModel: ObservableObject {
         guard isDemoMode else { return }
         
         do {
-            let demoTransaction = Transaction(context: context)
-            demoTransaction.id = UUID()
-            demoTransaction.amount = 150.00
-            demoTransaction.date = Date()
-            demoTransaction.category = "Business"
-            demoTransaction.note = "Demo - Business Lunch"
+            _ = Transaction.create(
+                in: context,
+                amount: 150.00,
+                category: "Business",
+                note: "Demo - Business Lunch"
+            )
             
             // Create line item with split allocation
             let lineItem = LineItem(context: context)

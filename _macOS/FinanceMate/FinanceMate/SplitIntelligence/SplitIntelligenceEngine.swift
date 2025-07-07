@@ -682,11 +682,13 @@ class SplitIntelligenceEngine: ObservableObject {
         
         // Apply differential privacy noise to amounts
         return data.map { (transaction, splits) in
-            let noisyTransaction = Transaction(context: context)
+            let noisyTransaction = Transaction.create(
+                in: context,
+                amount: transaction.amount + generateLaplaceNoise(sensitivity: 100.0, epsilon: privacyBudget),
+                category: transaction.category,
+                note: transaction.note
+            )
             noisyTransaction.id = transaction.id
-            noisyTransaction.amount = transaction.amount + generateLaplaceNoise(sensitivity: 100.0, epsilon: privacyBudget)
-            noisyTransaction.category = transaction.category
-            noisyTransaction.note = transaction.note
             noisyTransaction.date = transaction.date
             noisyTransaction.createdAt = transaction.createdAt
             
@@ -933,12 +935,13 @@ class SplitIntelligenceEngine: ObservableObject {
     
     private func createSyntheticTrainingData(from interaction: UserInteraction) -> (Transaction, [SplitAllocation]) {
         // Create synthetic transaction and splits from user interaction
-        let transaction = Transaction(context: context)
+        let transaction = Transaction.create(
+            in: context,
+            amount: 500.0,
+            category: "user_feedback",
+            note: "Synthetic data from user feedback"
+        )
         transaction.id = interaction.transactionId
-        transaction.amount = 500.0 // Default amount
-        transaction.category = "user_feedback"
-        transaction.note = "Synthetic data from user feedback"
-        transaction.date = Date()
         transaction.createdAt = Date()
         
         let splits = interaction.approvedSplits.map { approvedSplit in

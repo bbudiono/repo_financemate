@@ -720,12 +720,12 @@ struct AddEditTransactionView: View {
 
             // Create a temporary transaction for line item management
             let context = PersistenceController.shared.container.viewContext
-            let tempTransaction = Transaction(context: context)
-            tempTransaction.id = UUID()
-            tempTransaction.amount = isIncome ? amountValue : -amountValue
-            tempTransaction.date = Date()
-            tempTransaction.category = category
-            tempTransaction.note = note.isEmpty ? nil : note
+            let tempTransaction = Transaction.create(
+                in: context,
+                amount: isIncome ? amountValue : -amountValue,
+                category: category,
+                note: note.isEmpty ? nil : note
+            )
             tempTransaction.createdAt = Date()
 
             currentTransaction = tempTransaction

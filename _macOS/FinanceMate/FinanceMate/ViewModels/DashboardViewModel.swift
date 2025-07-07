@@ -233,12 +233,12 @@ class DashboardViewModel: ObservableObject {
                 try validateTransactionData(amount: amount, category: category)
 
                 // Create and save transaction
-                let transaction = Transaction(context: context)
-                transaction.id = UUID()
-                transaction.amount = amount
-                transaction.category = category
-                transaction.note = note
-                transaction.date = Date()
+                _ = Transaction.create(
+                    in: context,
+                    amount: amount,
+                    category: category,
+                    note: note
+                )
 
                 try context.save()
 
@@ -264,12 +264,12 @@ class DashboardViewModel: ObservableObject {
                 // Begin batch operation
                 context.performAndWait {
                     for transactionData in transactions {
-                        let transaction = Transaction(context: context)
-                        transaction.id = UUID()
-                        transaction.amount = transactionData.amount
-                        transaction.category = transactionData.category
-                        transaction.note = transactionData.note
-                        transaction.date = Date()
+                        _ = Transaction.create(
+                            in: context,
+                            amount: transactionData.amount,
+                            category: transactionData.category,
+                            note: transactionData.note
+                        )
                     }
                 }
 

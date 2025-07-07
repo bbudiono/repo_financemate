@@ -28,7 +28,9 @@ public class Transaction: NSManagedObject, Identifiable {
     @NSManaged public var category: String
     @NSManaged public var note: String?
     @NSManaged public var createdAt: Date
+    @NSManaged public var entityId: UUID
     @NSManaged public var lineItems: Set<LineItem>
+    // Entity relationship handled in Transaction+CoreDataProperties.swift
 }
 
 // MARK: - Phase 2: Line Item Splitting Models (Core Data implementation)
@@ -98,9 +100,8 @@ extension LineItem {
         return NSFetchRequest<LineItem>(entityName: "LineItem")
     }
     
-    @nonobjc public override class func entity() -> NSEntityDescription {
-        return NSEntityDescription.entity(forEntityName: "LineItem", in: PersistenceController.shared.container.viewContext)!
-    }
+    // Note: Removed entity() method to avoid context conflicts in testing.
+    // Using NSFetchRequest<LineItem>(entityName: "LineItem") directly instead.
 
     static func create(
         in context: NSManagedObjectContext,
@@ -108,7 +109,12 @@ extension LineItem {
         amount: Double,
         transaction: Transaction
     ) -> LineItem {
-        let lineItem = LineItem(context: context)
+        // Create entity description directly from context to avoid conflicts
+        guard let entity = NSEntityDescription.entity(forEntityName: "LineItem", in: context) else {
+            fatalError("LineItem entity not found in the provided context")
+        }
+        
+        let lineItem = LineItem(entity: entity, insertInto: context)
         lineItem.id = UUID()
         lineItem.itemDescription = itemDescription
         lineItem.amount = amount
@@ -123,9 +129,8 @@ extension SplitAllocation {
         return NSFetchRequest<SplitAllocation>(entityName: "SplitAllocation")
     }
     
-    @nonobjc public override class func entity() -> NSEntityDescription {
-        return NSEntityDescription.entity(forEntityName: "SplitAllocation", in: PersistenceController.shared.container.viewContext)!
-    }
+    // Note: Removed entity() method to avoid context conflicts in testing.
+    // Using NSFetchRequest<SplitAllocation>(entityName: "SplitAllocation") directly instead.
 
     static func create(
         in context: NSManagedObjectContext,
@@ -133,7 +138,12 @@ extension SplitAllocation {
         taxCategory: String,
         lineItem: LineItem
     ) -> SplitAllocation {
-        let splitAllocation = SplitAllocation(context: context)
+        // Create entity description directly from context to avoid conflicts
+        guard let entity = NSEntityDescription.entity(forEntityName: "SplitAllocation", in: context) else {
+            fatalError("SplitAllocation entity not found in the provided context")
+        }
+        
+        let splitAllocation = SplitAllocation(entity: entity, insertInto: context)
         splitAllocation.id = UUID()
         splitAllocation.percentage = percentage
         splitAllocation.taxCategory = taxCategory
@@ -141,3 +151,4 @@ extension SplitAllocation {
         return splitAllocation
     }
 }
+
