@@ -251,7 +251,7 @@ struct LineItemEntryView: View {
                 .textFieldStyle(.roundedBorder)
                 .onSubmit {
                 }
-                .onChange(of: itemDescription) { _ in
+                .onChange(of: itemDescription) { oldValue, newValue in
                     validateInput()
                 }
                 .accessibilityLabel("Item description")
@@ -278,7 +278,7 @@ struct LineItemEntryView: View {
 
             TextField("0.00", text: $amount)
                 .textFieldStyle(.roundedBorder)
-                .onChange(of: amount) { _ in
+                .onChange(of: amount) { oldValue, newValue in
                     validateInput()
                 }
                 .accessibilityLabel("Amount in Australian dollars")

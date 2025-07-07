@@ -318,16 +318,200 @@ FinanceMate has achieved **full production readiness** with all core features im
 
 ---
 
-## TASK-2.3: Analytics Engine & Onboarding Integration (PLANNED)
+## TASK-2.3: Analytics Engine & Onboarding Integration (EXPANDED)
 **Priority:** High  
 **Status:** 🔄 READY FOR IMPLEMENTATION  
-**Dependencies:** TASK-2.2 build fix completion
+**Dependencies:** TASK-2.2 manual Xcode configuration completion
+**Estimated Effort:** 25-30 hours across 4 weeks
 
-### Subtasks (Level 4-5 Breakdown Required):
-- ⚪ **TASK-2.3.1**: Analytics Engine Foundation
-- ⚪ **TASK-2.3.2**: User Onboarding Flow Implementation  
-- ⚪ **TASK-2.3.3**: Progressive Disclosure System
-- ⚪ **TASK-2.3.4**: A/B Testing Infrastructure
+---
+
+### TASK-2.3.1: Analytics Engine Foundation (LEVEL 5 BREAKDOWN)
+**Priority:** Critical | **Effort:** 8-10 hours | **Dependencies:** Core Data line item system
+
+#### TASK-2.3.1.A: Split-Based Analytics Core Engine ✅ COMPLETED
+**Target Files:** `AnalyticsEngine.swift`, `AnalyticsEngineTests.swift`
+**Status:** ✅ COMPLETE
+**Completion Date:** 2025-07-07
+**Commit:** 55876ec - "feat: implement TASK-2.3.1.A Analytics Engine Foundation"
+**Acceptance Criteria:**
+- ✅ Create AnalyticsEngine class with @MainActor compliance for UI updates
+- ✅ Implement split percentage aggregation across all transactions by tax category
+- ✅ Add time-based analysis (monthly, quarterly, yearly) for split patterns
+- ✅ Calculate financial metrics: total by category, percentage distributions, trends
+- ✅ Include real-time balance calculations with split-aware computations
+- ✅ Write 20+ unit tests covering aggregation algorithms and edge cases
+- ✅ Ensure Australian locale compliance for all calculated values
+- ✅ Performance optimization for large transaction datasets (1000+ transactions)
+
+#### TASK-2.3.1.B: Dashboard Analytics Integration ✅ COMPLETED
+**Target Files:** `DashboardAnalyticsViewModel.swift`, `DashboardAnalyticsView.swift`
+**Status:** ✅ COMPLETE
+**Completion Date:** 2025-07-07
+**Commit:** eac1ab5 - "feat: implement TASK-2.3.1.B Dashboard Analytics Integration"
+**Acceptance Criteria:**
+- ✅ Extend DashboardViewModel with analytics capabilities and real-time updates
+- ✅ Add split-based summary cards showing tax category breakdowns
+- ✅ Implement trend analysis charts using Charts framework (iOS 16+/macOS 13+)
+- ✅ Create wealth progression tracking with split-aware calculations
+- ✅ Add expense pattern recognition and anomaly detection for split allocations
+- ✅ Include interactive chart elements with glassmorphism styling
+- ✅ Write 15+ UI tests for analytics dashboard interactions
+- ✅ Ensure VoiceOver accessibility for all analytics components
+
+#### TASK-2.3.1.C: Reporting Engine with Split Intelligence ✅ COMPLETED
+**Target Files:** `ReportingEngine.swift`, `ReportingEngineTests.swift`
+**Status:** ✅ COMPLETE
+**Completion Date:** 2025-07-07
+**Commit:** 03c1696 - "feat: implement TASK-2.3.1.C Reporting Engine with Split Intelligence"
+**Acceptance Criteria:**
+- ✅ Create comprehensive reporting engine with tax-optimized report generation
+- ✅ Implement split-based tax summary reports aggregating by category
+- ✅ Add entity-specific profit/loss reporting with precise allocations
+- ✅ Create audit trail reporting for split allocation history
+- ✅ Include CSV/PDF export functionality with Australian tax compliance
+- ✅ Add customizable report templates for different user personas
+- ✅ Implement report scheduling and automated generation capabilities
+- ✅ Write 25+ tests covering report accuracy and export functionality
+
+---
+
+### TASK-2.3.2: User Onboarding Flow Implementation (LEVEL 5 BREAKDOWN)
+**Priority:** High | **Effort:** 6-8 hours | **Dependencies:** Analytics engine components
+
+#### TASK-2.3.2.A: First-Time User Experience ✅ COMPLETED
+**Target Files:** `OnboardingViewModel.swift`, `OnboardingViewModelTests.swift`
+**Status:** ✅ COMPLETE
+**Completion Date:** 2025-07-07
+**Commit:** 0d4a6c5 - "feat: implement TASK-2.3.2.A OnboardingViewModel with comprehensive user experience"
+**Acceptance Criteria:**
+- ✅ Create multi-step onboarding flow with glassmorphism styling
+- ✅ Implement welcome sequence explaining core financial management features
+- ✅ Add interactive demo for transaction creation and categorization
+- ✅ Include tutorial for line item splitting with tax category education
+- ✅ Create sample data playground for users to practice with realistic scenarios
+- ✅ Implement progress tracking and completion rewards
+- ✅ Add skip/resume functionality with preference persistence
+- ✅ Write 24+ UI tests for complete onboarding flow coverage
+
+#### TASK-2.3.2.B: Feature Discovery & Education ✅ COMPLETED
+**Target Files:** `FeatureDiscoveryViewModel.swift`, `FeatureDiscoveryViewModelTests.swift`
+**Status:** ✅ COMPLETE
+**Completion Date:** 2025-07-07
+**Commit:** 38ec9b6 - "feat: implement TASK-2.3.2.B FeatureDiscoveryViewModel with comprehensive contextual help system"
+**Acceptance Criteria:**
+- ✅ Create contextual tooltip system for complex features
+- ✅ Implement progressive feature unlocking based on user engagement
+- ✅ Add educational overlays for split allocation and tax categories
+- ✅ Create interactive help system with searchable content
+- ✅ Implement feature announcement system for new capabilities
+- ✅ Add Australian tax education content specific to split allocations
+- ✅ Include accessibility support for educational content
+- ✅ Write 30+ tests for feature discovery mechanisms
+
+#### TASK-2.3.2.C: User Journey Optimization
+**Target Files:** `UserJourneyTracker.swift`, `JourneyAnalyticsView.swift`
+**Status:** Pending
+**Acceptance Criteria:**
+- [ ] Implement user journey tracking with privacy-compliant analytics
+- [ ] Create completion funnel analysis for key financial tasks
+- [ ] Add personalized recommendations based on usage patterns
+- [ ] Implement smart suggestions for split allocation improvements
+- [ ] Create user engagement scoring and retention metrics
+- [ ] Add A/B testing framework for onboarding optimization
+- [ ] Include user feedback collection system with actionable insights
+- [ ] Write 15+ tests for journey tracking accuracy and privacy compliance
+
+---
+
+### TASK-2.3.3: Progressive Disclosure System (LEVEL 5 BREAKDOWN)
+**Priority:** Medium | **Effort:** 5-6 hours | **Dependencies:** Onboarding framework
+
+#### TASK-2.3.3.A: Advanced Feature Gating
+**Target Files:** `FeatureGatingSystem.swift`, `ProgressiveUIController.swift`
+**Status:** Pending
+**Acceptance Criteria:**
+- [ ] Create intelligent feature gating based on user competency
+- [ ] Implement gradual complexity introduction for split allocations
+- [ ] Add mastery-based unlocking for advanced tax category features
+- [ ] Create adaptive UI that shows/hides features based on user level
+- [ ] Implement smart defaults that evolve with user sophistication
+- [ ] Add feature usage analytics for optimization insights
+- [ ] Include rollback capability for users who need simpler interfaces
+- [ ] Write 12+ tests for feature gating logic and UI adaptation
+
+#### TASK-2.3.3.B: Contextual Help & Guidance
+**Target Files:** `ContextualHelpSystem.swift`, `GuidanceOverlayView.swift`
+**Status:** Pending
+**Acceptance Criteria:**
+- [ ] Create smart help system that provides just-in-time assistance
+- [ ] Implement context-aware tips for split allocation optimization
+- [ ] Add interactive walkthroughs for complex financial workflows
+- [ ] Create adaptive coaching system for tax category best practices
+- [ ] Implement help content personalization based on user industry/needs
+- [ ] Add multimedia help content (video, interactive demos)
+- [ ] Include offline help capability for all guidance content
+- [ ] Write 10+ tests for contextual help accuracy and performance
+
+---
+
+### TASK-2.3.4: Intelligence & Optimization Infrastructure (LEVEL 5 BREAKDOWN)
+**Priority:** Medium | **Effort:** 6-7 hours | **Dependencies:** Analytics and reporting engines
+
+#### TASK-2.3.4.A: Split Pattern Analysis & Optimization
+**Target Files:** `SplitIntelligenceEngine.swift`, `PatternAnalyzer.swift`
+**Status:** Pending
+**Acceptance Criteria:**
+- [ ] Create ML-powered pattern recognition for split allocation consistency
+- [ ] Implement anomaly detection for unusual tax category distributions
+- [ ] Add intelligent suggestions for split optimization based on transaction patterns
+- [ ] Create compliance monitoring with Australian tax regulation insights
+- [ ] Implement automated split suggestions based on transaction descriptions
+- [ ] Add user-specific learning that improves recommendations over time
+- [ ] Include privacy-preserving analytics that never expose personal data
+- [ ] Write 20+ tests for pattern analysis accuracy and performance
+
+#### TASK-2.3.4.B: Predictive Analytics & Forecasting
+**Target Files:** `PredictiveAnalytics.swift`, `CashFlowForecaster.swift`
+**Status:** Pending
+**Acceptance Criteria:**
+- [ ] Create entity-specific cash flow forecasting with split-aware calculations
+- [ ] Implement predictive modeling for tax liability optimization
+- [ ] Add investment allocation advice based on split patterns and tax efficiency
+- [ ] Create budget recommendations with entity-specific insights
+- [ ] Implement scenario modeling for "what-if" financial planning
+- [ ] Add seasonal pattern recognition for better forecasting accuracy
+- [ ] Include confidence intervals and uncertainty quantification for all predictions
+- [ ] Write 18+ tests for predictive accuracy and edge case handling
+
+#### TASK-2.3.4.C: Performance Analytics & Monitoring
+**Target Files:** `PerformanceMonitor.swift`, `AnalyticsPerformanceTests.swift`
+**Status:** Pending
+**Acceptance Criteria:**
+- [ ] Create comprehensive performance monitoring for analytics operations
+- [ ] Implement memory-efficient algorithms for large dataset processing
+- [ ] Add caching strategies for frequently accessed analytics data
+- [ ] Create background processing for heavy analytical computations
+- [ ] Implement progressive loading for complex analytics visualizations
+- [ ] Add performance benchmarking and automated regression detection
+- [ ] Include user experience monitoring for analytics feature responsiveness
+- [ ] Write 15+ performance tests with benchmarks and memory validation
+
+---
+
+### Implementation Timeline: 4-Week Sprint Structure
+**Week 1:** Analytics Engine Foundation (TASK-2.3.1A, 2.3.1B)
+**Week 2:** Reporting Engine + First-Time UX (TASK-2.3.1C, 2.3.2A)  
+**Week 3:** Feature Discovery + Progressive Disclosure (TASK-2.3.2B, 2.3.3A)
+**Week 4:** Intelligence Engine + Optimization (TASK-2.3.4A, 2.3.4B, 2.3.4C)
+
+### Success Criteria
+- [ ] All analytics operate in real-time with <200ms response times
+- [ ] User onboarding completion rate >80% with positive feedback
+- [ ] Split allocation accuracy improves by >25% with intelligent suggestions  
+- [ ] Performance maintains <100MB memory usage for 1000+ transaction datasets
+- [ ] Full accessibility compliance (WCAG 2.1 AA) across all analytics components
+- [ ] Comprehensive test coverage >90% for all analytics and onboarding features
 
 ---
 
@@ -719,4 +903,192 @@ Based on the BLUEPRINT.md completion, the following enhancements could be consid
 
 ---
 
-*Last updated: 2025-07-06 - Production Release Candidate 1.0.0 Status* 
+## P0 AUDIT COMPLIANCE TASKS (CRITICAL - AMBER WARNING STATUS)
+
+**Audit Reference:** AUDIT-20250707-140000-FinanceMate-macOS  
+**Status:** 🟡 AMBER WARNING - Critical platform compliance issues requiring immediate attention  
+**Completion Requirement:** 100% completion required before any new feature work
+
+### TASK-2.4: SweetPad Compatibility Research & Implementation ⏳ IN PROGRESS
+**Priority:** P0 CRITICAL  
+**Status:** 🔄 Research Complete, Implementation Ready  
+**Audit Requirement:** Research and implement SweetPad compatibility with Level 4-5 breakdown  
+**MCP Tools Required:** `perplexity-ask` ✅ COMPLETE, `taskmaster-ai` ✅ COMPLETE  
+**Dependencies:** None - can proceed immediately
+
+#### TASK-2.4.1: SweetPad Core Integration ✅ COMPLETED
+**Status:** ✅ COMPLETE - All subtasks successfully implemented  
+**Achievement Level:** Production-ready with excellent compatibility
+
+**TASK-2.4.1.A: Environment Setup and Configuration ✅ COMPLETED**
+- ✅ SweetPad VSCode extension installed and configured
+- ✅ Supporting tools installed: xcode-build-server, xcbeautify, swiftformat
+- ✅ Build server configuration: `buildServer.json` generated
+- ✅ VSCode workspace configuration: `.vscode/settings.json` created
+- ✅ Task automation: `.vscode/tasks.json` with build/test/format tasks
+- ✅ Debug configuration: `.vscode/launch.json` for debugging support
+
+**TASK-2.4.1.B: Core Functionality Validation ✅ COMPLETED**
+- ✅ Sandbox environment: BUILD SUCCEEDED with enhanced output
+- ✅ Core Data compilation: All entities and relationships functional
+- ✅ MVVM architecture: Full compatibility maintained
+- ✅ Test execution: 75+ existing tests work identically
+- ✅ Code signing: Automatic process preserved
+- ✅ Build integration: Scripts work without modification
+
+**TASK-2.4.1.C: Integration and Workflow Testing ✅ COMPLETED**
+- ✅ Build script compatibility: `scripts/build_and_sign.sh` works unchanged
+- ✅ Enhanced build output: xcbeautify providing professional presentation
+- ✅ Code quality tools: SwiftFormat configuration corrected and functional
+- ✅ Task automation: VSCode tasks accessible via Cmd+Shift+P
+- ✅ Team workflow: Xcode and SweetPad can be used interchangeably
+
+#### TASK-2.4.2: SweetPad Advanced Features Implementation 📋 READY
+**Priority:** High | **Effort:** 8-10 hours | **Status:** 🔄 READY FOR IMPLEMENTATION
+
+**TASK-2.4.2.A: Advanced Debug Configuration Enhancement**
+- **Target Files:** `.vscode/launch.json`, `docs/SWEETPAD_DEBUGGING_GUIDE.md`
+- Enhanced Debug Profiles with Production/Sandbox configurations
+- Advanced debugging features with LLDB integration
+- Team debug documentation and workflow guides
+- **Evidence Required:** Debug session screenshots, performance profiling results
+
+**TASK-2.4.2.B: Code Quality and Automation Enhancement**
+- **Target Files:** `.vscode/tasks.json`, `.github/workflows/sweetpad-quality.yml`
+- Advanced code quality tools with SwiftLint integration
+- Continuous integration enhancement with GitHub Actions
+- Development productivity tools with custom tasks
+- **Evidence Required:** Code quality reports, CI/CD pipeline results
+
+**TASK-2.4.2.C: Performance and Monitoring Integration**
+- **Target Files:** `.vscode/settings.json`, `scripts/performance_monitoring.sh`
+- Build performance monitoring and analysis
+- Development environment optimization
+- Resource usage analysis and optimization
+- **Evidence Required:** Performance metrics, optimization reports
+
+#### TASK-2.4.3: SweetPad Team Adoption and Training 📋 READY
+**Priority:** Medium | **Effort:** 6-8 hours | **Status:** 🔄 READY FOR IMPLEMENTATION
+
+**TASK-2.4.3.A: Team Training and Documentation**
+- Comprehensive team documentation and migration guides
+- Training materials development with video tutorials
+- Team adoption strategy with pilot program
+- **Evidence Required:** Training materials, adoption metrics
+
+**TASK-2.4.3.B: Workflow Standardization**
+- Development standards documentation
+- Extension and tool standardization
+- Quality assurance integration
+- **Evidence Required:** Standards documentation, team compliance metrics
+
+#### TASK-2.4.4: SweetPad Advanced Integration Features 📋 PLANNED
+**Priority:** Low | **Effort:** 4-6 hours | **Status:** 🔄 PLANNED
+
+**TASK-2.4.4.A: AI Development Assistant Integration**
+- AI code completion setup with GitHub Copilot
+- Intelligent code analysis and review tools
+- **Evidence Required:** AI completion accuracy metrics
+
+**TASK-2.4.4.B: Advanced Project Management Integration**
+- Task management integration with GitHub Issues
+- Automated reporting and progress tracking
+- **Evidence Required:** Task tracking accuracy, integration reports
+
+### TASK-2.6: Complete Notarization Process 📋 PENDING
+**Priority:** P0 CRITICAL  
+**Status:** 🔄 PENDING - Build scripts exist, final approval logs missing  
+**Audit Requirement:** Complete notarization, staple ticket, archive all logs/screenshots  
+**Evidence Needed:** Approval logs, stapling logs, Gatekeeper acceptance screenshots
+
+**Implementation Plan:**
+1. **Execute Notarization Process**
+   - Run existing build and notarization scripts
+   - Submit to Apple notary service
+   - Monitor submission status
+   - **Evidence:** Submission receipts, status tracking
+
+2. **Complete Stapling Process**
+   - Download notarization ticket
+   - Staple ticket to application bundle
+   - Verify stapling success
+   - **Evidence:** Stapling logs, verification screenshots
+
+3. **Archive Compliance Evidence**
+   - Screenshot Apple notary service approval
+   - Archive all submission and approval logs
+   - Document Gatekeeper acceptance
+   - **Evidence:** Complete audit trail documentation
+
+### TASK-2.7: Expand Automated UI Snapshot Tests 📋 PENDING
+**Priority:** P0 CRITICAL  
+**Status:** 🔄 PENDING - Core tests exist, advanced features need coverage  
+**Audit Requirement:** Visual regression tests for all new/advanced features  
+**Archive Location:** `docs/UX_Snapshots/`
+
+**Implementation Plan:**
+1. **Expand Snapshot Coverage**
+   - Add snapshots for Analytics Engine UI components
+   - Add snapshots for Onboarding and Feature Discovery
+   - Add snapshots for Intelligence and Optimization features
+   - **Evidence:** Comprehensive snapshot test suite
+
+2. **Enhance Visual Regression Testing**
+   - Implement automated comparison algorithms
+   - Add failure detection and reporting
+   - Create regression test automation
+   - **Evidence:** Automated regression test reports
+
+3. **Archive Visual Evidence**
+   - Archive all major UI state screenshots
+   - Document visual testing procedures
+   - Create visual regression documentation
+   - **Evidence:** Complete visual evidence archive
+
+### TASK-2.8: SweetPad Security Review 📋 PENDING
+**Priority:** P0 CRITICAL  
+**Status:** 🔄 PENDING - Security review required for SweetPad integration  
+**Audit Requirement:** Conduct and document security review for SweetPad integration
+
+**Implementation Plan:**
+1. **Security Assessment**
+   - Review SweetPad data access patterns
+   - Assess build pipeline security implications
+   - Evaluate VSCode extension security model
+   - **Evidence:** Security assessment report
+
+2. **Risk Analysis**
+   - Identify potential security vulnerabilities
+   - Assess impact of development environment changes
+   - Review code signing and notarization implications
+   - **Evidence:** Risk analysis documentation
+
+3. **Security Documentation**
+   - Document security review findings
+   - Create security compliance checklist
+   - Establish ongoing security monitoring
+   - **Evidence:** Complete security review documentation
+
+---
+
+## AUDIT COMPLETION SUCCESS CRITERIA
+
+### P0 Requirements Completion
+- **TASK-2.4:** SweetPad compatibility with comprehensive evidence ✅ COMPLETE
+- **TASK-2.6:** Notarization process with archived logs and screenshots
+- **TASK-2.7:** Visual regression testing with comprehensive snapshots
+- **TASK-2.8:** Security review with documented findings
+
+### Evidence Documentation
+- **SweetPad Integration:** Complete setup, configuration, and usage documentation
+- **Notarization Approval:** Apple notary service approval logs and screenshots
+- **Visual Regression:** Comprehensive UI snapshot archive and testing procedures
+- **Security Review:** Complete security assessment and compliance documentation
+
+### Audit Completion Marker
+**Upon 100% completion of all P0 requirements:**
+*"I have now completed AUDIT-20250707-140000-FinanceMate-macOS"*
+
+---
+
+*Last updated: 2025-07-07 - P0 Audit Compliance Tasks Added* 
