@@ -31,7 +31,6 @@ import RegexBuilder
 
 /// High-performance OCR engine using Apple Vision Framework for financial document processing
 /// Optimized for Australian financial documents with GST, ABN, and AUD currency support
-@MainActor
 final class VisionOCREngine: ObservableObject {
     
     // MARK: - Error Types
@@ -160,23 +159,11 @@ final class VisionOCREngine: ObservableObject {
     /// - Parameter imageData: Data representing the image
     /// - Returns: OCRResult with recognized text and confidence
     func recognizeText(fromImageData imageData: Data) async throws -> OCRResult {
-        guard let dataProvider = CGDataProvider(data: imageData),
-              let image = CGImage(
-                  width: 100, height: 100,
-                  bitsPerComponent: 8,
-                  bitsPerPixel: 32,
-                  bytesPerRow: 400,
-                  space: CGColorSpaceCreateDeviceRGB(),
-                  bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue),
-                  provider: dataProvider,
-                  decode: nil,
-                  shouldInterpolate: false,
-                  intent: .defaultIntent
-              ) else {
+        guard let cgImage = CGImage.createFromData(imageData) else {
             throw OCRError.invalidImageData
         }
         
-        return try await recognizeText(from: image)
+        return try await recognizeText(from: cgImage)
     }
     
     /// Recognizes financial document with specialized parsing for Australian receipts
@@ -374,3 +361,22 @@ extension VisionOCREngine {
     }
 }
 #endif
+
+// MARK: - CGImage Helper Extension
+
+extension CGImage {
+    static func createFromData(_ data: Data) -> CGImage? {
+        guard let dataProvider = CGDataProvider(data: data) else { return nil }
+        
+        // Try to create image from various formats
+        if let image = CGImage(jpegDataProviderSource: dataProvider, decode: nil, shouldInterpolate: false, intent: .defaultIntent) {
+            return image
+        }
+        
+        if let image = CGImage(pngDataProviderSource: dataProvider, decode: nil, shouldInterpolate: false, intent: .defaultIntent) {
+            return image
+        }
+        
+        return nil
+    }
+}
