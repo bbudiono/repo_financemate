@@ -224,9 +224,9 @@ public class FinancialEntity: NSManagedObject {
     public override func willSave() {
         super.willSave()
         
-        // Update lastModified timestamp on any change
-        if isUpdated && !isDeleted {
-            self.lastModified = Date()
+        // Update lastModified timestamp on any change, but avoid recursion
+        if isUpdated && !isDeleted && !changedValues().keys.contains("lastModified") {
+            setPrimitiveValue(Date(), forKey: "lastModified")
         }
     }
     
