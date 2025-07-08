@@ -46,7 +46,8 @@
 		CD08C67EA986459AA50F9A53 /* LineItem+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D640B0CF03F149259D4B7168 /* LineItem+CoreDataClass.swift */; };
 		977EBABEEE0B427C8B5E6C23 /* LineItem+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20AEABA51A04450A47D811C /* LineItem+CoreDataProperties.swift */; };
 		2FE829CEF1AD43FE8B3917EF /* SplitAllocation+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9142439AEB0144D6AD57275A /* SplitAllocation+CoreDataClass.swift */; };
-		CCE5731C54B747DF8F46989B /* SplitAllocation+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7D61EA8420A47BE9AFBA841 /* SplitAllocation+CoreDataProperties.swift */; };
+		CCE5731C54B747DF8F46989B /* SplitAllocation+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7D61EA8420A47BE9AFBA841 /* SplitAllocation+CoreDataProperties.swift */; };		814B2C32A9824FFCACC89492 /* FinanceMateModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 70B7356CBC8042894E6BE /* FinanceMateModel.xcdatamodeld */; };
+
 	/* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -129,7 +130,8 @@
 		D640B0CF03F149259D4B7168 /* LineItem+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LineItem+CoreDataClass.swift"; sourceTree = "<group>"; };
 		E20AEABA51A04450A47D811C /* LineItem+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LineItem+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		9142439AEB0144D6AD57275A /* SplitAllocation+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SplitAllocation+CoreDataClass.swift"; sourceTree = "<group>"; };
-		B7D61EA8420A47BE9AFBA841 /* SplitAllocation+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SplitAllocation+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		B7D61EA8420A47BE9AFBA841 /* SplitAllocation+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SplitAllocation+CoreDataProperties.swift"; sourceTree = "<group>"; };		70B7356CBC8042894E6BE /* FinanceMateModel.xcdatamodeld */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = FinanceMateModel.xcdatamodeld; sourceTree = "<group>"; versionGroupType = wrapper.xcdatamodel; };
+
 	/* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -203,7 +205,8 @@
 				D640B0CF03F149259D4B7168 /* LineItem+CoreDataClass.swift */,
 				E20AEABA51A04450A47D811C /* LineItem+CoreDataProperties.swift */,
 				9142439AEB0144D6AD57275A /* SplitAllocation+CoreDataClass.swift */,
-				B7D61EA8420A47BE9AFBA841 /* SplitAllocation+CoreDataProperties.swift */,);
+				B7D61EA8420A47BE9AFBA841 /* SplitAllocation+CoreDataProperties.swift */,
+				70B7356CBC8042894E6BE /* FinanceMateModel.xcdatamodeld */,);
 			path = Models;
 			sourceTree = "<group>";
 		};
@@ -517,7 +520,7 @@
 				EF66D6C92F70B5DD876011D7 /* Transaction+CoreDataProperties.swift in Sources */,
 				191A37A084EC09C6530C1BC7 /* Transaction.swift in Sources */,
 				367DABD88FB44283D6A54544 /* TransactionsViewModel.swift in Sources */,
-			);
+				814B2C32A9824FFCACC89492 /* FinanceMateModel.xcdatamodeld in Sources */,);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		E728BDA24D7E5D5322C4F5B3 /* Sources */ = {

@@ -70,3 +70,43 @@ __pycache__/
 # Editor backup files
 *~
 .#*
+# v3.3 Critical Additions
+/temp/
+.env
+.env.local
+.env.*.local
+
+# Agent Communication Files
+temp/Session_Audit_Details.md
+temp/Session_Responses.md
+temp/IMPLEMENTATION_PLAN.md
+
+# Build and Cache
+build/
+dist/
+node_modules/
+.DS_Store
+*.log
+
+# IDE and Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Platform-Specific
+# iOS
+*.xcworkspace
+*.xcuserdata
+DerivedData/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Ruby
+.bundle/
+log/
+tmp/
