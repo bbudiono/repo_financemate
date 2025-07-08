@@ -452,14 +452,12 @@ extension FinancialEntity: Identifiable {
 
 // MARK: - FinancialEntity Debugging Support
 
-extension FinancialEntity: CustomStringConvertible {
-    public var description: String {
+extension FinancialEntity {
+    public override var description: String {
         return "FinancialEntity(id: \(id), name: \"\(name)\", type: \(type), active: \(isActive))"
     }
-}
-
-extension FinancialEntity: CustomDebugStringConvertible {
-    public var debugDescription: String {
+    
+    public override var debugDescription: String {
         let parentName = parentEntity?.name ?? "nil"
         let childCount = childEntities.count
         let transactionCount = transactions.count

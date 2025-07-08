@@ -80,4 +80,145 @@ final class CoreDataTests: XCTestCase {
         XCTAssertEqual(businessSplit.percentage, 70.0, accuracy: 0.01)
         XCTAssertEqual(personalSplit.percentage, 30.0, accuracy: 0.01)
     }
+    
+    // MARK: - FinancialEntity Tests
+    
+    func testFinancialEntityCreation() throws {
+        // Test creating a financial entity with valid data
+        let entity = FinancialEntity(context: context)
+        entity.id = UUID()
+        entity.name = "Test Personal Entity"
+        entity.type = "Personal"
+        entity.isActive = true
+        entity.createdAt = Date()
+        entity.lastModified = Date()
+        
+        try context.save()
+        
+        XCTAssertNotNil(entity.id)
+        XCTAssertEqual(entity.name, "Test Personal Entity")
+        XCTAssertEqual(entity.type, "Personal")
+        XCTAssertTrue(entity.isActive)
+        XCTAssertNotNil(entity.createdAt)
+        XCTAssertNotNil(entity.lastModified)
+    }
+    
+    func testFinancialEntityTypes() throws {
+        // Test all valid entity types
+        let validTypes = ["Personal", "Business", "Trust", "Investment"]
+        
+        for (index, type) in validTypes.enumerated() {
+            let entity = FinancialEntity(context: context)
+            entity.id = UUID()
+            entity.name = "Test Entity \(index)"
+            entity.type = type
+            entity.isActive = true
+            entity.createdAt = Date()
+            entity.lastModified = Date()
+            
+            XCTAssertEqual(entity.type, type)
+        }
+        
+        try context.save()
+        
+        // Verify all entities were saved
+        let fetchRequest: NSFetchRequest<FinancialEntity> = FinancialEntity.fetchRequest()
+        let results = try context.fetch(fetchRequest)
+        XCTAssertEqual(results.count, 4)
+    }
+    
+    func testFinancialEntityHierarchy() throws {
+        // Create parent entity
+        let parentEntity = FinancialEntity(context: context)
+        parentEntity.id = UUID()
+        parentEntity.name = "Parent Trust"
+        parentEntity.type = "Trust"
+        parentEntity.isActive = true
+        parentEntity.createdAt = Date()
+        parentEntity.lastModified = Date()
+        
+        // Create child entity
+        let childEntity = FinancialEntity(context: context)
+        childEntity.id = UUID()
+        childEntity.name = "Child Business"
+        childEntity.type = "Business"
+        childEntity.isActive = true
+        childEntity.createdAt = Date()
+        childEntity.lastModified = Date()
+        childEntity.parentEntity = parentEntity
+        
+        try context.save()
+        
+        // Test parent-child relationships
+        XCTAssertEqual(parentEntity.childEntities.count, 1)
+        XCTAssertTrue(parentEntity.childEntities.contains(childEntity))
+        XCTAssertEqual(childEntity.parentEntity, parentEntity)
+        XCTAssertNil(parentEntity.parentEntity)
+    }
+    
+    func testFinancialEntityCRUD() throws {
+        // Create
+        let entity = FinancialEntity(context: context)
+        entity.id = UUID()
+        entity.name = "CRUD Test Entity"
+        entity.type = "Investment"
+        entity.isActive = true
+        entity.createdAt = Date()
+        entity.lastModified = Date()
+        
+        try context.save()
+        
+        // Read
+        let fetchRequest: NSFetchRequest<FinancialEntity> = FinancialEntity.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "name == %@", "CRUD Test Entity")
+        
+        let results = try context.fetch(fetchRequest)
+        XCTAssertEqual(results.count, 1)
+        
+        let fetchedEntity = results.first!
+        XCTAssertEqual(fetchedEntity.name, "CRUD Test Entity")
+        XCTAssertEqual(fetchedEntity.type, "Investment")
+        
+        // Update
+        fetchedEntity.name = "Updated CRUD Entity"
+        fetchedEntity.lastModified = Date()
+        try context.save()
+        
+        let updatedResults = try context.fetch(fetchRequest)
+        XCTAssertEqual(updatedResults.count, 0) // Original name no longer exists
+        
+        fetchRequest.predicate = NSPredicate(format: "name == %@", "Updated CRUD Entity")
+        let newResults = try context.fetch(fetchRequest)
+        XCTAssertEqual(newResults.count, 1)
+        
+        // Delete
+        context.delete(newResults.first!)
+        try context.save()
+        
+        let deletedResults = try context.fetch(fetchRequest)
+        XCTAssertEqual(deletedResults.count, 0)
+    }
+    
+    func testFinancialEntityActivation() throws {
+        let entity = FinancialEntity(context: context)
+        entity.id = UUID()
+        entity.name = "Activation Test"
+        entity.type = "Personal"
+        entity.isActive = true
+        entity.createdAt = Date()
+        entity.lastModified = Date()
+        
+        try context.save()
+        
+        // Test initial state
+        XCTAssertTrue(entity.isActive)
+        
+        // Deactivate
+        entity.deactivate()
+        XCTAssertFalse(entity.isActive)
+        
+        // Reactivate
+        entity.activate()
+        XCTAssertTrue(entity.isActive)
+    }
 } 

@@ -940,14 +940,69 @@ Based on the BLUEPRINT.md completion, the following enhancements could be consid
 - [ ] Parse/map imported transactions to local model
 - [ ] Tests for sync reliability and data mapping
 
-### TASK-2.6: Extend Data Model for Multi-Entity Management
-**Priority:** Medium
+### TASK-2.6: Extend Data Model for Multi-Entity Management ✅ RESEARCH COMPLETE - READY FOR IMPLEMENTATION
+**Priority:** High (Upgraded from Medium)
 **Objective:** Support multiple financial entities and entity assignment.
-**Status:** Not Started
-**Subtasks:**
-- [ ] Add entity assignment to transactions/line items
-- [ ] UI for entity management (add/edit/delete)
-- [ ] Tests for entity assignment/filtering
+**Status:** 🔄 P3 TASK EXPANSION COMPLETE - Comprehensive Level 4-5 breakdown completed
+**Research Completion Date:** 2025-07-08
+**Implementation Plan:** `/temp/IMPLEMENTATION_PLAN.md` - Complete 4-phase implementation strategy
+**Estimated Effort:** 6-10 weeks (22 detailed tasks across 4 phases)
+
+**UR-102 Multi-Entity Architecture - Complete Implementation Breakdown:**
+
+#### Phase 1: Core Data Model Enhancement (2-3 weeks)
+- **TASK-1.1**: FinancialEntity Core Data Model (3-4 days, TDD)
+- **TASK-1.2**: Transaction Model Enhancement (2-3 days, TDD)
+- **TASK-1.3**: Core Data Migration Strategy (2-3 days, TDD)
+- **TASK-1.4**: Enhanced PersistenceController (2 days, TDD)
+- **TASK-1.5**: Default Entity Bootstrap (1-2 days, TDD)
+- **TASK-1.6**: Entity-Based Data Services (2-3 days, TDD)
+- **TASK-1.7**: Core Data Performance Optimization (1-2 days, TDD)
+
+#### Phase 2: Entity Management UI (2-3 weeks)
+- **TASK-2.1**: Entity Management ViewModels (3-4 days, TDD)
+- **TASK-2.2**: Entity List & Management Interface (4-5 days, TDD)
+- **TASK-2.3**: Entity Creation/Editing Workflow (3-4 days, TDD)
+- **TASK-2.4**: Entity Deletion & Data Handling (2-3 days, TDD)
+- **TASK-2.5**: Entity Picker Component (2-3 days, TDD)
+- **TASK-2.6**: Entity Context Indicators (1-2 days, TDD)
+
+#### Phase 3: Transaction Integration (1-2 weeks)
+- **TASK-3.1**: Transaction Entity Assignment (2-3 days, TDD)
+- **TASK-3.2**: Dashboard Entity Filtering (2-3 days, TDD)
+- **TASK-3.3**: Transaction List Entity Context (1-2 days, TDD)
+- **TASK-3.4**: Settings Entity Configuration (1-2 days, TDD)
+
+#### Phase 4: Cross-Entity Features (1-2 weeks)
+- **TASK-4.1**: Cross-Entity Transfer Model (2-3 days, TDD)
+- **TASK-4.2**: Cross-Entity Transfer UI (3-4 days, TDD)
+- **TASK-4.3**: Entity Reporting & Analytics (2-3 days, TDD)
+- **TASK-4.4**: Performance Validation & Optimization (1-2 days, TDD)
+
+**Research Findings Summary:**
+- ✅ **Data Architecture**: Core Data hierarchical entity relationships designed
+- ✅ **UI/UX Patterns**: Tab-based entity switching, entity picker dropdowns researched
+- ✅ **Performance Strategy**: Entity-scoped fetch requests, lazy loading optimization
+- ✅ **Security Design**: Entity-based data isolation, comprehensive audit trails
+- ✅ **Cross-Entity Features**: Transfer functionality, reporting architecture planned
+
+**Core Data Architecture Preview:**
+```swift
+class FinancialEntity: NSManagedObject {
+    @NSManaged public var id: UUID
+    @NSManaged public var name: String
+    @NSManaged public var type: String // Personal, Business, Trust, Investment
+    @NSManaged public var parentEntity: FinancialEntity?
+    @NSManaged public var childEntities: Set<FinancialEntity>
+    @NSManaged public var transactions: Set<Transaction>
+}
+```
+
+**Implementation Ready:** All research complete, detailed task breakdown available, ready for TDD implementation following 4-phase strategy
+
+**Dependencies Resolved:** UR-109 Line Item Splitting complete, Core Data model established, MVVM architecture proven
+
+**Next Steps:** User approval for 6-10 week implementation timeline, begin Phase 1 TDD implementation
 
 ### TASK-2.7: Implement Role-Based Access Control (RBAC)
 **Priority:** Medium
