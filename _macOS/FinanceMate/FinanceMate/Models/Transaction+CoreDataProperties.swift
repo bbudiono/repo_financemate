@@ -13,7 +13,8 @@ extension Transaction {
         in context: NSManagedObjectContext,
         amount: Double,
         category: String,
-        note: String? = nil
+        note: String? = nil,
+        entityId: UUID = UUID() // Default entity ID for backward compatibility
     ) -> Transaction {
         // Create entity description directly from context to avoid conflicts
         guard let entity = NSEntityDescription.entity(forEntityName: "Transaction", in: context) else {
@@ -27,6 +28,7 @@ extension Transaction {
         transaction.amount = amount
         transaction.category = category
         transaction.note = note
+        transaction.entityId = entityId // Set required entityId property
         return transaction
     }
 }
