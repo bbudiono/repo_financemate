@@ -198,7 +198,7 @@ struct PersistenceController {
         financialEntityEntity.name = "FinancialEntity"
         financialEntityEntity.managedObjectClassName = "FinancialEntity"
         
-        // FinancialEntity attributes
+        // FinancialEntity attributes - aligned with FinancialEntity+CoreDataClass.swift
         let entityIdAttr = NSAttributeDescription()
         entityIdAttr.name = "id"
         entityIdAttr.attributeType = .UUIDAttributeType
@@ -210,34 +210,34 @@ struct PersistenceController {
         entityNameAttr.isOptional = false
         
         let entityTypeAttr = NSAttributeDescription()
-        entityTypeAttr.name = "entityType"
+        entityTypeAttr.name = "type"
         entityTypeAttr.attributeType = .stringAttributeType
         entityTypeAttr.isOptional = false
-        
-        let abnAttr = NSAttributeDescription()
-        abnAttr.name = "abn"
-        abnAttr.attributeType = .stringAttributeType
-        abnAttr.isOptional = true
-        
-        let createdDateAttr = NSAttributeDescription()
-        createdDateAttr.name = "createdDate"
-        createdDateAttr.attributeType = .dateAttributeType
-        createdDateAttr.isOptional = false
         
         let isActiveAttr = NSAttributeDescription()
         isActiveAttr.name = "isActive"
         isActiveAttr.attributeType = .booleanAttributeType
         isActiveAttr.isOptional = false
         
-        let parentEntityIdAttr = NSAttributeDescription()
-        parentEntityIdAttr.name = "parentEntityId"
-        parentEntityIdAttr.attributeType = .UUIDAttributeType
-        parentEntityIdAttr.isOptional = true
+        let createdAtAttr = NSAttributeDescription()
+        createdAtAttr.name = "createdAt"
+        createdAtAttr.attributeType = .dateAttributeType
+        createdAtAttr.isOptional = false
         
-        let gstRegisteredAttr = NSAttributeDescription()
-        gstRegisteredAttr.name = "gstRegistered"
-        gstRegisteredAttr.attributeType = .booleanAttributeType
-        gstRegisteredAttr.isOptional = false
+        let lastModifiedAttr = NSAttributeDescription()
+        lastModifiedAttr.name = "lastModified"
+        lastModifiedAttr.attributeType = .dateAttributeType
+        lastModifiedAttr.isOptional = false
+        
+        let entityDescriptionAttr = NSAttributeDescription()
+        entityDescriptionAttr.name = "entityDescription"
+        entityDescriptionAttr.attributeType = .stringAttributeType
+        entityDescriptionAttr.isOptional = true
+        
+        let colorCodeAttr = NSAttributeDescription()
+        colorCodeAttr.name = "colorCode"
+        colorCodeAttr.attributeType = .stringAttributeType
+        colorCodeAttr.isOptional = true
         
         // Create SMSFEntityDetails entity
         let smsfDetailsEntity = NSEntityDescription()
@@ -344,7 +344,15 @@ struct PersistenceController {
         entityToChildEntitiesRelationship.destinationEntity = financialEntityEntity
         entityToChildEntitiesRelationship.minCount = 0
         entityToChildEntitiesRelationship.maxCount = 0
-        entityToChildEntitiesRelationship.deleteRule = .cascadeDeleteRule
+        entityToChildEntitiesRelationship.deleteRule = .nullifyDeleteRule // Changed to nullify to orphan children
+        
+        // FinancialEntity -> ParentEntity (many-to-one)
+        let entityToParentEntityRelationship = NSRelationshipDescription()
+        entityToParentEntityRelationship.name = "parentEntity"
+        entityToParentEntityRelationship.destinationEntity = financialEntityEntity
+        entityToParentEntityRelationship.minCount = 0
+        entityToParentEntityRelationship.maxCount = 1
+        entityToParentEntityRelationship.deleteRule = .nullifyDeleteRule
         
         // FinancialEntity -> CrossEntityTransactions (one-to-many)
         let entityToCrossTransactionsRelationship = NSRelationshipDescription()
@@ -392,18 +400,23 @@ struct PersistenceController {
         entityToSMSFDetailsRelationship.inverseRelationship = smsfDetailsToEntityRelationship
         smsfDetailsToEntityRelationship.inverseRelationship = entityToSMSFDetailsRelationship
         
+        // Set up parent-child entity relationships
+        entityToChildEntitiesRelationship.inverseRelationship = entityToParentEntityRelationship
+        entityToParentEntityRelationship.inverseRelationship = entityToChildEntitiesRelationship
+        
         // Update entity properties
         financialEntityEntity.properties = [
             entityIdAttr,
             entityNameAttr,
             entityTypeAttr,
-            abnAttr,
-            createdDateAttr,
             isActiveAttr,
-            parentEntityIdAttr,
-            gstRegisteredAttr,
+            createdAtAttr,
+            lastModifiedAttr,
+            entityDescriptionAttr,
+            colorCodeAttr,
             entityToTransactionsRelationship,
             entityToChildEntitiesRelationship,
+            entityToParentEntityRelationship,
             entityToCrossTransactionsRelationship,
             entityToSMSFDetailsRelationship
         ]
