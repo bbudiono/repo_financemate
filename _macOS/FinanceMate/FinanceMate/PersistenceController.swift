@@ -444,8 +444,134 @@ struct PersistenceController {
             crossTxnToToEntityRelationship
         ]
         
+        // Create BankAccount entity
+        let bankAccountEntity = NSEntityDescription()
+        bankAccountEntity.name = "BankAccount"
+        bankAccountEntity.managedObjectClassName = "BankAccount"
+        
+        // BankAccount attributes
+        let bankAccountIdAttr = NSAttributeDescription()
+        bankAccountIdAttr.name = "id"
+        bankAccountIdAttr.attributeType = .UUIDAttributeType
+        bankAccountIdAttr.isOptional = false
+        
+        let bankNameAttr = NSAttributeDescription()
+        bankNameAttr.name = "bankName"
+        bankNameAttr.attributeType = .stringAttributeType
+        bankNameAttr.isOptional = false
+        
+        let accountNumberAttr = NSAttributeDescription()
+        accountNumberAttr.name = "accountNumber"
+        accountNumberAttr.attributeType = .stringAttributeType
+        accountNumberAttr.isOptional = false
+        
+        let accountTypeAttr = NSAttributeDescription()
+        accountTypeAttr.name = "accountType"
+        accountTypeAttr.attributeType = .stringAttributeType
+        accountTypeAttr.isOptional = false
+        
+        let isActiveAccountAttr = NSAttributeDescription()
+        isActiveAccountAttr.name = "isActive"
+        isActiveAccountAttr.attributeType = .booleanAttributeType
+        isActiveAccountAttr.isOptional = false
+        
+        let lastSyncDateAttr = NSAttributeDescription()
+        lastSyncDateAttr.name = "lastSyncDate"
+        lastSyncDateAttr.attributeType = .dateAttributeType
+        lastSyncDateAttr.isOptional = true
+        
+        let createdAtAccountAttr = NSAttributeDescription()
+        createdAtAccountAttr.name = "createdAt"
+        createdAtAccountAttr.attributeType = .dateAttributeType
+        createdAtAccountAttr.isOptional = false
+        
+        let lastModifiedAccountAttr = NSAttributeDescription()
+        lastModifiedAccountAttr.name = "lastModified"
+        lastModifiedAccountAttr.attributeType = .dateAttributeType
+        lastModifiedAccountAttr.isOptional = false
+        
+        let basiqAccountIdAttr = NSAttributeDescription()
+        basiqAccountIdAttr.name = "basiqAccountId"
+        basiqAccountIdAttr.attributeType = .stringAttributeType
+        basiqAccountIdAttr.isOptional = true
+        
+        let encryptedCredentialsAttr = NSAttributeDescription()
+        encryptedCredentialsAttr.name = "encryptedCredentials"
+        encryptedCredentialsAttr.attributeType = .binaryDataAttributeType
+        encryptedCredentialsAttr.isOptional = true
+        
+        let connectionStatusAttr = NSAttributeDescription()
+        connectionStatusAttr.name = "connectionStatus"
+        connectionStatusAttr.attributeType = .stringAttributeType
+        connectionStatusAttr.isOptional = false
+        
+        let errorMessageAttr = NSAttributeDescription()
+        errorMessageAttr.name = "errorMessage"
+        errorMessageAttr.attributeType = .stringAttributeType
+        errorMessageAttr.isOptional = true
+        
+        // BankAccount -> FinancialEntity (many-to-one)
+        let bankAccountToEntityRelationship = NSRelationshipDescription()
+        bankAccountToEntityRelationship.name = "financialEntity"
+        bankAccountToEntityRelationship.destinationEntity = financialEntityEntity
+        bankAccountToEntityRelationship.minCount = 0
+        bankAccountToEntityRelationship.maxCount = 1
+        bankAccountToEntityRelationship.deleteRule = .nullifyDeleteRule
+        
+        // BankAccount -> Transactions (one-to-many)
+        let bankAccountToTransactionsRelationship = NSRelationshipDescription()
+        bankAccountToTransactionsRelationship.name = "transactions"
+        bankAccountToTransactionsRelationship.destinationEntity = transactionEntity
+        bankAccountToTransactionsRelationship.minCount = 0
+        bankAccountToTransactionsRelationship.maxCount = 0
+        bankAccountToTransactionsRelationship.deleteRule = .nullifyDeleteRule
+        
+        // FinancialEntity -> BankAccounts (one-to-many)
+        let entityToBankAccountsRelationship = NSRelationshipDescription()
+        entityToBankAccountsRelationship.name = "bankAccounts"
+        entityToBankAccountsRelationship.destinationEntity = bankAccountEntity
+        entityToBankAccountsRelationship.minCount = 0
+        entityToBankAccountsRelationship.maxCount = 0
+        entityToBankAccountsRelationship.deleteRule = .nullifyDeleteRule
+        
+        // Transaction -> BankAccount (many-to-one)
+        let transactionToBankAccountRelationship = NSRelationshipDescription()
+        transactionToBankAccountRelationship.name = "bankAccount"
+        transactionToBankAccountRelationship.destinationEntity = bankAccountEntity
+        transactionToBankAccountRelationship.minCount = 0
+        transactionToBankAccountRelationship.maxCount = 1
+        transactionToBankAccountRelationship.deleteRule = .nullifyDeleteRule
+        
+        // Set up inverse relationships
+        bankAccountToEntityRelationship.inverseRelationship = entityToBankAccountsRelationship
+        entityToBankAccountsRelationship.inverseRelationship = bankAccountToEntityRelationship
+        bankAccountToTransactionsRelationship.inverseRelationship = transactionToBankAccountRelationship
+        transactionToBankAccountRelationship.inverseRelationship = bankAccountToTransactionsRelationship
+        
+        // Set BankAccount properties
+        bankAccountEntity.properties = [
+            bankAccountIdAttr,
+            bankNameAttr,
+            accountNumberAttr,
+            accountTypeAttr,
+            isActiveAccountAttr,
+            lastSyncDateAttr,
+            createdAtAccountAttr,
+            lastModifiedAccountAttr,
+            basiqAccountIdAttr,
+            encryptedCredentialsAttr,
+            connectionStatusAttr,
+            errorMessageAttr,
+            bankAccountToEntityRelationship,
+            bankAccountToTransactionsRelationship
+        ]
+        
         // Add entity relationship to transaction
         transactionEntity.properties.append(transactionToEntityRelationship)
+        transactionEntity.properties.append(transactionToBankAccountRelationship)
+        
+        // Add bank accounts relationship to financial entity
+        financialEntityEntity.properties.append(entityToBankAccountsRelationship)
         
         model.entities = [
             transactionEntity, 
@@ -453,7 +579,8 @@ struct PersistenceController {
             splitAllocationEntity,
             financialEntityEntity,
             smsfDetailsEntity,
-            crossEntityTransactionEntity
+            crossEntityTransactionEntity,
+            bankAccountEntity
         ]
 
         // Use only the programmatic model, not the .xcdatamodeld file

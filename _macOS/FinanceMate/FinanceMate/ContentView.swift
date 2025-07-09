@@ -26,42 +26,41 @@ struct ContentView: View {
     @StateObject private var dashboardViewModel = DashboardViewModel()
 
     var body: some View {
-        NavigationView {
-            TabView {
-                // Dashboard Tab
-                DashboardView()
-                    .environmentObject(dashboardViewModel)
-                    .environment(\.managedObjectContext, viewContext)
-                    .tabItem {
-                        Image(systemName: "chart.bar.fill")
-                        Text("Dashboard")
-                    }
-                    .accessibilityIdentifier("Dashboard")
-
-                // Transactions Tab
-                TransactionsView(context: viewContext)
-                    .tabItem {
-                        Image(systemName: "list.bullet")
-                        Text("Transactions")
-                    }
-                    .accessibilityIdentifier("Transactions")
-
-                // Settings Tab (placeholder for future implementation)
-                SettingsPlaceholderView()
-                    .tabItem {
-                        Image(systemName: "gear")
-                        Text("Settings")
-                    }
-                    .accessibilityIdentifier("Settings")
-            }
-            .onAppear {
-                dashboardViewModel.setPersistenceContext(viewContext)
-                Task {
-                    dashboardViewModel.fetchDashboardData()
+        // Full-width tab navigation structure
+        TabView {
+            // Dashboard Tab - Full Width
+            DashboardView()
+                .environmentObject(dashboardViewModel)
+                .environment(\.managedObjectContext, viewContext)
+                .tabItem {
+                    Image(systemName: "chart.bar.fill")
+                    Text("Dashboard")
                 }
+                .accessibilityIdentifier("Dashboard")
+
+            // Transactions Tab
+            TransactionsView(context: viewContext)
+                .tabItem {
+                    Image(systemName: "list.bullet")
+                    Text("Transactions")
+                }
+                .accessibilityIdentifier("Transactions")
+
+            // Settings Tab (placeholder for future implementation)
+            SettingsPlaceholderView()
+                .tabItem {
+                    Image(systemName: "gear")
+                    Text("Settings")
+                }
+                .accessibilityIdentifier("Settings")
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .onAppear {
+            dashboardViewModel.setPersistenceContext(viewContext)
+            Task {
+                dashboardViewModel.fetchDashboardData()
             }
         }
-        .navigationTitle("FinanceMate")
     }
 }
 

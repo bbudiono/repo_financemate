@@ -37,25 +37,35 @@ struct DashboardView: View {
     // MARK: - Main Body
 
     var body: some View {
-        ScrollView {
-            LazyVStack(spacing: 20) {
-                // Dashboard Header
-                dashboardHeader
+        GeometryReader { geometry in
+            ScrollView {
+                LazyVStack(alignment: .leading, spacing: adaptiveSpacing(for: geometry.size.width)) {
+                    // Dashboard Header
+                    dashboardHeader
+                        .frame(maxWidth: .infinity, alignment: .leading)
 
-                // Balance Card
-                balanceCard
+                    // Balance Card
+                    balanceCard
+                        .frame(maxWidth: .infinity)
 
-                // Quick Stats Cards
-                quickStatsSection
+                    // Quick Stats Cards
+                    quickStatsSection(for: geometry.size.width)
+                        .frame(maxWidth: .infinity)
 
-                // Recent Transactions
-                recentTransactionsSection
+                    // Recent Transactions
+                    recentTransactionsSection
+                        .frame(maxWidth: .infinity)
 
-                // Action Buttons
-                actionButtonsSection
+                    // Action Buttons
+                    actionButtonsSection
+                        .frame(maxWidth: .infinity)
+                }
+                .padding(adaptivePadding(for: geometry.size.width))
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .padding()
+            .frame(maxWidth: .infinity)
         }
+        .frame(maxWidth: .infinity)
         .accessibilityIdentifier("DashboardView")
         .background(dashboardBackground)
         .onAppear {
@@ -159,31 +169,53 @@ struct DashboardView: View {
 
     // MARK: - Quick Stats Section
 
-    private var quickStatsSection: some View {
-        HStack(spacing: 16) {
-            // Transaction Count Stat
-            quickStatCard(
-                title: "Transactions",
-                value: "\(viewModel.transactionCount)",
-                icon: "list.bullet.rectangle",
-                color: .blue
-            )
-
-            // Average Transaction Stat
-            quickStatCard(
-                title: "Average",
-                value: averageTransactionValue,
-                icon: "chart.line.uptrend.xyaxis",
-                color: .green
-            )
-
-            // Status Indicator
-            quickStatCard(
-                title: "Status",
-                value: viewModel.isEmpty ? "Empty" : "Active",
-                icon: viewModel.isEmpty ? "exclamationmark.circle" : "checkmark.circle",
-                color: viewModel.isEmpty ? .orange : .green
-            )
+    private func quickStatsSection(for width: CGFloat) -> some View {
+        Group {
+            if width > 600 {
+                // Wide layout - horizontal cards
+                HStack(spacing: 16) {
+                    quickStatCard(
+                        title: "Transactions",
+                        value: "\(viewModel.transactionCount)",
+                        icon: "list.bullet.rectangle",
+                        color: .blue
+                    )
+                    quickStatCard(
+                        title: "Average",
+                        value: averageTransactionValue,
+                        icon: "chart.line.uptrend.xyaxis",
+                        color: .green
+                    )
+                    quickStatCard(
+                        title: "Status",
+                        value: viewModel.isEmpty ? "Empty" : "Active",
+                        icon: viewModel.isEmpty ? "exclamationmark.circle" : "checkmark.circle",
+                        color: viewModel.isEmpty ? .orange : .green
+                    )
+                }
+            } else {
+                // Narrow layout - vertical cards
+                VStack(spacing: 12) {
+                    quickStatCard(
+                        title: "Transactions",
+                        value: "\(viewModel.transactionCount)",
+                        icon: "list.bullet.rectangle",
+                        color: .blue
+                    )
+                    quickStatCard(
+                        title: "Average",
+                        value: averageTransactionValue,
+                        icon: "chart.line.uptrend.xyaxis",
+                        color: .green
+                    )
+                    quickStatCard(
+                        title: "Status",
+                        value: viewModel.isEmpty ? "Empty" : "Active",
+                        icon: viewModel.isEmpty ? "exclamationmark.circle" : "checkmark.circle",
+                        color: viewModel.isEmpty ? .orange : .green
+                    )
+                }
+            }
         }
     }
 
@@ -363,6 +395,16 @@ struct DashboardView: View {
         guard viewModel.transactionCount > 0 else { return "$0.00" }
         let average = viewModel.totalBalance / Double(viewModel.transactionCount)
         return viewModel.formatCurrency(average)
+    }
+
+    // MARK: - Adaptive Layout Helpers
+    
+    private func adaptiveSpacing(for width: CGFloat) -> CGFloat {
+        width > 800 ? 24 : 20
+    }
+    
+    private func adaptivePadding(for width: CGFloat) -> CGFloat {
+        width > 900 ? 32 : 24
     }
 
     // MARK: - Helper Functions
