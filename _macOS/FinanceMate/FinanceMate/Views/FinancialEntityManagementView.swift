@@ -58,7 +58,7 @@ struct FinancialEntityManagementView: View {
         .accessibilityIdentifier("EntityManagementView")
         .onAppear {
             Task {
-                await viewModel.fetchAllEntities()
+                await viewModel.fetchEntities()
             }
         }
         .sheet(isPresented: $showingCreateSheet) {

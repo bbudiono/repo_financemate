@@ -418,7 +418,7 @@ class FinancialEntityViewModel: ObservableObject {
             }
             
             try context.save()
-            await fetchAllEntities()
+            await fetchEntities()
             
         } catch let error as FinancialEntityValidationError {
             errorMessage = "validation error: \(error.localizedDescription)"
@@ -459,7 +459,7 @@ class FinancialEntityViewModel: ObservableObject {
             }
             
             try context.save()
-            await fetchAllEntities()
+            await fetchEntities()
             
         } catch let error as FinancialEntityValidationError {
             errorMessage = "validation error: \(error.localizedDescription)"

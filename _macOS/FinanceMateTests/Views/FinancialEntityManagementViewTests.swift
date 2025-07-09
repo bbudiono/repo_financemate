@@ -75,7 +75,7 @@ final class FinancialEntityManagementViewTests: XCTestCase {
         try testContext.save()
         
         // When: Fetching entities
-        await viewModel.fetchAllEntities()
+        await viewModel.fetchEntities()
         
         // Then: Entities should be loaded
         XCTAssertEqual(viewModel.entities.count, 2)
@@ -86,7 +86,7 @@ final class FinancialEntityManagementViewTests: XCTestCase {
     func testEmptyEntityListState() async throws {
         // Given: ViewModel with no entities
         // When: Fetching entities
-        await viewModel.fetchAllEntities()
+        await viewModel.fetchEntities()
         
         // Then: Empty state should be handled
         XCTAssertEqual(viewModel.entities.count, 0)
@@ -189,7 +189,7 @@ final class FinancialEntityManagementViewTests: XCTestCase {
         entity.type = "Personal"
         try testContext.save()
         
-        await viewModel.fetchAllEntities()
+        await viewModel.fetchEntities()
         let initialCount = viewModel.entities.count
         
         // When: Deleting entity
@@ -217,7 +217,7 @@ final class FinancialEntityManagementViewTests: XCTestCase {
         await viewModel.deleteEntity(parentEntity)
         
         // Then: Child entity should be orphaned, not deleted
-        await viewModel.fetchAllEntities()
+        await viewModel.fetchEntities()
         XCTAssertTrue(viewModel.entities.contains { $0.name == "Child" })
         XCTAssertNil(viewModel.entities.first { $0.name == "Child" }?.parentEntity)
     }
@@ -238,7 +238,7 @@ final class FinancialEntityManagementViewTests: XCTestCase {
         try testContext.save()
         
         // When: Fetching entities
-        await viewModel.fetchAllEntities()
+        await viewModel.fetchEntities()
         
         // Then: Hierarchy should be maintained
         let fetchedParent = viewModel.entities.first { $0.name == "Parent" }
@@ -419,7 +419,7 @@ final class FinancialEntityManagementViewTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Loading state")
         
         Task {
-            await viewModel.fetchAllEntities()
+            await viewModel.fetchEntities()
             expectation.fulfill()
         }
         
