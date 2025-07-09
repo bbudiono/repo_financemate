@@ -12,11 +12,21 @@
 ### Project Vision
 To be the central command center for personal and family wealth, empowering users to aggregate all their financial data automatically, gain deep insights from line-item level details, **proportionally allocate expenses across multiple tax categories**, manage complex financial entities, and make informed investment and life decisions. The platform will be collaborative, allowing for secure, permission-based access for family members and financial professionals. Multi-currency support with tax rules and financial rules specific to region.
 
+### **Requirements (MANDATORY) - DO NOT DELETE**
+1) Financial
+   - Personal Finance Tracker
+   - Review Income & Expenses
+   - Link to Bank/Credit Card Providers
+   - Pull expenses, invoices, receipts, line items from gmail, outlook, etc
+2) Investments
+3) Reporting
+4) Tax / Auditing
+
 ### Current Status: ✅ PHASE 1 COMPLETE
 FinanceMate has achieved **Production Release Candidate 1.0.0** status for Phase 1 (Core Financial Management) with:
 - ✅ **Complete Financial Management**: Dashboard, transactions, settings
 - ✅ **MVVM Architecture**: Professional-grade with 100% test coverage
-- ✅ **Glassmorphism UI**: Modern Apple-style design with accessibility
+- ✅ **Liquid Glass / Glassmorphism UI**: Modern Apple-style design with accessibility / Liquid Glass UI from Apple WWDC 2025
 - ✅ **Production Infrastructure**: Automated build pipeline
 - ✅ **Comprehensive Testing**: 75+ test cases
 

@@ -145,6 +145,7 @@
 				B34A9211E42A352FF0EE7BB3 /* DashboardViewModelTests.swift */,
 				ABCDEF0123456789ABCDEF04 /* LineItemViewModelTests.swift */,
 				ABCDEF0123456789ABCDEF05 /* SplitAllocationViewModelTests.swift */,
+				2E80A064386044349451977D /* FinancialEntityViewModel.swift */,
 				C16F2AC4A7984C9297A13B03 /* FinancialEntityViewModelTests.swift */,
 			);
 			path = ViewModels;
@@ -222,7 +223,6 @@
 				ABCDEF0123456789ABCDEF01 /* LineItemViewModel.swift */,
 				ABCDEF0123456789ABCDEF02 /* SplitAllocationViewModel.swift */,
 				ABCDEF0123456789ABCDEF03 /* SettingsViewModel.swift */,
-				2E80A064386044349451977D /* FinancialEntityViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";

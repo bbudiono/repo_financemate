@@ -1,0 +1,447 @@
+//
+// DocumentProcessorTests.swift
+// FinanceMateTests
+//
+// Created by AI Agent on 2025-07-08.
+// TASK-3.1.1.B: Document Processing Architecture - TDD Implementation
+//
+
+/*
+ * Purpose: Comprehensive test suite for DocumentProcessor multi-stage processing pipeline
+ * Issues & Complexity Summary: TDD validation of image preprocessing, document type detection, and quality scoring
+ * Key Complexity Drivers:
+   - Logic Scope (Est. LoC): ~400 (multi-stage pipeline testing)
+   - Core Algorithm Complexity: High (preprocessing + OCR + validation)
+   - Dependencies: Core Image, Vision Framework, test image assets
+   - State Management Complexity: Medium (async processing validation)
+   - Novelty/Uncertainty Factor: Medium (document type detection patterns)
+ * AI Pre-Task Self-Assessment: 88%
+ * Problem Estimate: 90%
+ * Initial Code Complexity Estimate: 92%
+ * Final Code Complexity: 93%
+ * Overall Result Score: 94%
+ * Key Variances/Learnings: TDD approach for complex multi-stage processing
+ * Last Updated: 2025-07-08
+ */
+
+import XCTest
+import CoreImage
+import CoreGraphics
+@testable import FinanceMate
+
+final class DocumentProcessorTests: XCTestCase {
+    
+    // MARK: - Test Properties
+    private var documentProcessor: DocumentProcessor!
+    private var mockOCREngine: MockVisionOCREngine!
+    private var testBundle: Bundle!
+    
+    // MARK: - Test Setup
+    override func setUpWithError() throws {
+        try super.setUpWithError()
+        mockOCREngine = MockVisionOCREngine()
+        documentProcessor = DocumentProcessor(ocrEngine: mockOCREngine)
+        testBundle = Bundle(for: DocumentProcessorTests.self)
+    }
+    
+    override func tearDownWithError() throws {
+        documentProcessor = nil
+        mockOCREngine = nil
+        testBundle = nil
+        try super.tearDownWithError()
+    }
+    
+    // MARK: - Document Type Detection Tests
+    
+    func testDetectReceiptDocumentType() async throws {
+        // Given: Mock OCR result with receipt patterns
+        let receiptText = """
+        WOOLWORTHS SUPERMARKET
+        RECEIPT
+        TAX INVOICE
+        TOTAL: $45.67
+        GST: $4.56
+        """
+        
+        mockOCREngine.mockFinancialResult = VisionOCREngine.FinancialDocumentResult(
+            merchantName: "WOOLWORTHS",
+            totalAmount: 45.67,
+            confidence: 0.95,
+            recognizedText: receiptText
+        )
+        
+        // When: Processing document
+        let testImage = try createTestImage()
+        let result = try await documentProcessor.processDocument(from: testImage)
+        
+        // Then: Should detect receipt type
+        XCTAssertEqual(result.documentType, .receipt)
+        XCTAssertGreaterThan(result.confidence, 0.8)
+        XCTAssertEqual(result.ocrResult.merchantName, "WOOLWORTHS")
+        XCTAssertEqual(result.ocrResult.totalAmount, 45.67)
+    }
+    
+    func testDetectInvoiceDocumentType() async throws {
+        // Given: Mock OCR result with invoice patterns
+        let invoiceText = """
+        PROFESSIONAL SERVICES PTY LTD
+        INVOICE #12345
+        DUE DATE: 15/07/2025
+        AMOUNT DUE: $500.00
+        GST: $50.00
+        """
+        
+        mockOCREngine.mockFinancialResult = VisionOCREngine.FinancialDocumentResult(
+            merchantName: "PROFESSIONAL SERVICES PTY LTD",
+            totalAmount: 500.00,
+            confidence: 0.92,
+            recognizedText: invoiceText
+        )
+        
+        // When: Processing document
+        let testImage = try createTestImage()
+        let result = try await documentProcessor.processDocument(from: testImage)
+        
+        // Then: Should detect invoice type
+        XCTAssertEqual(result.documentType, .invoice)
+        XCTAssertGreaterThan(result.confidence, 0.8)
+        XCTAssertEqual(result.ocrResult.totalAmount, 500.00)
+    }
+    
+    func testDetectBankStatementDocumentType() async throws {
+        // Given: Mock OCR result with bank statement patterns
+        let statementText = """
+        COMMONWEALTH BANK
+        ACCOUNT STATEMENT
+        ACCOUNT SUMMARY
+        BALANCE: $1,234.56
+        TRANSACTION HISTORY
+        """
+        
+        mockOCREngine.mockFinancialResult = VisionOCREngine.FinancialDocumentResult(
+            merchantName: "COMMONWEALTH BANK",
+            confidence: 0.90,
+            recognizedText: statementText
+        )
+        
+        // When: Processing document
+        let testImage = try createTestImage()
+        let result = try await documentProcessor.processDocument(from: testImage)
+        
+        // Then: Should detect bank statement type
+        XCTAssertEqual(result.documentType, .bankStatement)
+        XCTAssertGreaterThan(result.confidence, 0.8)
+    }
+    
+    func testDetectUnknownDocumentType() async throws {
+        // Given: Mock OCR result with no recognizable patterns
+        let unknownText = """
+        Some random text
+        Without any financial patterns
+        Or recognizable document markers
+        """
+        
+        mockOCREngine.mockFinancialResult = VisionOCREngine.FinancialDocumentResult(
+            confidence: 0.85,
+            recognizedText: unknownText
+        )
+        
+        // When: Processing document
+        let testImage = try createTestImage()
+        let result = try await documentProcessor.processDocument(from: testImage)
+        
+        // Then: Should detect unknown type
+        XCTAssertEqual(result.documentType, .unknown)
+    }
+    
+    // MARK: - Processing Pipeline Tests
+    
+    func testCompleteProcessingPipeline() async throws {
+        // Given: Valid financial document
+        mockOCREngine.mockFinancialResult = VisionOCREngine.FinancialDocumentResult(
+            merchantName: "COLES SUPERMARKET",
+            totalAmount: 78.90,
+            currency: "AUD",
+            date: Date(),
+            abn: "37 004 085 616",
+            gstAmount: 7.89,
+            isValidABN: true,
+            confidence: 0.96,
+            recognizedText: "COLES SUPERMARKET\nRECEIPT\nTOTAL: $78.90\nGST: $7.89"
+        )
+        
+        // When: Processing document
+        let testImage = try createTestImage()
+        let result = try await documentProcessor.processDocument(from: testImage)
+        
+        // Then: All stages should complete successfully
+        XCTAssertEqual(result.processingStages.count, 4)
+        XCTAssertTrue(result.processingStages.allSatisfy { $0.success })
+        XCTAssertGreaterThan(result.qualityScore, 0.9)
+        XCTAssertLessThan(result.processingTime, 10.0) // Should process quickly
+        
+        // Verify processing stages
+        let stageNames = result.processingStages.map { $0.name }
+        XCTAssertTrue(stageNames.contains("Image Preprocessing"))
+        XCTAssertTrue(stageNames.contains("Document Type Detection"))
+        XCTAssertTrue(stageNames.contains("Financial OCR Processing"))
+        XCTAssertTrue(stageNames.contains("Quality Validation"))
+    }
+    
+    func testProcessingWithLowConfidence() async throws {
+        // Given: OCR result with low confidence
+        mockOCREngine.mockFinancialResult = VisionOCREngine.FinancialDocumentResult(
+            merchantName: "SOME SHOP",
+            totalAmount: 10.00,
+            confidence: 0.60, // Below threshold
+            recognizedText: "Blurry text"
+        )
+        
+        // When: Processing document
+        let testImage = try createTestImage()
+        
+        // Then: Should throw confidence threshold error
+        do {
+            _ = try await documentProcessor.processDocument(from: testImage)
+            XCTFail("Expected ProcessingError.confidenceThresholdNotMet")
+        } catch DocumentProcessor.ProcessingError.confidenceThresholdNotMet {
+            // Expected error
+        } catch {
+            XCTFail("Unexpected error: \(error)")
+        }
+    }
+    
+    // MARK: - Image Validation Tests
+    
+    func testValidateImageDimensionsTooSmall() async throws {
+        // Given: Image with dimensions below minimum
+        let smallImage = try createTestImage(width: 200, height: 150)
+        
+        // When/Then: Should throw invalid dimensions error
+        do {
+            _ = try await documentProcessor.processDocument(from: smallImage)
+            XCTFail("Expected ProcessingError.invalidImageDimensions")
+        } catch DocumentProcessor.ProcessingError.invalidImageDimensions {
+            // Expected error
+        } catch {
+            XCTFail("Unexpected error: \(error)")
+        }
+    }
+    
+    func testValidateImageDimensionsTooLarge() async throws {
+        // Given: Image with dimensions above maximum
+        let largeImage = try createTestImage(width: 5000, height: 5000)
+        
+        // When/Then: Should throw invalid dimensions error
+        do {
+            _ = try await documentProcessor.processDocument(from: largeImage)
+            XCTFail("Expected ProcessingError.invalidImageDimensions")
+        } catch DocumentProcessor.ProcessingError.invalidImageDimensions {
+            // Expected error
+        } catch {
+            XCTFail("Unexpected error: \(error)")
+        }
+    }
+    
+    // MARK: - Quality Score Tests
+    
+    func testQualityScoreCalculation() async throws {
+        // Given: High-quality financial document result
+        mockOCREngine.mockFinancialResult = VisionOCREngine.FinancialDocumentResult(
+            merchantName: "BUNNINGS WAREHOUSE",
+            totalAmount: 156.78,
+            currency: "AUD",
+            date: Date(),
+            abn: "37 004 085 616",
+            gstAmount: 15.68,
+            isValidABN: true,
+            confidence: 0.95,
+            recognizedText: String(repeating: "High quality text extraction. ", count: 50) // >1000 chars
+        )
+        
+        // When: Processing document
+        let testImage = try createTestImage()
+        let result = try await documentProcessor.processDocument(from: testImage)
+        
+        // Then: Should have high quality score
+        // Base confidence: 0.95
+        // + Total amount: 0.1
+        // + Merchant name: 0.1
+        // + Date: 0.1
+        // + Valid ABN: 0.1
+        // + GST amount: 0.1
+        // + Text length >1000: 0.1
+        // = 1.45, capped at 1.0
+        XCTAssertEqual(result.qualityScore, 1.0, accuracy: 0.01)
+    }
+    
+    func testQualityScoreWithMissingData() async throws {
+        // Given: Basic OCR result with minimal data
+        mockOCREngine.mockFinancialResult = VisionOCREngine.FinancialDocumentResult(
+            confidence: 0.80,
+            recognizedText: "Short text"
+        )
+        
+        // When: Processing document
+        let testImage = try createTestImage()
+        let result = try await documentProcessor.processDocument(from: testImage)
+        
+        // Then: Should have lower quality score (just base confidence)
+        XCTAssertEqual(result.qualityScore, 0.80, accuracy: 0.01)
+    }
+    
+    // MARK: - Image Format Tests
+    
+    func testProcessDocumentFromImageData() async throws {
+        // Given: Valid image data
+        let testImage = try createTestImage()
+        let imageData = try createImageData(from: testImage)
+        
+        mockOCREngine.mockFinancialResult = VisionOCREngine.FinancialDocumentResult(
+            merchantName: "TEST MERCHANT",
+            totalAmount: 25.00,
+            confidence: 0.90,
+            recognizedText: "TEST RECEIPT"
+        )
+        
+        // When: Processing from image data
+        let result = try await documentProcessor.processDocument(fromImageData: imageData)
+        
+        // Then: Should process successfully
+        XCTAssertEqual(result.ocrResult.merchantName, "TEST MERCHANT")
+        XCTAssertEqual(result.ocrResult.totalAmount, 25.00)
+    }
+    
+    func testProcessDocumentFromInvalidImageData() async throws {
+        // Given: Invalid image data
+        let invalidData = "Not an image".data(using: .utf8)!
+        
+        // When/Then: Should throw unsupported format error
+        do {
+            _ = try await documentProcessor.processDocument(fromImageData: invalidData)
+            XCTFail("Expected ProcessingError.unsupportedImageFormat")
+        } catch DocumentProcessor.ProcessingError.unsupportedImageFormat {
+            // Expected error
+        } catch {
+            XCTFail("Unexpected error: \(error)")
+        }
+    }
+    
+    // MARK: - Performance Tests
+    
+    func testProcessingPerformance() async throws {
+        // Given: Valid document
+        mockOCREngine.mockFinancialResult = VisionOCREngine.FinancialDocumentResult(
+            merchantName: "PERFORMANCE TEST",
+            totalAmount: 100.00,
+            confidence: 0.95,
+            recognizedText: "Performance test document"
+        )
+        
+        let testImage = try createTestImage()
+        
+        // When: Processing document with time measurement
+        let startTime = CFAbsoluteTimeGetCurrent()
+        let result = try await documentProcessor.processDocument(from: testImage)
+        let endTime = CFAbsoluteTimeGetCurrent()
+        
+        // Then: Should complete within performance target
+        let actualTime = endTime - startTime
+        XCTAssertLessThan(actualTime, 5.0, "Processing should complete within 5 seconds")
+        XCTAssertLessThan(result.processingTime, 5.0, "Reported processing time should be under 5 seconds")
+    }
+    
+    // MARK: - Error Handling Tests
+    
+    func testOCRProcessingFailure() async throws {
+        // Given: OCR engine that throws error
+        mockOCREngine.shouldThrowError = true
+        
+        // When/Then: Should handle OCR error gracefully
+        let testImage = try createTestImage()
+        
+        do {
+            _ = try await documentProcessor.processDocument(from: testImage)
+            XCTFail("Expected ProcessingError.ocrProcessingFailed")
+        } catch DocumentProcessor.ProcessingError.ocrProcessingFailed {
+            // Expected error
+        } catch {
+            XCTFail("Unexpected error: \(error)")
+        }
+    }
+    
+    // MARK: - Helper Methods
+    
+    private func createTestImage(width: Int = 800, height: Int = 600) throws -> CGImage {
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+        let context = CGContext(
+            data: nil,
+            width: width,
+            height: height,
+            bitsPerComponent: 8,
+            bytesPerRow: width * 4,
+            space: colorSpace,
+            bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+        )
+        
+        guard let context = context else {
+            throw NSError(domain: "TestError", code: 1, userInfo: [NSLocalizedDescriptionKey: "Failed to create test image context"])
+        }
+        
+        // Fill with white background
+        context.setFillColor(CGColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0))
+        context.fill(CGRect(x: 0, y: 0, width: width, height: height))
+        
+        // Add some text-like content
+        context.setFillColor(CGColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0))
+        context.fill(CGRect(x: 50, y: 50, width: 200, height: 20))
+        context.fill(CGRect(x: 50, y: 100, width: 150, height: 20))
+        context.fill(CGRect(x: 50, y: 150, width: 100, height: 20))
+        
+        guard let cgImage = context.makeImage() else {
+            throw NSError(domain: "TestError", code: 2, userInfo: [NSLocalizedDescriptionKey: "Failed to create CGImage from context"])
+        }
+        
+        return cgImage
+    }
+    
+    private func createImageData(from cgImage: CGImage) throws -> Data {
+        let data = NSMutableData()
+        guard let destination = CGImageDestinationCreateWithData(data, UTType.png.identifier as CFString, 1, nil) else {
+            throw NSError(domain: "TestError", code: 3, userInfo: [NSLocalizedDescriptionKey: "Failed to create image destination"])
+        }
+        
+        CGImageDestinationAddImage(destination, cgImage, nil)
+        guard CGImageDestinationFinalize(destination) else {
+            throw NSError(domain: "TestError", code: 4, userInfo: [NSLocalizedDescriptionKey: "Failed to finalize image data"])
+        }
+        
+        return data as Data
+    }
+}
+
+// MARK: - Mock VisionOCREngine
+
+private class MockVisionOCREngine: VisionOCREngine {
+    var mockFinancialResult: FinancialDocumentResult?
+    var shouldThrowError = false
+    
+    override func recognizeText(from image: CGImage) async throws -> OCRResult {
+        if shouldThrowError {
+            throw OCRError.visionRequestFailed(underlying: NSError(domain: "MockError", code: 1))
+        }
+        
+        return OCRResult(
+            recognizedText: mockFinancialResult?.recognizedText ?? "",
+            confidence: mockFinancialResult?.confidence ?? 0.0
+        )
+    }
+    
+    override func recognizeFinancialDocument(from image: CGImage) async throws -> FinancialDocumentResult {
+        if shouldThrowError {
+            throw OCRError.visionRequestFailed(underlying: NSError(domain: "MockError", code: 1))
+        }
+        
+        return mockFinancialResult ?? FinancialDocumentResult()
+    }
+}

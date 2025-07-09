@@ -145,6 +145,7 @@
 				B34A9211E42A352FF0EE7BB3 /* DashboardViewModelTests.swift */,
 				ABCDEF0123456789ABCDEF04 /* LineItemViewModelTests.swift */,
 				ABCDEF0123456789ABCDEF05 /* SplitAllocationViewModelTests.swift */,
+				2E80A064386044349451977D /* FinancialEntityViewModel.swift */,
 				C16F2AC4A7984C9297A13B03 /* FinancialEntityViewModelTests.swift */,
 			);
 			path = ViewModels;
@@ -222,7 +223,6 @@
 				ABCDEF0123456789ABCDEF01 /* LineItemViewModel.swift */,
 				ABCDEF0123456789ABCDEF02 /* SplitAllocationViewModel.swift */,
 				ABCDEF0123456789ABCDEF03 /* SettingsViewModel.swift */,
-				2E80A064386044349451977D /* FinancialEntityViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -508,7 +508,6 @@
 				AFDEE79B69BB56B3AF284F3D /* DashboardViewModelTests.swift in Sources */,
 				FEDCBA0987654321FEDCBA04 /* LineItemViewModelTests.swift in Sources */,
 				FEDCBA0987654321FEDCBA05 /* SplitAllocationViewModelTests.swift in Sources */,
-				0491A4FB569940FEB5690E10 /* FinancialEntityViewModelTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -528,6 +527,8 @@
 				191A37A084EC09C6530C1BC7 /* Transaction.swift in Sources */,
 				367DABD88FB44283D6A54544 /* TransactionsViewModel.swift in Sources */,
 				814B2C32A9824FFCACC89492 /* FinanceMateModel.xcdatamodeld in Sources */,
+				0C910700B6434186BA21775E /* FinancialEntityViewModel.swift in Sources */,
+				0491A4FB569940FEB5690E10 /* FinancialEntityViewModelTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -551,7 +552,6 @@
 				E70C7B685A1D67B84A2456CE /* PersistenceController.swift in Sources */,
 				29D1858EBCCBABB5AB0043A8 /* Transaction+CoreDataProperties.swift in Sources */,
 				D8522A3F30A034F05E3C65CD /* Transaction.swift in Sources */,
-				0C910700B6434186BA21775E /* FinancialEntityViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

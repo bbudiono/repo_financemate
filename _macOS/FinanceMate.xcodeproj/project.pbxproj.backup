@@ -48,9 +48,7 @@
 		2FE829CEF1AD43FE8B3917EF /* SplitAllocation+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9142439AEB0144D6AD57275A /* SplitAllocation+CoreDataClass.swift */; };
 		CCE5731C54B747DF8F46989B /* SplitAllocation+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7D61EA8420A47BE9AFBA841 /* SplitAllocation+CoreDataProperties.swift */; };		814B2C32A9824FFCACC89492 /* FinanceMateModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 70B7356CBC8042894E6BE /* FinanceMateModel.xcdatamodeld */; };
 
-			0C910700B6434186BA21775E /* FinancialEntityViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E80A064386044349451977D /* FinancialEntityViewModel.swift */; };
-		0491A4FB569940FEB5690E10 /* FinancialEntityViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C16F2AC4A7984C9297A13B03 /* FinancialEntityViewModelTests.swift */; };
-/* End PBXBuildFile section */
+	/* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
 		0E63A1EB361AFBF04C96881B /* PBXContainerItemProxy */ = {
@@ -134,9 +132,7 @@
 		9142439AEB0144D6AD57275A /* SplitAllocation+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SplitAllocation+CoreDataClass.swift"; sourceTree = "<group>"; };
 		B7D61EA8420A47BE9AFBA841 /* SplitAllocation+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SplitAllocation+CoreDataProperties.swift"; sourceTree = "<group>"; };		70B7356CBC8042894E6BE /* FinanceMateModel.xcdatamodeld */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = FinanceMateModel.xcdatamodeld; sourceTree = "<group>"; versionGroupType = wrapper.xcdatamodel; };
 
-			2E80A064386044349451977D /* FinancialEntityViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinancialEntityViewModel.swift; sourceTree = "<group>"; };
-		C16F2AC4A7984C9297A13B03 /* FinancialEntityViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinancialEntityViewModelTests.swift; sourceTree = "<group>"; };
-/* End PBXFileReference section */
+	/* End PBXFileReference section */
 
 /* Begin PBXGroup section */
 		2973720C2939DD407F7C44AB /* ViewModels */ = {
@@ -145,7 +141,6 @@
 				B34A9211E42A352FF0EE7BB3 /* DashboardViewModelTests.swift */,
 				ABCDEF0123456789ABCDEF04 /* LineItemViewModelTests.swift */,
 				ABCDEF0123456789ABCDEF05 /* SplitAllocationViewModelTests.swift */,
-				C16F2AC4A7984C9297A13B03 /* FinancialEntityViewModelTests.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -222,7 +217,6 @@
 				ABCDEF0123456789ABCDEF01 /* LineItemViewModel.swift */,
 				ABCDEF0123456789ABCDEF02 /* SplitAllocationViewModel.swift */,
 				ABCDEF0123456789ABCDEF03 /* SettingsViewModel.swift */,
-				2E80A064386044349451977D /* FinancialEntityViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -508,7 +502,6 @@
 				AFDEE79B69BB56B3AF284F3D /* DashboardViewModelTests.swift in Sources */,
 				FEDCBA0987654321FEDCBA04 /* LineItemViewModelTests.swift in Sources */,
 				FEDCBA0987654321FEDCBA05 /* SplitAllocationViewModelTests.swift in Sources */,
-				0491A4FB569940FEB5690E10 /* FinancialEntityViewModelTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -527,8 +520,7 @@
 				EF66D6C92F70B5DD876011D7 /* Transaction+CoreDataProperties.swift in Sources */,
 				191A37A084EC09C6530C1BC7 /* Transaction.swift in Sources */,
 				367DABD88FB44283D6A54544 /* TransactionsViewModel.swift in Sources */,
-				814B2C32A9824FFCACC89492 /* FinanceMateModel.xcdatamodeld in Sources */,
-			);
+				814B2C32A9824FFCACC89492 /* FinanceMateModel.xcdatamodeld in Sources */,);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		E728BDA24D7E5D5322C4F5B3 /* Sources */ = {
@@ -551,7 +543,6 @@
 				E70C7B685A1D67B84A2456CE /* PersistenceController.swift in Sources */,
 				29D1858EBCCBABB5AB0043A8 /* Transaction+CoreDataProperties.swift in Sources */,
 				D8522A3F30A034F05E3C65CD /* Transaction.swift in Sources */,
-				0C910700B6434186BA21775E /* FinancialEntityViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

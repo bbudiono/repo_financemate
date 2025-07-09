@@ -1,0 +1,104 @@
+# SwiftFormat Configuration for FinanceMate
+# Professional code formatting with SweetPad integration
+
+# Formatting rules to enable
+--enable isEmpty
+--enable sortedImports
+--enable duplicateImports
+--enable unusedArguments
+--enable redundantSelf
+--enable redundantReturn
+--enable redundantGet
+--enable redundantInit
+--enable redundantVoidReturnType
+--enable redundantParens
+--enable redundantPattern
+--enable hoistPatternLet
+--enable wrapArguments
+--enable wrapParameters
+--enable wrapCollections
+--enable conditionalAssignment
+--enable redundantFileprivate
+--enable strongifiedSelf
+--enable trailingCommas
+--enable numberFormatting
+--enable andOperator
+--enable semicolons
+--enable redundantBreak
+--enable redundantExtensionACL
+--enable modifierOrder
+--enable preferKeyPath
+--enable organizeDeclarations
+--enable extensionAccessControl
+--enable markTypes
+--enable blankLinesAtStartOfScope
+--enable blankLinesAtEndOfScope
+--enable blankLinesBetweenScopes
+
+# Code style preferences
+--indent 4
+--tabwidth 4
+--maxwidth 120
+--linebreaks lf
+--commas always
+--semicolons never
+--trimwhitespace always
+--insertlines always
+--removelines always
+
+# Import organization
+--importgrouping testable-bottom
+--importgrouping alpha
+
+# Wrapping options
+--wraparguments before-first
+--wrapparameters before-first
+--wrapcollections before-first
+--closingparen balanced
+--wrapreturntype if-multiline
+--wrapconditions after-first
+
+# Self usage
+--self remove
+--selfrequired init-only,sometimes
+
+# Access control
+--extensionacl on-extension
+--patternlet inline
+
+# Number formatting
+--decimalgrouping 3
+--binarygrouping 4
+--octalgrouping 4
+--hexgrouping 4
+--fractiongrouping disabled
+--exponentgrouping disabled
+--hexliteralcase lowercase
+--exponentcase lowercase
+
+# Other preferences
+--ifdef no-indent
+--xcodeindentation disabled
+--tabwidth unspecified
+--assetliterals visual-width
+--funcattributes prev-line
+--typeattributes prev-line
+--varattributes same-line
+--storedvarattrs same-line
+--computedvarattrs same-line
+--guardelse auto
+--elseposition same-line
+--shortoptionals always
+--ranges spaced
+
+# Exclude paths
+--exclude build
+--exclude DerivedData
+--exclude .build
+--exclude Pods
+--exclude Carthage
+--exclude xcuserdata
+--exclude temp
+
+# File types
+--swiftversion 5.9
