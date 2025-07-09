@@ -63,10 +63,10 @@ struct DashboardView: View {
                 .padding(adaptivePadding(for: geometry.size.width))
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
+            .accessibilityIdentifier("DashboardView")
             .frame(maxWidth: .infinity)
         }
         .frame(maxWidth: .infinity)
-        .accessibilityIdentifier("DashboardView")
         .background(dashboardBackground)
         .onAppear {
             viewModel.fetchDashboardData()

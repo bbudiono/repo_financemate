@@ -580,6 +580,196 @@ struct PersistenceController {
         // Add bank accounts relationship to financial entity
         financialEntityEntity.properties.append(entityToBankAccountsRelationship)
         
+        // Create User entity
+        let userEntity = NSEntityDescription()
+        userEntity.name = "User"
+        userEntity.managedObjectClassName = "User"
+        
+        // User attributes
+        let userIdAttr = NSAttributeDescription()
+        userIdAttr.name = "id"
+        userIdAttr.attributeType = .UUIDAttributeType
+        userIdAttr.isOptional = false
+        
+        let userNameAttr = NSAttributeDescription()
+        userNameAttr.name = "name"
+        userNameAttr.attributeType = .stringAttributeType
+        userNameAttr.isOptional = false
+        
+        let emailAttr = NSAttributeDescription()
+        emailAttr.name = "email"
+        emailAttr.attributeType = .stringAttributeType
+        emailAttr.isOptional = false
+        
+        let roleAttr = NSAttributeDescription()
+        roleAttr.name = "role"
+        roleAttr.attributeType = .stringAttributeType
+        roleAttr.isOptional = false
+        
+        let userCreatedAtAttr = NSAttributeDescription()
+        userCreatedAtAttr.name = "createdAt"
+        userCreatedAtAttr.attributeType = .dateAttributeType
+        userCreatedAtAttr.isOptional = false
+        
+        let lastLoginAtAttr = NSAttributeDescription()
+        lastLoginAtAttr.name = "lastLoginAt"
+        lastLoginAtAttr.attributeType = .dateAttributeType
+        lastLoginAtAttr.isOptional = true
+        
+        let userIsActiveAttr = NSAttributeDescription()
+        userIsActiveAttr.name = "isActive"
+        userIsActiveAttr.attributeType = .booleanAttributeType
+        userIsActiveAttr.isOptional = false
+        
+        let profileImageURLAttr = NSAttributeDescription()
+        profileImageURLAttr.name = "profileImageURL"
+        profileImageURLAttr.attributeType = .stringAttributeType
+        profileImageURLAttr.isOptional = true
+        
+        let phoneNumberAttr = NSAttributeDescription()
+        phoneNumberAttr.name = "phoneNumber"
+        phoneNumberAttr.attributeType = .stringAttributeType
+        phoneNumberAttr.isOptional = true
+        
+        let preferredCurrencyAttr = NSAttributeDescription()
+        preferredCurrencyAttr.name = "preferredCurrency"
+        preferredCurrencyAttr.attributeType = .stringAttributeType
+        preferredCurrencyAttr.isOptional = true
+        
+        let timezoneAttr = NSAttributeDescription()
+        timezoneAttr.name = "timezone"
+        timezoneAttr.attributeType = .stringAttributeType
+        timezoneAttr.isOptional = true
+        
+        // Create AuditLog entity
+        let auditLogEntity = NSEntityDescription()
+        auditLogEntity.name = "AuditLog"
+        auditLogEntity.managedObjectClassName = "AuditLog"
+        
+        // AuditLog attributes
+        let auditLogIdAttr = NSAttributeDescription()
+        auditLogIdAttr.name = "id"
+        auditLogIdAttr.attributeType = .UUIDAttributeType
+        auditLogIdAttr.isOptional = false
+        
+        let userIdRefAttr = NSAttributeDescription()
+        userIdRefAttr.name = "userId"
+        userIdRefAttr.attributeType = .UUIDAttributeType
+        userIdRefAttr.isOptional = false
+        
+        let actionAttr = NSAttributeDescription()
+        actionAttr.name = "action"
+        actionAttr.attributeType = .stringAttributeType
+        actionAttr.isOptional = false
+        
+        let resourceTypeAttr = NSAttributeDescription()
+        resourceTypeAttr.name = "resourceType"
+        resourceTypeAttr.attributeType = .stringAttributeType
+        resourceTypeAttr.isOptional = false
+        
+        let resourceIdAttr = NSAttributeDescription()
+        resourceIdAttr.name = "resourceId"
+        resourceIdAttr.attributeType = .UUIDAttributeType
+        resourceIdAttr.isOptional = true
+        
+        let resultAttr = NSAttributeDescription()
+        resultAttr.name = "result"
+        resultAttr.attributeType = .stringAttributeType
+        resultAttr.isOptional = false
+        
+        let timestampAttr = NSAttributeDescription()
+        timestampAttr.name = "timestamp"
+        timestampAttr.attributeType = .dateAttributeType
+        timestampAttr.isOptional = false
+        
+        let detailsAttr = NSAttributeDescription()
+        detailsAttr.name = "details"
+        detailsAttr.attributeType = .stringAttributeType
+        detailsAttr.isOptional = true
+        
+        let ipAddressAttr = NSAttributeDescription()
+        ipAddressAttr.name = "ipAddress"
+        ipAddressAttr.attributeType = .stringAttributeType
+        ipAddressAttr.isOptional = true
+        
+        let userAgentAttr = NSAttributeDescription()
+        userAgentAttr.name = "userAgent"
+        userAgentAttr.attributeType = .stringAttributeType
+        userAgentAttr.isOptional = true
+        
+        // User -> FinancialEntities (one-to-many)
+        let userToOwnedEntitiesRelationship = NSRelationshipDescription()
+        userToOwnedEntitiesRelationship.name = "ownedEntities"
+        userToOwnedEntitiesRelationship.destinationEntity = financialEntityEntity
+        userToOwnedEntitiesRelationship.minCount = 0
+        userToOwnedEntitiesRelationship.maxCount = 0
+        userToOwnedEntitiesRelationship.deleteRule = .nullifyDeleteRule
+        
+        // FinancialEntity -> User (many-to-one)
+        let entityToOwnerRelationship = NSRelationshipDescription()
+        entityToOwnerRelationship.name = "owner"
+        entityToOwnerRelationship.destinationEntity = userEntity
+        entityToOwnerRelationship.minCount = 0
+        entityToOwnerRelationship.maxCount = 1
+        entityToOwnerRelationship.deleteRule = .nullifyDeleteRule
+        
+        // User -> AuditLogs (one-to-many)
+        let userToAuditLogsRelationship = NSRelationshipDescription()
+        userToAuditLogsRelationship.name = "auditLogs"
+        userToAuditLogsRelationship.destinationEntity = auditLogEntity
+        userToAuditLogsRelationship.minCount = 0
+        userToAuditLogsRelationship.maxCount = 0
+        userToAuditLogsRelationship.deleteRule = .cascadeDeleteRule
+        
+        // AuditLog -> User (many-to-one)
+        let auditLogToUserRelationship = NSRelationshipDescription()
+        auditLogToUserRelationship.name = "user"
+        auditLogToUserRelationship.destinationEntity = userEntity
+        auditLogToUserRelationship.minCount = 0
+        auditLogToUserRelationship.maxCount = 1
+        auditLogToUserRelationship.deleteRule = .nullifyDeleteRule
+        
+        // Set up inverse relationships
+        userToOwnedEntitiesRelationship.inverseRelationship = entityToOwnerRelationship
+        entityToOwnerRelationship.inverseRelationship = userToOwnedEntitiesRelationship
+        userToAuditLogsRelationship.inverseRelationship = auditLogToUserRelationship
+        auditLogToUserRelationship.inverseRelationship = userToAuditLogsRelationship
+        
+        // Set User properties
+        userEntity.properties = [
+            userIdAttr,
+            userNameAttr,
+            emailAttr,
+            roleAttr,
+            userCreatedAtAttr,
+            lastLoginAtAttr,
+            userIsActiveAttr,
+            profileImageURLAttr,
+            phoneNumberAttr,
+            preferredCurrencyAttr,
+            timezoneAttr,
+            userToOwnedEntitiesRelationship,
+            userToAuditLogsRelationship
+        ]
+        
+        // Set AuditLog properties
+        auditLogEntity.properties = [
+            auditLogIdAttr,
+            userIdRefAttr,
+            actionAttr,
+            resourceTypeAttr,
+            resourceIdAttr,
+            resultAttr,
+            timestampAttr,
+            detailsAttr,
+            ipAddressAttr,
+            userAgentAttr,
+            auditLogToUserRelationship
+        ]
+        
+        // Add owner relationship to financial entity
+        financialEntityEntity.properties.append(entityToOwnerRelationship)
+        
         model.entities = [
             transactionEntity, 
             lineItemEntity, 
@@ -587,7 +777,9 @@ struct PersistenceController {
             financialEntityEntity,
             smsfDetailsEntity,
             crossEntityTransactionEntity,
-            bankAccountEntity
+            bankAccountEntity,
+            userEntity,
+            auditLogEntity
         ]
 
         // Use only the programmatic model, not the .xcdatamodeld file

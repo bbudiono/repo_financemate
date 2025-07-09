@@ -46,6 +46,7 @@ public class FinancialEntity: NSManagedObject {
     @NSManaged public var parentEntity: FinancialEntity?
     @NSManaged public var childEntities: Set<FinancialEntity>
     @NSManaged public var transactions: Set<Transaction>
+    @NSManaged public var owner: User?
     
     // MARK: - Entity Types
     
