@@ -67,7 +67,7 @@ class FinancialEntityViewModel: ObservableObject {
         // Filter by search text
         if !searchText.isEmpty {
             filtered = filtered.filter { entity in
-                entity.name?.localizedCaseInsensitiveContains(searchText) == true
+                entity.name.localizedCaseInsensitiveContains(searchText)
             }
         }
 
@@ -88,7 +88,7 @@ class FinancialEntityViewModel: ObservableObject {
 
     /// Root entities (entities without parent)
     var rootEntities: [FinancialEntity] {
-        entities.filter { $0.parent == nil }
+        entities.filter { $0.parentEntity == nil }
     }
 
     // MARK: - Private Properties
@@ -161,44 +161,48 @@ class FinancialEntityViewModel: ObservableObject {
     ///   - parent: Optional parent entity for hierarchy
     /// - Throws: Validation or Core Data errors
     func createEntity(name: String, type: String, parent: FinancialEntity? = nil) async throws {
-        // Validate input
-        guard !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-            throw ValidationError.emptyName
-        }
-
-        // Validate hierarchy depth
-        if let parent = parent {
-            let depth = getEntityDepth(for: parent)
-            if depth >= 4 { // Maximum 5 levels (0-4)
-                throw ValidationError.hierarchyTooDeep
-            }
-        }
-
-        // Check for name uniqueness within same parent context
-        let existingEntities = parent?.childEntities?.allObjects as? [FinancialEntity] ?? rootEntities
-        if existingEntities.contains(where: { $0.name == name && $0.isActive }) {
-            throw ValidationError.nameNotUnique
-        }
-
         isLoading = true
         errorMessage = nil
 
         do {
+            // Validate input
+            guard !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+                throw FinancialEntityValidationError.emptyName
+            }
+
+            // Validate hierarchy depth
+            if let parent = parent {
+                let depth = getEntityDepth(for: parent)
+                if depth >= 4 { // Maximum 5 levels (0-4)
+                    throw FinancialEntityValidationError.hierarchyTooDeep
+                }
+            }
+
+            // Check for name uniqueness within same parent context
+            let existingEntities = parent?.childEntities ?? Set(rootEntities)
+            if existingEntities.contains(where: { $0.name == name && $0.isActive }) {
+                throw FinancialEntityValidationError.nameNotUnique
+            }
+
             let entity = FinancialEntity(context: context)
             entity.id = UUID()
             entity.name = name
             entity.type = type
-            entity.parent = parent
+            entity.parentEntity = parent
             entity.isActive = true
             entity.createdAt = Date()
-            entity.updatedAt = Date()
+            entity.lastModified = Date()
 
             try context.save()
 
             await fetchEntities()
         } catch {
             await MainActor.run {
-                self.errorMessage = "Failed to create entity: \(error.localizedDescription)"
+                if let validationError = error as? FinancialEntityValidationError {
+                    self.errorMessage = "validation error: \(validationError.localizedDescription)"
+                } else {
+                    self.errorMessage = "Failed to create entity: \(error.localizedDescription)"
+                }
                 self.isLoading = false
             }
             throw error
@@ -212,31 +216,35 @@ class FinancialEntityViewModel: ObservableObject {
     ///   - type: New entity type
     /// - Throws: Validation or Core Data errors
     func updateEntity(_ entity: FinancialEntity, name: String, type: String) async throws {
-        // Validate input
-        guard !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-            throw ValidationError.emptyName
-        }
-
-        // Check for name uniqueness within same parent context
-        let siblings = entity.parent?.childEntities?.allObjects as? [FinancialEntity] ?? rootEntities
-        if siblings.contains(where: { $0.name == name && $0.isActive && $0 != entity }) {
-            throw ValidationError.nameNotUnique
-        }
-
         isLoading = true
         errorMessage = nil
 
         do {
+            // Validate input
+            guard !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+                throw FinancialEntityValidationError.emptyName
+            }
+
+            // Check for name uniqueness within same parent context
+            let siblings = entity.parentEntity?.childEntities ?? Set(rootEntities)
+            if siblings.contains(where: { $0.name == name && $0.isActive && $0 != entity }) {
+                throw FinancialEntityValidationError.nameNotUnique
+            }
+
             entity.name = name
             entity.type = type
-            entity.updatedAt = Date()
+            entity.lastModified = Date()
 
             try context.save()
 
             await fetchEntities()
         } catch {
             await MainActor.run {
-                self.errorMessage = "Failed to update entity: \(error.localizedDescription)"
+                if let validationError = error as? FinancialEntityValidationError {
+                    self.errorMessage = "validation error: \(validationError.localizedDescription)"
+                } else {
+                    self.errorMessage = "Failed to update entity: \(error.localizedDescription)"
+                }
                 self.isLoading = false
             }
             throw error
@@ -248,22 +256,22 @@ class FinancialEntityViewModel: ObservableObject {
     /// - Throws: Validation or Core Data errors
     func deleteEntity(_ entity: FinancialEntity) async throws {
         // Validate deletion is safe
-        if let childEntities = entity.childEntities, !childEntities.isEmpty {
-            throw ValidationError.hasChildEntities
+        if !entity.childEntities.isEmpty {
+            throw FinancialEntityValidationError.hasChildEntities
         }
 
         // Check for associated transactions
         let request: NSFetchRequest<Transaction> = Transaction.fetchRequest()
-        request.predicate = NSPredicate(format: "entityId == %@", entity.id?.uuidString ?? "")
+        request.predicate = NSPredicate(format: "entityId == %@", entity.id.uuidString)
         request.fetchLimit = 1
 
         do {
             let transactions = try context.fetch(request)
             if !transactions.isEmpty {
-                throw ValidationError.hasTransactions
+                throw FinancialEntityValidationError.hasTransactions
             }
         } catch {
-            throw ValidationError.deletionValidationFailed
+            throw FinancialEntityValidationError.deletionValidationFailed
         }
 
         isLoading = true
@@ -294,7 +302,8 @@ class FinancialEntityViewModel: ObservableObject {
         currentEntity = entity
         
         // Persist current entity selection
-        if let entity = entity, let entityIdString = entity.id?.uuidString {
+        if let entity = entity {
+            let entityIdString = entity.id.uuidString
             userDefaults.set(entityIdString, forKey: Self.currentEntityKey)
         } else {
             userDefaults.removeObject(forKey: Self.currentEntityKey)
@@ -322,7 +331,7 @@ class FinancialEntityViewModel: ObservableObject {
 
         while let entity = current {
             path.insert(entity, at: 0)
-            current = entity.parent
+            current = entity.parentEntity
         }
 
         return path
@@ -333,11 +342,11 @@ class FinancialEntityViewModel: ObservableObject {
     /// - Returns: Depth level (0 for root entities)
     func getEntityDepth(for entity: FinancialEntity) -> Int {
         var depth = 0
-        var current = entity.parent
+        var current = entity.parentEntity
 
         while current != nil {
             depth += 1
-            current = current?.parent
+            current = current?.parentEntity
         }
 
         return depth
@@ -370,12 +379,12 @@ class FinancialEntityViewModel: ObservableObject {
             return
         }
 
-        Task {
+        Task { @MainActor in
             await fetchEntities()
             
             // Find the entity with the saved ID
             if let entity = entities.first(where: { $0.id == entityId }) {
-                await setCurrentEntity(entity)
+                currentEntity = entity
             }
         }
     }
@@ -384,7 +393,7 @@ class FinancialEntityViewModel: ObservableObject {
 // MARK: - Validation Errors
 
 /// Validation errors for FinancialEntity operations
-enum ValidationError: LocalizedError {
+enum FinancialEntityValidationError: LocalizedError {
     case emptyName
     case nameNotUnique
     case hierarchyTooDeep

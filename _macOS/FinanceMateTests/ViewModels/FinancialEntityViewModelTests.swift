@@ -66,10 +66,10 @@ final class FinancialEntityViewModelTests: XCTestCase {
         entity.id = UUID()
         entity.name = name
         entity.type = type
-        entity.parent = parent
+        entity.parentEntity = parent
         entity.isActive = true
         entity.createdAt = Date()
-        entity.updatedAt = Date()
+        entity.lastModified = Date()
         
         return entity
     }
@@ -269,8 +269,8 @@ final class FinancialEntityViewModelTests: XCTestCase {
             // Then
             let childEntity = viewModel.entities.first { $0.name == "Child Entity" }
             XCTAssertNotNil(childEntity, "Child entity should be created")
-            XCTAssertEqual(childEntity?.parent, parentEntity, "Child should have correct parent")
-            XCTAssertTrue(parentEntity.childEntities?.contains(childEntity!) == true, "Parent should contain child")
+            XCTAssertEqual(childEntity?.parentEntity, parentEntity, "Child should have correct parent")
+            XCTAssertTrue(parentEntity.childEntities.contains(childEntity!), "Parent should contain child")
             
         } catch {
             XCTFail("Child entity creation should not throw error: \(error)")
@@ -288,13 +288,13 @@ final class FinancialEntityViewModelTests: XCTestCase {
         // When
         do {
             try await viewModel.updateEntity(childEntity, name: "Child", type: "Personal")
-            childEntity.parent = parentEntity2
+            childEntity.parentEntity = parentEntity2
             try context.save()
             
             // Then
-            XCTAssertEqual(childEntity.parent, parentEntity2, "Child should have new parent")
-            XCTAssertTrue(parentEntity2.childEntities?.contains(childEntity) == true, "New parent should contain child")
-            XCTAssertFalse(parentEntity1.childEntities?.contains(childEntity) == true, "Old parent should not contain child")
+            XCTAssertEqual(childEntity.parentEntity, parentEntity2, "Child should have new parent")
+            XCTAssertTrue(parentEntity2.childEntities.contains(childEntity), "New parent should contain child")
+            XCTAssertFalse(parentEntity1.childEntities.contains(childEntity), "Old parent should not contain child")
             
         } catch {
             XCTFail("Entity hierarchy move should not throw error: \(error)")
@@ -329,7 +329,7 @@ final class FinancialEntityViewModelTests: XCTestCase {
         // When - Try to create circular reference
         do {
             try await viewModel.updateEntity(parentEntity, name: "Parent", type: "Business")
-            parentEntity.parent = childEntity
+            parentEntity.parentEntity = childEntity
             try context.save()
             
             XCTFail("Circular reference should throw error")
@@ -405,7 +405,7 @@ final class FinancialEntityViewModelTests: XCTestCase {
         XCTAssertNotEqual(viewModel.currentEntity, entity1, "Should not be first entity anymore")
     }
     
-    func testCurrentEntityPersistence() async {
+    func testCurrentEntityPersistence() async throws {
         // Given
         let entity = createTestEntity(name: "Persistent Entity", type: "Personal")
         saveContext()
@@ -417,6 +417,9 @@ final class FinancialEntityViewModelTests: XCTestCase {
         // Create new ViewModel instance to test persistence
         let newViewModel = FinancialEntityViewModel(context: context)
         await newViewModel.fetchEntities()
+        
+        // Wait for async loading to complete
+        try await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
         
         // Then
         XCTAssertEqual(newViewModel.currentEntity?.id, entity.id, "Current entity should persist across ViewModel instances")
