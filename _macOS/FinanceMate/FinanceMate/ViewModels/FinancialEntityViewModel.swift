@@ -388,6 +388,121 @@ class FinancialEntityViewModel: ObservableObject {
             }
         }
     }
+    
+    // MARK: - Enhanced Entity Operations for UI
+    
+    /// Creates a new financial entity from provided data
+    /// - Parameter data: The entity data to create from
+    @MainActor
+    func createEntity(from data: FinancialEntityData) async {
+        isLoading = true
+        errorMessage = nil
+        
+        do {
+            let entity = FinancialEntity(context: context)
+            entity.name = data.name
+            entity.type = data.type
+            entity.entityDescription = data.description
+            
+            // Set parent entity if provided
+            if let parentId = data.parentEntityId {
+                entity.parentEntity = entities.first { $0.id == parentId }
+            }
+            
+            // Validate entity before saving
+            try entity.validateForInsert()
+            
+            // Check name uniqueness
+            if !entity.isNameUnique(in: context) {
+                throw FinancialEntityValidationError.nameNotUnique
+            }
+            
+            try context.save()
+            await fetchAllEntities()
+            
+        } catch let error as FinancialEntityValidationError {
+            errorMessage = "validation error: \(error.localizedDescription)"
+        } catch {
+            errorMessage = "Failed to create entity: \(error.localizedDescription)"
+        }
+        
+        isLoading = false
+    }
+    
+    /// Updates an existing financial entity with new data
+    /// - Parameters:
+    ///   - entity: The entity to update
+    ///   - data: The new data to apply
+    @MainActor
+    func updateEntity(_ entity: FinancialEntity, with data: FinancialEntityData) async {
+        isLoading = true
+        errorMessage = nil
+        
+        do {
+            entity.name = data.name
+            entity.type = data.type
+            entity.entityDescription = data.description
+            
+            // Update parent entity if provided
+            if let parentId = data.parentEntityId {
+                entity.parentEntity = entities.first { $0.id == parentId }
+            } else {
+                entity.parentEntity = nil
+            }
+            
+            // Validate entity before saving
+            try entity.validateForUpdate()
+            
+            // Check name uniqueness
+            if !entity.isNameUnique(in: context) {
+                throw FinancialEntityValidationError.nameNotUnique
+            }
+            
+            try context.save()
+            await fetchAllEntities()
+            
+        } catch let error as FinancialEntityValidationError {
+            errorMessage = "validation error: \(error.localizedDescription)"
+        } catch {
+            errorMessage = "Failed to update entity: \(error.localizedDescription)"
+        }
+        
+        isLoading = false
+    }
+    
+    /// Searches for entities containing the specified term
+    /// - Parameter searchTerm: The term to search for
+    @MainActor
+    func searchEntities(containing searchTerm: String) async {
+        isLoading = true
+        errorMessage = nil
+        
+        do {
+            let results = try FinancialEntity.searchEntities(containing: searchTerm, in: context)
+            entities = results
+        } catch {
+            errorMessage = "Failed to search entities: \(error.localizedDescription)"
+        }
+        
+        isLoading = false
+    }
+    
+    /// Fetches entities by specific type
+    /// - Parameter type: The entity type to filter by
+    @MainActor
+    func fetchEntitiesByType(_ type: FinancialEntity.EntityType) async {
+        isLoading = true
+        errorMessage = nil
+        
+        do {
+            let results = try FinancialEntity.fetchEntities(ofType: type, in: context)
+            entities = results
+        } catch {
+            errorMessage = "Failed to fetch entities by type: \(error.localizedDescription)"
+        }
+        
+        isLoading = false
+    }
 }
 
 // MARK: - Validation Errors
@@ -416,5 +531,22 @@ enum FinancialEntityValidationError: LocalizedError {
         case .deletionValidationFailed:
             return "Failed to validate entity deletion"
         }
+    }
+}
+
+// MARK: - Supporting Data Structures
+
+/// Data structure for creating and updating financial entities
+struct FinancialEntityData {
+    let name: String
+    let type: String
+    let description: String?
+    let parentEntityId: UUID?
+    
+    init(name: String, type: String, description: String? = nil, parentEntityId: UUID? = nil) {
+        self.name = name
+        self.type = type
+        self.description = description
+        self.parentEntityId = parentEntityId
     }
 }
