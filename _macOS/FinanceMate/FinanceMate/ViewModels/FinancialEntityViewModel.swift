@@ -254,6 +254,46 @@ class FinancialEntityViewModel: ObservableObject {
     /// Delete a financial entity
     /// - Parameter entity: Entity to delete
     /// - Throws: Validation or Core Data errors
+    func deleteEntity(_ entity: FinancialEntity, reassignTransactionsTo defaultEntity: FinancialEntity? = nil) -> Bool {
+        // Validate deletion is safe
+        if !entity.childEntities.isEmpty {
+            errorMessage = "Cannot delete entity with child entities"
+            return false
+        }
+        
+        // Handle transaction reassignment if default entity is provided
+        if let defaultEntity = defaultEntity {
+            for transaction in entity.transactions {
+                transaction.assignedEntity = defaultEntity
+            }
+        }
+        
+        isLoading = true
+        errorMessage = nil
+        
+        do {
+            // If this is the current entity, clear it
+            if currentEntity == entity {
+                currentEntity = nil
+            }
+            
+            // Delete the entity
+            context.delete(entity)
+            try context.save()
+            
+            // Remove from entities array
+            entities.removeAll { $0.id == entity.id }
+            
+            isLoading = false
+            return true
+        } catch {
+            errorMessage = "Failed to delete entity: \(error.localizedDescription)"
+            isLoading = false
+            return false
+        }
+    }
+    
+    /// - Throws: Validation or Core Data errors
     func deleteEntity(_ entity: FinancialEntity) async throws {
         // Validate deletion is safe
         if !entity.childEntities.isEmpty {

@@ -64,6 +64,8 @@ class TransactionsViewModel: ObservableObject {
     }
 
     @Published var errorMessage: String? = nil
+    @Published var selectedEntity: FinancialEntity?
+    @Published var availableEntities: [FinancialEntity] = []
 
     private let context: NSManagedObjectContext
 
@@ -162,4 +164,128 @@ class TransactionsViewModel: ObservableObject {
             deleteTransaction(transaction)
         }
     }
+    
+    // MARK: - Transaction-Entity Integration Methods
+    
+    func createTransaction(from transactionData: TransactionData, assignedTo entity: FinancialEntity? = nil) -> Transaction? {
+        let transaction = Transaction(context: context)
+        transaction.id = UUID()
+        transaction.amount = transactionData.amount
+        transaction.desc = transactionData.description
+        transaction.date = transactionData.date
+        transaction.category = transactionData.category
+        transaction.createdAt = Date()
+        transaction.type = transactionData.type ?? "expense"
+        transaction.assignedEntity = entity ?? selectedEntity
+        
+        do {
+            try context.save()
+            fetchTransactions()
+            return transaction
+        } catch {
+            errorMessage = "Failed to create transaction: \(error.localizedDescription)"
+            return nil
+        }
+    }
+    
+    func createTransaction(from transactionData: TransactionData) -> Transaction? {
+        return createTransaction(from: transactionData, assignedTo: selectedEntity)
+    }
+    
+    func reassignTransaction(_ transaction: Transaction, to entity: FinancialEntity) -> Bool {
+        transaction.assignedEntity = entity
+        
+        do {
+            try context.save()
+            fetchTransactions()
+            return true
+        } catch {
+            errorMessage = "Failed to reassign transaction: \(error.localizedDescription)"
+            return false
+        }
+    }
+    
+    func transactions(for entity: FinancialEntity) -> [Transaction] {
+        return transactions.filter { $0.assignedEntity == entity }
+    }
+    
+    func loadAvailableEntities() {
+        do {
+            availableEntities = try FinancialEntity.fetchActiveEntities(in: context)
+        } catch {
+            errorMessage = "Failed to load entities: \(error.localizedDescription)"
+        }
+    }
+    
+    func setDefaultEntity(_ entity: FinancialEntity) {
+        selectedEntity = entity
+        UserDefaults.standard.set(entity.id.uuidString, forKey: "defaultEntityId")
+    }
+    
+    func getSelectedEntityId() -> String? {
+        return UserDefaults.standard.string(forKey: "defaultEntityId")
+    }
+    
+    func restoreSelectedEntity(withId entityId: String?) {
+        guard let entityId = entityId,
+              let uuid = UUID(uuidString: entityId) else { return }
+        
+        let request: NSFetchRequest<FinancialEntity> = FinancialEntity.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", uuid as CVarArg)
+        
+        do {
+            let results = try context.fetch(request)
+            selectedEntity = results.first
+        } catch {
+            errorMessage = "Failed to restore selected entity: \(error.localizedDescription)"
+        }
+    }
+    
+    func validateEntityAssignment(entity: FinancialEntity?, transactionData: TransactionData) -> EntityAssignmentValidationResult {
+        if entity == nil {
+            return EntityAssignmentValidationResult(isValid: false, errorMessage: "Entity cannot be nil")
+        }
+        
+        return EntityAssignmentValidationResult(isValid: true, errorMessage: nil)
+    }
+}
+
+// MARK: - Supporting Data Structures
+
+struct TransactionData {
+    let amount: Double
+    let description: String
+    let date: Date
+    let category: String
+    let type: String?
+    
+    init(amount: Double, description: String, date: Date = Date(), category: String, type: String? = nil) {
+        self.amount = amount
+        self.description = description
+        self.date = date
+        self.category = category
+        self.type = type
+    }
+}
+
+struct EntityAssignmentValidationResult {
+    let isValid: Bool
+    let errorMessage: String?
+}
+
+enum FinancialEntityType: String, CaseIterable {
+    case personal = "Personal"
+    case business = "Business"
+    case trust = "Trust"
+    case investment = "Investment"
+    
+    var displayName: String {
+        return self.rawValue
+    }
+}
+
+enum TransactionType: String, CaseIterable {
+    case income = "income"
+    case expense = "expense"
+    case transfer = "transfer"
 }

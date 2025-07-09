@@ -249,6 +249,28 @@ public class FinancialEntity: NSManagedObject {
         // Delete the entity
         context.delete(self)
     }
+    
+    // MARK: - Transaction-Related Computed Properties
+    
+    /// Returns the number of transactions assigned to this entity
+    public var transactionCount: Int {
+        return transactions.count
+    }
+    
+    /// Returns the total balance of all transactions assigned to this entity
+    public var totalBalance: Double {
+        return transactions.reduce(0.0) { $0 + $1.amount }
+    }
+    
+    /// Returns the total income from all transactions assigned to this entity
+    public var totalIncome: Double {
+        return transactions.filter { $0.amount > 0 }.reduce(0.0) { $0 + $1.amount }
+    }
+    
+    /// Returns the total expenses from all transactions assigned to this entity
+    public var totalExpenses: Double {
+        return transactions.filter { $0.amount < 0 }.reduce(0.0) { $0 + abs($1.amount) }
+    }
 }
 
 // MARK: - Fetch Request Extension

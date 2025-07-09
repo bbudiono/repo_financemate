@@ -169,6 +169,12 @@ struct PersistenceController {
         entityIdAttribute.attributeType = .UUIDAttributeType
         entityIdAttribute.isOptional = false
         
+        // Add type attribute to Transaction
+        let typeAttribute = NSAttributeDescription()
+        typeAttribute.name = "type"
+        typeAttribute.attributeType = .stringAttributeType
+        typeAttribute.isOptional = false
+        
         transactionEntity.properties = [
             idAttribute,
             dateAttribute,
@@ -177,6 +183,7 @@ struct PersistenceController {
             noteAttribute,
             createdAtAttribute,
             entityIdAttribute,
+            typeAttribute,
             transactionToLineItemsRelationship,
         ]
         lineItemEntity.properties = [

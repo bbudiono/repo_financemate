@@ -30,7 +30,23 @@ public class Transaction: NSManagedObject, Identifiable {
     @NSManaged public var createdAt: Date
     @NSManaged public var entityId: UUID
     @NSManaged public var lineItems: Set<LineItem>
-    // Entity relationship handled in Transaction+CoreDataProperties.swift
+    @NSManaged public var type: String
+    
+    // MARK: - Entity Relationship
+    @NSManaged public var assignedEntity: FinancialEntity?
+    
+    // MARK: - Computed Properties
+    
+    /// Returns the name of the assigned entity or "Unassigned" if no entity is assigned
+    public var entityName: String {
+        return assignedEntity?.name ?? "Unassigned"
+    }
+    
+    /// Convenience property for backward compatibility with existing code
+    public var desc: String {
+        get { return note ?? "" }
+        set { note = newValue.isEmpty ? nil : newValue }
+    }
 }
 
 // MARK: - Phase 2: Line Item Splitting Models (Core Data implementation)
