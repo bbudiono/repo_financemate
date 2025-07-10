@@ -17,10 +17,16 @@ To be the central command center for personal and family wealth, empowering user
    - Personal Finance Tracker
    - Review Income & Expenses
    - Link to Bank/Credit Card Providers
-   - Pull expenses, invoices, receipts, line items from gmail, outlook, etc
+   - Pull expenses, invoices, receipts, line items from gmail, outlook, etc. (HIGHEST PRIORITY).
+     - Every Line item within a receipt, invoice, docket, etc, should be captured as a single entry in expense table with `tax categories`
 2) Investments
 3) Reporting
 4) Tax / Auditing
+5) AI Powered Co-Pilot / MLACS
+   - Persistent Chatbot UI/UX on the right hand side as a drawer that provides users with agentic control, natural language chat interface and full control over tools and functions within the application.
+   - Example queries:
+     - "Please provide a summary expense report for last financial year"
+     - "Can you provide the same report if we exclude costs/expenses that are related to our property investmnets?"
 
 ### Current Status: ✅ PHASE 1 COMPLETE
 FinanceMate has achieved **Production Release Candidate 1.0.0** status for Phase 1 (Core Financial Management) with:
@@ -128,8 +134,28 @@ This section captures the core feature set with tracking for implementation stat
 
 - **Requirement ID:** `UR-103`
   - **Requirement:** Implement Role-Based Access Control (RBAC) system with predefined roles: Owner, Contributor (e.g., Spouse for categorizing), and Viewer (e.g., Accountant for reports)
-  - **Status:** `Pending`
-  - **Dependencies:** Authentication system, permission management
+  - **Status:** `✅ IMPLEMENTED`
+  - **Implementation Date:** 2025-07-09
+  - **Components Delivered:**
+    - **UserRole.swift**: Role definitions with permissions and hierarchy (80+ LoC)
+    - **User+CoreDataClass.swift**: User entity with authentication support (316+ LoC)
+    - **AuditLog+CoreDataClass.swift**: Audit logging entity for security compliance (200+ LoC)
+    - **RBACService.swift**: Permission service with matrix and enforcement (500+ LoC)
+    - **RBACServiceTests.swift**: Comprehensive test suite (400+ LoC)
+    - **PersistenceController.swift**: Core Data integration for User and AuditLog entities
+    - **Enhanced Security**: Comprehensive audit logging with risk assessment
+  - **Evidence:** Production-ready RBAC system with enterprise-grade security
+  - **Dependencies:** ✅ Authentication system implemented, permission management complete
+  - **Business Impact:** ✅ Multi-user financial management with role-based access control
+  - **Permission Matrix:**
+    - **Owner**: Full system access including user management and all CRUD operations
+    - **Contributor**: Create/read/update transactions, read entities, generate reports
+    - **Viewer**: Read-only access with export capabilities (for accountants)
+  - **Security Features:**
+    - Entity-level ownership permissions
+    - Comprehensive audit logging for compliance
+    - Permission enforcement with detailed denial reasons
+    - Role hierarchy with numeric permission levels
 
 ### Phase 3 Requirements ✅ P4 FEATURES IMPLEMENTED (COMPLETE)
 - **Requirement ID:** `UR-104`

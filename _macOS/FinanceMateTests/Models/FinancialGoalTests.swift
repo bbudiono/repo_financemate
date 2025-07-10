@@ -533,7 +533,7 @@ class FinancialGoalTests: XCTestCase {
     
     func testGoalCreationWithInvalidData() {
         // Given & When & Then
-        XCTAssertThrowsError(try FinancialGoal.create(
+        XCTAssertThrowsError(try FinancialGoal.createWithValidation(
             in: context,
             title: "",
             description: "Invalid goal",

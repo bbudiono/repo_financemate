@@ -763,3 +763,435 @@ extension PerformanceMetrics {
     }
 }
 
+// MARK: - Phase 4: Financial Goal Setting Framework (P4-003)
+
+/**
+ * Purpose: Core Data model for financial goals with SMART validation and progress tracking
+ * Issues & Complexity Summary: Goal management with behavioral finance integration and gamification
+ * Key Complexity Drivers:
+ *   - Logic Scope (Est. LoC): ~500
+ *   - Core Algorithm Complexity: Medium (SMART validation, progress calculations)
+ *   - Dependencies: GoalMilestone, Transaction relationships
+ *   - State Management Complexity: Medium (goal states, achievement tracking)
+ *   - Novelty/Uncertainty Factor: Low (standard Core Data patterns with business logic)
+ * AI Pre-Task Self-Assessment: 85%
+ * Problem Estimate: 80%
+ * Initial Code Complexity Estimate: 75%
+ * Final Code Complexity: [TBD]
+ * Overall Result Score: [TBD]
+ * Key Variances/Learnings: [TBD]
+ * Last Updated: 2025-07-10
+ */
+@objc(FinancialGoal)
+public class FinancialGoal: NSManagedObject, Identifiable {
+    
+    // MARK: - Core Data Properties
+    
+    @NSManaged public var id: UUID
+    @NSManaged public var title: String
+    @NSManaged public var goalDescription: String?
+    @NSManaged public var targetAmount: Double
+    @NSManaged public var currentAmount: Double
+    @NSManaged public var targetDate: Date
+    @NSManaged public var category: String
+    @NSManaged public var priority: String
+    @NSManaged public var createdAt: Date
+    @NSManaged public var lastModified: Date
+    @NSManaged public var isAchieved: Bool
+    
+    // MARK: - Relationships
+    
+    @NSManaged public var milestones: Set<GoalMilestone>
+    @NSManaged public var transactions: Set<Transaction>
+    
+    // MARK: - Core Data Lifecycle
+    
+    public override func awakeFromInsert() {
+        super.awakeFromInsert()
+        
+        self.id = UUID()
+        self.createdAt = Date()
+        self.lastModified = Date()
+        self.isAchieved = false
+        self.currentAmount = 0.0
+    }
+    
+    public override func willSave() {
+        super.willSave()
+        
+        if isUpdated && !isDeleted {
+            self.lastModified = Date()
+            
+            // Check if goal is achieved
+            if currentAmount >= targetAmount && !isAchieved {
+                isAchieved = true
+            }
+        }
+    }
+    
+    // MARK: - Business Logic
+    
+    /// Calculate current progress as percentage (0.0 to 1.0)
+    public func calculateProgress() -> Double {
+        guard targetAmount > 0 else { return 0.0 }
+        let progress = currentAmount / targetAmount
+        return min(max(progress, 0.0), 1.0) // Clamp between 0 and 1
+    }
+    
+    /// Update progress with new amount
+    public func updateProgress(newAmount: Double) {
+        currentAmount = newAmount
+        if currentAmount >= targetAmount {
+            isAchieved = true
+        }
+    }
+    
+    /// Add transaction to goal and update progress
+    public func addTransaction(_ transaction: Transaction) {
+        transactions.insert(transaction)
+        transaction.associatedGoal = self
+    }
+    
+    /// Update progress based on associated transactions
+    public func updateProgressFromTransactions() {
+        let totalFromTransactions = transactions.reduce(0.0) { total, transaction in
+            return total + transaction.amount
+        }
+        updateProgress(newAmount: totalFromTransactions)
+    }
+    
+    /// Generate automatic milestones (25%, 50%, 75%, 100%)
+    public func generateAutomaticMilestones() {
+        let percentages = [0.25, 0.50, 0.75, 1.0]
+        
+        for percentage in percentages {
+            let milestoneAmount = targetAmount * percentage
+            let milestoneTitle = "\(Int(percentage * 100))% milestone"
+            
+            let milestone = GoalMilestone.create(
+                in: managedObjectContext!,
+                title: milestoneTitle,
+                targetAmount: milestoneAmount,
+                goal: self
+            )
+            milestones.insert(milestone)
+        }
+    }
+    
+    // MARK: - SMART Validation
+    
+    /// Validate goal against SMART criteria
+    public static func validateSMART(_ goalData: GoalFormData) -> SMARTValidationResult {
+        var result = SMARTValidationResult()
+        
+        // Specific: Title should be descriptive (>5 characters)
+        result.isSpecific = !goalData.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && 
+                           goalData.title.count > 5
+        
+        // Measurable: Should have a specific target amount
+        result.isMeasurable = goalData.targetAmount > 0
+        
+        // Achievable: Amount should be realistic (not more than $100k per month timeframe)
+        let monthsToTarget = Calendar.current.dateComponents([.month], from: Date(), to: goalData.targetDate).month ?? 0
+        let monthlyRequired = monthsToTarget > 0 ? goalData.targetAmount / Double(monthsToTarget) : goalData.targetAmount
+        result.isAchievable = monthlyRequired <= 100000.0 // Max $100k per month
+        
+        // Relevant: Should have a valid category
+        let validCategories = ["Savings", "Investment", "Emergency", "Travel", "Property", "Education", "Retirement"]
+        result.isRelevant = validCategories.contains(goalData.category)
+        
+        // Time-bound: Target date should be in the future
+        result.isTimeBound = goalData.targetDate > Date()
+        
+        result.isValid = result.isSpecific && result.isMeasurable && result.isAchievable && result.isRelevant && result.isTimeBound
+        
+        return result
+    }
+    
+    /// Create a new FinancialGoal with validation (throwing version)
+    static func createWithValidation(
+        in context: NSManagedObjectContext,
+        title: String,
+        description: String?,
+        targetAmount: Double,
+        currentAmount: Double,
+        targetDate: Date,
+        category: String,
+        priority: String
+    ) throws -> FinancialGoal {
+        
+        // Validate input data
+        guard !title.isEmpty else {
+            throw GoalValidationError.invalidTitle
+        }
+        
+        guard targetAmount > 0 else {
+            throw GoalValidationError.invalidAmount
+        }
+        
+        guard !category.isEmpty else {
+            throw GoalValidationError.invalidCategory
+        }
+        
+        guard let entity = NSEntityDescription.entity(forEntityName: "FinancialGoal", in: context) else {
+            throw CoreDataError.entityNotFound
+        }
+        
+        let goal = FinancialGoal(entity: entity, insertInto: context)
+        goal.id = UUID()
+        goal.title = title
+        goal.goalDescription = description
+        goal.targetAmount = targetAmount
+        goal.currentAmount = currentAmount
+        goal.targetDate = targetDate
+        goal.category = category
+        goal.priority = priority
+        goal.createdAt = Date()
+        goal.lastModified = Date()
+        goal.isAchieved = currentAmount >= targetAmount
+        
+        return goal
+    }
+    
+    /// Convenience create method for tests and normal usage
+    static func create(
+        in context: NSManagedObjectContext,
+        title: String,
+        description: String?,
+        targetAmount: Double,
+        currentAmount: Double,
+        targetDate: Date,
+        category: String,
+        priority: String
+    ) -> FinancialGoal {
+        
+        guard let entity = NSEntityDescription.entity(forEntityName: "FinancialGoal", in: context) else {
+            fatalError("FinancialGoal entity not found in the provided context")
+        }
+        
+        let goal = FinancialGoal(entity: entity, insertInto: context)
+        goal.id = UUID()
+        goal.title = title
+        goal.goalDescription = description
+        goal.targetAmount = targetAmount
+        goal.currentAmount = currentAmount
+        goal.targetDate = targetDate
+        goal.category = category
+        goal.priority = priority
+        goal.createdAt = Date()
+        goal.lastModified = Date()
+        goal.isAchieved = currentAmount >= targetAmount
+        
+        return goal
+    }
+}
+
+// MARK: - FinancialGoal Fetch Request Extension
+
+extension FinancialGoal {
+    
+    @nonobjc public class func fetchRequest() -> NSFetchRequest<FinancialGoal> {
+        return NSFetchRequest<FinancialGoal>(entityName: "FinancialGoal")
+    }
+    
+    /// Fetch goals by category
+    public class func fetchGoals(
+        byCategory category: String,
+        in context: NSManagedObjectContext
+    ) throws -> [FinancialGoal] {
+        let request = fetchRequest()
+        request.predicate = NSPredicate(format: "category == %@", category)
+        request.sortDescriptors = [
+            NSSortDescriptor(keyPath: \FinancialGoal.createdAt, ascending: false)
+        ]
+        return try context.fetch(request)
+    }
+    
+    /// Fetch active (not achieved) goals
+    public class func fetchActiveGoals(in context: NSManagedObjectContext) throws -> [FinancialGoal] {
+        let request = fetchRequest()
+        request.predicate = NSPredicate(format: "isAchieved == NO")
+        request.sortDescriptors = [
+            NSSortDescriptor(keyPath: \FinancialGoal.priority, ascending: false),
+            NSSortDescriptor(keyPath: \FinancialGoal.targetDate, ascending: true)
+        ]
+        return try context.fetch(request)
+    }
+    
+    /// Fetch goals by priority
+    public class func fetchGoals(
+        byPriority priority: String,
+        in context: NSManagedObjectContext
+    ) throws -> [FinancialGoal] {
+        let request = fetchRequest()
+        request.predicate = NSPredicate(format: "priority == %@", priority)
+        request.sortDescriptors = [
+            NSSortDescriptor(keyPath: \FinancialGoal.targetDate, ascending: true)
+        ]
+        return try context.fetch(request)
+    }
+}
+
+/**
+ * Purpose: Goal milestone model for tracking progress checkpoints
+ * Issues & Complexity Summary: Milestone management with automatic achievement detection
+ * Key Complexity Drivers:
+ *   - Logic Scope (Est. LoC): ~150
+ *   - Core Algorithm Complexity: Low (milestone tracking)
+ *   - Dependencies: FinancialGoal relationship
+ *   - State Management Complexity: Low
+ *   - Novelty/Uncertainty Factor: Low
+ * AI Pre-Task Self-Assessment: 90%
+ * Problem Estimate: 70%
+ * Initial Code Complexity Estimate: 65%
+ * Final Code Complexity: [TBD]
+ * Overall Result Score: [TBD]
+ * Key Variances/Learnings: [TBD]
+ * Last Updated: 2025-07-10
+ */
+@objc(GoalMilestone)
+public class GoalMilestone: NSManagedObject, Identifiable {
+    
+    // MARK: - Core Data Properties
+    
+    @NSManaged public var id: UUID
+    @NSManaged public var title: String
+    @NSManaged public var targetAmount: Double
+    @NSManaged public var achievedDate: Date?
+    @NSManaged public var isAchieved: Bool
+    @NSManaged public var createdAt: Date
+    
+    // MARK: - Relationships
+    
+    @NSManaged public var goal: FinancialGoal
+    
+    // MARK: - Core Data Lifecycle
+    
+    public override func awakeFromInsert() {
+        super.awakeFromInsert()
+        
+        self.id = UUID()
+        self.createdAt = Date()
+        self.isAchieved = false
+    }
+    
+    // MARK: - Business Logic
+    
+    /// Mark milestone as achieved
+    public func markAsAchieved() {
+        isAchieved = true
+        achievedDate = Date()
+    }
+    
+    /// Create a new GoalMilestone
+    static func create(
+        in context: NSManagedObjectContext,
+        title: String,
+        targetAmount: Double,
+        goal: FinancialGoal
+    ) -> GoalMilestone {
+        
+        guard let entity = NSEntityDescription.entity(forEntityName: "GoalMilestone", in: context) else {
+            fatalError("GoalMilestone entity not found in the provided context")
+        }
+        
+        let milestone = GoalMilestone(entity: entity, insertInto: context)
+        milestone.id = UUID()
+        milestone.title = title
+        milestone.targetAmount = targetAmount
+        milestone.goal = goal
+        milestone.createdAt = Date()
+        milestone.isAchieved = false
+        
+        return milestone
+    }
+}
+
+// MARK: - GoalMilestone Fetch Request Extension
+
+extension GoalMilestone {
+    
+    @nonobjc public class func fetchRequest() -> NSFetchRequest<GoalMilestone> {
+        return NSFetchRequest<GoalMilestone>(entityName: "GoalMilestone")
+    }
+}
+
+// MARK: - Transaction Extension for Goal Relationships
+
+extension Transaction {
+    @NSManaged public var associatedGoal: FinancialGoal?
+}
+
+// MARK: - Supporting Data Structures
+
+/// Data structure for goal form input
+public struct GoalFormData {
+    let title: String
+    let description: String
+    let targetAmount: Double
+    let targetDate: Date
+    let category: String
+    
+    init(title: String, description: String, targetAmount: Double, targetDate: Date, category: String) {
+        self.title = title
+        self.description = description
+        self.targetAmount = targetAmount
+        self.targetDate = targetDate
+        self.category = category
+    }
+}
+
+/// SMART validation result structure
+public struct SMARTValidationResult {
+    var isValid: Bool = false
+    var isSpecific: Bool = false
+    var isMeasurable: Bool = false
+    var isAchievable: Bool = false
+    var isRelevant: Bool = false
+    var isTimeBound: Bool = false
+}
+
+// MARK: - Error Types
+
+/// Goal validation errors
+public enum GoalValidationError: Error, LocalizedError {
+    case invalidTitle
+    case invalidAmount
+    case invalidCategory
+    case invalidDate
+    case invalidPriority
+    
+    public var errorDescription: String? {
+        switch self {
+        case .invalidTitle:
+            return "Goal title cannot be empty"
+        case .invalidAmount:
+            return "Target amount must be greater than zero"
+        case .invalidCategory:
+            return "Goal category cannot be empty"
+        case .invalidDate:
+            return "Target date must be in the future"
+        case .invalidPriority:
+            return "Priority must be High, Medium, or Low"
+        }
+    }
+}
+
+/// Core Data operation errors
+public enum CoreDataError: Error, LocalizedError {
+    case entityNotFound
+    case saveFailed
+    case fetchFailed
+    
+    public var errorDescription: String? {
+        switch self {
+        case .entityNotFound:
+            return "Core Data entity not found"
+        case .saveFailed:
+            return "Failed to save to Core Data"
+        case .fetchFailed:
+            return "Failed to fetch from Core Data"
+        }
+    }
+}
+

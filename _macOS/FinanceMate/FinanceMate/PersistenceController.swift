@@ -967,6 +967,172 @@ struct PersistenceController {
             performanceMetricsToWealthSnapshotRelationship
         ]
         
+        // Create FinancialGoal entity (Phase 4 - P4-003)
+        let financialGoalEntity = NSEntityDescription()
+        financialGoalEntity.name = "FinancialGoal"
+        financialGoalEntity.managedObjectClassName = "FinancialGoal"
+        
+        // FinancialGoal attributes
+        let goalIdAttr = NSAttributeDescription()
+        goalIdAttr.name = "id"
+        goalIdAttr.attributeType = .UUIDAttributeType
+        goalIdAttr.isOptional = false
+        
+        let goalTitleAttr = NSAttributeDescription()
+        goalTitleAttr.name = "title"
+        goalTitleAttr.attributeType = .stringAttributeType
+        goalTitleAttr.isOptional = false
+        
+        let goalDescriptionAttr = NSAttributeDescription()
+        goalDescriptionAttr.name = "goalDescription"
+        goalDescriptionAttr.attributeType = .stringAttributeType
+        goalDescriptionAttr.isOptional = true
+        
+        let targetAmountAttr = NSAttributeDescription()
+        targetAmountAttr.name = "targetAmount"
+        targetAmountAttr.attributeType = .doubleAttributeType
+        targetAmountAttr.isOptional = false
+        
+        let currentAmountAttr = NSAttributeDescription()
+        currentAmountAttr.name = "currentAmount"
+        currentAmountAttr.attributeType = .doubleAttributeType
+        currentAmountAttr.isOptional = false
+        
+        let targetDateAttr = NSAttributeDescription()
+        targetDateAttr.name = "targetDate"
+        targetDateAttr.attributeType = .dateAttributeType
+        targetDateAttr.isOptional = false
+        
+        let goalCategoryAttr = NSAttributeDescription()
+        goalCategoryAttr.name = "category"
+        goalCategoryAttr.attributeType = .stringAttributeType
+        goalCategoryAttr.isOptional = false
+        
+        let goalPriorityAttr = NSAttributeDescription()
+        goalPriorityAttr.name = "priority"
+        goalPriorityAttr.attributeType = .stringAttributeType
+        goalPriorityAttr.isOptional = false
+        
+        let goalCreatedAtAttr = NSAttributeDescription()
+        goalCreatedAtAttr.name = "createdAt"
+        goalCreatedAtAttr.attributeType = .dateAttributeType
+        goalCreatedAtAttr.isOptional = false
+        
+        let goalLastModifiedAttr = NSAttributeDescription()
+        goalLastModifiedAttr.name = "lastModified"
+        goalLastModifiedAttr.attributeType = .dateAttributeType
+        goalLastModifiedAttr.isOptional = false
+        
+        let isAchievedAttr = NSAttributeDescription()
+        isAchievedAttr.name = "isAchieved"
+        isAchievedAttr.attributeType = .booleanAttributeType
+        isAchievedAttr.isOptional = false
+        
+        // Create GoalMilestone entity
+        let goalMilestoneEntity = NSEntityDescription()
+        goalMilestoneEntity.name = "GoalMilestone"
+        goalMilestoneEntity.managedObjectClassName = "GoalMilestone"
+        
+        // GoalMilestone attributes
+        let milestoneIdAttr = NSAttributeDescription()
+        milestoneIdAttr.name = "id"
+        milestoneIdAttr.attributeType = .UUIDAttributeType
+        milestoneIdAttr.isOptional = false
+        
+        let milestoneTitleAttr = NSAttributeDescription()
+        milestoneTitleAttr.name = "title"
+        milestoneTitleAttr.attributeType = .stringAttributeType
+        milestoneTitleAttr.isOptional = false
+        
+        let milestoneTargetAmountAttr = NSAttributeDescription()
+        milestoneTargetAmountAttr.name = "targetAmount"
+        milestoneTargetAmountAttr.attributeType = .doubleAttributeType
+        milestoneTargetAmountAttr.isOptional = false
+        
+        let milestoneAchievedDateAttr = NSAttributeDescription()
+        milestoneAchievedDateAttr.name = "achievedDate"
+        milestoneAchievedDateAttr.attributeType = .dateAttributeType
+        milestoneAchievedDateAttr.isOptional = true
+        
+        let milestoneIsAchievedAttr = NSAttributeDescription()
+        milestoneIsAchievedAttr.name = "isAchieved"
+        milestoneIsAchievedAttr.attributeType = .booleanAttributeType
+        milestoneIsAchievedAttr.isOptional = false
+        
+        let milestoneCreatedAtAttr = NSAttributeDescription()
+        milestoneCreatedAtAttr.name = "createdAt"
+        milestoneCreatedAtAttr.attributeType = .dateAttributeType
+        milestoneCreatedAtAttr.isOptional = false
+        
+        // Create relationships
+        // FinancialGoal -> GoalMilestones (one-to-many)
+        let goalToMilestonesRelationship = NSRelationshipDescription()
+        goalToMilestonesRelationship.name = "milestones"
+        goalToMilestonesRelationship.destinationEntity = goalMilestoneEntity
+        goalToMilestonesRelationship.minCount = 0
+        goalToMilestonesRelationship.maxCount = 0
+        goalToMilestonesRelationship.deleteRule = .cascadeDeleteRule
+        
+        // GoalMilestone -> FinancialGoal (many-to-one)
+        let milestoneToGoalRelationship = NSRelationshipDescription()
+        milestoneToGoalRelationship.name = "goal"
+        milestoneToGoalRelationship.destinationEntity = financialGoalEntity
+        milestoneToGoalRelationship.minCount = 1
+        milestoneToGoalRelationship.maxCount = 1
+        milestoneToGoalRelationship.deleteRule = .nullifyDeleteRule
+        
+        // FinancialGoal -> Transactions (one-to-many)
+        let goalToTransactionsRelationship = NSRelationshipDescription()
+        goalToTransactionsRelationship.name = "transactions"
+        goalToTransactionsRelationship.destinationEntity = transactionEntity
+        goalToTransactionsRelationship.minCount = 0
+        goalToTransactionsRelationship.maxCount = 0
+        goalToTransactionsRelationship.deleteRule = .nullifyDeleteRule
+        
+        // Transaction -> FinancialGoal (many-to-one)
+        let transactionToGoalRelationship = NSRelationshipDescription()
+        transactionToGoalRelationship.name = "associatedGoal"
+        transactionToGoalRelationship.destinationEntity = financialGoalEntity
+        transactionToGoalRelationship.minCount = 0
+        transactionToGoalRelationship.maxCount = 1
+        transactionToGoalRelationship.deleteRule = .nullifyDeleteRule
+        
+        // Set up inverse relationships
+        goalToMilestonesRelationship.inverseRelationship = milestoneToGoalRelationship
+        milestoneToGoalRelationship.inverseRelationship = goalToMilestonesRelationship
+        goalToTransactionsRelationship.inverseRelationship = transactionToGoalRelationship
+        transactionToGoalRelationship.inverseRelationship = goalToTransactionsRelationship
+        
+        // Set entity properties
+        financialGoalEntity.properties = [
+            goalIdAttr,
+            goalTitleAttr,
+            goalDescriptionAttr,
+            targetAmountAttr,
+            currentAmountAttr,
+            targetDateAttr,
+            goalCategoryAttr,
+            goalPriorityAttr,
+            goalCreatedAtAttr,
+            goalLastModifiedAttr,
+            isAchievedAttr,
+            goalToMilestonesRelationship,
+            goalToTransactionsRelationship
+        ]
+        
+        goalMilestoneEntity.properties = [
+            milestoneIdAttr,
+            milestoneTitleAttr,
+            milestoneTargetAmountAttr,
+            milestoneAchievedDateAttr,
+            milestoneIsAchievedAttr,
+            milestoneCreatedAtAttr,
+            milestoneToGoalRelationship
+        ]
+        
+        // Add goal relationship to transaction entity
+        transactionEntity.properties.append(transactionToGoalRelationship)
+        
         model.entities = [
             transactionEntity, 
             lineItemEntity, 
@@ -979,7 +1145,9 @@ struct PersistenceController {
             auditLogEntity,
             wealthSnapshotEntity,
             assetAllocationEntity,
-            performanceMetricsEntity
+            performanceMetricsEntity,
+            financialGoalEntity,
+            goalMilestoneEntity
         ]
 
         // Use only the programmatic model, not the .xcdatamodeld file
