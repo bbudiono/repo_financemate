@@ -20,6 +20,7 @@ import CoreData
  * Last Updated: 2025-07-09
  */
 
+@MainActor
 class WealthSnapshotTests: XCTestCase {
     
     var context: NSManagedObjectContext!
@@ -35,6 +36,14 @@ class WealthSnapshotTests: XCTestCase {
         context = nil
         persistenceController = nil
         super.tearDown()
+    }
+    
+    // MARK: - Basic Test
+    
+    func testBasicSetup() {
+        // Simple test to verify the test class is discovered
+        XCTAssertNotNil(context, "Context should be initialized")
+        XCTAssertNotNil(persistenceController, "PersistenceController should be initialized")
     }
     
     // MARK: - Model Creation Tests
