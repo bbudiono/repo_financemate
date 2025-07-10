@@ -513,7 +513,8 @@ final class SplitAllocationViewModelTests: XCTestCase {
         // When: Checking relationship
         // Then: Split allocation should be properly linked to line item
         XCTAssertEqual(splitAllocation.lineItem, testLineItem, "Split allocation should be linked to line item")
-        XCTAssertTrue(testLineItem.splitAllocations.contains(splitAllocation), "Line item should contain the split allocation")
+        let splitAllocations = testLineItem.splitAllocations?.allObjects as? [SplitAllocation] ?? []
+        XCTAssertTrue(splitAllocations.contains(splitAllocation), "Line item should contain the split allocation")
     }
     
     func testCascadeDeleteSplitAllocations() async {

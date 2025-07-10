@@ -177,13 +177,13 @@ struct LineItemEntryView: View {
 
             Spacer()
 
-            if !lineItem.splitAllocations.isEmpty {
+            if let splitAllocations = lineItem.splitAllocations, splitAllocations.count > 0 {
                 HStack(spacing: 4) {
                     Image(systemName: "chart.pie.fill")
                         .font(.caption)
                         .foregroundColor(.blue)
 
-                    Text("\(lineItem.splitAllocations.count) splits")
+                    Text("\(lineItem.splitAllocations?.count ?? 0) splits")
                         .font(.caption)
                         .foregroundColor(.blue)
                 }

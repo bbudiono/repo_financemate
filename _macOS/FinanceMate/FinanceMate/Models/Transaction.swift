@@ -53,32 +53,36 @@ public class Transaction: NSManagedObject, Identifiable {
 
 /// Represents a single line item within a transaction (e.g., "Laptop", "Mouse").
 /// Linked to Transaction and has multiple SplitAllocations.
-///
-/*
- * Purpose: LineItem model for itemized transaction details and split allocations.
- * Issues & Complexity Summary: Introduces one-to-many relationship with SplitAllocation and many-to-one with Transaction.
- * Key Complexity Drivers:
-   - Logic Scope (Est. LoC): ~40
-   - Core Algorithm Complexity: Low (model only)
-   - Dependencies: SplitAllocation, Transaction
-   - State Management Complexity: Med (relationship integrity)
-   - Novelty/Uncertainty Factor: Med (multi-level Core Data relationships)
- * AI Pre-Task Self-Assessment (Est. Solution Difficulty %): 60%
- * Problem Estimate (Inherent Problem Difficulty %): 65%
- * Initial Code Complexity Estimate %: 60%
- * Justification for Estimates: Standard Core Data relationships, but new for this codebase
- * Final Code Complexity (Actual %): [TBD]
- * Overall Result Score (Success & Quality %): [TBD]
- * Key Variances/Learnings: [TBD]
- * Last Updated: 2025-07-06
- */
+/// Properties and create methods are defined in LineItem+CoreDataClass.swift and LineItem+CoreDataProperties.swift
 @objc(LineItem)
 public class LineItem: NSManagedObject, Identifiable {
     @NSManaged public var id: UUID
     @NSManaged public var itemDescription: String
     @NSManaged public var amount: Double
     @NSManaged public var transaction: Transaction
-    @NSManaged public var splitAllocations: Set<SplitAllocation>
+    @NSManaged public var splitAllocations: NSSet?
+    
+    // MARK: - Convenience Initializers
+    
+    /// Creates a new LineItem in the specified context
+    static func create(
+        in context: NSManagedObjectContext,
+        itemDescription: String,
+        amount: Double,
+        transaction: Transaction
+    ) -> LineItem {
+        // Create entity description directly from context to avoid conflicts
+        guard let entity = NSEntityDescription.entity(forEntityName: "LineItem", in: context) else {
+            fatalError("LineItem entity not found in the provided context")
+        }
+        
+        let lineItem = LineItem(entity: entity, insertInto: context)
+        lineItem.id = UUID()
+        lineItem.itemDescription = itemDescription
+        lineItem.amount = amount
+        lineItem.transaction = transaction
+        return lineItem
+    }
 }
 
 /// Represents a split allocation for a line item (e.g., 70% Business, 30% Personal).
@@ -111,34 +115,7 @@ public class SplitAllocation: NSManagedObject, Identifiable {
 
 // MARK: - Convenience Methods
 
-extension LineItem {
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<LineItem> {
-        return NSFetchRequest<LineItem>(entityName: "LineItem")
-    }
-    
-    // Note: Removed entity() method to avoid context conflicts in testing.
-    // Using NSFetchRequest<LineItem>(entityName: "LineItem") directly instead.
-
-    static func create(
-        in context: NSManagedObjectContext,
-        itemDescription: String,
-        amount: Double,
-        transaction: Transaction
-    ) -> LineItem {
-        // Create entity description directly from context to avoid conflicts
-        guard let entity = NSEntityDescription.entity(forEntityName: "LineItem", in: context) else {
-            fatalError("LineItem entity not found in the provided context")
-        }
-        
-        let lineItem = LineItem(entity: entity, insertInto: context)
-        lineItem.id = UUID()
-        lineItem.itemDescription = itemDescription
-        lineItem.amount = amount
-        lineItem.transaction = transaction
-        lineItem.splitAllocations = Set<SplitAllocation>()
-        return lineItem
-    }
-}
+// MARK: - LineItem convenience methods moved to LineItem+CoreDataClass.swift
 
 extension SplitAllocation {
     @nonobjc public class func fetchRequest() -> NSFetchRequest<SplitAllocation> {
@@ -491,6 +468,298 @@ extension FinancialEntity {
             lastModified: \(lastModified)
         }
         """
+    }
+}
+
+// MARK: - Phase 4: Wealth Dashboard Models (P4-001)
+
+/**
+ * Purpose: Core Data model for wealth snapshots supporting advanced financial dashboard
+ * Issues & Complexity Summary: Wealth tracking with asset allocation and performance metrics relationships
+ * Key Complexity Drivers:
+ *   - Logic Scope (Est. LoC): ~400
+ *   - Core Algorithm Complexity: Medium (wealth calculations, chart data)
+ *   - Dependencies: AssetAllocation, PerformanceMetrics relationships
+ *   - State Management Complexity: Medium (real-time updates)
+ *   - Novelty/Uncertainty Factor: Low (standard Core Data patterns)
+ * AI Pre-Task Self-Assessment: 85%
+ * Problem Estimate: 80%
+ * Initial Code Complexity Estimate: 75%
+ * Final Code Complexity: [TBD]
+ * Overall Result Score: [TBD]
+ * Key Variances/Learnings: [TBD]
+ * Last Updated: 2025-07-09
+ */
+@objc(WealthSnapshot)
+public class WealthSnapshot: NSManagedObject, Identifiable {
+    
+    // MARK: - Core Data Properties
+    
+    @NSManaged public var id: UUID
+    @NSManaged public var date: Date
+    @NSManaged public var totalAssets: Double
+    @NSManaged public var totalLiabilities: Double
+    @NSManaged public var netWorth: Double
+    @NSManaged public var cashPosition: Double
+    @NSManaged public var investmentValue: Double
+    @NSManaged public var propertyValue: Double
+    @NSManaged public var createdAt: Date
+    
+    // MARK: - Relationships
+    
+    @NSManaged public var assetAllocations: Set<AssetAllocation>
+    @NSManaged public var performanceMetrics: Set<PerformanceMetrics>
+    
+    // MARK: - Core Data Lifecycle
+    
+    public override func awakeFromInsert() {
+        super.awakeFromInsert()
+        
+        // Set default values for new wealth snapshots
+        self.id = UUID()
+        self.createdAt = Date()
+        
+        // Calculate net worth from assets and liabilities
+        updateNetWorth()
+    }
+    
+    public override func willSave() {
+        super.willSave()
+        
+        // Automatically update net worth when assets or liabilities change
+        if isUpdated && !isDeleted {
+            let assetKeys = ["totalAssets", "totalLiabilities"]
+            if !Set(changedValues().keys).isDisjoint(with: assetKeys) {
+                updateNetWorth()
+            }
+        }
+    }
+    
+    // MARK: - Business Logic
+    
+    private func updateNetWorth() {
+        netWorth = totalAssets - totalLiabilities
+    }
+    
+    /// Creates a new WealthSnapshot with calculated net worth
+    static func create(
+        in context: NSManagedObjectContext,
+        date: Date,
+        totalAssets: Double,
+        totalLiabilities: Double,
+        cashPosition: Double,
+        investmentValue: Double,
+        propertyValue: Double
+    ) -> WealthSnapshot {
+        guard let entity = NSEntityDescription.entity(forEntityName: "WealthSnapshot", in: context) else {
+            fatalError("WealthSnapshot entity not found in the provided context")
+        }
+        
+        let wealthSnapshot = WealthSnapshot(entity: entity, insertInto: context)
+        wealthSnapshot.id = UUID()
+        wealthSnapshot.date = date
+        wealthSnapshot.totalAssets = totalAssets
+        wealthSnapshot.totalLiabilities = totalLiabilities
+        wealthSnapshot.cashPosition = cashPosition
+        wealthSnapshot.investmentValue = investmentValue
+        wealthSnapshot.propertyValue = propertyValue
+        wealthSnapshot.createdAt = Date()
+        
+        // Net worth is automatically calculated in willSave()
+        wealthSnapshot.netWorth = totalAssets - totalLiabilities
+        
+        return wealthSnapshot
+    }
+}
+
+// MARK: - WealthSnapshot Fetch Request Extension
+
+extension WealthSnapshot {
+    
+    @nonobjc public class func fetchRequest() -> NSFetchRequest<WealthSnapshot> {
+        return NSFetchRequest<WealthSnapshot>(entityName: "WealthSnapshot")
+    }
+    
+    /// Fetch wealth snapshots within a date range
+    public class func fetchSnapshots(
+        from startDate: Date,
+        to endDate: Date,
+        in context: NSManagedObjectContext
+    ) throws -> [WealthSnapshot] {
+        let request = fetchRequest()
+        request.predicate = NSPredicate(format: "date >= %@ AND date <= %@", startDate as NSDate, endDate as NSDate)
+        request.sortDescriptors = [
+            NSSortDescriptor(keyPath: \WealthSnapshot.date, ascending: true)
+        ]
+        return try context.fetch(request)
+    }
+    
+    /// Fetch the most recent wealth snapshot
+    public class func fetchLatestSnapshot(in context: NSManagedObjectContext) throws -> WealthSnapshot? {
+        let request = fetchRequest()
+        request.sortDescriptors = [
+            NSSortDescriptor(keyPath: \WealthSnapshot.date, ascending: false)
+        ]
+        request.fetchLimit = 1
+        return try context.fetch(request).first
+    }
+}
+
+/**
+ * Purpose: Asset allocation model for portfolio composition tracking
+ * Issues & Complexity Summary: Asset class allocation with target vs actual tracking
+ * Key Complexity Drivers:
+ *   - Logic Scope (Est. LoC): ~150
+ *   - Core Algorithm Complexity: Low (allocation percentages)
+ *   - Dependencies: WealthSnapshot relationship
+ *   - State Management Complexity: Low
+ *   - Novelty/Uncertainty Factor: Low
+ * AI Pre-Task Self-Assessment: 90%
+ * Problem Estimate: 70%
+ * Initial Code Complexity Estimate: 65%
+ * Final Code Complexity: [TBD]
+ * Overall Result Score: [TBD]
+ * Key Variances/Learnings: [TBD]
+ * Last Updated: 2025-07-09
+ */
+@objc(AssetAllocation)
+public class AssetAllocation: NSManagedObject, Identifiable {
+    
+    // MARK: - Core Data Properties
+    
+    @NSManaged public var id: UUID
+    @NSManaged public var assetClass: String
+    @NSManaged public var allocation: Double
+    @NSManaged public var targetAllocation: Double
+    @NSManaged public var currentValue: Double
+    @NSManaged public var lastUpdated: Date
+    
+    // MARK: - Relationships
+    
+    @NSManaged public var wealthSnapshot: WealthSnapshot
+    
+    // MARK: - Core Data Lifecycle
+    
+    public override func awakeFromInsert() {
+        super.awakeFromInsert()
+        
+        self.id = UUID()
+        self.lastUpdated = Date()
+    }
+    
+    // MARK: - Business Logic
+    
+    /// Creates a new AssetAllocation linked to a wealth snapshot
+    static func create(
+        in context: NSManagedObjectContext,
+        assetClass: String,
+        allocation: Double,
+        targetAllocation: Double,
+        currentValue: Double,
+        wealthSnapshot: WealthSnapshot
+    ) -> AssetAllocation {
+        guard let entity = NSEntityDescription.entity(forEntityName: "AssetAllocation", in: context) else {
+            fatalError("AssetAllocation entity not found in the provided context")
+        }
+        
+        let assetAllocation = AssetAllocation(entity: entity, insertInto: context)
+        assetAllocation.id = UUID()
+        assetAllocation.assetClass = assetClass
+        assetAllocation.allocation = allocation
+        assetAllocation.targetAllocation = targetAllocation
+        assetAllocation.currentValue = currentValue
+        assetAllocation.wealthSnapshot = wealthSnapshot
+        assetAllocation.lastUpdated = Date()
+        
+        return assetAllocation
+    }
+}
+
+// MARK: - AssetAllocation Fetch Request Extension
+
+extension AssetAllocation {
+    
+    @nonobjc public class func fetchRequest() -> NSFetchRequest<AssetAllocation> {
+        return NSFetchRequest<AssetAllocation>(entityName: "AssetAllocation")
+    }
+}
+
+/**
+ * Purpose: Performance metrics model for portfolio performance tracking
+ * Issues & Complexity Summary: Performance metrics with benchmarking and period tracking
+ * Key Complexity Drivers:
+ *   - Logic Scope (Est. LoC): ~150
+ *   - Core Algorithm Complexity: Low (metric storage)
+ *   - Dependencies: WealthSnapshot relationship
+ *   - State Management Complexity: Low
+ *   - Novelty/Uncertainty Factor: Low
+ * AI Pre-Task Self-Assessment: 90%
+ * Problem Estimate: 70%
+ * Initial Code Complexity Estimate: 65%
+ * Final Code Complexity: [TBD]
+ * Overall Result Score: [TBD]
+ * Key Variances/Learnings: [TBD]
+ * Last Updated: 2025-07-09
+ */
+@objc(PerformanceMetrics)
+public class PerformanceMetrics: NSManagedObject, Identifiable {
+    
+    // MARK: - Core Data Properties
+    
+    @NSManaged public var id: UUID
+    @NSManaged public var metricType: String
+    @NSManaged public var value: Double
+    @NSManaged public var benchmarkValue: Double
+    @NSManaged public var period: String
+    @NSManaged public var calculatedAt: Date
+    
+    // MARK: - Relationships
+    
+    @NSManaged public var wealthSnapshot: WealthSnapshot
+    
+    // MARK: - Core Data Lifecycle
+    
+    public override func awakeFromInsert() {
+        super.awakeFromInsert()
+        
+        self.id = UUID()
+        self.calculatedAt = Date()
+    }
+    
+    // MARK: - Business Logic
+    
+    /// Creates a new PerformanceMetrics linked to a wealth snapshot
+    static func create(
+        in context: NSManagedObjectContext,
+        metricType: String,
+        value: Double,
+        benchmarkValue: Double,
+        period: String,
+        wealthSnapshot: WealthSnapshot
+    ) -> PerformanceMetrics {
+        guard let entity = NSEntityDescription.entity(forEntityName: "PerformanceMetrics", in: context) else {
+            fatalError("PerformanceMetrics entity not found in the provided context")
+        }
+        
+        let performanceMetrics = PerformanceMetrics(entity: entity, insertInto: context)
+        performanceMetrics.id = UUID()
+        performanceMetrics.metricType = metricType
+        performanceMetrics.value = value
+        performanceMetrics.benchmarkValue = benchmarkValue
+        performanceMetrics.period = period
+        performanceMetrics.wealthSnapshot = wealthSnapshot
+        performanceMetrics.calculatedAt = Date()
+        
+        return performanceMetrics
+    }
+}
+
+// MARK: - PerformanceMetrics Fetch Request Extension
+
+extension PerformanceMetrics {
+    
+    @nonobjc public class func fetchRequest() -> NSFetchRequest<PerformanceMetrics> {
+        return NSFetchRequest<PerformanceMetrics>(entityName: "PerformanceMetrics")
     }
 }
 

@@ -148,7 +148,7 @@ final class LineItemViewModel: ObservableObject {
             isLoading = true
             errorMessage = nil
 
-            let request: NSFetchRequest<LineItem> = LineItem.fetchRequest()
+            let request = NSFetchRequest<LineItem>(entityName: "LineItem")
             request.predicate = NSPredicate(format: "transaction == %@", transaction)
             request.sortDescriptors = [
                 NSSortDescriptor(keyPath: \LineItem.itemDescription, ascending: true),

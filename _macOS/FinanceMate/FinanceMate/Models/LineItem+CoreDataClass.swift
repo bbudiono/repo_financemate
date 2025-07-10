@@ -19,20 +19,5 @@ import Foundation
  * Last Updated: 2025-07-06
  */
 
-@objc(LineItem)
-public class LineItem: NSManagedObject {
-    // MARK: - Convenience Initializers
-    
-    /// Creates a new LineItem in the specified context
-    static func create(
-        in context: NSManagedObjectContext,
-        itemDescription: String,
-        amount: Double
-    ) -> LineItem {
-        let lineItem = LineItem(context: context)
-        lineItem.id = UUID()
-        lineItem.itemDescription = itemDescription
-        lineItem.amount = amount
-        return lineItem
-    }
-}
+// LineItem class is now defined in Transaction.swift
+// This file is kept for any future extension methods

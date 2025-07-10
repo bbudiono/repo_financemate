@@ -55,25 +55,27 @@ final class CoreDataTests: XCTestCase {
         let fetchedTransaction = results.first!
         
         // - It has 2 LineItems
-        XCTAssertEqual(fetchedTransaction.lineItems.count, 2)
+        let lineItems = Array(fetchedTransaction.lineItems)
+        XCTAssertEqual(lineItems.count, 2)
         
         // - Each LineItem has correct SplitAllocations
-        let lineItems = Array(fetchedTransaction.lineItems)
         let laptopLineItem = lineItems.first { $0.itemDescription == "Laptop" }!
         let mouseLineItem = lineItems.first { $0.itemDescription == "Mouse" }!
         
-        XCTAssertEqual(laptopLineItem.splitAllocations.count, 2)
-        XCTAssertEqual(mouseLineItem.splitAllocations.count, 1)
+        let laptopSplitAllocations = laptopLineItem.splitAllocations?.allObjects as? [SplitAllocation] ?? []
+        let mouseSplitAllocations = mouseLineItem.splitAllocations?.allObjects as? [SplitAllocation] ?? []
+        XCTAssertEqual(laptopSplitAllocations.count, 2)
+        XCTAssertEqual(mouseSplitAllocations.count, 1)
         
         // - Each LineItem's splits sum to 100%
-        let laptopTotalPercentage = laptopLineItem.splitAllocations.reduce(0.0) { $0 + $1.percentage }
-        let mouseTotalPercentage = mouseLineItem.splitAllocations.reduce(0.0) { $0 + $1.percentage }
+        let laptopTotalPercentage = laptopSplitAllocations.reduce(0.0) { $0 + $1.percentage }
+        let mouseTotalPercentage = mouseSplitAllocations.reduce(0.0) { $0 + $1.percentage }
         
         XCTAssertEqual(laptopTotalPercentage, 100.0, accuracy: 0.01)
         XCTAssertEqual(mouseTotalPercentage, 100.0, accuracy: 0.01)
         
         // Verify specific split allocations
-        let laptopSplits = Array(laptopLineItem.splitAllocations)
+        let laptopSplits = laptopSplitAllocations
         let businessSplit = laptopSplits.first { $0.taxCategory == "Business" }!
         let personalSplit = laptopSplits.first { $0.taxCategory == "Personal" }!
         

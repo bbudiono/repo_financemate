@@ -318,9 +318,10 @@ final class LineItemViewModelTests: XCTestCase {
         // Then: Line item should have split allocations
         XCTAssertEqual(viewModel.lineItems.count, 1, "Should have one line item")
         let fetchedLineItem = viewModel.lineItems.first!
-        XCTAssertEqual(fetchedLineItem.splitAllocations.count, 2, "Should have two split allocations")
+        let splitAllocations = fetchedLineItem.splitAllocations?.allObjects as? [SplitAllocation] ?? []
+        XCTAssertEqual(splitAllocations.count, 2, "Should have two split allocations")
         
-        let totalPercentage = fetchedLineItem.splitAllocations.reduce(0.0) { $0 + $1.percentage }
+        let totalPercentage = splitAllocations.reduce(0.0) { $0 + $1.percentage }
         XCTAssertEqual(totalPercentage, 100.0, accuracy: 0.01, "Split allocations should total 100%")
     }
     

@@ -23,12 +23,8 @@ extension LineItem {
     @nonobjc public class func fetchRequest() -> NSFetchRequest<LineItem> {
         return NSFetchRequest<LineItem>(entityName: "LineItem")
     }
-
-    @NSManaged public var id: UUID
-    @NSManaged public var itemDescription: String
-    @NSManaged public var amount: Double
-    @NSManaged public var transaction: Transaction?
-    @NSManaged public var splitAllocations: NSSet?
+    
+    // Properties are now defined in the main class in Transaction.swift
 }
 
 // MARK: Generated accessors for splitAllocations

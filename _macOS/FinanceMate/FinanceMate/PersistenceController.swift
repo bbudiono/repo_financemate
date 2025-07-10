@@ -770,6 +770,203 @@ struct PersistenceController {
         // Add owner relationship to financial entity
         financialEntityEntity.properties.append(entityToOwnerRelationship)
         
+        // Create WealthSnapshot entity (Phase 4 - P4-001)
+        let wealthSnapshotEntity = NSEntityDescription()
+        wealthSnapshotEntity.name = "WealthSnapshot"
+        wealthSnapshotEntity.managedObjectClassName = "WealthSnapshot"
+        
+        // WealthSnapshot attributes
+        let wealthSnapshotIdAttr = NSAttributeDescription()
+        wealthSnapshotIdAttr.name = "id"
+        wealthSnapshotIdAttr.attributeType = .UUIDAttributeType
+        wealthSnapshotIdAttr.isOptional = false
+        
+        let wealthDateAttr = NSAttributeDescription()
+        wealthDateAttr.name = "date"
+        wealthDateAttr.attributeType = .dateAttributeType
+        wealthDateAttr.isOptional = false
+        
+        let totalAssetsAttr = NSAttributeDescription()
+        totalAssetsAttr.name = "totalAssets"
+        totalAssetsAttr.attributeType = .doubleAttributeType
+        totalAssetsAttr.isOptional = false
+        
+        let totalLiabilitiesAttr = NSAttributeDescription()
+        totalLiabilitiesAttr.name = "totalLiabilities"
+        totalLiabilitiesAttr.attributeType = .doubleAttributeType
+        totalLiabilitiesAttr.isOptional = false
+        
+        let netWorthAttr = NSAttributeDescription()
+        netWorthAttr.name = "netWorth"
+        netWorthAttr.attributeType = .doubleAttributeType
+        netWorthAttr.isOptional = false
+        
+        let cashPositionAttr = NSAttributeDescription()
+        cashPositionAttr.name = "cashPosition"
+        cashPositionAttr.attributeType = .doubleAttributeType
+        cashPositionAttr.isOptional = false
+        
+        let investmentValueAttr = NSAttributeDescription()
+        investmentValueAttr.name = "investmentValue"
+        investmentValueAttr.attributeType = .doubleAttributeType
+        investmentValueAttr.isOptional = false
+        
+        let propertyValueAttr = NSAttributeDescription()
+        propertyValueAttr.name = "propertyValue"
+        propertyValueAttr.attributeType = .doubleAttributeType
+        propertyValueAttr.isOptional = false
+        
+        let wealthCreatedAtAttr = NSAttributeDescription()
+        wealthCreatedAtAttr.name = "createdAt"
+        wealthCreatedAtAttr.attributeType = .dateAttributeType
+        wealthCreatedAtAttr.isOptional = false
+        
+        // Create AssetAllocation entity
+        let assetAllocationEntity = NSEntityDescription()
+        assetAllocationEntity.name = "AssetAllocation"
+        assetAllocationEntity.managedObjectClassName = "AssetAllocation"
+        
+        // AssetAllocation attributes
+        let assetAllocationIdAttr = NSAttributeDescription()
+        assetAllocationIdAttr.name = "id"
+        assetAllocationIdAttr.attributeType = .UUIDAttributeType
+        assetAllocationIdAttr.isOptional = false
+        
+        let assetClassAttr = NSAttributeDescription()
+        assetClassAttr.name = "assetClass"
+        assetClassAttr.attributeType = .stringAttributeType
+        assetClassAttr.isOptional = false
+        
+        let allocationAttr = NSAttributeDescription()
+        allocationAttr.name = "allocation"
+        allocationAttr.attributeType = .doubleAttributeType
+        allocationAttr.isOptional = false
+        
+        let targetAllocationAttr = NSAttributeDescription()
+        targetAllocationAttr.name = "targetAllocation"
+        targetAllocationAttr.attributeType = .doubleAttributeType
+        targetAllocationAttr.isOptional = false
+        
+        let currentValueAttr = NSAttributeDescription()
+        currentValueAttr.name = "currentValue"
+        currentValueAttr.attributeType = .doubleAttributeType
+        currentValueAttr.isOptional = false
+        
+        let lastUpdatedAttr = NSAttributeDescription()
+        lastUpdatedAttr.name = "lastUpdated"
+        lastUpdatedAttr.attributeType = .dateAttributeType
+        lastUpdatedAttr.isOptional = false
+        
+        // Create PerformanceMetrics entity
+        let performanceMetricsEntity = NSEntityDescription()
+        performanceMetricsEntity.name = "PerformanceMetrics"
+        performanceMetricsEntity.managedObjectClassName = "PerformanceMetrics"
+        
+        // PerformanceMetrics attributes
+        let performanceMetricsIdAttr = NSAttributeDescription()
+        performanceMetricsIdAttr.name = "id"
+        performanceMetricsIdAttr.attributeType = .UUIDAttributeType
+        performanceMetricsIdAttr.isOptional = false
+        
+        let metricTypeAttr = NSAttributeDescription()
+        metricTypeAttr.name = "metricType"
+        metricTypeAttr.attributeType = .stringAttributeType
+        metricTypeAttr.isOptional = false
+        
+        let valueAttr = NSAttributeDescription()
+        valueAttr.name = "value"
+        valueAttr.attributeType = .doubleAttributeType
+        valueAttr.isOptional = false
+        
+        let benchmarkValueAttr = NSAttributeDescription()
+        benchmarkValueAttr.name = "benchmarkValue"
+        benchmarkValueAttr.attributeType = .doubleAttributeType
+        benchmarkValueAttr.isOptional = false
+        
+        let periodAttr = NSAttributeDescription()
+        periodAttr.name = "period"
+        periodAttr.attributeType = .stringAttributeType
+        periodAttr.isOptional = false
+        
+        let calculatedAtAttr = NSAttributeDescription()
+        calculatedAtAttr.name = "calculatedAt"
+        calculatedAtAttr.attributeType = .dateAttributeType
+        calculatedAtAttr.isOptional = false
+        
+        // Create relationships
+        // WealthSnapshot -> AssetAllocations (one-to-many)
+        let wealthSnapshotToAssetAllocationsRelationship = NSRelationshipDescription()
+        wealthSnapshotToAssetAllocationsRelationship.name = "assetAllocations"
+        wealthSnapshotToAssetAllocationsRelationship.destinationEntity = assetAllocationEntity
+        wealthSnapshotToAssetAllocationsRelationship.minCount = 0
+        wealthSnapshotToAssetAllocationsRelationship.maxCount = 0
+        wealthSnapshotToAssetAllocationsRelationship.deleteRule = .cascadeDeleteRule
+        
+        // AssetAllocation -> WealthSnapshot (many-to-one)
+        let assetAllocationToWealthSnapshotRelationship = NSRelationshipDescription()
+        assetAllocationToWealthSnapshotRelationship.name = "wealthSnapshot"
+        assetAllocationToWealthSnapshotRelationship.destinationEntity = wealthSnapshotEntity
+        assetAllocationToWealthSnapshotRelationship.minCount = 1
+        assetAllocationToWealthSnapshotRelationship.maxCount = 1
+        assetAllocationToWealthSnapshotRelationship.deleteRule = .nullifyDeleteRule
+        
+        // WealthSnapshot -> PerformanceMetrics (one-to-many)
+        let wealthSnapshotToPerformanceMetricsRelationship = NSRelationshipDescription()
+        wealthSnapshotToPerformanceMetricsRelationship.name = "performanceMetrics"
+        wealthSnapshotToPerformanceMetricsRelationship.destinationEntity = performanceMetricsEntity
+        wealthSnapshotToPerformanceMetricsRelationship.minCount = 0
+        wealthSnapshotToPerformanceMetricsRelationship.maxCount = 0
+        wealthSnapshotToPerformanceMetricsRelationship.deleteRule = .cascadeDeleteRule
+        
+        // PerformanceMetrics -> WealthSnapshot (many-to-one)
+        let performanceMetricsToWealthSnapshotRelationship = NSRelationshipDescription()
+        performanceMetricsToWealthSnapshotRelationship.name = "wealthSnapshot"
+        performanceMetricsToWealthSnapshotRelationship.destinationEntity = wealthSnapshotEntity
+        performanceMetricsToWealthSnapshotRelationship.minCount = 1
+        performanceMetricsToWealthSnapshotRelationship.maxCount = 1
+        performanceMetricsToWealthSnapshotRelationship.deleteRule = .nullifyDeleteRule
+        
+        // Set up inverse relationships
+        wealthSnapshotToAssetAllocationsRelationship.inverseRelationship = assetAllocationToWealthSnapshotRelationship
+        assetAllocationToWealthSnapshotRelationship.inverseRelationship = wealthSnapshotToAssetAllocationsRelationship
+        wealthSnapshotToPerformanceMetricsRelationship.inverseRelationship = performanceMetricsToWealthSnapshotRelationship
+        performanceMetricsToWealthSnapshotRelationship.inverseRelationship = wealthSnapshotToPerformanceMetricsRelationship
+        
+        // Set entity properties
+        wealthSnapshotEntity.properties = [
+            wealthSnapshotIdAttr,
+            wealthDateAttr,
+            totalAssetsAttr,
+            totalLiabilitiesAttr,
+            netWorthAttr,
+            cashPositionAttr,
+            investmentValueAttr,
+            propertyValueAttr,
+            wealthCreatedAtAttr,
+            wealthSnapshotToAssetAllocationsRelationship,
+            wealthSnapshotToPerformanceMetricsRelationship
+        ]
+        
+        assetAllocationEntity.properties = [
+            assetAllocationIdAttr,
+            assetClassAttr,
+            allocationAttr,
+            targetAllocationAttr,
+            currentValueAttr,
+            lastUpdatedAttr,
+            assetAllocationToWealthSnapshotRelationship
+        ]
+        
+        performanceMetricsEntity.properties = [
+            performanceMetricsIdAttr,
+            metricTypeAttr,
+            valueAttr,
+            benchmarkValueAttr,
+            periodAttr,
+            calculatedAtAttr,
+            performanceMetricsToWealthSnapshotRelationship
+        ]
+        
         model.entities = [
             transactionEntity, 
             lineItemEntity, 
@@ -779,7 +976,10 @@ struct PersistenceController {
             crossEntityTransactionEntity,
             bankAccountEntity,
             userEntity,
-            auditLogEntity
+            auditLogEntity,
+            wealthSnapshotEntity,
+            assetAllocationEntity,
+            performanceMetricsEntity
         ]
 
         // Use only the programmatic model, not the .xcdatamodeld file

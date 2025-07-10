@@ -417,7 +417,8 @@ final class SplitAllocationViewModel: ObservableObject {
     /// - Parameter lineItem: The line item to validate
     /// - Returns: True if valid, false otherwise
     func validateLinItemSplitTotal(for lineItem: LineItem) -> Bool {
-        let total = Array(lineItem.splitAllocations).reduce(0.0) { $0 + $1.percentage }
+        let splitAllocations = lineItem.splitAllocations?.allObjects as? [SplitAllocation] ?? []
+        let total = splitAllocations.reduce(0.0) { $0 + $1.percentage }
         return abs(total - 100.0) < 0.01
     }
 

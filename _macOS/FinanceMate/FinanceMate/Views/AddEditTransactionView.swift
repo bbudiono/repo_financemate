@@ -433,7 +433,7 @@ struct AddEditTransactionView: View {
                             .font(.caption.weight(.medium))
                             .foregroundColor(.secondary)
 
-                        if !lineItem.splitAllocations.isEmpty {
+                        if let splitAllocations = lineItem.splitAllocations, splitAllocations.count > 0 {
                             Button(action: {
                                 selectedLineItem = lineItem
                                 showingSplitAllocation = true
