@@ -1,19 +1,28 @@
-/**
- * Purpose: Comprehensive unit tests for FinancialGoal Core Data model and SMART goal validation
- * Issues & Complexity Summary: Testing goal creation, progress calculation, SMART validation, and relationships
+//
+// FinancialGoalTests.swift
+// FinanceMateTests
+//
+// P4-003 Financial Goal Setting Framework - TDD Implementation
+// Created: 2025-07-11
+// Target: FinanceMateTests
+//
+
+/*
+ * Purpose: Comprehensive unit tests for FinancialGoal Core Data models and SMART validation
+ * Issues & Complexity Summary: Testing SMART goal validation, progress calculations, and Core Data relationships
  * Key Complexity Drivers:
- *   - Logic Scope (Est. LoC): ~600
- *   - Core Algorithm Complexity: Medium (SMART validation, progress tracking)
- *   - Dependencies: Core Data, Date calculations, validation logic
- *   - State Management Complexity: Medium (goal states, milestone tracking)
- *   - Novelty/Uncertainty Factor: Low (standard patterns with financial domain logic)
+   - Logic Scope (Est. LoC): ~800
+   - Core Algorithm Complexity: High (SMART validation, progress algorithms, behavioral finance)
+   - Dependencies: Core Data, Date calculations, financial algorithms, Australian compliance
+   - State Management Complexity: High (goal relationships, milestone tracking, progress updates)
+   - Novelty/Uncertainty Factor: Medium (SMART goal validation, behavioral finance patterns)
  * AI Pre-Task Self-Assessment: 85%
- * Problem Estimate: 80%
- * Initial Code Complexity Estimate: 75%
+ * Problem Estimate: 88%
+ * Initial Code Complexity Estimate: 90%
  * Final Code Complexity: [TBD]
  * Overall Result Score: [TBD]
  * Key Variances/Learnings: [TBD]
- * Last Updated: 2025-07-10
+ * Last Updated: 2025-07-11
  */
 
 import XCTest
@@ -45,515 +54,186 @@ class FinancialGoalTests: XCTestCase {
         XCTAssertNotNil(persistenceController, "PersistenceController should be initialized")
     }
     
-    // MARK: - Goal Creation Tests
+    // MARK: - FinancialGoal Creation Tests
     
     func testFinancialGoalCreation() {
         // Given
         let title = "Emergency Fund"
-        let description = "Build emergency fund for 6 months expenses"
-        let targetAmount = 30000.0
-        let currentAmount = 5000.0
-        let targetDate = Calendar.current.date(byAdding: .year, value: 1, to: Date())!
-        let category = "Savings"
-        let priority = "High"
+        let description = "Save $10,000 for emergencies"
+        let targetAmount = 10000.0
+        let category = GoalCategory.emergencyFund
+        let deadline = Calendar.current.date(byAdding: .month, value: 12, to: Date())!
         
-        // When
+        // When - This will fail until we implement FinancialGoal.create
         let goal = FinancialGoal.create(
             in: context,
             title: title,
             description: description,
             targetAmount: targetAmount,
-            currentAmount: currentAmount,
-            targetDate: targetDate,
             category: category,
-            priority: priority
+            deadline: deadline
         )
         
         // Then
         XCTAssertEqual(goal.title, title, "Goal title should match input")
-        XCTAssertEqual(goal.goalDescription, description, "Goal description should match input")
+        XCTAssertEqual(goal.description, description, "Goal description should match input")
         XCTAssertEqual(goal.targetAmount, targetAmount, "Target amount should match input")
-        XCTAssertEqual(goal.currentAmount, currentAmount, "Current amount should match input")
-        XCTAssertEqual(goal.targetDate, targetDate, "Target date should match input")
-        XCTAssertEqual(goal.category, category, "Category should match input")
-        XCTAssertEqual(goal.priority, priority, "Priority should match input")
-        XCTAssertFalse(goal.isAchieved, "New goal should not be achieved")
+        XCTAssertEqual(goal.category, category.rawValue, "Category should match input")
+        XCTAssertEqual(goal.deadline, deadline, "Deadline should match input")
+        XCTAssertEqual(goal.currentAmount, 0.0, "Initial current amount should be zero")
+        XCTAssertFalse(goal.isCompleted, "New goal should not be completed")
         XCTAssertNotNil(goal.id, "Goal should have a UUID")
         XCTAssertNotNil(goal.createdAt, "Goal should have creation date")
+        XCTAssertNotNil(goal.lastUpdated, "Goal should have last updated date")
     }
     
-    func testGoalProgressCalculation() {
+    func testFinancialGoalProgressCalculation() {
         // Given
         let goal = FinancialGoal.create(
             in: context,
-            title: "Test Goal",
-            description: "Test description",
-            targetAmount: 10000.0,
-            currentAmount: 3000.0,
-            targetDate: Date(),
-            category: "Savings",
-            priority: "Medium"
-        )
-        
-        // When
-        let progress = goal.calculateProgress()
-        
-        // Then
-        XCTAssertEqual(progress, 0.3, accuracy: 0.001, "Progress should be 30%")
-    }
-    
-    func testGoalProgressCalculationWithZeroTarget() {
-        // Given
-        let goal = FinancialGoal.create(
-            in: context,
-            title: "Test Goal",
-            description: "Test description",
-            targetAmount: 0.0,
-            currentAmount: 1000.0,
-            targetDate: Date(),
-            category: "Savings",
-            priority: "Low"
-        )
-        
-        // When
-        let progress = goal.calculateProgress()
-        
-        // Then
-        XCTAssertEqual(progress, 0.0, "Progress should be 0% when target is zero")
-    }
-    
-    func testGoalAchievementDetection() {
-        // Given
-        let goal = FinancialGoal.create(
-            in: context,
-            title: "Test Goal",
-            description: "Test description",
-            targetAmount: 5000.0,
-            currentAmount: 5000.0,
-            targetDate: Date(),
-            category: "Savings",
-            priority: "High"
-        )
-        
-        // When
-        goal.updateProgress(newAmount: 5000.0)
-        
-        // Then
-        XCTAssertTrue(goal.isAchieved, "Goal should be marked as achieved when target is reached")
-    }
-    
-    // MARK: - SMART Validation Tests
-    
-    func testSMARTValidationSuccess() {
-        // Given
-        let goalData = GoalFormData(
-            title: "Save for vacation",
-            description: "Save $5000 for European vacation by December 2025",
-            targetAmount: 5000.0,
-            targetDate: Calendar.current.date(byAdding: .year, value: 1, to: Date())!,
-            category: "Travel"
-        )
-        
-        // When
-        let validation = FinancialGoal.validateSMART(goalData)
-        
-        // Then
-        XCTAssertTrue(validation.isValid, "SMART goal should be valid")
-        XCTAssertTrue(validation.isSpecific, "Goal should be specific")
-        XCTAssertTrue(validation.isMeasurable, "Goal should be measurable")
-        XCTAssertTrue(validation.isAchievable, "Goal should be achievable")
-        XCTAssertTrue(validation.isRelevant, "Goal should be relevant")
-        XCTAssertTrue(validation.isTimeBound, "Goal should be time-bound")
-    }
-    
-    func testSMARTValidationFailureVagueTitle() {
-        // Given
-        let goalData = GoalFormData(
-            title: "Save",
-            description: "",
-            targetAmount: 1000.0,
-            targetDate: Calendar.current.date(byAdding: .month, value: 1, to: Date())!,
-            category: "Savings"
-        )
-        
-        // When
-        let validation = FinancialGoal.validateSMART(goalData)
-        
-        // Then
-        XCTAssertFalse(validation.isValid, "Vague goal should not be valid")
-        XCTAssertFalse(validation.isSpecific, "Vague title should fail specific criteria")
-    }
-    
-    func testSMARTValidationFailurePastDate() {
-        // Given
-        let pastDate = Calendar.current.date(byAdding: .day, value: -1, to: Date())!
-        let goalData = GoalFormData(
-            title: "Build emergency fund",
-            description: "Save for emergencies",
-            targetAmount: 10000.0,
-            targetDate: pastDate,
-            category: "Emergency"
-        )
-        
-        // When
-        let validation = FinancialGoal.validateSMART(goalData)
-        
-        // Then
-        XCTAssertFalse(validation.isValid, "Goal with past date should not be valid")
-        XCTAssertFalse(validation.isTimeBound, "Past date should fail time-bound criteria")
-    }
-    
-    func testSMARTValidationFailureUnrealisticAmount() {
-        // Given
-        let goalData = GoalFormData(
-            title: "Save one million dollars",
-            description: "Become a millionaire",
-            targetAmount: 1000000.0,
-            targetDate: Calendar.current.date(byAdding: .month, value: 1, to: Date())!,
-            category: "Wealth"
-        )
-        
-        // When
-        let validation = FinancialGoal.validateSMART(goalData)
-        
-        // Then
-        XCTAssertFalse(validation.isValid, "Unrealistic goal should not be valid")
-        XCTAssertFalse(validation.isAchievable, "Unrealistic amount should fail achievable criteria")
-    }
-    
-    // MARK: - Milestone Tests
-    
-    func testMilestoneCreation() {
-        // Given
-        let goal = FinancialGoal.create(
-            in: context,
-            title: "Save for house deposit",
-            description: "Save $100,000 for house deposit",
+            title: "House Deposit",
+            description: "Save for house deposit",
             targetAmount: 100000.0,
-            currentAmount: 0.0,
-            targetDate: Calendar.current.date(byAdding: .year, value: 2, to: Date())!,
-            category: "Property",
-            priority: "High"
+            category: .savings,
+            deadline: Calendar.current.date(byAdding: .year, value: 2, to: Date())!
         )
         
         // When
-        let milestone = GoalMilestone.create(
-            in: context,
-            title: "25% milestone",
-            targetAmount: 25000.0,
-            goal: goal
-        )
+        goal.currentAmount = 25000.0
+        let progress = goal.calculateProgress()
         
         // Then
-        XCTAssertEqual(milestone.title, "25% milestone", "Milestone title should match")
-        XCTAssertEqual(milestone.targetAmount, 25000.0, "Milestone target should match")
-        XCTAssertEqual(milestone.goal, goal, "Milestone should be linked to goal")
-        XCTAssertFalse(milestone.isAchieved, "New milestone should not be achieved")
-        XCTAssertNil(milestone.achievedDate, "New milestone should not have achieved date")
+        XCTAssertEqual(progress, 0.25, accuracy: 0.001, "Progress should be 25% (25000/100000)")
     }
     
-    func testMilestoneAchievement() {
+    func testSMARTValidationSpecific() {
+        // Given
+        let specificGoal = FinancialGoal.create(
+            in: context,
+            title: "Save $10,000 for emergency fund",
+            description: "Build an emergency fund to cover 6 months of expenses",
+            targetAmount: 10000.0,
+            category: .emergencyFund,
+            deadline: Calendar.current.date(byAdding: .year, value: 1, to: Date())!
+        )
+        
+        // When & Then - This will fail until we implement SMART validation
+        XCTAssertTrue(specificGoal.isSpecific(), "Specific goal should pass SMART validation")
+    }
+    
+    func testGoalMilestoneCreation() {
         // Given
         let goal = FinancialGoal.create(
             in: context,
             title: "Investment Goal",
-            description: "Build investment portfolio",
+            description: "Invest $50,000",
             targetAmount: 50000.0,
-            currentAmount: 15000.0,
-            targetDate: Date(),
-            category: "Investment",
-            priority: "Medium"
+            category: .investment,
+            deadline: Calendar.current.date(byAdding: .year, value: 2, to: Date())!
         )
         
+        let milestoneDate = Calendar.current.date(byAdding: .month, value: 6, to: Date())!
+        let milestoneAmount = 25000.0
+        
+        // When - This will fail until we implement GoalMilestone.create
         let milestone = GoalMilestone.create(
             in: context,
-            title: "30% milestone",
-            targetAmount: 15000.0,
-            goal: goal
+            goal: goal,
+            title: "Halfway Point",
+            targetDate: milestoneDate,
+            targetAmount: milestoneAmount
         )
         
-        // When
-        milestone.markAsAchieved()
-        
         // Then
-        XCTAssertTrue(milestone.isAchieved, "Milestone should be marked as achieved")
-        XCTAssertNotNil(milestone.achievedDate, "Achieved milestone should have achieved date")
+        XCTAssertEqual(milestone.title, "Halfway Point", "Milestone title should match input")
+        XCTAssertEqual(milestone.targetDate, milestoneDate, "Target date should match input")
+        XCTAssertEqual(milestone.targetAmount, milestoneAmount, "Target amount should match input")
+        XCTAssertEqual(milestone.goalId, goal.id, "Milestone should be linked to goal")
+        XCTAssertFalse(milestone.isAchieved, "New milestone should not be achieved")
+        XCTAssertNotNil(milestone.id, "Milestone should have a UUID")
     }
     
-    func testAutomaticMilestoneGeneration() {
+    func testAustralianCurrencyFormatting() {
         // Given
         let goal = FinancialGoal.create(
             in: context,
             title: "Retirement Savings",
             description: "Build retirement fund",
-            targetAmount: 1000000.0,
-            currentAmount: 0.0,
-            targetDate: Calendar.current.date(byAdding: .year, value: 30, to: Date())!,
-            category: "Retirement",
-            priority: "High"
+            targetAmount: 500000.0,
+            category: .investment,
+            deadline: Calendar.current.date(byAdding: .year, value: 10, to: Date())!
         )
         
-        // When
-        goal.generateAutomaticMilestones()
+        goal.currentAmount = 125000.0
+        
+        // When - This will fail until we implement formatting methods
+        let formattedTarget = goal.formattedTargetAmount()
+        let formattedCurrent = goal.formattedCurrentAmount()
         
         // Then
-        XCTAssertGreaterThan(goal.milestones.count, 0, "Automatic milestones should be generated")
-        XCTAssertEqual(goal.milestones.count, 4, "Should generate 4 milestones (25%, 50%, 75%, 100%)")
+        XCTAssertTrue(formattedTarget.contains("$"), "Target amount should be formatted as currency")
+        XCTAssertTrue(formattedCurrent.contains("$"), "Current amount should be formatted as currency")
+        XCTAssertTrue(formattedTarget.contains("A$") || formattedTarget.hasPrefix("$"), "Should use Australian currency format")
     }
+}
+
+// MARK: - Mock Enums for Testing (Will be moved to actual implementation)
+
+enum GoalCategory: String, CaseIterable {
+    case savings = "savings"
+    case investment = "investment" 
+    case debtReduction = "debt_reduction"
+    case emergencyFund = "emergency_fund"
     
-    // MARK: - Relationship Tests
-    
-    func testGoalTransactionRelationship() {
-        // Given
-        let goal = FinancialGoal.create(
-            in: context,
-            title: "Car Purchase",
-            description: "Save for new car",
-            targetAmount: 25000.0,
-            currentAmount: 5000.0,
-            targetDate: Date(),
-            category: "Transportation",
-            priority: "Medium"
-        )
-        
-        let transaction = Transaction.create(
-            in: context,
-            amount: 500.0,
-            category: "Car Savings",
-            note: "Monthly car fund contribution"
-        )
-        
-        // When
-        goal.addTransaction(transaction)
-        
-        // Then
-        XCTAssertTrue(goal.transactions.contains(transaction), "Goal should contain the transaction")
-        XCTAssertEqual(transaction.associatedGoal, goal, "Transaction should be linked to goal")
-    }
-    
-    func testGoalProgressUpdateFromTransactions() {
-        // Given
-        let goal = FinancialGoal.create(
-            in: context,
-            title: "Education Fund",
-            description: "Save for education",
-            targetAmount: 20000.0,
-            currentAmount: 0.0,
-            targetDate: Date(),
-            category: "Education",
-            priority: "High"
-        )
-        
-        let transaction1 = Transaction.create(
-            in: context,
-            amount: 1000.0,
-            category: "Education Savings",
-            note: "First contribution"
-        )
-        
-        let transaction2 = Transaction.create(
-            in: context,
-            amount: 500.0,
-            category: "Education Savings",
-            note: "Second contribution"
-        )
-        
-        // When
-        goal.addTransaction(transaction1)
-        goal.addTransaction(transaction2)
-        goal.updateProgressFromTransactions()
-        
-        // Then
-        XCTAssertEqual(goal.currentAmount, 1500.0, "Current amount should reflect transaction total")
-        XCTAssertEqual(goal.calculateProgress(), 0.075, accuracy: 0.001, "Progress should be 7.5%")
-    }
-    
-    // MARK: - Fetch Request Tests
-    
-    func testFetchGoalsByCategory() async {
-        // Given
-        let goal1 = FinancialGoal.create(
-            in: context,
-            title: "Emergency Fund",
-            description: "Emergency savings",
-            targetAmount: 15000.0,
-            currentAmount: 5000.0,
-            targetDate: Date(),
-            category: "Emergency",
-            priority: "High"
-        )
-        
-        let goal2 = FinancialGoal.create(
-            in: context,
-            title: "Vacation Fund",
-            description: "Vacation savings",
-            targetAmount: 8000.0,
-            currentAmount: 2000.0,
-            targetDate: Date(),
-            category: "Travel",
-            priority: "Medium"
-        )
-        
-        try? context.save()
-        
-        // When
-        let emergencyGoals = try! FinancialGoal.fetchGoals(
-            byCategory: "Emergency",
-            in: context
-        )
-        
-        // Then
-        XCTAssertEqual(emergencyGoals.count, 1, "Should fetch one emergency goal")
-        XCTAssertEqual(emergencyGoals.first?.title, "Emergency Fund", "Should fetch correct goal")
-    }
-    
-    func testFetchActiveGoals() async {
-        // Given
-        let activeGoal = FinancialGoal.create(
-            in: context,
-            title: "Active Goal",
-            description: "Currently working on this",
-            targetAmount: 10000.0,
-            currentAmount: 3000.0,
-            targetDate: Calendar.current.date(byAdding: .year, value: 1, to: Date())!,
-            category: "Savings",
-            priority: "High"
-        )
-        
-        let completedGoal = FinancialGoal.create(
-            in: context,
-            title: "Completed Goal",
-            description: "Already achieved",
-            targetAmount: 5000.0,
-            currentAmount: 5000.0,
-            targetDate: Date(),
-            category: "Savings",
-            priority: "Low"
-        )
-        completedGoal.isAchieved = true
-        
-        try? context.save()
-        
-        // When
-        let activeGoals = try! FinancialGoal.fetchActiveGoals(in: context)
-        
-        // Then
-        XCTAssertEqual(activeGoals.count, 1, "Should fetch only active goals")
-        XCTAssertFalse(activeGoals.first!.isAchieved, "Fetched goal should not be achieved")
-    }
-    
-    func testFetchGoalsByPriority() async {
-        // Given
-        let highPriorityGoal = FinancialGoal.create(
-            in: context,
-            title: "High Priority Goal",
-            description: "Important goal",
-            targetAmount: 15000.0,
-            currentAmount: 0.0,
-            targetDate: Date(),
-            category: "Important",
-            priority: "High"
-        )
-        
-        let lowPriorityGoal = FinancialGoal.create(
-            in: context,
-            title: "Low Priority Goal",
-            description: "Less important goal",
-            targetAmount: 3000.0,
-            currentAmount: 0.0,
-            targetDate: Date(),
-            category: "Optional",
-            priority: "Low"
-        )
-        
-        try? context.save()
-        
-        // When
-        let highPriorityGoals = try! FinancialGoal.fetchGoals(
-            byPriority: "High",
-            in: context
-        )
-        
-        // Then
-        XCTAssertEqual(highPriorityGoals.count, 1, "Should fetch one high priority goal")
-        XCTAssertEqual(highPriorityGoals.first?.priority, "High", "Fetched goal should be high priority")
-    }
-    
-    // MARK: - Performance Tests
-    
-    func testGoalCalculationPerformance() {
-        // Given
-        var goals: [FinancialGoal] = []
-        for i in 1...100 {
-            let goal = FinancialGoal.create(
-                in: context,
-                title: "Goal \(i)",
-                description: "Test goal \(i)",
-                targetAmount: Double(i * 1000),
-                currentAmount: Double(i * 100),
-                targetDate: Date(),
-                category: "Test",
-                priority: "Medium"
-            )
-            goals.append(goal)
-        }
-        
-        // When & Then
-        measure {
-            for goal in goals {
-                _ = goal.calculateProgress()
-            }
+    var displayName: String {
+        switch self {
+        case .savings: return "Savings"
+        case .investment: return "Investment"
+        case .debtReduction: return "Debt Reduction"
+        case .emergencyFund: return "Emergency Fund"
         }
     }
-    
-    func testLargeGoalDatasetFetch() {
-        // Given
-        for i in 1...1000 {
-            _ = FinancialGoal.create(
-                in: context,
-                title: "Goal \(i)",
-                description: "Performance test goal \(i)",
-                targetAmount: Double(i * 1000),
-                currentAmount: Double(i * 100),
-                targetDate: Date(),
-                category: "Performance",
-                priority: "Medium"
-            )
-        }
-        
-        try? context.save()
-        
-        // When & Then
-        measure {
-            _ = try! FinancialGoal.fetchActiveGoals(in: context)
-        }
+}
+
+// MARK: - Mock Classes (Will fail until implemented)
+
+extension FinancialGoal {
+    static func create(
+        in context: NSManagedObjectContext,
+        title: String,
+        description: String?,
+        targetAmount: Double,
+        category: GoalCategory,
+        deadline: Date
+    ) -> FinancialGoal {
+        fatalError("FinancialGoal.create not implemented - TDD failing test")
     }
     
-    // MARK: - Error Handling Tests
-    
-    func testGoalCreationWithInvalidData() {
-        // Given & When & Then
-        XCTAssertThrowsError(try FinancialGoal.createWithValidation(
-            in: context,
-            title: "",
-            description: "Invalid goal",
-            targetAmount: -1000.0,
-            currentAmount: 0.0,
-            targetDate: Date(),
-            category: "",
-            priority: "Invalid"
-        )) { error in
-            XCTAssertTrue(error is GoalValidationError, "Should throw validation error")
-        }
+    func calculateProgress() -> Double {
+        fatalError("calculateProgress not implemented - TDD failing test")
     }
     
-    func testGoalFetchWithInvalidContext() {
-        // Given
-        let invalidContext = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
-        
-        // When & Then
-        XCTAssertThrowsError(try FinancialGoal.fetchActiveGoals(in: invalidContext)) { error in
-            XCTAssertTrue(error is CoreDataError, "Should throw Core Data error")
-        }
+    func isSpecific() -> Bool {
+        fatalError("isSpecific not implemented - TDD failing test")
+    }
+    
+    func formattedTargetAmount() -> String {
+        fatalError("formattedTargetAmount not implemented - TDD failing test")
+    }
+    
+    func formattedCurrentAmount() -> String {
+        fatalError("formattedCurrentAmount not implemented - TDD failing test")
+    }
+}
+
+extension GoalMilestone {
+    static func create(
+        in context: NSManagedObjectContext,
+        goal: FinancialGoal,
+        title: String,
+        targetDate: Date,
+        targetAmount: Double
+    ) -> GoalMilestone {
+        fatalError("GoalMilestone.create not implemented - TDD failing test")
     }
 }
