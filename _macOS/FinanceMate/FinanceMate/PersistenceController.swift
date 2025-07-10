@@ -1133,6 +1133,256 @@ struct PersistenceController {
         // Add goal relationship to transaction entity
         transactionEntity.properties.append(transactionToGoalRelationship)
         
+        // Create Portfolio entity (Phase 4 - P4-004)
+        let portfolioEntity = NSEntityDescription()
+        portfolioEntity.name = "Portfolio"
+        portfolioEntity.managedObjectClassName = "Portfolio"
+        
+        // Portfolio attributes
+        let portfolioIdAttr = NSAttributeDescription()
+        portfolioIdAttr.name = "id"
+        portfolioIdAttr.attributeType = .UUIDAttributeType
+        portfolioIdAttr.isOptional = false
+        
+        let portfolioNameAttr = NSAttributeDescription()
+        portfolioNameAttr.name = "name"
+        portfolioNameAttr.attributeType = .stringAttributeType
+        portfolioNameAttr.isOptional = false
+        
+        let portfolioCurrencyAttr = NSAttributeDescription()
+        portfolioCurrencyAttr.name = "currency"
+        portfolioCurrencyAttr.attributeType = .stringAttributeType
+        portfolioCurrencyAttr.isOptional = false
+        
+        let portfolioTotalValueAttr = NSAttributeDescription()
+        portfolioTotalValueAttr.name = "totalValue"
+        portfolioTotalValueAttr.attributeType = .doubleAttributeType
+        portfolioTotalValueAttr.isOptional = false
+        
+        let portfolioCreatedAtAttr = NSAttributeDescription()
+        portfolioCreatedAtAttr.name = "createdAt"
+        portfolioCreatedAtAttr.attributeType = .dateAttributeType
+        portfolioCreatedAtAttr.isOptional = false
+        
+        let portfolioLastUpdatedAttr = NSAttributeDescription()
+        portfolioLastUpdatedAttr.name = "lastUpdated"
+        portfolioLastUpdatedAttr.attributeType = .dateAttributeType
+        portfolioLastUpdatedAttr.isOptional = false
+        
+        // Create Investment entity
+        let investmentEntity = NSEntityDescription()
+        investmentEntity.name = "Investment"
+        investmentEntity.managedObjectClassName = "Investment"
+        
+        // Investment attributes
+        let investmentIdAttr = NSAttributeDescription()
+        investmentIdAttr.name = "id"
+        investmentIdAttr.attributeType = .UUIDAttributeType
+        investmentIdAttr.isOptional = false
+        
+        let investmentSymbolAttr = NSAttributeDescription()
+        investmentSymbolAttr.name = "symbol"
+        investmentSymbolAttr.attributeType = .stringAttributeType
+        investmentSymbolAttr.isOptional = false
+        
+        let investmentNameAttr = NSAttributeDescription()
+        investmentNameAttr.name = "name"
+        investmentNameAttr.attributeType = .stringAttributeType
+        investmentNameAttr.isOptional = false
+        
+        let assetTypeAttr = NSAttributeDescription()
+        assetTypeAttr.name = "assetType"
+        assetTypeAttr.attributeType = .stringAttributeType
+        assetTypeAttr.isOptional = false
+        
+        let quantityAttr = NSAttributeDescription()
+        quantityAttr.name = "quantity"
+        quantityAttr.attributeType = .doubleAttributeType
+        quantityAttr.isOptional = false
+        
+        let averageCostAttr = NSAttributeDescription()
+        averageCostAttr.name = "averageCost"
+        averageCostAttr.attributeType = .doubleAttributeType
+        averageCostAttr.isOptional = false
+        
+        let currentPriceAttr = NSAttributeDescription()
+        currentPriceAttr.name = "currentPrice"
+        currentPriceAttr.attributeType = .doubleAttributeType
+        currentPriceAttr.isOptional = false
+        
+        let investmentLastUpdatedAttr = NSAttributeDescription()
+        investmentLastUpdatedAttr.name = "lastUpdated"
+        investmentLastUpdatedAttr.attributeType = .dateAttributeType
+        investmentLastUpdatedAttr.isOptional = false
+        
+        // Create InvestmentTransaction entity
+        let investmentTransactionEntity = NSEntityDescription()
+        investmentTransactionEntity.name = "InvestmentTransaction"
+        investmentTransactionEntity.managedObjectClassName = "InvestmentTransaction"
+        
+        // InvestmentTransaction attributes
+        let investmentTxnIdAttr = NSAttributeDescription()
+        investmentTxnIdAttr.name = "id"
+        investmentTxnIdAttr.attributeType = .UUIDAttributeType
+        investmentTxnIdAttr.isOptional = false
+        
+        let investmentTxnTypeAttr = NSAttributeDescription()
+        investmentTxnTypeAttr.name = "type"
+        investmentTxnTypeAttr.attributeType = .stringAttributeType
+        investmentTxnTypeAttr.isOptional = false
+        
+        let investmentTxnQuantityAttr = NSAttributeDescription()
+        investmentTxnQuantityAttr.name = "quantity"
+        investmentTxnQuantityAttr.attributeType = .doubleAttributeType
+        investmentTxnQuantityAttr.isOptional = false
+        
+        let investmentTxnPriceAttr = NSAttributeDescription()
+        investmentTxnPriceAttr.name = "price"
+        investmentTxnPriceAttr.attributeType = .doubleAttributeType
+        investmentTxnPriceAttr.isOptional = false
+        
+        let investmentTxnFeesAttr = NSAttributeDescription()
+        investmentTxnFeesAttr.name = "fees"
+        investmentTxnFeesAttr.attributeType = .doubleAttributeType
+        investmentTxnFeesAttr.isOptional = false
+        
+        let investmentTxnDateAttr = NSAttributeDescription()
+        investmentTxnDateAttr.name = "date"
+        investmentTxnDateAttr.attributeType = .dateAttributeType
+        investmentTxnDateAttr.isOptional = false
+        
+        // Create Dividend entity
+        let dividendEntity = NSEntityDescription()
+        dividendEntity.name = "Dividend"
+        dividendEntity.managedObjectClassName = "Dividend"
+        
+        // Dividend attributes
+        let dividendIdAttr = NSAttributeDescription()
+        dividendIdAttr.name = "id"
+        dividendIdAttr.attributeType = .UUIDAttributeType
+        dividendIdAttr.isOptional = false
+        
+        let dividendAmountAttr = NSAttributeDescription()
+        dividendAmountAttr.name = "amount"
+        dividendAmountAttr.attributeType = .doubleAttributeType
+        dividendAmountAttr.isOptional = false
+        
+        let frankedAmountAttr = NSAttributeDescription()
+        frankedAmountAttr.name = "frankedAmount"
+        frankedAmountAttr.attributeType = .doubleAttributeType
+        frankedAmountAttr.isOptional = false
+        
+        let exDateAttr = NSAttributeDescription()
+        exDateAttr.name = "exDate"
+        exDateAttr.attributeType = .dateAttributeType
+        exDateAttr.isOptional = false
+        
+        let payDateAttr = NSAttributeDescription()
+        payDateAttr.name = "payDate"
+        payDateAttr.attributeType = .dateAttributeType
+        payDateAttr.isOptional = false
+        
+        // Create Investment relationships
+        // Portfolio -> Investments (one-to-many)
+        let portfolioToInvestmentsRelationship = NSRelationshipDescription()
+        portfolioToInvestmentsRelationship.name = "investments"
+        portfolioToInvestmentsRelationship.destinationEntity = investmentEntity
+        portfolioToInvestmentsRelationship.minCount = 0
+        portfolioToInvestmentsRelationship.maxCount = 0
+        portfolioToInvestmentsRelationship.deleteRule = .cascadeDeleteRule
+        
+        // Investment -> Portfolio (many-to-one)
+        let investmentToPortfolioRelationship = NSRelationshipDescription()
+        investmentToPortfolioRelationship.name = "portfolio"
+        investmentToPortfolioRelationship.destinationEntity = portfolioEntity
+        investmentToPortfolioRelationship.minCount = 1
+        investmentToPortfolioRelationship.maxCount = 1
+        investmentToPortfolioRelationship.deleteRule = .nullifyDeleteRule
+        
+        // Investment -> InvestmentTransactions (one-to-many)
+        let investmentToTransactionsRelationship = NSRelationshipDescription()
+        investmentToTransactionsRelationship.name = "transactions"
+        investmentToTransactionsRelationship.destinationEntity = investmentTransactionEntity
+        investmentToTransactionsRelationship.minCount = 0
+        investmentToTransactionsRelationship.maxCount = 0
+        investmentToTransactionsRelationship.deleteRule = .cascadeDeleteRule
+        
+        // InvestmentTransaction -> Investment (many-to-one)
+        let investmentTransactionToInvestmentRelationship = NSRelationshipDescription()
+        investmentTransactionToInvestmentRelationship.name = "investment"
+        investmentTransactionToInvestmentRelationship.destinationEntity = investmentEntity
+        investmentTransactionToInvestmentRelationship.minCount = 1
+        investmentTransactionToInvestmentRelationship.maxCount = 1
+        investmentTransactionToInvestmentRelationship.deleteRule = .nullifyDeleteRule
+        
+        // Investment -> Dividends (one-to-many)
+        let investmentToDividendsRelationship = NSRelationshipDescription()
+        investmentToDividendsRelationship.name = "dividends"
+        investmentToDividendsRelationship.destinationEntity = dividendEntity
+        investmentToDividendsRelationship.minCount = 0
+        investmentToDividendsRelationship.maxCount = 0
+        investmentToDividendsRelationship.deleteRule = .cascadeDeleteRule
+        
+        // Dividend -> Investment (many-to-one)
+        let dividendToInvestmentRelationship = NSRelationshipDescription()
+        dividendToInvestmentRelationship.name = "investment"
+        dividendToInvestmentRelationship.destinationEntity = investmentEntity
+        dividendToInvestmentRelationship.minCount = 1
+        dividendToInvestmentRelationship.maxCount = 1
+        dividendToInvestmentRelationship.deleteRule = .nullifyDeleteRule
+        
+        // Set up inverse relationships
+        portfolioToInvestmentsRelationship.inverseRelationship = investmentToPortfolioRelationship
+        investmentToPortfolioRelationship.inverseRelationship = portfolioToInvestmentsRelationship
+        investmentToTransactionsRelationship.inverseRelationship = investmentTransactionToInvestmentRelationship
+        investmentTransactionToInvestmentRelationship.inverseRelationship = investmentToTransactionsRelationship
+        investmentToDividendsRelationship.inverseRelationship = dividendToInvestmentRelationship
+        dividendToInvestmentRelationship.inverseRelationship = investmentToDividendsRelationship
+        
+        // Set entity properties
+        portfolioEntity.properties = [
+            portfolioIdAttr,
+            portfolioNameAttr,
+            portfolioCurrencyAttr,
+            portfolioTotalValueAttr,
+            portfolioCreatedAtAttr,
+            portfolioLastUpdatedAttr,
+            portfolioToInvestmentsRelationship
+        ]
+        
+        investmentEntity.properties = [
+            investmentIdAttr,
+            investmentSymbolAttr,
+            investmentNameAttr,
+            assetTypeAttr,
+            quantityAttr,
+            averageCostAttr,
+            currentPriceAttr,
+            investmentLastUpdatedAttr,
+            investmentToPortfolioRelationship,
+            investmentToTransactionsRelationship,
+            investmentToDividendsRelationship
+        ]
+        
+        investmentTransactionEntity.properties = [
+            investmentTxnIdAttr,
+            investmentTxnTypeAttr,
+            investmentTxnQuantityAttr,
+            investmentTxnPriceAttr,
+            investmentTxnFeesAttr,
+            investmentTxnDateAttr,
+            investmentTransactionToInvestmentRelationship
+        ]
+        
+        dividendEntity.properties = [
+            dividendIdAttr,
+            dividendAmountAttr,
+            frankedAmountAttr,
+            exDateAttr,
+            payDateAttr,
+            dividendToInvestmentRelationship
+        ]
+        
         model.entities = [
             transactionEntity, 
             lineItemEntity, 
@@ -1147,7 +1397,11 @@ struct PersistenceController {
             assetAllocationEntity,
             performanceMetricsEntity,
             financialGoalEntity,
-            goalMilestoneEntity
+            goalMilestoneEntity,
+            portfolioEntity,
+            investmentEntity,
+            investmentTransactionEntity,
+            dividendEntity
         ]
 
         // Use only the programmatic model, not the .xcdatamodeld file

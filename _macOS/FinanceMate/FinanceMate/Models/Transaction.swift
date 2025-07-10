@@ -1177,6 +1177,411 @@ public enum GoalValidationError: Error, LocalizedError {
     }
 }
 
+// MARK: - P4-004: Advanced Investment Tracking Models
+
+/// Portfolio entity for investment management
+@objc(Portfolio)
+public class Portfolio: NSManagedObject, Identifiable {
+    @NSManaged public var id: UUID
+    @NSManaged public var name: String
+    @NSManaged public var currency: String
+    @NSManaged public var totalValue: Double
+    @NSManaged public var createdAt: Date
+    @NSManaged public var lastUpdated: Date
+    @NSManaged public var investments: Set<Investment>
+    
+    /// Create a new Portfolio
+    static func create(
+        in context: NSManagedObjectContext,
+        name: String,
+        currency: String
+    ) -> Portfolio {
+        guard let entity = NSEntityDescription.entity(forEntityName: "Portfolio", in: context) else {
+            fatalError("Portfolio entity not found in the provided context")
+        }
+        
+        let portfolio = Portfolio(entity: entity, insertInto: context)
+        portfolio.id = UUID()
+        portfolio.name = name
+        portfolio.currency = currency
+        portfolio.totalValue = 0.0
+        portfolio.createdAt = Date()
+        portfolio.lastUpdated = Date()
+        
+        return portfolio
+    }
+    
+    /// Calculate total portfolio value
+    func calculateTotalValue() -> Double {
+        return investments.reduce(0.0) { total, investment in
+            total + investment.calculateCurrentValue()
+        }
+    }
+    
+    /// Calculate portfolio performance
+    func calculatePerformance() -> PortfolioPerformance {
+        let currentValue = calculateTotalValue()
+        let bookValue = investments.reduce(0.0) { total, investment in
+            total + investment.calculateBookValue()
+        }
+        
+        let totalGain = currentValue - bookValue
+        let totalReturn = bookValue > 0 ? totalGain / bookValue : 0.0
+        
+        return PortfolioPerformance(
+            totalGain: totalGain,
+            totalReturn: totalReturn,
+            currentValue: currentValue,
+            bookValue: bookValue
+        )
+    }
+    
+    /// Calculate asset allocation
+    func calculateAssetAllocation() -> [AssetAllocationData] {
+        let totalValue = calculateTotalValue()
+        guard totalValue > 0 else { return [] }
+        
+        var allocations: [String: Double] = [:]
+        
+        for investment in investments {
+            let value = investment.calculateCurrentValue()
+            allocations[investment.assetType, default: 0.0] += value
+        }
+        
+        return allocations.map { assetType, value in
+            AssetAllocationData(
+                assetType: assetType,
+                value: value,
+                percentage: value / totalValue
+            )
+        }.sorted { $0.value > $1.value }
+    }
+    
+    /// Fetch all portfolios
+    static func fetchPortfolios(in context: NSManagedObjectContext) throws -> [Portfolio] {
+        let request = NSFetchRequest<Portfolio>(entityName: "Portfolio")
+        request.sortDescriptors = [NSSortDescriptor(keyPath: \Portfolio.name, ascending: true)]
+        return try context.fetch(request)
+    }
+}
+
+/// Investment entity for individual holdings
+@objc(Investment)
+public class Investment: NSManagedObject, Identifiable {
+    @NSManaged public var id: UUID
+    @NSManaged public var symbol: String
+    @NSManaged public var name: String
+    @NSManaged public var assetType: String
+    @NSManaged public var quantity: Double
+    @NSManaged public var averageCost: Double
+    @NSManaged public var currentPrice: Double
+    @NSManaged public var lastUpdated: Date
+    @NSManaged public var portfolio: Portfolio
+    @NSManaged public var transactions: Set<InvestmentTransaction>
+    @NSManaged public var dividends: Set<Dividend>
+    
+    /// Create a new Investment
+    static func create(
+        in context: NSManagedObjectContext,
+        symbol: String,
+        name: String,
+        assetType: String,
+        quantity: Double,
+        averageCost: Double,
+        currentPrice: Double,
+        portfolio: Portfolio
+    ) -> Investment {
+        guard let entity = NSEntityDescription.entity(forEntityName: "Investment", in: context) else {
+            fatalError("Investment entity not found in the provided context")
+        }
+        
+        let investment = Investment(entity: entity, insertInto: context)
+        investment.id = UUID()
+        investment.symbol = symbol
+        investment.name = name
+        investment.assetType = assetType
+        investment.quantity = quantity
+        investment.averageCost = averageCost
+        investment.currentPrice = currentPrice
+        investment.lastUpdated = Date()
+        investment.portfolio = portfolio
+        
+        return investment
+    }
+    
+    /// Create with validation (throwing version)
+    static func createWithValidation(
+        in context: NSManagedObjectContext,
+        symbol: String,
+        name: String,
+        assetType: String,
+        quantity: Double,
+        averageCost: Double,
+        currentPrice: Double,
+        portfolio: Portfolio
+    ) throws -> Investment {
+        
+        guard !symbol.isEmpty else {
+            throw InvestmentValidationError.invalidSymbol
+        }
+        
+        guard quantity > 0 else {
+            throw InvestmentValidationError.invalidQuantity
+        }
+        
+        guard averageCost > 0 else {
+            throw InvestmentValidationError.invalidPrice
+        }
+        
+        guard currentPrice > 0 else {
+            throw InvestmentValidationError.invalidPrice
+        }
+        
+        return create(
+            in: context,
+            symbol: symbol,
+            name: name,
+            assetType: assetType,
+            quantity: quantity,
+            averageCost: averageCost,
+            currentPrice: currentPrice,
+            portfolio: portfolio
+        )
+    }
+    
+    /// Calculate current market value
+    func calculateCurrentValue() -> Double {
+        return quantity * currentPrice
+    }
+    
+    /// Calculate book value (cost basis)
+    func calculateBookValue() -> Double {
+        return quantity * averageCost
+    }
+    
+    /// Calculate unrealized gain/loss
+    func calculateUnrealizedGain() -> Double {
+        return calculateCurrentValue() - calculateBookValue()
+    }
+    
+    /// Calculate return percentage
+    func calculateReturnPercentage() -> Double {
+        let bookValue = calculateBookValue()
+        guard bookValue > 0 else { return 0.0 }
+        return calculateUnrealizedGain() / bookValue
+    }
+    
+    /// Add a transaction and update average cost
+    func addTransaction(
+        type: InvestmentTransactionType,
+        quantity: Double,
+        price: Double,
+        fees: Double,
+        date: Date
+    ) {
+        let transaction = InvestmentTransaction.create(
+            in: managedObjectContext!,
+            investment: self,
+            type: type,
+            quantity: quantity,
+            price: price,
+            fees: fees,
+            date: date
+        )
+        
+        switch type {
+        case .buy:
+            // Recalculate average cost
+            let totalCost = (self.quantity * averageCost) + (quantity * price) + fees
+            let totalQuantity = self.quantity + quantity
+            self.averageCost = totalCost / totalQuantity
+            self.quantity = totalQuantity
+            
+        case .sell:
+            // Reduce quantity but keep average cost
+            self.quantity -= quantity
+        }
+        
+        lastUpdated = Date()
+    }
+    
+    /// Calculate capital gains for tax purposes
+    func calculateCapitalGains(soldQuantity: Double, sellPrice: Double, sellDate: Date) -> CapitalGains {
+        let grossGain = (sellPrice - averageCost) * soldQuantity
+        
+        // Australian CGT discount applies if held > 12 months
+        let holdingPeriod = sellDate.timeIntervalSince(lastUpdated)
+        let discountEligible = holdingPeriod > (365 * 24 * 60 * 60) // 1 year in seconds
+        
+        let taxableGain = discountEligible ? grossGain * 0.5 : grossGain
+        
+        return CapitalGains(
+            grossGain: grossGain,
+            taxableGain: taxableGain,
+            discountEligible: discountEligible,
+            holdingPeriod: holdingPeriod
+        )
+    }
+    
+    /// Calculate dividend yield
+    func calculateDividendYield() -> Double {
+        let currentValue = calculateCurrentValue()
+        guard currentValue > 0 else { return 0.0 }
+        
+        let totalDividends = dividends.reduce(0.0) { total, dividend in
+            total + dividend.amount
+        }
+        
+        return totalDividends / currentValue
+    }
+}
+
+/// Investment transaction entity for buy/sell records
+@objc(InvestmentTransaction)
+public class InvestmentTransaction: NSManagedObject, Identifiable {
+    @NSManaged public var id: UUID
+    @NSManaged public var type: String
+    @NSManaged public var quantity: Double
+    @NSManaged public var price: Double
+    @NSManaged public var fees: Double
+    @NSManaged public var date: Date
+    @NSManaged public var investment: Investment
+    
+    /// Create a new InvestmentTransaction
+    static func create(
+        in context: NSManagedObjectContext,
+        investment: Investment,
+        type: InvestmentTransactionType,
+        quantity: Double,
+        price: Double,
+        fees: Double,
+        date: Date
+    ) -> InvestmentTransaction {
+        guard let entity = NSEntityDescription.entity(forEntityName: "InvestmentTransaction", in: context) else {
+            fatalError("InvestmentTransaction entity not found in the provided context")
+        }
+        
+        let transaction = InvestmentTransaction(entity: entity, insertInto: context)
+        transaction.id = UUID()
+        transaction.type = type.rawValue
+        transaction.quantity = quantity
+        transaction.price = price
+        transaction.fees = fees
+        transaction.date = date
+        transaction.investment = investment
+        
+        return transaction
+    }
+}
+
+/// Dividend entity for dividend payments
+@objc(Dividend)
+public class Dividend: NSManagedObject, Identifiable {
+    @NSManaged public var id: UUID
+    @NSManaged public var amount: Double
+    @NSManaged public var frankedAmount: Double
+    @NSManaged public var exDate: Date
+    @NSManaged public var payDate: Date
+    @NSManaged public var investment: Investment
+    
+    /// Create a new Dividend
+    static func create(
+        in context: NSManagedObjectContext,
+        investment: Investment,
+        amount: Double,
+        frankedAmount: Double,
+        exDate: Date,
+        payDate: Date
+    ) -> Dividend {
+        guard let entity = NSEntityDescription.entity(forEntityName: "Dividend", in: context) else {
+            fatalError("Dividend entity not found in the provided context")
+        }
+        
+        let dividend = Dividend(entity: entity, insertInto: context)
+        dividend.id = UUID()
+        dividend.amount = amount
+        dividend.frankedAmount = frankedAmount
+        dividend.exDate = exDate
+        dividend.payDate = payDate
+        dividend.investment = investment
+        
+        return dividend
+    }
+    
+    /// Calculate franking credits for Australian tax compliance
+    func calculateFrankingCredits() -> FrankingCredits {
+        // Australian company tax rate is 30%
+        let companyTaxRate = 0.30
+        let grossedUpDividend = amount / (1 - companyTaxRate)
+        let frankingCredits = grossedUpDividend - amount
+        
+        return FrankingCredits(
+            frankingCredits: frankingCredits,
+            grossedUpDividend: grossedUpDividend,
+            companyTaxRate: companyTaxRate
+        )
+    }
+}
+
+// MARK: - Supporting Data Structures
+
+/// Investment transaction types
+public enum InvestmentTransactionType: String, CaseIterable {
+    case buy = "Buy"
+    case sell = "Sell"
+}
+
+/// Portfolio performance metrics
+public struct PortfolioPerformance {
+    let totalGain: Double
+    let totalReturn: Double
+    let currentValue: Double
+    let bookValue: Double
+}
+
+/// Asset allocation data (for portfolio calculations)
+public struct AssetAllocationData {
+    let assetType: String
+    let value: Double
+    let percentage: Double
+}
+
+/// Capital gains calculation result
+public struct CapitalGains {
+    let grossGain: Double
+    let taxableGain: Double
+    let discountEligible: Bool
+    let holdingPeriod: TimeInterval
+}
+
+/// Franking credits calculation result
+public struct FrankingCredits {
+    let frankingCredits: Double
+    let grossedUpDividend: Double
+    let companyTaxRate: Double
+}
+
+/// Investment validation errors
+public enum InvestmentValidationError: Error, LocalizedError {
+    case invalidSymbol
+    case invalidQuantity
+    case invalidPrice
+    case invalidAssetType
+    
+    public var errorDescription: String? {
+        switch self {
+        case .invalidSymbol:
+            return "Investment symbol cannot be empty"
+        case .invalidQuantity:
+            return "Investment quantity must be positive"
+        case .invalidPrice:
+            return "Investment price must be positive"
+        case .invalidAssetType:
+            return "Invalid asset type"
+        }
+    }
+}
+
 /// Core Data operation errors
 public enum CoreDataError: Error, LocalizedError {
     case entityNotFound
