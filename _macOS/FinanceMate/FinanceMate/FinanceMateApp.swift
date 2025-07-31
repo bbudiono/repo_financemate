@@ -27,7 +27,7 @@ struct FinanceMateApp: App {
         } else {
           LoginView(
             onLoginSuccess: {
-              isAuthenticated = true
+              isAuthenticated = authenticationService.getCurrentUser() != nil
             },
             onLoginError: { error in
               alertMessage = error
@@ -48,8 +48,8 @@ struct FinanceMateApp: App {
           #endif
 
           // Auto-authenticate for testing using secure test session
-          if let testUser = authenticationService.createTestSession() {
-            isAuthenticated = true
+          if authenticationService.createTestSession() != nil {
+            isAuthenticated = authenticationService.getCurrentUser() != nil
             print("✅ Test session created for automated testing")
           }
         } else {
@@ -67,8 +67,8 @@ struct FinanceMateApp: App {
   }
 
   private func checkExistingSession() {
-    if authenticationService.getCurrentUser() != nil {
-      isAuthenticated = true
+    isAuthenticated = authenticationService.getCurrentUser() != nil
+    if isAuthenticated {
       print("✅ Existing user session found")
     }
   }
