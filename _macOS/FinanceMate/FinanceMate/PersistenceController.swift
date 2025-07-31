@@ -1556,6 +1556,425 @@ struct PersistenceController {
       dividendToInvestmentRelationship,
     ]
 
+    // Create Asset entity (Phase 4 - UR-106)
+    let assetEntity = NSEntityDescription()
+    assetEntity.name = "Asset"
+    assetEntity.managedObjectClassName = "Asset"
+
+    // Asset attributes
+    let assetEntityIdAttr = NSAttributeDescription()
+    assetEntityIdAttr.name = "id"
+    assetEntityIdAttr.attributeType = .UUIDAttributeType
+    assetEntityIdAttr.isOptional = false
+
+    let assetEntityNameAttr = NSAttributeDescription()
+    assetEntityNameAttr.name = "name"
+    assetEntityNameAttr.attributeType = .stringAttributeType
+    assetEntityNameAttr.isOptional = false
+
+    let assetEntityTypeAttr = NSAttributeDescription()
+    assetEntityTypeAttr.name = "assetType"
+    assetEntityTypeAttr.attributeType = .stringAttributeType
+    assetEntityTypeAttr.isOptional = false
+
+    let assetCurrentValueAttr = NSAttributeDescription()
+    assetCurrentValueAttr.name = "currentValue"
+    assetCurrentValueAttr.attributeType = .doubleAttributeType
+    assetCurrentValueAttr.isOptional = false
+
+    let assetPurchasePriceAttr = NSAttributeDescription()
+    assetPurchasePriceAttr.name = "purchasePrice"
+    assetPurchasePriceAttr.attributeType = .doubleAttributeType
+    assetPurchasePriceAttr.isOptional = true
+
+    let assetPurchaseDateAttr = NSAttributeDescription()
+    assetPurchaseDateAttr.name = "purchaseDate"
+    assetPurchaseDateAttr.attributeType = .dateAttributeType
+    assetPurchaseDateAttr.isOptional = true
+
+    let assetCreatedAtAttr = NSAttributeDescription()
+    assetCreatedAtAttr.name = "createdAt"
+    assetCreatedAtAttr.attributeType = .dateAttributeType
+    assetCreatedAtAttr.isOptional = false
+
+    let assetLastUpdatedAttr = NSAttributeDescription()
+    assetLastUpdatedAttr.name = "lastUpdated"
+    assetLastUpdatedAttr.attributeType = .dateAttributeType
+    assetLastUpdatedAttr.isOptional = false
+
+    // Create Liability entity (Phase 4 - UR-106)
+    let liabilityEntity = NSEntityDescription()
+    liabilityEntity.name = "Liability"
+    liabilityEntity.managedObjectClassName = "Liability"
+
+    // Liability attributes
+    let liabilityIdAttr = NSAttributeDescription()
+    liabilityIdAttr.name = "id"
+    liabilityIdAttr.attributeType = .UUIDAttributeType
+    liabilityIdAttr.isOptional = false
+
+    let liabilityNameAttr = NSAttributeDescription()
+    liabilityNameAttr.name = "name"
+    liabilityNameAttr.attributeType = .stringAttributeType
+    liabilityNameAttr.isOptional = false
+
+    let liabilityTypeAttr = NSAttributeDescription()
+    liabilityTypeAttr.name = "liabilityType"
+    liabilityTypeAttr.attributeType = .stringAttributeType
+    liabilityTypeAttr.isOptional = false
+
+    let liabilityCurrentBalanceAttr = NSAttributeDescription()
+    liabilityCurrentBalanceAttr.name = "currentBalance"
+    liabilityCurrentBalanceAttr.attributeType = .doubleAttributeType
+    liabilityCurrentBalanceAttr.isOptional = false
+
+    let liabilityOriginalAmountAttr = NSAttributeDescription()
+    liabilityOriginalAmountAttr.name = "originalAmount"
+    liabilityOriginalAmountAttr.attributeType = .doubleAttributeType
+    liabilityOriginalAmountAttr.isOptional = true
+
+    let liabilityInterestRateAttr = NSAttributeDescription()
+    liabilityInterestRateAttr.name = "interestRate"
+    liabilityInterestRateAttr.attributeType = .doubleAttributeType
+    liabilityInterestRateAttr.isOptional = true
+
+    let liabilityMonthlyPaymentAttr = NSAttributeDescription()
+    liabilityMonthlyPaymentAttr.name = "monthlyPayment"
+    liabilityMonthlyPaymentAttr.attributeType = .doubleAttributeType
+    liabilityMonthlyPaymentAttr.isOptional = true
+
+    let liabilityCreatedAtAttr = NSAttributeDescription()
+    liabilityCreatedAtAttr.name = "createdAt"
+    liabilityCreatedAtAttr.attributeType = .dateAttributeType
+    liabilityCreatedAtAttr.isOptional = false
+
+    let liabilityLastUpdatedAttr = NSAttributeDescription()
+    liabilityLastUpdatedAttr.name = "lastUpdated"
+    liabilityLastUpdatedAttr.attributeType = .dateAttributeType
+    liabilityLastUpdatedAttr.isOptional = false
+
+    // Create NetWealthSnapshot entity (Phase 4 - UR-106)
+    let netWealthSnapshotEntity = NSEntityDescription()
+    netWealthSnapshotEntity.name = "NetWealthSnapshot"
+    netWealthSnapshotEntity.managedObjectClassName = "NetWealthSnapshot"
+
+    // NetWealthSnapshot attributes
+    let netWealthIdAttr = NSAttributeDescription()
+    netWealthIdAttr.name = "id"
+    netWealthIdAttr.attributeType = .UUIDAttributeType
+    netWealthIdAttr.isOptional = false
+
+    let netWealthTotalAssetsAttr = NSAttributeDescription()
+    netWealthTotalAssetsAttr.name = "totalAssets"
+    netWealthTotalAssetsAttr.attributeType = .doubleAttributeType
+    netWealthTotalAssetsAttr.isOptional = false
+
+    let netWealthTotalLiabilitiesAttr = NSAttributeDescription()
+    netWealthTotalLiabilitiesAttr.name = "totalLiabilities"
+    netWealthTotalLiabilitiesAttr.attributeType = .doubleAttributeType
+    netWealthTotalLiabilitiesAttr.isOptional = false
+
+    let netWealthNetWealthAttr = NSAttributeDescription()
+    netWealthNetWealthAttr.name = "netWealth"
+    netWealthNetWealthAttr.attributeType = .doubleAttributeType
+    netWealthNetWealthAttr.isOptional = false
+
+    let netWealthSnapshotDateAttr = NSAttributeDescription()
+    netWealthSnapshotDateAttr.name = "snapshotDate"
+    netWealthSnapshotDateAttr.attributeType = .dateAttributeType
+    netWealthSnapshotDateAttr.isOptional = false
+
+    let netWealthCreatedAtAttr = NSAttributeDescription()
+    netWealthCreatedAtAttr.name = "createdAt"
+    netWealthCreatedAtAttr.attributeType = .dateAttributeType
+    netWealthCreatedAtAttr.isOptional = false
+
+    // Create supporting entities for asset/liability breakdown
+    let assetValuationEntity = NSEntityDescription()
+    assetValuationEntity.name = "AssetValuation"
+    assetValuationEntity.managedObjectClassName = "AssetValuation"
+
+    let assetValuationIdAttr = NSAttributeDescription()
+    assetValuationIdAttr.name = "id"
+    assetValuationIdAttr.attributeType = .UUIDAttributeType
+    assetValuationIdAttr.isOptional = false
+
+    let assetValuationValueAttr = NSAttributeDescription()
+    assetValuationValueAttr.name = "value"
+    assetValuationValueAttr.attributeType = .doubleAttributeType
+    assetValuationValueAttr.isOptional = false
+
+    let assetValuationDateAttr = NSAttributeDescription()
+    assetValuationDateAttr.name = "date"
+    assetValuationDateAttr.attributeType = .dateAttributeType
+    assetValuationDateAttr.isOptional = false
+
+    let liabilityPaymentEntity = NSEntityDescription()
+    liabilityPaymentEntity.name = "LiabilityPayment"
+    liabilityPaymentEntity.managedObjectClassName = "LiabilityPayment"
+
+    let liabilityPaymentIdAttr = NSAttributeDescription()
+    liabilityPaymentIdAttr.name = "id"
+    liabilityPaymentIdAttr.attributeType = .UUIDAttributeType
+    liabilityPaymentIdAttr.isOptional = false
+
+    let liabilityPaymentAmountAttr = NSAttributeDescription()
+    liabilityPaymentAmountAttr.name = "amount"
+    liabilityPaymentAmountAttr.attributeType = .doubleAttributeType
+    liabilityPaymentAmountAttr.isOptional = false
+
+    let liabilityPaymentDateAttr = NSAttributeDescription()
+    liabilityPaymentDateAttr.name = "date"
+    liabilityPaymentDateAttr.attributeType = .dateAttributeType
+    liabilityPaymentDateAttr.isOptional = false
+
+    // Asset breakdown entities
+    let assetBreakdownEntity = NSEntityDescription()
+    assetBreakdownEntity.name = "AssetBreakdown"
+    assetBreakdownEntity.managedObjectClassName = "AssetBreakdown"
+
+    let assetBreakdownIdAttr = NSAttributeDescription()
+    assetBreakdownIdAttr.name = "id"
+    assetBreakdownIdAttr.attributeType = .UUIDAttributeType
+    assetBreakdownIdAttr.isOptional = false
+
+    let assetBreakdownTypeAttr = NSAttributeDescription()
+    assetBreakdownTypeAttr.name = "assetType"
+    assetBreakdownTypeAttr.attributeType = .stringAttributeType
+    assetBreakdownTypeAttr.isOptional = false
+
+    let assetBreakdownValueAttr = NSAttributeDescription()
+    assetBreakdownValueAttr.name = "value"
+    assetBreakdownValueAttr.attributeType = .doubleAttributeType
+    assetBreakdownValueAttr.isOptional = false
+
+    let liabilityBreakdownEntity = NSEntityDescription()
+    liabilityBreakdownEntity.name = "LiabilityBreakdown"
+    liabilityBreakdownEntity.managedObjectClassName = "LiabilityBreakdown"
+
+    let liabilityBreakdownIdAttr = NSAttributeDescription()
+    liabilityBreakdownIdAttr.name = "id"
+    liabilityBreakdownIdAttr.attributeType = .UUIDAttributeType
+    liabilityBreakdownIdAttr.isOptional = false
+
+    let liabilityBreakdownTypeAttr = NSAttributeDescription()
+    liabilityBreakdownTypeAttr.name = "liabilityType"
+    liabilityBreakdownTypeAttr.attributeType = .stringAttributeType
+    liabilityBreakdownTypeAttr.isOptional = false
+
+    let liabilityBreakdownValueAttr = NSAttributeDescription()
+    liabilityBreakdownValueAttr.name = "value"
+    liabilityBreakdownValueAttr.attributeType = .doubleAttributeType
+    liabilityBreakdownValueAttr.isOptional = false
+
+    // Create relationships
+    // Asset -> FinancialEntity (many-to-one)
+    let assetToEntityRelationship = NSRelationshipDescription()
+    assetToEntityRelationship.name = "financialEntity"
+    assetToEntityRelationship.destinationEntity = financialEntityEntity
+    assetToEntityRelationship.minCount = 0
+    assetToEntityRelationship.maxCount = 1
+    assetToEntityRelationship.deleteRule = .nullifyDeleteRule
+
+    // FinancialEntity -> Assets (one-to-many)
+    let entityToAssetsRelationship = NSRelationshipDescription()
+    entityToAssetsRelationship.name = "assets"
+    entityToAssetsRelationship.destinationEntity = assetEntity
+    entityToAssetsRelationship.minCount = 0
+    entityToAssetsRelationship.maxCount = 0
+    entityToAssetsRelationship.deleteRule = .nullifyDeleteRule
+
+    // Asset -> AssetValuations (one-to-many)
+    let assetToValuationsRelationship = NSRelationshipDescription()
+    assetToValuationsRelationship.name = "valuationHistory"
+    assetToValuationsRelationship.destinationEntity = assetValuationEntity
+    assetToValuationsRelationship.minCount = 0
+    assetToValuationsRelationship.maxCount = 0
+    assetToValuationsRelationship.deleteRule = .cascadeDeleteRule
+
+    // AssetValuation -> Asset (many-to-one)
+    let valuationToAssetRelationship = NSRelationshipDescription()
+    valuationToAssetRelationship.name = "asset"
+    valuationToAssetRelationship.destinationEntity = assetEntity
+    valuationToAssetRelationship.minCount = 1
+    valuationToAssetRelationship.maxCount = 1
+    valuationToAssetRelationship.deleteRule = .nullifyDeleteRule
+
+    // Liability -> FinancialEntity (many-to-one)
+    let liabilityToEntityRelationship = NSRelationshipDescription()
+    liabilityToEntityRelationship.name = "financialEntity"
+    liabilityToEntityRelationship.destinationEntity = financialEntityEntity
+    liabilityToEntityRelationship.minCount = 0
+    liabilityToEntityRelationship.maxCount = 1
+    liabilityToEntityRelationship.deleteRule = .nullifyDeleteRule
+
+    // FinancialEntity -> Liabilities (one-to-many)
+    let entityToLiabilitiesRelationship = NSRelationshipDescription()
+    entityToLiabilitiesRelationship.name = "liabilities"
+    entityToLiabilitiesRelationship.destinationEntity = liabilityEntity
+    entityToLiabilitiesRelationship.minCount = 0
+    entityToLiabilitiesRelationship.maxCount = 0
+    entityToLiabilitiesRelationship.deleteRule = .nullifyDeleteRule
+
+    // Liability -> LiabilityPayments (one-to-many)
+    let liabilityToPaymentsRelationship = NSRelationshipDescription()
+    liabilityToPaymentsRelationship.name = "payments"
+    liabilityToPaymentsRelationship.destinationEntity = liabilityPaymentEntity
+    liabilityToPaymentsRelationship.minCount = 0
+    liabilityToPaymentsRelationship.maxCount = 0
+    liabilityToPaymentsRelationship.deleteRule = .cascadeDeleteRule
+
+    // LiabilityPayment -> Liability (many-to-one)
+    let paymentToLiabilityRelationship = NSRelationshipDescription()
+    paymentToLiabilityRelationship.name = "liability"
+    paymentToLiabilityRelationship.destinationEntity = liabilityEntity
+    paymentToLiabilityRelationship.minCount = 1
+    paymentToLiabilityRelationship.maxCount = 1
+    paymentToLiabilityRelationship.deleteRule = .nullifyDeleteRule
+
+    // NetWealthSnapshot -> FinancialEntity (many-to-one)
+    let netWealthSnapshotToEntityRelationship = NSRelationshipDescription()
+    netWealthSnapshotToEntityRelationship.name = "financialEntity"
+    netWealthSnapshotToEntityRelationship.destinationEntity = financialEntityEntity
+    netWealthSnapshotToEntityRelationship.minCount = 1
+    netWealthSnapshotToEntityRelationship.maxCount = 1
+    netWealthSnapshotToEntityRelationship.deleteRule = .nullifyDeleteRule
+
+    // FinancialEntity -> NetWealthSnapshots (one-to-many)
+    let entityToNetWealthSnapshotsRelationship = NSRelationshipDescription()
+    entityToNetWealthSnapshotsRelationship.name = "netWealthSnapshots"
+    entityToNetWealthSnapshotsRelationship.destinationEntity = netWealthSnapshotEntity
+    entityToNetWealthSnapshotsRelationship.minCount = 0
+    entityToNetWealthSnapshotsRelationship.maxCount = 0
+    entityToNetWealthSnapshotsRelationship.deleteRule = .cascadeDeleteRule
+
+    // NetWealthSnapshot -> AssetBreakdown (one-to-many)
+    let netWealthSnapshotToAssetBreakdownRelationship = NSRelationshipDescription()
+    netWealthSnapshotToAssetBreakdownRelationship.name = "assetBreakdown"
+    netWealthSnapshotToAssetBreakdownRelationship.destinationEntity = assetBreakdownEntity
+    netWealthSnapshotToAssetBreakdownRelationship.minCount = 0
+    netWealthSnapshotToAssetBreakdownRelationship.maxCount = 0
+    netWealthSnapshotToAssetBreakdownRelationship.deleteRule = .cascadeDeleteRule
+
+    // AssetBreakdown -> NetWealthSnapshot (many-to-one)
+    let assetBreakdownToSnapshotRelationship = NSRelationshipDescription()
+    assetBreakdownToSnapshotRelationship.name = "netWealthSnapshot"
+    assetBreakdownToSnapshotRelationship.destinationEntity = netWealthSnapshotEntity
+    assetBreakdownToSnapshotRelationship.minCount = 1
+    assetBreakdownToSnapshotRelationship.maxCount = 1
+    assetBreakdownToSnapshotRelationship.deleteRule = .nullifyDeleteRule
+
+    // NetWealthSnapshot -> LiabilityBreakdown (one-to-many)
+    let netWealthSnapshotToLiabilityBreakdownRelationship = NSRelationshipDescription()
+    netWealthSnapshotToLiabilityBreakdownRelationship.name = "liabilityBreakdown"
+    netWealthSnapshotToLiabilityBreakdownRelationship.destinationEntity = liabilityBreakdownEntity
+    netWealthSnapshotToLiabilityBreakdownRelationship.minCount = 0
+    netWealthSnapshotToLiabilityBreakdownRelationship.maxCount = 0
+    netWealthSnapshotToLiabilityBreakdownRelationship.deleteRule = .cascadeDeleteRule
+
+    // LiabilityBreakdown -> NetWealthSnapshot (many-to-one)
+    let liabilityBreakdownToSnapshotRelationship = NSRelationshipDescription()
+    liabilityBreakdownToSnapshotRelationship.name = "netWealthSnapshot"
+    liabilityBreakdownToSnapshotRelationship.destinationEntity = netWealthSnapshotEntity
+    liabilityBreakdownToSnapshotRelationship.minCount = 1
+    liabilityBreakdownToSnapshotRelationship.maxCount = 1
+    liabilityBreakdownToSnapshotRelationship.deleteRule = .nullifyDeleteRule
+
+    // Set up inverse relationships
+    assetToEntityRelationship.inverseRelationship = entityToAssetsRelationship
+    entityToAssetsRelationship.inverseRelationship = assetToEntityRelationship
+
+    assetToValuationsRelationship.inverseRelationship = valuationToAssetRelationship
+    valuationToAssetRelationship.inverseRelationship = assetToValuationsRelationship
+
+    liabilityToEntityRelationship.inverseRelationship = entityToLiabilitiesRelationship
+    entityToLiabilitiesRelationship.inverseRelationship = liabilityToEntityRelationship
+
+    liabilityToPaymentsRelationship.inverseRelationship = paymentToLiabilityRelationship
+    paymentToLiabilityRelationship.inverseRelationship = liabilityToPaymentsRelationship
+
+    netWealthSnapshotToEntityRelationship.inverseRelationship = entityToNetWealthSnapshotsRelationship
+    entityToNetWealthSnapshotsRelationship.inverseRelationship = netWealthSnapshotToEntityRelationship
+
+    netWealthSnapshotToAssetBreakdownRelationship.inverseRelationship = assetBreakdownToSnapshotRelationship
+    assetBreakdownToSnapshotRelationship.inverseRelationship = netWealthSnapshotToAssetBreakdownRelationship
+
+    netWealthSnapshotToLiabilityBreakdownRelationship.inverseRelationship = liabilityBreakdownToSnapshotRelationship
+    liabilityBreakdownToSnapshotRelationship.inverseRelationship = netWealthSnapshotToLiabilityBreakdownRelationship
+
+    // Set entity properties
+    assetEntity.properties = [
+      assetEntityIdAttr,
+      assetEntityNameAttr,
+      assetEntityTypeAttr,
+      assetCurrentValueAttr,
+      assetPurchasePriceAttr,
+      assetPurchaseDateAttr,
+      assetCreatedAtAttr,
+      assetLastUpdatedAttr,
+      assetToEntityRelationship,
+      assetToValuationsRelationship,
+    ]
+
+    liabilityEntity.properties = [
+      liabilityIdAttr,
+      liabilityNameAttr,
+      liabilityTypeAttr,
+      liabilityCurrentBalanceAttr,
+      liabilityOriginalAmountAttr,
+      liabilityInterestRateAttr,
+      liabilityMonthlyPaymentAttr,
+      liabilityCreatedAtAttr,
+      liabilityLastUpdatedAttr,
+      liabilityToEntityRelationship,
+      liabilityToPaymentsRelationship,
+    ]
+
+    netWealthSnapshotEntity.properties = [
+      netWealthIdAttr,
+      netWealthTotalAssetsAttr,
+      netWealthTotalLiabilitiesAttr,
+      netWealthNetWealthAttr,
+      netWealthSnapshotDateAttr,
+      netWealthCreatedAtAttr,
+      netWealthSnapshotToEntityRelationship,
+      netWealthSnapshotToAssetBreakdownRelationship,
+      netWealthSnapshotToLiabilityBreakdownRelationship,
+    ]
+
+    assetValuationEntity.properties = [
+      assetValuationIdAttr,
+      assetValuationValueAttr,
+      assetValuationDateAttr,
+      valuationToAssetRelationship,
+    ]
+
+    liabilityPaymentEntity.properties = [
+      liabilityPaymentIdAttr,
+      liabilityPaymentAmountAttr,
+      liabilityPaymentDateAttr,
+      paymentToLiabilityRelationship,
+    ]
+
+    assetBreakdownEntity.properties = [
+      assetBreakdownIdAttr,
+      assetBreakdownTypeAttr,
+      assetBreakdownValueAttr,
+      assetBreakdownToSnapshotRelationship,
+    ]
+
+    liabilityBreakdownEntity.properties = [
+      liabilityBreakdownIdAttr,
+      liabilityBreakdownTypeAttr,
+      liabilityBreakdownValueAttr,
+      liabilityBreakdownToSnapshotRelationship,
+    ]
+
+    // Add asset and liability relationships to financial entity
+    financialEntityEntity.properties.append(entityToAssetsRelationship)
+    financialEntityEntity.properties.append(entityToLiabilitiesRelationship)
+    financialEntityEntity.properties.append(entityToNetWealthSnapshotsRelationship)
+
     model.entities = [
       transactionEntity,
       lineItemEntity,
@@ -1576,6 +1995,13 @@ struct PersistenceController {
       investmentEntity,
       investmentTransactionEntity,
       dividendEntity,
+      assetEntity,
+      liabilityEntity,
+      netWealthSnapshotEntity,
+      assetValuationEntity,
+      liabilityPaymentEntity,
+      assetBreakdownEntity,
+      liabilityBreakdownEntity,
     ]
 
     // Use only the programmatic model, not the .xcdatamodeld file

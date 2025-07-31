@@ -1,4 +1,5 @@
 # CLAUDE.md - Project Development Guide
+
 **Version:** 5.1.0+ | **Last Updated:** 2025-07-08 | **v3.3 Compliance**
 **Version:** 1.0.0-RC1 (Production Release Candidate)
 **Last Updated:** 2025-07-05
@@ -6,12 +7,18 @@
 
 ---
 
+### P0 MANDATORY RULES (ZERO TOLERANCE)
+
+**NO MOCK DATA**
+
 ## 🎯 EXECUTIVE SUMMARY
 
 ### Project Status: ✅ PRODUCTION READY
+
 FinanceMate has achieved **Production Release Candidate 1.0.0** status with all core features implemented, comprehensive testing complete, and automated build pipeline established. This guide provides AI agents with complete context for working with a production-ready macOS financial management application.
 
 ### Key Achievements
+
 - ✅ **Complete Feature Set**: Dashboard, Transactions, Settings fully implemented
 - ✅ **MVVM Architecture**: Professional-grade architecture with 100% business logic test coverage
 - ✅ **Glassmorphism UI**: Modern Apple-style design system with accessibility compliance
@@ -23,6 +30,7 @@ FinanceMate has achieved **Production Release Candidate 1.0.0** status with all 
 ## 🏗️ PROJECT ARCHITECTURE
 
 ### Technology Stack
+
 - **Platform**: Native macOS application (macOS 14.0+)
 - **UI Framework**: SwiftUI with custom glassmorphism design system
 - **Architecture**: MVVM (Model-View-ViewModel) pattern
@@ -34,6 +42,7 @@ FinanceMate has achieved **Production Release Candidate 1.0.0** status with all 
 ### Core Components
 
 #### ViewModels (Business Logic)
+
 ```swift
 // DashboardViewModel: Financial calculations and balance management
 @MainActor class DashboardViewModel: ObservableObject {
@@ -59,12 +68,14 @@ FinanceMate has achieved **Production Release Candidate 1.0.0** status with all 
 ```
 
 #### Views (UI Layer)
+
 - **ContentView**: Main navigation container with TabView
 - **DashboardView**: Financial overview with balance and transaction summaries
 - **TransactionsView**: Transaction management with full CRUD operations
 - **SettingsView**: User preferences and application configuration
 
 #### Data Layer
+
 - **PersistenceController**: Core Data stack management with error handling
 - **Transaction Entity**: Core financial transaction data model
 - **Settings Entity**: User preference storage
@@ -74,6 +85,7 @@ FinanceMate has achieved **Production Release Candidate 1.0.0** status with all 
 ## 📁 PROJECT STRUCTURE
 
 ### Directory Layout
+
 ```
 repo_financemate/
 ├── _macOS/                          # Platform-specific root
@@ -111,6 +123,7 @@ repo_financemate/
 ## 🔧 DEVELOPMENT WORKFLOW
 
 ### AI Agent Operating Principles
+
 1. **Documentation First**: Always review `docs/DEVELOPMENT_LOG.md` before any task
 2. **TDD Methodology**: Write tests before implementing features
 3. **Sandbox First**: Develop in Sandbox environment, validate, then promote to Production
@@ -120,6 +133,7 @@ repo_financemate/
 ### Essential Commands
 
 #### Build & Test Commands
+
 ```bash
 # Navigate to project root
 cd /path/to/repo_financemate
@@ -139,6 +153,7 @@ xcodebuild -project _macOS/FinanceMate.xcodeproj -scheme FinanceMate -configurat
 ```
 
 #### Development Commands
+
 ```bash
 # Generate Xcode project (if using XcodeGen)
 xcodegen generate
@@ -155,6 +170,7 @@ xcodebuild archive -project _macOS/FinanceMate.xcodeproj -scheme FinanceMate -ar
 ## 🧪 TESTING FRAMEWORK
 
 ### Test Coverage Summary
+
 - **Unit Tests**: 45+ test cases covering all ViewModels and business logic
 - **UI Tests**: 30+ test cases with automated screenshot capture
 - **Integration Tests**: Core Data and ViewModel integration validation
@@ -162,6 +178,7 @@ xcodebuild archive -project _macOS/FinanceMate.xcodeproj -scheme FinanceMate -ar
 - **Accessibility Tests**: VoiceOver and keyboard navigation compliance
 
 ### Test Execution Strategy
+
 ```swift
 // Example unit test structure
 class DashboardViewModelTests: XCTestCase {
@@ -182,6 +199,7 @@ class DashboardViewModelTests: XCTestCase {
 ```
 
 ### Running Specific Tests
+
 ```bash
 # Run unit tests only
 xcodebuild test -project _macOS/FinanceMate.xcodeproj -scheme FinanceMate -destination 'platform=macOS' -only-testing:FinanceMateTests
@@ -198,6 +216,7 @@ xcodebuild test -project _macOS/FinanceMate.xcodeproj -scheme FinanceMate -desti
 ## 🎨 UI/UX DESIGN SYSTEM
 
 ### Glassmorphism Implementation
+
 The application uses a comprehensive glassmorphism design system implemented through reusable SwiftUI modifiers:
 
 ```swift
@@ -216,6 +235,7 @@ struct GlassmorphismModifier: ViewModifier {
 ```
 
 ### Design Principles
+
 - **Apple Human Interface Guidelines**: Full compliance with macOS design standards
 - **Dark/Light Mode**: Complete theme support with adaptive colors
 - **Accessibility**: WCAG 2.1 AA compliance with VoiceOver support
@@ -226,6 +246,7 @@ struct GlassmorphismModifier: ViewModifier {
 ## 📊 DATA MANAGEMENT
 
 ### Core Data Architecture
+
 The application uses a **programmatic Core Data model** to avoid .xcdatamodeld build dependencies:
 
 ```swift
@@ -244,6 +265,7 @@ class PersistenceController {
 ```
 
 ### Entity Structure
+
 ```swift
 // Transaction Entity
 - id: UUID (Primary Key)
@@ -266,19 +288,23 @@ class PersistenceController {
 ## 🚀 BUILD & DEPLOYMENT
 
 ### Production Readiness Status
+
 **Current Status**: 🟡 **99% Ready** - 2 manual configuration steps required
 
 ### Deployment Blockers (Manual Intervention Required)
+
 1. **Apple Developer Team Configuration**
    - Open Xcode → FinanceMate target → Signing & Capabilities
    - Assign Apple Developer Team from dropdown
-   
+
 2. **Core Data Model Build Phase Configuration**
    - Open Xcode → FinanceMate target → Build Phases → Compile Sources
    - Add `FinanceMateModel.xcdatamodeld` if not present
 
 ### Automated Build Pipeline
+
 Once manual configuration is complete:
+
 ```bash
 # Execute automated build script
 ./scripts/build_and_sign.sh
@@ -288,6 +314,7 @@ Once manual configuration is complete:
 ```
 
 ### Build Script Features
+
 - **Clean Build Environment**: Removes previous build artifacts
 - **Code Signing**: Automatic Developer ID signing
 - **Export Configuration**: Uses ExportOptions.plist for consistent exports
@@ -298,12 +325,14 @@ Once manual configuration is complete:
 ## 🔒 SECURITY & COMPLIANCE
 
 ### Security Implementation
+
 - **App Sandbox**: Enabled for enhanced security
 - **Hardened Runtime**: Configured for notarization compliance
 - **Code Signing**: Developer ID Application certificate
 - **Data Encryption**: Core Data uses SQLite encryption
 
 ### Privacy Compliance
+
 - **Local-First**: All data stored locally, no cloud synchronization
 - **No Tracking**: No user analytics or tracking
 - **Minimal Permissions**: Only required system permissions
@@ -314,12 +343,14 @@ Once manual configuration is complete:
 ## 🎯 AI AGENT TASK GUIDELINES
 
 ### Before Starting Any Task
+
 1. **Review Context**: Read `docs/DEVELOPMENT_LOG.md` for latest development context
 2. **Check Tasks**: Review `docs/TASKS.md` for current priorities and status
 3. **Understand Architecture**: Familiarize with MVVM pattern implementation
 4. **Validate Environment**: Ensure Sandbox environment is properly configured
 
 ### Development Best Practices
+
 1. **TDD Approach**: Write tests before implementing features
 2. **Incremental Development**: Make small, testable changes
 3. **Documentation Updates**: Update relevant docs with all changes
@@ -329,6 +360,7 @@ Once manual configuration is complete:
 ### Common Tasks & Approaches
 
 #### Adding New Features
+
 1. Create ViewModels with @Published properties
 2. Implement SwiftUI views with glassmorphism styling
 3. Add comprehensive unit and UI tests
@@ -336,6 +368,7 @@ Once manual configuration is complete:
 5. Validate in Sandbox before Production promotion
 
 #### Bug Fixes
+
 1. Reproduce issue in test environment
 2. Write failing test that captures the bug
 3. Implement fix to make test pass
@@ -343,6 +376,7 @@ Once manual configuration is complete:
 5. Document resolution in `docs/BUGS.md`
 
 #### Performance Optimization
+
 1. Profile application using Instruments
 2. Identify bottlenecks in Core Data queries or UI rendering
 3. Implement optimizations with performance tests
@@ -356,18 +390,21 @@ Once manual configuration is complete:
 ### Common Issues & Solutions
 
 #### Build Failures
+
 1. **Core Data Model Missing**: Add FinanceMateModel.xcdatamodeld to Compile Sources
 2. **Code Signing Issues**: Verify Apple Developer Team assignment
 3. **Dependency Issues**: Clean build folder and rebuild
 4. **Test Failures**: Check test data setup and Core Data context
 
 #### Development Environment
+
 1. **Xcode Version**: Ensure Xcode 15.0+ is installed
 2. **macOS Version**: Verify macOS 14.0+ for testing
 3. **Simulator Issues**: Reset simulator if UI tests fail
 4. **Permission Issues**: Check file permissions for scripts
 
 #### Performance Issues
+
 1. **Memory Usage**: Profile with Instruments for memory leaks
 2. **UI Responsiveness**: Check for main thread blocking operations
 3. **Core Data Performance**: Optimize fetch requests and predicates
@@ -378,6 +415,7 @@ Once manual configuration is complete:
 ## 📖 ESSENTIAL DOCUMENTATION
 
 ### Must-Read Documents (in order)
+
 1. **`docs/BLUEPRINT.md`**: Master project specification and configuration
 2. **`docs/DEVELOPMENT_LOG.md`**: Latest development context and decisions
 3. **`docs/ARCHITECTURE.md`**: System architecture and design patterns
@@ -385,6 +423,7 @@ Once manual configuration is complete:
 5. **`docs/PRODUCTION_READINESS_CHECKLIST.md`**: Deployment readiness validation
 
 ### Reference Documents
+
 - **`docs/TECH_DEBT.md`**: Technical debt tracking and resolution
 - **`docs/BUGS.md`**: Bug tracking and resolution history
 - **`docs/BUILDING.md`**: Build instructions and deployment guide
@@ -395,6 +434,7 @@ Once manual configuration is complete:
 ## 🎉 SUCCESS CRITERIA
 
 ### Production Quality Indicators
+
 - ✅ **Zero Compiler Warnings**: Clean build logs
 - ✅ **100% Test Coverage**: All business logic covered by tests
 - ✅ **Accessibility Compliance**: WCAG 2.1 AA standards met
@@ -402,6 +442,7 @@ Once manual configuration is complete:
 - ✅ **Documentation Currency**: All docs updated and accurate
 
 ### Deployment Readiness
+
 - ✅ **Build Pipeline**: Automated build and signing workflow
 - ✅ **Code Signing**: Valid Developer ID configuration
 - ✅ **Security Compliance**: App Sandbox and Hardened Runtime
@@ -413,18 +454,21 @@ Once manual configuration is complete:
 ## 🚀 NEXT STEPS FOR AI AGENTS
 
 ### Immediate Actions
+
 1. **Familiarize with Codebase**: Review key files and architecture
 2. **Run Test Suite**: Validate all tests pass in current environment
 3. **Review Documentation**: Understand project status and requirements
 4. **Check Build Process**: Ensure build pipeline works correctly
 
 ### Development Priorities
+
 1. **Maintain Quality**: Preserve production-ready status
 2. **Enhance Features**: Add value while maintaining stability
 3. **Improve Performance**: Optimize user experience
 4. **Expand Testing**: Increase coverage and test quality
 
 ### Long-term Goals
+
 1. **Feature Enhancement**: Advanced financial management capabilities
 2. **Platform Expansion**: iOS companion app development
 3. **Cloud Integration**: Optional iCloud synchronization
@@ -435,12 +479,14 @@ Once manual configuration is complete:
 ## 📞 SUPPORT & RESOURCES
 
 ### Getting Help
+
 - **Documentation**: Comprehensive guides in `docs/` directory
 - **Code Examples**: Reference implementations in codebase
 - **Test Cases**: Extensive test suite demonstrates expected behavior
 - **Build Scripts**: Automated workflows for common tasks
 
 ### Best Practices
+
 - **Follow TDD**: Test-driven development prevents regressions
 - **Maintain Architecture**: Consistent MVVM pattern implementation
 - **Document Changes**: Update relevant documentation with all modifications
@@ -461,6 +507,7 @@ Once manual configuration is complete:
 This project has been updated to meet v3.3 compliance requirements:
 
 ### ✅ v3.3 Requirements Implemented
+
 - [x] `/temp` directory for agent communication
 - [x] `/TestData` directory for synthetic test data
 - [x] Platform-specific source folders
@@ -471,11 +518,13 @@ This project has been updated to meet v3.3 compliance requirements:
 - [x] CLAUDE.md updated to v5.1.0+
 
 ### 🔄 Agent Communication Protocols
+
 - **Auditor Findings**: `temp/Session_Audit_Details.md`
 - **Developer Responses**: `temp/Session_Responses.md`
 - **Implementation Planning**: `temp/IMPLEMENTATION_PLAN.md`
 
 ### 📋 Quality Gates
+
 - Build validation before development
 - TDD enforcement
 - Documentation completeness verification

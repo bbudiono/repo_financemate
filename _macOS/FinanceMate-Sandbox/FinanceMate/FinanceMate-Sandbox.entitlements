@@ -34,5 +34,11 @@
 	<!-- Required for debugging builds -->
 	<key>com.apple.security.get-task-allow</key>
 	<true/>
+	
+	<!-- Sign in with Apple capability -->
+	<key>com.apple.developer.applesignin</key>
+	<array>
+		<string>Default</string>
+	</array>
 </dict>
 </plist>

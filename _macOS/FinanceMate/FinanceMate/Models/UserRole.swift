@@ -26,7 +26,7 @@ import Foundation
 /// - Owner: Full system access including user management
 /// - Contributor: Can create/edit transactions and generate reports
 /// - Viewer: Read-only access for viewing transactions and reports
-enum UserRole: String, CaseIterable {
+public enum UserRole: String, CaseIterable {
     case owner = "Owner"
     case contributor = "Contributor"
     case viewer = "Viewer"
@@ -86,7 +86,7 @@ enum UserRole: String, CaseIterable {
 }
 
 /// Resource types for permission checking
-enum ResourceType: String, CaseIterable {
+public enum ResourceType: String, CaseIterable {
     case transaction = "Transaction"
     case financialEntity = "FinancialEntity"
     case user = "User"
@@ -99,7 +99,7 @@ enum ResourceType: String, CaseIterable {
 }
 
 /// Permission actions for RBAC
-enum PermissionAction: String, CaseIterable {
+public enum PermissionAction: String, CaseIterable {
     case create = "CREATE"
     case read = "READ"
     case update = "UPDATE"
@@ -113,7 +113,7 @@ enum PermissionAction: String, CaseIterable {
 }
 
 /// Permission result for enforcement
-struct PermissionResult {
+public struct PermissionResult {
     let isAllowed: Bool
     let denialReason: String?
     let auditInfo: AuditInfo?
@@ -126,7 +126,7 @@ struct PermissionResult {
 }
 
 /// Audit information for permission checks
-struct AuditInfo {
+public struct AuditInfo {
     let userId: UUID
     let action: String
     let resourceType: String

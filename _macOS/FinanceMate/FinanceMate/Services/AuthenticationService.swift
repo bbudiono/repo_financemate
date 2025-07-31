@@ -1,6 +1,7 @@
 import AuthenticationServices
 import CryptoKit
 import Foundation
+import CoreData
 
 // MARK: - Authentication Service Protocol
 protocol AuthenticationServiceProtocol {
@@ -11,6 +12,7 @@ protocol AuthenticationServiceProtocol {
   func signOut() async throws
   func getCurrentUser() -> User?
   func createTestSession() -> User?
+  func signIn(email: String, password: String) async -> (success: Bool, error: Error?)
 }
 
 // MARK: - Authentication Result
@@ -19,15 +21,6 @@ struct AuthenticationResult {
   let user: User?
   let error: Error?
   let provider: AuthenticationProvider
-}
-
-// MARK: - User Model
-struct User {
-  let id: String
-  let email: String
-  let displayName: String
-  let provider: AuthenticationProvider
-  let isAuthenticated: Bool
 }
 
 // MARK: - Authentication Provider
@@ -47,6 +40,9 @@ class AuthenticationService: NSObject, AuthenticationServiceProtocol,
   // MARK: - Properties
   private let persistenceController = PersistenceController.shared
   private var authenticationContinuation: CheckedContinuation<AuthenticationResult, Error>?
+  private var context: NSManagedObjectContext {
+    return persistenceController.container.viewContext
+  }
 
   // MARK: - AuthenticationServiceProtocol Implementation
 
@@ -94,14 +90,30 @@ class AuthenticationService: NSObject, AuthenticationServiceProtocol,
       throw AuthenticationError.suspiciousEmail("Suspicious email pattern detected")
     }
 
-    // Create user session
-    let user = User(
-      id: UUID().uuidString,
-      email: email,
-      displayName: email.components(separatedBy: "@").first ?? "User",
-      provider: .email,
-      isAuthenticated: true
-    )
+    // Find or create user
+    let user: User
+    if let existingUser = User.fetchUser(by: email, in: context) {
+      user = existingUser
+      user.updateLastLogin()
+    } else {
+      // Create new user
+      user = User.create(
+        in: context,
+        name: email.components(separatedBy: "@").first ?? "User",
+        email: email,
+        role: .owner
+      )
+    }
+
+    // Ensure user is active
+    user.activate()
+    
+    // Save context
+    do {
+      try context.save()
+    } catch {
+      throw AuthenticationError.failed("Failed to save user data")
+    }
 
     // Store authentication session
     storeUserSession(user)
@@ -126,22 +138,13 @@ class AuthenticationService: NSObject, AuthenticationServiceProtocol,
   }
 
   func getCurrentUser() -> User? {
-    guard let userId = UserDefaults.standard.string(forKey: "authenticated_user_id"),
-      let email = UserDefaults.standard.string(forKey: "authenticated_user_email"),
-      let displayName = UserDefaults.standard.string(forKey: "authenticated_user_display_name"),
-      let providerString = UserDefaults.standard.string(forKey: "authentication_provider"),
-      let provider = AuthenticationProvider(rawValue: providerString)
+    guard let userIdString = UserDefaults.standard.string(forKey: "authenticated_user_id"),
+      let userId = UUID(uuidString: userIdString)
     else {
       return nil
     }
 
-    return User(
-      id: userId,
-      email: email,
-      displayName: displayName,
-      provider: provider,
-      isAuthenticated: true
-    )
+    return User.fetchUser(by: userId, in: context)
   }
 
   func createTestSession() -> User? {
@@ -158,13 +161,30 @@ class AuthenticationService: NSObject, AuthenticationServiceProtocol,
       }
 
       // Create test user for automated testing
-      let testUser = User(
-        id: "test-user-\(UUID().uuidString)",
-        email: "test@financemate.local",
-        displayName: "Test User",
-        provider: .email,
-        isAuthenticated: true
-      )
+      let testEmail = "test@financemate.local"
+      let testUser: User
+      
+      if let existingUser = User.fetchUser(by: testEmail, in: context) {
+        testUser = existingUser
+      } else {
+        testUser = User.create(
+          in: context,
+          name: "Test User",
+          email: testEmail,
+          role: .owner
+        )
+      }
+      
+      testUser.activate()
+      testUser.updateLastLogin()
+      
+      // Save context
+      do {
+        try context.save()
+      } catch {
+        print("Failed to save test user: \(error)")
+        return nil
+      }
 
       // Store test session
       storeUserSession(testUser)
@@ -174,6 +194,15 @@ class AuthenticationService: NSObject, AuthenticationServiceProtocol,
     #else
       return nil
     #endif
+  }
+
+  func signIn(email: String, password: String) async -> (success: Bool, error: Error?) {
+    do {
+      let result = try await authenticateWithEmail(email: email, password: password)
+      return (success: result.success, error: result.error)
+    } catch {
+      return (success: false, error: error)
+    }
   }
 
   // MARK: - ASAuthorizationControllerDelegate
@@ -265,13 +294,29 @@ class AuthenticationService: NSObject, AuthenticationServiceProtocol,
       throw AuthenticationError.invalidEmail("Invalid email format from Apple Sign-In")
     }
 
-    let user = User(
-      id: userIdentifier,
-      email: email,
-      displayName: displayName,
-      provider: .apple,
-      isAuthenticated: true
-    )
+    // Find or create user
+    let user: User
+    if let existingUser = User.fetchUser(by: email, in: context) {
+      user = existingUser
+      user.name = displayName
+      user.updateLastLogin()
+    } else {
+      user = User.create(
+        in: context,
+        name: displayName,
+        email: email,
+        role: .owner
+      )
+    }
+    
+    user.activate()
+    
+    // Save context
+    do {
+      try context.save()
+    } catch {
+      throw AuthenticationError.failed("Failed to save user data")
+    }
 
     // Store user session
     storeUserSession(user)
@@ -285,10 +330,10 @@ class AuthenticationService: NSObject, AuthenticationServiceProtocol,
   }
 
   private func storeUserSession(_ user: User) {
-    UserDefaults.standard.set(user.id, forKey: "authenticated_user_id")
+    UserDefaults.standard.set(user.id.uuidString, forKey: "authenticated_user_id")
     UserDefaults.standard.set(user.email, forKey: "authenticated_user_email")
     UserDefaults.standard.set(user.displayName, forKey: "authenticated_user_display_name")
-    UserDefaults.standard.set(user.provider.rawValue, forKey: "authentication_provider")
+    UserDefaults.standard.set("email", forKey: "authentication_provider")
     UserDefaults.standard.set(Date(), forKey: "authenticated_user_login_time")
 
     print("✅ User session stored for: \(user.displayName) (\(user.email))")

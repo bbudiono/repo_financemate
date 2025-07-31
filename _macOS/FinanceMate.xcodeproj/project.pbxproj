@@ -47,6 +47,12 @@
 		977EBABEEE0B427C8B5E6C23 /* LineItem+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20AEABA51A04450A47D811C /* LineItem+CoreDataProperties.swift */; };
 		2FE829CEF1AD43FE8B3917EF /* SplitAllocation+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9142439AEB0144D6AD57275A /* SplitAllocation+CoreDataClass.swift */; };
 		CCE5731C54B747DF8F46989B /* SplitAllocation+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7D61EA8420A47BE9AFBA841 /* SplitAllocation+CoreDataProperties.swift */; };		814B2C32A9824FFCACC89492 /* FinanceMateModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 70B7356CBC8042894E6BE /* FinanceMateModel.xcdatamodeld */; };
+		AUTHBUILD2025SERVICEAABBCCDD /* AuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AUTH001SERVICE2025AABBCCDD /* AuthenticationService.swift */; };
+		AUTHBUILD2025VIEWMODELAABBCC /* AuthenticationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AUTH002VIEWMODEL2025BBCCDDEE /* AuthenticationViewModel.swift */; };
+		USERBUILD2025COREDATAAABBCC /* User+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = USER001COREDATA2025AABBCCDD /* User+CoreDataClass.swift */; };
+		USERBUILD2025ROLEBBCCDDEE /* UserRole.swift in Sources */ = {isa = PBXBuildFile; fileRef = USER002ROLE2025BBCCDDEE /* UserRole.swift */; };
+		AUDITBUILD2025COREDATAAABBC /* AuditLog+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = AUDIT001COREDATA2025AABBCCDD /* AuditLog+CoreDataClass.swift */; };
+		SESSIONBUILD2025MODELAABBCC /* UserSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = SESSION001MODEL2025AABBCCDD /* UserSession.swift */; };
 
 			0C910700B6434186BA21775E /* FinancialEntityViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E80A064386044349451977D /* FinancialEntityViewModel.swift */; };
 		0491A4FB569940FEB5690E10 /* FinancialEntityViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C16F2AC4A7984C9297A13B03 /* FinancialEntityViewModelTests.swift */; };
@@ -136,6 +142,12 @@
 
 			2E80A064386044349451977D /* FinancialEntityViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinancialEntityViewModel.swift; sourceTree = "<group>"; };
 		C16F2AC4A7984C9297A13B03 /* FinancialEntityViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinancialEntityViewModelTests.swift; sourceTree = "<group>"; };
+		AUTH001SERVICE2025AABBCCDD /* AuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationService.swift; sourceTree = "<group>"; };
+		AUTH002VIEWMODEL2025BBCCDDEE /* AuthenticationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewModel.swift; sourceTree = "<group>"; };
+		USER001COREDATA2025AABBCCDD /* User+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User+CoreDataClass.swift"; sourceTree = "<group>"; };
+		USER002ROLE2025BBCCDDEE /* UserRole.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRole.swift; sourceTree = "<group>"; };
+		AUDIT001COREDATA2025AABBCCDD /* AuditLog+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuditLog+CoreDataClass.swift"; sourceTree = "<group>"; };
+		SESSION001MODEL2025AABBCCDD /* UserSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSession.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -211,6 +223,10 @@
 				E20AEABA51A04450A47D811C /* LineItem+CoreDataProperties.swift */,
 				9142439AEB0144D6AD57275A /* SplitAllocation+CoreDataClass.swift */,
 				B7D61EA8420A47BE9AFBA841 /* SplitAllocation+CoreDataProperties.swift */,
+				USER001COREDATA2025AABBCCDD /* User+CoreDataClass.swift */,
+				USER002ROLE2025BBCCDDEE /* UserRole.swift */,
+				AUDIT001COREDATA2025AABBCCDD /* AuditLog+CoreDataClass.swift */,
+				SESSION001MODEL2025AABBCCDD /* UserSession.swift */,
 				70B7356CBC8042894E6BE /* FinanceMateModel.xcdatamodeld */,);
 			path = Models;
 			sourceTree = "<group>";
@@ -218,6 +234,7 @@
 		8EED0ECEF59FFABBE1C4A0DE /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				AUTH002VIEWMODEL2025BBCCDDEE /* AuthenticationViewModel.swift */,
 				4644212388479F3F7BF7B7DE /* DashboardViewModel.swift */,
 				ABCDEF0123456789ABCDEF01 /* LineItemViewModel.swift */,
 				ABCDEF0123456789ABCDEF02 /* SplitAllocationViewModel.swift */,
@@ -302,6 +319,7 @@
 				410A7E6292E6838B8B31ACC9 /* FinanceMateApp.swift */,
 				DB928E564674C202C56CACF9 /* PersistenceController.swift */,
 				8758F37C3AB9785E601B422B /* Models */,
+				SERVICES2025GROUPAABBCCDDEE /* Services */,
 				8EED0ECEF59FFABBE1C4A0DE /* ViewModels */,
 				935A33DA2A15F6A619C6F9AE /* Views */,
 			);
@@ -323,6 +341,14 @@
 				F3E6B07F1FBE1C5755A4FE3F /* TransactionsViewModel.swift */,
 			);
 			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		SERVICES2025GROUPAABBCCDDEE /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				AUTH001SERVICE2025AABBCCDD /* AuthenticationService.swift */,
+			);
+			path = Services;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -541,12 +567,18 @@
 				VIEWBUILD987654321BUILD02 /* SplitAllocationView.swift in Sources */,
 				25E1A4A0009D4E86A514BDE0 /* TransactionsView.swift in Sources */,
 				4F2B70E89AE549E3AEFA2F86 /* AddEditTransactionView.swift in Sources */,
+				AUTHBUILD2025VIEWMODELAABBCC /* AuthenticationViewModel.swift in Sources */,
 				2B37EF5E2BA52029B8E507EE /* DashboardViewModel.swift in Sources */,
 				FEDCBA0987654321FEDCBA01 /* LineItemViewModel.swift in Sources */,
 				FEDCBA0987654321FEDCBA02 /* SplitAllocationViewModel.swift in Sources */,
 				FEDCBA0987654321FEDCBA03 /* SettingsViewModel.swift in Sources */,
 				367DABD88FB44283D6A54544 /* TransactionsViewModel.swift in Sources */,
 				2F964B2A58F0EEF8A2F41798 /* FinanceMateApp.swift in Sources */,
+				AUTHBUILD2025SERVICEAABBCCDD /* AuthenticationService.swift in Sources */,
+				USERBUILD2025COREDATAAABBCC /* User+CoreDataClass.swift in Sources */,
+				USERBUILD2025ROLEBBCCDDEE /* UserRole.swift in Sources */,
+				AUDITBUILD2025COREDATAAABBC /* AuditLog+CoreDataClass.swift in Sources */,
+				SESSIONBUILD2025MODELAABBCC /* UserSession.swift in Sources */,
 				DDEBF69E356484B3589F299E /* GlassmorphismModifier.swift in Sources */,
 				E70C7B685A1D67B84A2456CE /* PersistenceController.swift in Sources */,
 				29D1858EBCCBABB5AB0043A8 /* Transaction+CoreDataProperties.swift in Sources */,

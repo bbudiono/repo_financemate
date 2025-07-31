@@ -287,6 +287,25 @@ extension User {
         }
     }
     
+    /// Fetch user by UUID
+    /// - Parameters:
+    ///   - userId: User's unique identifier
+    ///   - context: Core Data context
+    /// - Returns: User if found, nil otherwise
+    public static func fetchUser(by userId: UUID, in context: NSManagedObjectContext) -> User? {
+        let request: NSFetchRequest<User> = User.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", userId as CVarArg)
+        request.fetchLimit = 1
+        
+        do {
+            let users = try context.fetch(request)
+            return users.first
+        } catch {
+            print("Failed to fetch user by UUID: \(error)")
+            return nil
+        }
+    }
+    
     /// Fetch active users
     /// - Parameter context: Core Data context
     /// - Returns: Array of active users
