@@ -29,7 +29,6 @@ import XCTest
 import CoreData
 @testable import FinanceMate
 
-@MainActor
 class FinancialGoalTests: XCTestCase {
     
     var context: NSManagedObjectContext!
@@ -76,15 +75,15 @@ class FinancialGoalTests: XCTestCase {
         
         // Then
         XCTAssertEqual(goal.title, title, "Goal title should match input")
-        XCTAssertEqual(goal.description, description, "Goal description should match input")
+        XCTAssertEqual(goal.goalDescription, description, "Goal description should match input")
         XCTAssertEqual(goal.targetAmount, targetAmount, "Target amount should match input")
         XCTAssertEqual(goal.category, category.rawValue, "Category should match input")
-        XCTAssertEqual(goal.deadline, deadline, "Deadline should match input")
+        XCTAssertEqual(goal.targetDate, deadline, "Deadline should match input")
         XCTAssertEqual(goal.currentAmount, 0.0, "Initial current amount should be zero")
         XCTAssertFalse(goal.isCompleted, "New goal should not be completed")
         XCTAssertNotNil(goal.id, "Goal should have a UUID")
         XCTAssertNotNil(goal.createdAt, "Goal should have creation date")
-        XCTAssertNotNil(goal.lastUpdated, "Goal should have last updated date")
+        XCTAssertNotNil(goal.lastModified, "Goal should have last updated date")
     }
     
     func testFinancialGoalProgressCalculation() {

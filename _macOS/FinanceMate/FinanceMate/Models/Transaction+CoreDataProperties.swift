@@ -29,6 +29,7 @@ extension Transaction {
         transaction.category = category
         transaction.note = note
         transaction.entityId = entityId // Set required entityId property
+        transaction.type = "Standard" // Set default transaction type
         return transaction
     }
 }
