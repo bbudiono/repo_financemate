@@ -10,6 +10,7 @@ protocol AuthenticationServiceProtocol {
   func authenticateWithEmail(email: String, password: String) async throws -> AuthenticationResult
   func signOut() async throws
   func getCurrentUser() -> User?
+  func createTestSession() -> User?
 }
 
 // MARK: - Authentication Result
@@ -141,6 +142,38 @@ class AuthenticationService: NSObject, AuthenticationServiceProtocol,
       provider: provider,
       isAuthenticated: true
     )
+  }
+
+  func createTestSession() -> User? {
+    // Only allow test session in DEBUG mode or when explicitly enabled
+    #if DEBUG
+      let isTestMode =
+        ProcessInfo.processInfo.environment["HEADLESS_MODE"] == "1"
+        || ProcessInfo.processInfo.environment["UI_TESTING"] == "1"
+        || CommandLine.arguments.contains("--headless")
+        || CommandLine.arguments.contains("--uitesting")
+
+      guard isTestMode else {
+        return nil
+      }
+
+      // Create test user for automated testing
+      let testUser = User(
+        id: "test-user-\(UUID().uuidString)",
+        email: "test@financemate.local",
+        displayName: "Test User",
+        provider: .email,
+        isAuthenticated: true
+      )
+
+      // Store test session
+      storeUserSession(testUser)
+
+      print("✅ Test session created for automated testing")
+      return testUser
+    #else
+      return nil
+    #endif
   }
 
   // MARK: - ASAuthorizationControllerDelegate

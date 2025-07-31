@@ -47,8 +47,11 @@ struct FinanceMateApp: App {
             UserDefaults.standard.set(true, forKey: "HeadlessMode")
           #endif
 
-          // Auto-authenticate for testing
-          isAuthenticated = true
+          // Auto-authenticate for testing using secure test session
+          if let testUser = authenticationService.createTestSession() {
+            isAuthenticated = true
+            print("✅ Test session created for automated testing")
+          }
         } else {
           checkExistingSession()
         }
