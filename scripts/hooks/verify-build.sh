@@ -58,22 +58,27 @@ verify_macos_build() {
 verify_sandbox_build() {
     echo -e "${BLUE}Verifying sandbox build...${NC}"
     
-    cd "$MACOS_DIR/FinanceMate-Sandbox"
+    cd "$MACOS_DIR"
     
-    # Clean build
-    if xcodebuild clean -scheme FinanceMate-Sandbox -destination 'platform=macOS' > /dev/null 2>&1; then
-        echo -e "${GREEN}✅ Sandbox clean build successful${NC}"
+    # Check if sandbox scheme exists in main project
+    if xcodebuild -list -project FinanceMate.xcodeproj | grep -q "FinanceMate-Sandbox"; then
+        # Clean build
+        if xcodebuild clean -project FinanceMate.xcodeproj -scheme FinanceMate-Sandbox -destination 'platform=macOS' > /dev/null 2>&1; then
+            echo -e "${GREEN}✅ Sandbox clean build successful${NC}"
+        else
+            echo -e "${RED}❌ Sandbox clean build failed${NC}"
+            return 1
+        fi
+        
+        # Build project
+        if xcodebuild build -project FinanceMate.xcodeproj -scheme FinanceMate-Sandbox -destination 'platform=macOS' > /dev/null 2>&1; then
+            echo -e "${GREEN}✅ Sandbox build successful${NC}"
+        else
+            echo -e "${RED}❌ Sandbox build failed${NC}"
+            return 1
+        fi
     else
-        echo -e "${RED}❌ Sandbox clean build failed${NC}"
-        return 1
-    fi
-    
-    # Build project
-    if xcodebuild build -scheme FinanceMate-Sandbox -destination 'platform=macOS' > /dev/null 2>&1; then
-        echo -e "${GREEN}✅ Sandbox build successful${NC}"
-    else
-        echo -e "${RED}❌ Sandbox build failed${NC}"
-        return 1
+        echo -e "${YELLOW}ℹ️  Sandbox scheme not found - using single project configuration${NC}"
     fi
     
     return 0
