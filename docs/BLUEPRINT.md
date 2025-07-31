@@ -13,6 +13,7 @@
 To be the central command center for personal and family wealth, empowering users to aggregate all their financial data automatically, gain deep insights from line-item level details, **proportionally allocate expenses across multiple tax categories**, manage complex financial entities, and make informed investment and life decisions. The platform will be collaborative, allowing for secure, permission-based access for family members and financial professionals. Multi-currency support with tax rules and financial rules specific to region.
 
 ### **Requirements (MANDATORY) - DO NOT DELETE**
+> **Verify builds and ensure SSO is functional**
 1) Financial
    - Personal Finance Tracker
    - Review Income & Expenses

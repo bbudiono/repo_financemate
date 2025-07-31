@@ -673,6 +673,35 @@ final class PortfolioManager: ObservableObject {
   func setMockPrice(_ symbol: String, price: Double) {
     mockPrices[symbol] = price
   }
+  
+  // MARK: - Public Methods
+  
+  /// Get portfolios for a specific entity
+  func getPortfolios(for entityId: UUID) async throws -> [Portfolio] {
+    let request: NSFetchRequest<Portfolio> = Portfolio.fetchRequest()
+    request.predicate = NSPredicate(format: "entityId == %@", entityId as CVarArg)
+    request.sortDescriptors = [NSSortDescriptor(keyPath: \Portfolio.name, ascending: true)]
+    
+    do {
+      let portfolios = try context.fetch(request)
+      return portfolios
+    } catch {
+      throw PortfolioError.invalidEntity
+    }
+  }
+  
+  /// Calculate performance metrics for a portfolio
+  func calculatePerformanceMetrics(_ portfolioId: UUID) async throws -> PerformanceMetrics {
+    // Mock implementation for now
+    return PerformanceMetrics(
+      totalReturn: 12500.0,
+      totalReturnPercentage: 25.0,
+      thirtyDayReturn: 2.5,
+      annualizedReturn: 15.0,
+      volatility: 18.5,
+      sharpeRatio: 1.2
+    )
+  }
 }
 
 // MARK: - Core Data Entities
