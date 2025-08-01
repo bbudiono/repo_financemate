@@ -250,10 +250,12 @@ final class CoreDataTests: XCTestCase {
         
         // Deactivate
         entity.deactivate()
+        try context.save()
         XCTAssertFalse(entity.isActive)
         
         // Reactivate
         entity.activate()
+        try context.save()
         XCTAssertTrue(entity.isActive)
     }
 } 
