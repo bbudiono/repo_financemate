@@ -37,7 +37,8 @@ struct PersistenceController {
 
   let container: NSPersistentContainer
 
-  init(inMemory: Bool = false) {
+  // CRITICAL FIX: Create shared NSManagedObjectModel to prevent duplicate entity registrations
+  private static let sharedManagedObjectModel: NSManagedObjectModel = {
     // Create a programmatic Core Data model
     let model = NSManagedObjectModel()
 
@@ -2004,8 +2005,12 @@ struct PersistenceController {
       liabilityBreakdownEntity,
     ]
 
+    return model
+  }()
+
+  init(inMemory: Bool = false) {
     // Use only the programmatic model, not the .xcdatamodeld file
-    container = NSPersistentContainer(name: "FinanceMateDataStore", managedObjectModel: model)
+    container = NSPersistentContainer(name: "FinanceMateDataStore", managedObjectModel: Self.sharedManagedObjectModel)
     if inMemory {
       container.persistentStoreDescriptions.first?.url = URL(fileURLWithPath: "/dev/null")
     }
