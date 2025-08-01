@@ -147,8 +147,8 @@ final class DashboardViewUITests: XCTestCase {
         
         let balanceDisplay = app.otherElements["BalanceDisplay"]
         
-        if balanceDisplay.exists && balanceDisplay.label != nil {
-            let balanceText = balanceDisplay.label!
+        if balanceDisplay.exists && !balanceDisplay.label.isEmpty {
+            let balanceText = balanceDisplay.label
             
             // Should contain currency symbol ($ for USD or local currency)
             let hasCurrencySymbol = balanceText.contains("$") || 
@@ -420,7 +420,7 @@ final class DashboardViewUITests: XCTestCase {
         
         // Look for error messages or alerts
         let errorAlert = app.alerts.firstMatch
-        let errorMessage = app.staticTexts.containing(NSPredicate(format: "label CONTAINS 'Error'")).firstMatch
+        let _ = app.staticTexts.containing(NSPredicate(format: "label CONTAINS 'Error'")).firstMatch
         
         // If errors exist, they should be handled gracefully
         if errorAlert.exists {

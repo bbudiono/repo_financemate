@@ -40,7 +40,20 @@ final class FinancialEntityViewModelTests: XCTestCase {
         
         // Create in-memory Core Data stack for testing
         persistenceController = PersistenceController(inMemory: true)
-        context = persistenceController.container.viewContext
+        
+        // FORCE main thread context for headless testing - resolves threading violations
+        if ProcessInfo.processInfo.environment["HEADLESS_MODE"] == "1" || 
+           ProcessInfo.processInfo.environment["UI_TESTING"] == "1" {
+            context = MainActor.assumeIsolated {
+                persistenceController.container.viewContext
+            }
+        } else {
+            context = persistenceController.container.viewContext
+        }
+        
+        // Ensure context is properly configured for testing
+        context.automaticallyMergesChangesFromParent = true
+        context.mergePolicy = NSMergeByPropertyStoreTrumpMergePolicy
         
         // Initialize ViewModel with test context
         viewModel = FinancialEntityViewModel(context: context)
@@ -48,6 +61,25 @@ final class FinancialEntityViewModelTests: XCTestCase {
     }
     
     override func tearDown() {
+        // AGGRESSIVE cleanup for test isolation - prevents data pollution between tests
+        if let context = context {
+            let entityNames = ["FinancialEntity", "Transaction", "NetWealthSnapshot", "Asset", "Liability"]
+            
+            for entityName in entityNames {
+                let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
+                let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+                
+                do {
+                    try context.execute(deleteRequest)
+                    try context.save()
+                } catch {
+                    print("⚠️ Cleanup failed for \(entityName): \(error)")
+                }
+            }
+            
+            context.reset()
+        }
+        
         cancellables?.removeAll()
         viewModel = nil
         context = nil
