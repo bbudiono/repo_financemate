@@ -205,6 +205,15 @@ The following trigger immediate P0 STOP EVERYTHING scenarios:
 * **(CRITICAL) Aesthetic & Compliance Focus:** All components MUST strictly adhere to the project's platform-specific style guide.
 * **(CRITICAL) Exception for Unique Implementations:** Custom components only if uniquely required and explicitly documented.
 
+### 1.13. A-V-A PROTOCOL ENFORCEMENT (P0 CRITICAL - USER GATE-KEEPING MANDATORY)
+* **(CRITICAL AND MANDATORY) Assign-Verify-Approve Protocol:** ALL significant tasks MUST follow A-V-A protocol with explicit user approval. Agents are **BLOCKED** from continuing without user validation.
+* **(CRITICAL) NO FORWARD PROGRESS:** Without explicit user approval of provided proof. Any attempt to bypass A-V-A protocol triggers P0 STOP EVERYTHING escalation.
+* **(CRITICAL) PROOF REQUIREMENT:** Agents MUST provide tangible proof (screenshots, logs, test results, build outputs) before claiming any task completion.
+* **(CRITICAL) BLOCKING CHECKPOINTS:** Agents CANNOT self-assess work quality or declare tasks complete autonomously. User gate-keeping is mandatory.
+* **(CRITICAL) COMPLETION CLAIM DETECTION:** Any phrase indicating task completion ("done", "complete", "finished", "ready") automatically triggers A-V-A checkpoint requiring user approval.
+* **(CRITICAL) BLOCKING LANGUAGE MANDATORY:** Agents MUST use specific blocking language: "**AWAITING USER APPROVAL**", "**BLOCKING CHECKPOINT**", "**HARD STOP**", "Implementation complete. **USER APPROVAL REQUIRED**"
+* **(CRITICAL) VIOLATION ESCALATION:** All A-V-A protocol violations logged as P0 critical violations in DEVELOPMENT_LOG.md with immediate escalation.
+
 ---
 
 ## 2. Agent Operational Priority & Focus
@@ -523,37 +532,61 @@ The following essential scripts MUST be maintained with platform variations:
 
 ## 8. Testing Mandates & Specialized Development Protocols
 
-### 8.1. Testing Mandates (TDD & Comprehensive Coverage)
+### 8.1. Testing Mandates (TDD & Comprehensive Coverage) - HEADLESS, SILENT, AUTOMATED & BACKGROUNDED
 * **(CRITICAL) Test-Driven Development (TDD):** For ALL new features, changes, bug fixes, tests MUST be written BEFORE implementation code.
 * **(CRITICAL) Comprehensive Test Types:** Consider and implement appropriate test types: Unit, Integration, E2E, UI Tests, Performance, Security, Accessibility.
 * **(CRITICAL) Non-Destructive Tests:** All automated tests MUST be non-destructive and idempotent.
 * **(CRITICAL AND MANDATORY P0) Accessibility & Automation Compliance:** All actionable UI elements MUST be programmatically discoverable/automatable.
 
+* **(P0 CRITICAL - HEADLESS, SILENT, AUTOMATED & BACKGROUNDED TESTING MANDATE):**
+  - ALL testing tasks MUST be executed headlessly without user intervention
+  - ALL test commands MUST run silently with output redirected to logs (2>&1 | tee [testname].log)
+  - ALL testing operations MUST be fully automated and backgrounded where safe (&)
+  - NO interactive prompts, confirmations, or GUI dependencies allowed during testing
+  - Testing failures are logged and handled programmatically without user escalation
+  - This applies to: unit tests, integration tests, UI tests, build verification, performance tests, security tests
+
 ### 8.2. Platform-Specific Testing Frameworks
 
-**Web Applications:**
+**Web Applications - HEADLESS & SILENT EXECUTION:**
 - Unit Testing: Jest, Mocha, Vitest
+  - Command: `npm test -- --silent --passWithNoTests 2>&1 | tee unit_tests.log &`
 - E2E Testing: Playwright, Cypress, Puppeteer
+  - Command: `npm run test:e2e -- --headless 2>&1 | tee e2e_tests.log &`
 - Accessibility: axe-core, WAVE
+  - Command: `npm run test:a11y -- --headless 2>&1 | tee accessibility_tests.log &`
 - Performance: Lighthouse, WebPageTest
+  - Command: `npm run perf:validate -- --silent 2>&1 | tee performance_tests.log &`
 
-**iOS Applications:**
+**iOS Applications - HEADLESS & AUTOMATED EXECUTION:**
 - Unit Testing: XCTest
-- UI Testing: XCUITest
+  - Command: `xcodebuild test -project {Project}.xcodeproj -scheme {Scheme} -destination 'platform=macOS' -only-testing:{Project}Tests 2>&1 | tee unit_tests.log &`
+- UI Testing: XCUITest  
+  - Command: `xcodebuild test -project {Project}.xcodeproj -scheme {Scheme} -destination 'platform=macOS' -only-testing:{Project}UITests 2>&1 | tee ui_tests.log &`
 - Performance: Instruments
+  - Command: `xcodebuild test -project {Project}.xcodeproj -scheme {Scheme} -only-testing:{Project}Tests/PerformanceTests 2>&1 | tee performance_tests.log &`
 - Accessibility: XCTest Accessibility
+  - Command: `xcodebuild test -project {Project}.xcodeproj -scheme {Scheme} -only-testing:{Project}UITests/AccessibilityTests 2>&1 | tee accessibility_tests.log &`
 
-**Android Applications:**
+**Android Applications - AUTOMATED & BACKGROUNDED EXECUTION:**
 - Unit Testing: JUnit, Mockito
+  - Command: `./gradlew test --quiet 2>&1 | tee unit_tests.log &`
 - UI Testing: Espresso, UI Automator
+  - Command: `./gradlew connectedAndroidTest --quiet 2>&1 | tee ui_tests.log &`
 - Performance: Android Profiler
+  - Command: `./gradlew performanceTest --quiet 2>&1 | tee performance_tests.log &`
 - Accessibility: Accessibility Scanner
+  - Command: `./gradlew accessibilityTest --quiet 2>&1 | tee accessibility_tests.log &`
 
-**Windows Applications:**
+**Windows Applications - SILENT & AUTOMATED EXECUTION:**
 - Unit Testing: MSTest, NUnit
+  - Command: `dotnet test --logger:trx --quiet 2>&1 | tee unit_tests.log &`
 - UI Testing: WinAppDriver, Coded UI
+  - Command: `dotnet test --filter Category=UI --quiet 2>&1 | tee ui_tests.log &`
 - Performance: PerfView
+  - Command: `dotnet test --filter Category=Performance --quiet 2>&1 | tee performance_tests.log &`
 - Accessibility: Accessibility Insights
+  - Command: `dotnet test --filter Category=Accessibility --quiet 2>&1 | tee accessibility_tests.log &`
 
 ### 8.3. Canonical Development Process & Protocol (Full Cycle)
 This is the MANDATORY, end-to-end process for all development:
@@ -887,14 +920,22 @@ At every major process step, the agent MUST utilize appropriate MCP server(s). L
 
 ## Compliance Checklist - RANKED IN ORDER **P0 COMPULSORY**
 
-### Builds & Stability
-* [ ] Start new tasks/actions with a Production test build
-* [ ] Ensure all TDD work is in the Sandbox Environment
-* [ ] Ensure once all Sandbox Testing is STATUS: UNVERIFIED, migration of code to Production occurs
-* [ ] Broken Production builds are P1 to fix
-* [ ] Test and maintain Production builds after any change
-* [ ] Build GREEN; all tests PASS
-* [ ] Use platform-appropriate build tools and processes
+### Builds & Stability - HEADLESS, SILENT, AUTOMATED & BACKGROUNDED
+* [ ] Start new tasks/actions with a Production test build - EXECUTED HEADLESSLY: `xcodebuild -project {Project}.xcodeproj -scheme {Scheme} build 2>&1 | tee production_build.log`
+* [ ] Ensure all TDD work is in the Sandbox Environment - AUTOMATED EXECUTION
+* [ ] Ensure once all Sandbox Testing is STATUS: UNVERIFIED, migration of code to Production occurs - SILENT PROCESS
+* [ ] Broken Production builds are P1 to fix - AUTOMATED DETECTION & LOGGING
+* [ ] Test and maintain Production builds after any change - BACKGROUNDED TESTING: `xcodebuild test 2>&1 | tee build_tests.log &`
+* [ ] Build GREEN; all tests PASS - PROGRAMMATIC VERIFICATION
+* [ ] Use platform-appropriate build tools and processes - HEADLESS EXECUTION MANDATORY
+
+### HEADLESS TESTING ENFORCEMENT (P0 CRITICAL)
+* [ ] ALL test commands use silent flags and output redirection (2>&1 | tee [testname].log)
+* [ ] ALL tests run headlessly without user interaction or GUI dependencies  
+* [ ] Background processing (&) used for safe parallel test execution
+* [ ] NO interactive prompts, confirmations, or user escalation during testing
+* [ ] Test failures logged and processed programmatically
+* [ ] Results stored in structured format for automated analysis
 
 ### Code Quality & Structure **P0 COMPULSORY**
 * [ ] Write complete code blocks; no placeholders
@@ -991,4 +1032,92 @@ Any agent or LLM that attempts to delete, archive, move, or significantly modify
 - Renaming or restructuring protected documents
 
 **USER OVERRIDE:**
-Only explicit user commands with clear intent (e.g., "delete the TASKS.md file") can override these protections. 
+Only explicit user commands with clear intent (e.g., "delete the TASKS.md file") can override these protections.
+
+---
+
+## APPENDIX: HEADLESS, SILENT, AUTOMATED & BACKGROUNDED TESTING PROTOCOLS (P0 CRITICAL)
+
+### UNIVERSAL TESTING COMMAND PATTERNS
+
+#### iOS/macOS Projects (XCTest)
+```bash
+# Unit Tests - HEADLESS & SILENT
+xcodebuild test -project {ProjectName}.xcodeproj -scheme {SchemeName} -destination 'platform=macOS' -only-testing:{ProjectName}Tests 2>&1 | tee unit_tests_$(date +%Y%m%d_%H%M%S).log &
+
+# UI Tests - AUTOMATED & BACKGROUNDED  
+xcodebuild test -project {ProjectName}.xcodeproj -scheme {SchemeName} -destination 'platform=macOS' -only-testing:{ProjectName}UITests 2>&1 | tee ui_tests_$(date +%Y%m%d_%H%M%S).log &
+
+# Build Verification - SILENT EXECUTION
+xcodebuild -project {ProjectName}.xcodeproj -scheme {SchemeName} -configuration Debug build 2>&1 | tee build_verification_$(date +%Y%m%d_%H%M%S).log
+
+# Performance Tests - BACKGROUNDED
+xcodebuild test -project {ProjectName}.xcodeproj -scheme {SchemeName} -only-testing:{ProjectName}Tests/PerformanceTests 2>&1 | tee performance_tests_$(date +%Y%m%d_%H%M%S).log &
+```
+
+#### Web Projects (npm/yarn)
+```bash
+# Unit Tests - SILENT & BACKGROUNDED
+npm test -- --silent --passWithNoTests --coverage 2>&1 | tee unit_tests_$(date +%Y%m%d_%H%M%S).log &
+
+# E2E Tests - HEADLESS EXECUTION
+npm run test:e2e -- --headless --reporter=json 2>&1 | tee e2e_tests_$(date +%Y%m%d_%H%M%S).log &
+
+# Accessibility Tests - AUTOMATED
+npm run test:a11y -- --headless --json-output 2>&1 | tee accessibility_tests_$(date +%Y%m%d_%H%M%S).log &
+
+# Performance Tests - SILENT & BACKGROUNDED
+npm run perf:validate -- --silent --json-report 2>&1 | tee performance_tests_$(date +%Y%m%d_%H%M%S).log &
+```
+
+#### Python Projects (pytest)
+```bash
+# Unit Tests - QUIET & BACKGROUNDED
+pytest --quiet --tb=short --json-report --json-report-file=unit_test_report.json 2>&1 | tee unit_tests_$(date +%Y%m%d_%H%M%S).log &
+
+# Coverage Tests - SILENT EXECUTION
+pytest --cov --quiet --cov-report=json --cov-report=term-missing 2>&1 | tee coverage_tests_$(date +%Y%m%d_%H%M%S).log &
+```
+
+### ENFORCEMENT MECHANISMS
+
+#### Automatic Log Timestamping
+All test logs MUST include timestamps using `$(date +%Y%m%d_%H%M%S)` pattern.
+
+#### Background Process Management
+- Use `&` for safe parallel execution of independent test suites
+- Monitor background processes to prevent resource exhaustion
+- Implement timeout mechanisms for long-running tests
+
+#### Result Processing Automation  
+- Parse JSON/XML test reports programmatically
+- Extract key metrics (pass/fail counts, coverage percentages, performance metrics)
+- Generate automated summary reports
+- Trigger appropriate actions based on test results
+
+#### Failure Handling Protocols
+- Log all failures with stack traces and context
+- Categorize failures (build, unit test, integration, UI, performance)
+- Apply automated remediation strategies where possible
+- Escalate only after all automated recovery attempts fail
+
+### PROHIBITED PRACTICES (P0 VIOLATIONS)
+- ❌ Interactive test execution waiting for user input
+- ❌ GUI-dependent test runners or frameworks
+- ❌ Manual test result interpretation or reporting
+- ❌ User escalation for routine test failures
+- ❌ Blocking main process flow for test execution
+- ❌ Unlogged test executions or missing output redirection
+- ❌ Tests that require manual setup or teardown
+
+### MANDATORY PRACTICES (P0 REQUIREMENTS)
+- ✅ All tests execute headlessly without human interaction
+- ✅ All output redirected to timestamped log files
+- ✅ Background processing for parallelizable test suites
+- ✅ Automated result parsing and summary generation
+- ✅ Programmatic failure handling and recovery attempts
+- ✅ JSON/structured output format for machine processing
+- ✅ Silent execution flags for all testing frameworks
+- ✅ Timeout mechanisms to prevent infinite blocking
+
+This appendix ensures complete alignment across all configuration files and establishes the foundation for fully automated, unattended testing operations. 

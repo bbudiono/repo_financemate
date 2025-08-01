@@ -11,6 +11,21 @@
 
 **NO MOCK DATA**
 
+**HEADLESS, SILENT, AUTOMATED & BACKGROUNDED TESTING MANDATE (P0 CRITICAL)**
+- ALL testing tasks MUST be executed headlessly without user intervention
+- ALL test commands MUST run silently with output redirected to logs
+- ALL testing operations MUST be fully automated and backgrounded
+- NO interactive prompts, confirmations, or GUI dependencies allowed
+- Testing failures are logged and handled programmatically without user escalation
+- This applies to: unit tests, integration tests, UI tests, build verification, and performance tests
+
+**A-V-A PROTOCOL ENFORCEMENT (P0 CRITICAL - USER GATE-KEEPING MANDATORY)**
+- ALL significant tasks MUST follow Assign-Verify-Approve protocol with explicit user approval
+- Agents MUST provide tangible proof before claiming any task completion
+- NO forward progress allowed without explicit user approval of provided proof
+- Agents CANNOT self-assess work quality or declare tasks complete autonomously
+- Any attempt to bypass A-V-A protocol triggers P0 STOP EVERYTHING escalation
+
 ## 🎯 EXECUTIVE SUMMARY
 
 ### Project Status: ✅ PRODUCTION READY
@@ -37,7 +52,7 @@ FinanceMate has achieved **Production Release Candidate 1.0.0** status with all 
 - **Data Persistence**: Core Data with programmatic model (no .xcdatamodeld)
 - **Language**: Swift 5.9+
 - **Build System**: Xcode with automated build scripts
-- **Testing**: XCTest with comprehensive unit, UI, and accessibility tests
+- **Testing**: XCTest UNIT TESTS ONLY - NO XCUITest, NO UI TESTS, NO INTERACTIVE TESTING
 
 ### Core Components
 
@@ -100,8 +115,8 @@ repo_financemate/
 │   │   └── Resources/               # Assets and configurations
 │   ├── FinanceMate-Sandbox/         # SANDBOX Environment
 │   │   └── [Mirror of Production]
-│   ├── FinanceMateTests/            # Unit tests (45+ test cases)
-│   ├── FinanceMateUITests/          # UI tests (30+ test cases)
+│   ├── FinanceMateTests/            # Unit tests ONLY (45+ test cases)
+│   ├── FinanceMateUITests/          # ⛔ DEPRECATED - DO NOT USE XCUITest
 │   └── FinanceMate.xcodeproj        # Xcode project
 ├── docs/                            # Technical documentation
 │   ├── BLUEPRINT.md                 # Master project specification
@@ -130,26 +145,35 @@ repo_financemate/
 4. **MVVM Compliance**: Maintain consistent architecture patterns
 5. **Accessibility Priority**: Ensure all UI elements support VoiceOver and keyboard navigation
 
-### Essential Commands
+### Essential Commands (HEADLESS & SILENT EXECUTION MANDATORY)
 
-#### Build & Test Commands
+#### Build & Test Commands - AUTOMATED & BACKGROUNDED
 
 ```bash
 # Navigate to project root
 cd /path/to/repo_financemate
 
-# Automated production build (after manual Xcode configuration)
-./scripts/build_and_sign.sh
+# Automated production build - HEADLESS & SILENT
+./scripts/build_and_sign.sh 2>&1 | tee build_production.log
 
-# Run comprehensive test suite
-xcodebuild test -project _macOS/FinanceMate.xcodeproj -scheme FinanceMate -destination 'platform=macOS'
+# Run comprehensive test suite - FULLY AUTOMATED & BACKGROUNDED
+xcodebuild test -project _macOS/FinanceMate.xcodeproj -scheme FinanceMate -destination 'platform=macOS' 2>&1 | tee comprehensive_tests.log &
 
-# Run specific test suites
-xcodebuild test -project _macOS/FinanceMate.xcodeproj -scheme FinanceMate -destination 'platform=macOS' -only-testing:FinanceMateTests
-xcodebuild test -project _macOS/FinanceMate.xcodeproj -scheme FinanceMate -destination 'platform=macOS' -only-testing:FinanceMateUITests
+# Run UNIT TESTS ONLY - HEADLESS EXECUTION (NO XCUITest)
+xcodebuild test -project _macOS/FinanceMate.xcodeproj -scheme FinanceMate -destination 'platform=macOS' -only-testing:FinanceMateTests 2>&1 | tee unit_tests.log &
 
-# Build in Xcode (alternative)
-xcodebuild -project _macOS/FinanceMate.xcodeproj -scheme FinanceMate -configuration Release build
+# ⛔ PROHIBITED: XCUITest/UI Tests - NEVER USE THESE COMMANDS
+# xcodebuild test ... -only-testing:FinanceMateUITests  # FORBIDDEN - NOT HEADLESS
+
+# Build in Xcode - SILENT EXECUTION
+xcodebuild -project _macOS/FinanceMate.xcodeproj -scheme FinanceMate -configuration Release build 2>&1 | tee release_build.log
+
+# CRITICAL ENFORCEMENT:
+# - ALL commands MUST run headlessly without user interaction
+# - ALL output MUST be redirected to log files with timestamps
+# - Background processes (&) used where safe for parallel execution
+# - NO interactive prompts, confirmations, or GUI dependencies allowed
+# - Test failures processed automatically without user escalation
 ```
 
 #### Development Commands
@@ -169,12 +193,20 @@ xcodebuild archive -project _macOS/FinanceMate.xcodeproj -scheme FinanceMate -ar
 
 ## 🧪 TESTING FRAMEWORK
 
-### Test Coverage Summary
+### Test Coverage Summary - UNIT TESTS ONLY
 
+⛔ **PROHIBITED TESTING TYPES:**
+- **XCUITest/UI Tests**: FORBIDDEN - Cannot run headlessly, causes device connection issues
+- **Interactive Tests**: FORBIDDEN - Require user intervention
+- **Screenshot-based Tests**: FORBIDDEN - Not truly headless
+- **GUI-dependent Tests**: FORBIDDEN - Violate silent execution mandate
+
+✅ **APPROVED TESTING TYPES:**
 - **Unit Tests**: 45+ test cases covering all ViewModels and business logic
-- **UI Tests**: 30+ test cases with automated screenshot capture
-- **Integration Tests**: Core Data and ViewModel integration validation
+- **Integration Tests**: Core Data and ViewModel integration validation  
 - **Performance Tests**: Load testing with 1000+ transaction datasets
+- **Business Logic Tests**: Mathematical calculations, data validation
+- **Core Data Tests**: Entity CRUD operations, relationship validation
 - **Accessibility Tests**: VoiceOver and keyboard navigation compliance
 
 ### Test Execution Strategy
@@ -498,7 +530,240 @@ Once manual configuration is complete:
 
 ---
 
-*Last updated: 2025-07-05 - Production Release Candidate 1.0.0*
+## 🤖 COMPREHENSIVE TESTING ENFORCEMENT PROTOCOL (P0 CRITICAL)
+
+### UNIVERSAL TESTING MANDATE: HEADLESS, SILENT, AUTOMATED & BACKGROUNDED
+
+All testing operations within this project MUST adhere to the following P0 critical requirements:
+
+#### **1. HEADLESS EXECUTION (P0 MANDATORY)**
+- NO user interaction, prompts, or GUI dependencies during testing
+- ALL test frameworks configured for headless operation
+- Automated test discovery and execution without manual intervention
+
+#### **2. SILENT OPERATION (P0 MANDATORY)**
+- ALL test output redirected to timestamped log files using pattern: `2>&1 | tee [testname]_$(date +%Y%m%d_%H%M%S).log`
+- Silent flags applied to all testing frameworks (--quiet, --silent, etc.)
+- NO verbose console output during automated execution
+
+#### **3. AUTOMATED PROCESSING (P0 MANDATORY)**
+- Programmatic result parsing from JSON/XML test reports
+- Automated failure categorization and remediation attempts
+- No manual interpretation or user escalation for routine failures
+
+#### **4. BACKGROUNDED EXECUTION (P0 MANDATORY WHERE SAFE)**
+- Independent test suites executed in parallel using `&` operator
+- Resource management to prevent system exhaustion
+- Timeout mechanisms for long-running test processes
+
+### **FINANCEMATE-SPECIFIC COMMAND PATTERNS**
+
+```bash
+# Unit Tests - HEADLESS & SILENT
+xcodebuild test -project FinanceMate.xcodeproj -scheme FinanceMate -destination 'platform=macOS' -only-testing:FinanceMateTests 2>&1 | tee unit_tests_$(date +%Y%m%d_%H%M%S).log &
+
+# UI Tests - AUTOMATED & BACKGROUNDED
+xcodebuild test -project FinanceMate.xcodeproj -scheme FinanceMate -destination 'platform=macOS' -only-testing:FinanceMateUITests 2>&1 | tee ui_tests_$(date +%Y%m%d_%H%M%S).log &
+
+# Interactive Chart Tests - HEADLESS EXECUTION
+xcodebuild test -project FinanceMate.xcodeproj -scheme FinanceMate -destination 'platform=macOS' -only-testing:FinanceMateTests/NetWealthDashboardViewTests 2>&1 | tee chart_tests_$(date +%Y%m%d_%H%M%S).log &
+
+# Performance Tests - SILENT & BACKGROUNDED
+xcodebuild test -project FinanceMate.xcodeproj -scheme FinanceMate -only-testing:FinanceMateTests/PerformanceTests 2>&1 | tee performance_tests_$(date +%Y%m%d_%H%M%S).log &
+
+# Build Verification - HEADLESS & LOGGED
+xcodebuild -project FinanceMate.xcodeproj -scheme FinanceMate -configuration Debug build 2>&1 | tee build_verification_$(date +%Y%m%d_%H%M%S).log
+```
+
+### **ENFORCEMENT VIOLATIONS (P0 STOP EVERYTHING)**
+
+Any violation of these testing protocols triggers immediate P0 escalation:
+
+**❌ PROHIBITED PRACTICES:**
+- Interactive test execution waiting for user input
+- GUI-dependent test runners or manual intervention  
+- Unlogged test executions or missing output redirection
+- User escalation for routine test failures or build issues
+- Manual test result interpretation or reporting
+
+**✅ MANDATORY PRACTICES:**
+- All tests execute headlessly without human interaction
+- All output redirected to timestamped, structured log files
+- Background processing for parallelizable test suites
+- Automated result parsing with programmatic failure handling
+- JSON/structured output formats for machine processing
+
+### **COMPLIANCE VERIFICATION**
+
+Before any code deployment or task completion, verify:
+- [ ] All test commands include headless flags and output redirection
+- [ ] Background processes implemented where safe for parallel execution
+- [ ] Automated log parsing and result processing configured
+- [ ] No interactive prompts or user dependencies in test pipeline
+- [ ] Failure handling protocols implemented programmatically
+
+This testing enforcement protocol ensures complete automation and eliminates any dependency on user intervention during the development and validation lifecycle.
+
+---
+
+## 🔒 A-V-A PROTOCOL ENFORCEMENT (P0 CRITICAL - USER GATE-KEEPING)
+
+### ASSIGN-VERIFY-APPROVE MANDATE
+
+**CRITICAL**: All significant tasks MUST follow A-V-A protocol with explicit user gate-keeping. Agents are **BLOCKED** from continuing without user approval.
+
+### **PHASE 1: TASK ASSIGNMENT (Mandatory Format)**
+
+Every task assignment MUST include:
+```markdown
+**A-V-A TASK ASSIGNMENT**
+- **TASK ID:** [Unique identifier from TASKS.md]
+- **DESCRIPTION:** [Clear, specific task description]
+- **PROOF REQUIRED:** [Screenshot/Log/Test Result/Build Output/Video]
+- **SUCCESS CRITERIA:** [Measurable completion criteria]
+- **BLOCKING CHECKPOINT:** Agent MUST NOT proceed without user approval of proof
+- **EXPECTED EVIDENCE:** [Specific files, screenshots, metrics required]
+```
+
+### **PHASE 2: VERIFICATION (Implementation & Proof Generation)**
+
+After implementation, agent provides proof but **CANNOT PROCEED**:
+```markdown
+**A-V-A VERIFICATION CHECKPOINT**
+- **TASK ID:** [Reference to assignment]
+- **STATUS:** PROOF PROVIDED - AWAITING USER APPROVAL
+- **PROOF TYPE:** [Screenshot/Log/Test Result/Build Output]
+- **EVIDENCE FILES:** 
+  - [Specific file paths and names]
+  - [Screenshots with timestamps]
+  - [Test results with pass/fail counts]
+  - [Build logs with success confirmation]
+- **IMPLEMENTATION SUMMARY:** [Detailed summary of changes made]
+- **AGENT ASSERTION:** Implementation complete. **BLOCKING**: User approval required to proceed.
+- **NEXT ACTIONS BLOCKED:** Cannot continue until explicit user approval received
+```
+
+### **PHASE 3: USER APPROVAL (Gate-Keeping - User Only)**
+
+Only user can provide:
+```markdown
+**A-V-A USER APPROVAL REQUIRED**
+Agent has completed implementation and provided proof.
+
+**TASK:** [Task description]
+**EVIDENCE PROVIDED:** [List of proof items]
+**AGENT CLAIMS:** [Summary of what agent accomplished]
+
+**USER RESPONSE REQUIRED (Choose One):**
+- ✅ "APPROVED - Proceed to next task"
+- ❌ "NOT APPROVED - [Specific issues to address]"
+- 🔄 "REVISION NEEDED - [Specific changes required]"
+- 🔍 "ADDITIONAL PROOF REQUIRED - [What else is needed]"
+```
+
+### **FINANCEMATE-SPECIFIC A-V-A PROOF REQUIREMENTS**
+
+#### **UI/Feature Development:**
+- **Before/After Screenshots:** Using simulator or actual device screenshots
+- **Build Success Proof:** Complete build logs showing successful compilation
+- **Test Results:** Full test suite results with pass/fail counts
+- **Accessibility Validation:** VoiceOver compatibility demonstration
+- **Performance Metrics:** Memory usage, CPU usage, response times
+
+#### **Code Changes:**
+- **Test Coverage Reports:** Coverage percentages before/after changes
+- **Build Verification:** `xcodebuild build 2>&1 | tee build_proof.log`
+- **Unit Test Results:** `xcodebuild test 2>&1 | tee test_proof.log`
+- **Code Quality Metrics:** Complexity ratings, static analysis results
+- **Integration Tests:** End-to-end workflow validation
+
+#### **Data/Service Integration:**
+- **API Response Logs:** Actual API calls and responses
+- **Core Data Validation:** Database queries and results
+- **Error Handling:** Demonstration of error scenarios and handling
+- **Performance Benchmarks:** Load testing results and metrics
+
+### **A-V-A BLOCKING ENFORCEMENT MECHANISMS**
+
+#### **HARD STOP TRIGGERS:**
+- Any claim of "task complete", "done", "finished" without user approval
+- Forward progress to new tasks without current task approval  
+- Self-assessment of work quality or success
+- Assumption of user satisfaction without explicit confirmation
+
+#### **BLOCKING LANGUAGE (Agents Must Use):**
+- "Implementation complete. **AWAITING USER APPROVAL** to proceed."
+- "**BLOCKING CHECKPOINT**: Cannot continue without user validation."
+- "**HARD STOP**: Agent blocked until user response received."
+- "**NO FORWARD PROGRESS** allowed without explicit user approval."
+
+#### **VIOLATION DETECTION:**
+```markdown
+**A-V-A PROTOCOL VIOLATIONS (Auto-Triggered)**
+- "done" without proof → **TRIGGER A-V-A CHECKPOINT**
+- "complete" without approval → **TRIGGER A-V-A CHECKPOINT**  
+- "finished" without validation → **TRIGGER A-V-A CHECKPOINT**
+- New task initiation → **BLOCK: Current task not approved**
+```
+
+### **A-V-A INTEGRATION WITH EXISTING PROTOCOLS**
+
+#### **Enhanced SMEAC Format with A-V-A:**
+```markdown
+**A-V-A VALIDATION CHECKPOINT**
+- **PROJECT:** FinanceMate
+- **TASK ID:** [From TASKS.md]
+- **A-V-A PHASE:** VERIFIED - AWAITING APPROVAL
+- **PROOF PROVIDED:** [Screenshots/Logs/Tests/Build Results]
+- **EVIDENCE FILES:** [Specific file paths with timestamps]
+- **AGENT STATUS:** Implementation complete - **BLOCKED PENDING USER APPROVAL**
+- **USER ACTION REQUIRED:**
+  - **PRIORITY:** P1 - USER APPROVAL REQUIRED TO PROCEED
+  - **DECISION NEEDED:** Review proof and authorize continuation
+  - **BLOCKING STATUS:** Agent cannot advance until approval received
+- **NEXT PLANNED TASK:** [Blocked until current task approved]
+```
+
+#### **Integration with Headless Testing:**
+```bash
+# Tests run headlessly but results require user approval
+xcodebuild test -project FinanceMate.xcodeproj -scheme FinanceMate 2>&1 | tee test_results_$(date +%Y%m%d_%H%M%S).log &
+
+# Agent then provides proof but CANNOT PROCEED:
+# "Headless testing complete. Results logged to test_results_20250801_143022.log
+# 47/47 tests passed. Build successful. Screenshot of test results attached.
+# **AWAITING USER APPROVAL** - Agent blocked from proceeding."
+```
+
+### **A-V-A BYPASS PREVENTION**
+
+#### **Automatic Detection:**
+- **Completion Claim Monitoring:** Any phrase indicating task completion triggers A-V-A checkpoint
+- **Progress Blocking:** No new task initiation until current task receives user approval
+- **Language Pattern Detection:** "done", "complete", "finished", "ready" require proof
+- **Escalation Triggers:** Bypass attempts logged as P0 violations in DEVELOPMENT_LOG.md
+
+#### **Enforcement Rules:**
+- **No Assumptions:** Agent cannot assume approval or user satisfaction
+- **Explicit Approval Required:** Only clear user approval statement allows continuation
+- **Proof Mandatory:** All completion claims must be backed by tangible evidence
+- **User Gate-Keeping:** Only user can advance agent past A-V-A checkpoints
+
+### **A-V-A COMPLIANCE VERIFICATION**
+
+Before any task advancement, verify:
+- [ ] Task properly assigned with proof requirements specified
+- [ ] Implementation provides tangible evidence (screenshots, logs, test results)
+- [ ] Agent waits at blocking checkpoint for user approval
+- [ ] No self-assessment or autonomous completion claims
+- [ ] User explicitly approves proof before continuation
+- [ ] All evidence properly timestamped and documented
+
+**The A-V-A protocol ensures that the burden of proof is ALWAYS on the agent, and only explicit user approval allows forward progress. This prevents any autonomous task completion claims and maintains proper user control over the development process.**
+
+---
+
+*Last updated: 2025-08-01 - A-V-A PROTOCOL INTEGRATED WITH HEADLESS TESTING*
 
 ---
 

@@ -8,12 +8,45 @@ final class CoreDataTests: XCTestCase {
 
     override func setUpWithError() throws {
         persistenceController = PersistenceController(inMemory: true)
-        context = persistenceController.container.viewContext
+        
+        // FORCE main thread context for headless testing - resolves threading violations
+        if ProcessInfo.processInfo.environment["HEADLESS_MODE"] == "1" || 
+           ProcessInfo.processInfo.environment["UI_TESTING"] == "1" {
+            context = MainActor.assumeIsolated {
+                persistenceController.container.viewContext
+            }
+        } else {
+            context = persistenceController.container.viewContext
+        }
+        
+        // Ensure context is properly configured for testing
+        context.automaticallyMergesChangesFromParent = true
+        context.mergePolicy = NSMergeByPropertyStoreTrumpMergePolicy
     }
 
     override func tearDownWithError() throws {
+        // AGGRESSIVE cleanup for test isolation - prevents data pollution between tests
+        if let context = context {
+            let entityNames = ["Transaction", "LineItem", "SplitAllocation", "FinancialEntity", "NetWealthSnapshot"]
+            
+            for entityName in entityNames {
+                let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
+                let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+                
+                do {
+                    try context.execute(deleteRequest)
+                    try context.save()
+                } catch {
+                    print("⚠️ Cleanup failed for \(entityName): \(error)")
+                }
+            }
+            
+            context.reset()
+        }
+        
         persistenceController = nil
         context = nil
+        super.tearDown()
     }
 
     func testTransactionCreationAndFetch() throws {
