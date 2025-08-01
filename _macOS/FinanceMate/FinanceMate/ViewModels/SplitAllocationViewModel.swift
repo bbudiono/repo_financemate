@@ -211,7 +211,7 @@ final class SplitAllocationViewModel: ObservableObject {
             isLoading = true
             errorMessage = nil
 
-            let request: NSFetchRequest<SplitAllocation> = SplitAllocation.fetchRequest()
+            let request = NSFetchRequest<SplitAllocation>(entityName: "SplitAllocation")
             request.predicate = NSPredicate(format: "lineItem == %@", lineItem)
             request.sortDescriptors = [
                 NSSortDescriptor(keyPath: \SplitAllocation.percentage, ascending: false),
@@ -354,7 +354,7 @@ final class SplitAllocationViewModel: ObservableObject {
             isLoading = true
             errorMessage = nil
 
-            let request: NSFetchRequest<SplitAllocation> = SplitAllocation.fetchRequest()
+            let request = NSFetchRequest<SplitAllocation>(entityName: "SplitAllocation")
             request.predicate = NSPredicate(format: "lineItem == %@", lineItem)
 
             let allSplits = try context.fetch(request)
@@ -425,7 +425,7 @@ final class SplitAllocationViewModel: ObservableObject {
     /// Gets usage statistics for tax categories
     /// - Returns: Dictionary of category usage counts
     func getTaxCategoryUsageStats() -> [String: Int] {
-        let request: NSFetchRequest<SplitAllocation> = SplitAllocation.fetchRequest()
+        let request = NSFetchRequest<SplitAllocation>(entityName: "SplitAllocation")
 
         do {
             let allSplits = try context.fetch(request)

@@ -46,6 +46,9 @@ public class FinancialEntity: NSManagedObject {
     @NSManaged public var parentEntity: FinancialEntity?
     @NSManaged public var childEntities: Set<FinancialEntity>
     @NSManaged public var transactions: Set<Transaction>
+    @NSManaged public var assets: Set<Asset>
+    @NSManaged public var liabilities: Set<Liability>
+    @NSManaged public var netWealthSnapshots: Set<NetWealthSnapshot>
     @NSManaged public var owner: User?
     
     // MARK: - Entity Types
@@ -153,6 +156,25 @@ public class FinancialEntity: NSManagedObject {
             }
             currentEntity = current.parentEntity
         }
+    }
+    
+    // MARK: - Factory Methods
+    
+    /// Create a new FinancialEntity with required fields
+    @discardableResult
+    public static func create(
+        in context: NSManagedObjectContext,
+        name: String,
+        type: EntityType
+    ) -> FinancialEntity {
+        let entity = FinancialEntity(context: context)
+        entity.id = UUID()
+        entity.name = name
+        entity.type = type.rawValue
+        entity.isActive = true
+        entity.createdAt = Date()
+        entity.lastModified = Date()
+        return entity
     }
     
     // MARK: - Business Logic
@@ -331,14 +353,12 @@ extension FinancialEntity: Identifiable {
 
 // MARK: - Debugging Support
 
-extension FinancialEntity: CustomStringConvertible {
-    public var description: String {
+extension FinancialEntity {
+    public override var description: String {
         return "FinancialEntity(id: \(id), name: \"\(name)\", type: \(type), active: \(isActive))"
     }
-}
-
-extension FinancialEntity: CustomDebugStringConvertible {
-    public var debugDescription: String {
+    
+    public override var debugDescription: String {
         let parentName = parentEntity?.name ?? "nil"
         let childCount = childEntities.count
         let transactionCount = transactions.count
