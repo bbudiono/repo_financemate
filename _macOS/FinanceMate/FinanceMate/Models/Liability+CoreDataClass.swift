@@ -88,7 +88,7 @@ public class Liability: NSManagedObject {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
         formatter.currencyCode = "AUD"
-        return formatter.string(from: NSNumber(value: originalAmount))
+        return formatter.string(from: originalAmount)
     }
     
     /// Monthly payment formatted as currency (if available)
@@ -97,37 +97,37 @@ public class Liability: NSManagedObject {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
         formatter.currencyCode = "AUD"
-        return formatter.string(from: NSNumber(value: monthlyPayment))
+        return formatter.string(from: monthlyPayment)
     }
     
     /// Amount paid down from original (if original amount available)
     public var amountPaidDown: Double? {
         guard let originalAmount = originalAmount else { return nil }
-        return originalAmount - currentBalance
+        return originalAmount.doubleValue - currentBalance
     }
     
     /// Percentage paid down from original
     public var percentagePaidDown: Double? {
-        guard let originalAmount = originalAmount, originalAmount > 0 else { return nil }
-        return ((originalAmount - currentBalance) / originalAmount) * 100
+        guard let originalAmount = originalAmount, originalAmount.doubleValue > 0 else { return nil }
+        return ((originalAmount.doubleValue - currentBalance) / originalAmount.doubleValue) * 100
     }
     
     /// Remaining percentage of original debt
     public var remainingPercentage: Double? {
-        guard let originalAmount = originalAmount, originalAmount > 0 else { return nil }
-        return (currentBalance / originalAmount) * 100
+        guard let originalAmount = originalAmount, originalAmount.doubleValue > 0 else { return nil }
+        return (currentBalance / originalAmount.doubleValue) * 100
     }
     
     /// Interest rate formatted as percentage
     public var formattedInterestRate: String? {
         guard let interestRate = interestRate else { return nil }
-        return String(format: "%.2f%%", interestRate)
+        return String(format: "%.2f%%", interestRate.doubleValue)
     }
     
     /// Annual interest amount (approximate)
     public var annualInterestAmount: Double? {
         guard let interestRate = interestRate else { return nil }
-        return currentBalance * (interestRate / 100)
+        return currentBalance * (interestRate.doubleValue / 100)
     }
     
     /// Monthly interest amount (approximate)
@@ -176,19 +176,20 @@ public class Liability: NSManagedObject {
     public var estimatedPayoffMonths: Int? {
         guard let monthlyPayment = monthlyPayment,
               let interestRate = interestRate,
-              monthlyPayment > 0,
+              monthlyPayment.doubleValue > 0,
               currentBalance > 0 else { return nil }
         
-        let monthlyRate = interestRate / 100 / 12
+        let monthlyRate = interestRate.doubleValue / 100 / 12
+        let monthlyPaymentValue = monthlyPayment.doubleValue
         
         // If no interest or payment covers interest completely
-        if monthlyRate <= 0 || monthlyPayment <= currentBalance * monthlyRate {
-            return Int(currentBalance / monthlyPayment)
+        if monthlyRate <= 0 || monthlyPaymentValue <= currentBalance * monthlyRate {
+            return Int(currentBalance / monthlyPaymentValue)
         }
         
         // Formula: n = -log(1 - (r * P) / A) / log(1 + r)
         // Where: P = principal, r = monthly rate, A = monthly payment
-        let numerator = -log(1 - (monthlyRate * currentBalance) / monthlyPayment)
+        let numerator = -log(1 - (monthlyRate * currentBalance) / monthlyPaymentValue)
         let denominator = log(1 + monthlyRate)
         
         return Int(ceil(numerator / denominator))
@@ -218,9 +219,9 @@ public class Liability: NSManagedObject {
         liability.name = name
         liability.type = type
         liability.currentBalance = currentBalance
-        liability.originalAmount = originalAmount
-        liability.interestRate = interestRate
-        liability.monthlyPayment = monthlyPayment
+        liability.originalAmount = originalAmount != nil ? NSNumber(value: originalAmount!) : nil
+        liability.interestRate = interestRate != nil ? NSNumber(value: interestRate!) : nil
+        liability.monthlyPayment = monthlyPayment != nil ? NSNumber(value: monthlyPayment!) : nil
         liability.createdAt = Date()
         liability.lastUpdated = Date()
         return liability
@@ -239,29 +240,29 @@ public class Liability: NSManagedObject {
     }
     
     private func validateLiability() throws {
-        guard let name = name, !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-            throw ValidationError.invalidName("Liability name cannot be empty")
+        guard !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            throw LiabilityValidationError.invalidName("Liability name cannot be empty")
         }
         
         guard currentBalance >= 0 else {
-            throw ValidationError.invalidValue("Liability current balance cannot be negative")
+            throw LiabilityValidationError.invalidValue("Liability current balance cannot be negative")
         }
         
-        if let originalAmount = originalAmount, originalAmount < 0 {
-            throw ValidationError.invalidValue("Liability original amount cannot be negative")
+        if let originalAmount = originalAmount, originalAmount.doubleValue < 0 {
+            throw LiabilityValidationError.invalidValue("Liability original amount cannot be negative")
         }
         
-        if let interestRate = interestRate, interestRate < 0 {
-            throw ValidationError.invalidValue("Liability interest rate cannot be negative")
+        if let interestRate = interestRate, interestRate.doubleValue < 0 {
+            throw LiabilityValidationError.invalidValue("Liability interest rate cannot be negative")
         }
         
-        if let monthlyPayment = monthlyPayment, monthlyPayment < 0 {
-            throw ValidationError.invalidValue("Liability monthly payment cannot be negative")
+        if let monthlyPayment = monthlyPayment, monthlyPayment.doubleValue < 0 {
+            throw LiabilityValidationError.invalidValue("Liability monthly payment cannot be negative")
         }
         
         // Logical validation: current balance shouldn't exceed original amount
-        if let originalAmount = originalAmount, currentBalance > originalAmount {
-            throw ValidationError.invalidValue("Current balance cannot exceed original amount")
+        if let originalAmount = originalAmount, currentBalance > originalAmount.doubleValue {
+            throw LiabilityValidationError.invalidValue("Current balance cannot exceed original amount")
         }
     }
     
@@ -296,13 +297,13 @@ public class Liability: NSManagedObject {
     /// Add liability to financial entity
     public func assignTo(entity: FinancialEntity) {
         self.financialEntity = entity
-        entity.addToLiabilities(self)
+        // Note: Core Data handles the inverse relationship automatically
     }
     
     /// Remove liability from financial entity
     public func removeFromEntity() {
-        self.financialEntity?.removeFromLiabilities(self)
         self.financialEntity = nil
+        // Note: Core Data handles the inverse relationship automatically
     }
     
     // MARK: - Fetch Requests
@@ -414,8 +415,8 @@ public class Liability: NSManagedObject {
     /// Export liability data for reporting
     public func exportData() -> [String: Any] {
         var data: [String: Any] = [
-            "id": id?.uuidString ?? "",
-            "name": name ?? "",
+            "id": id.uuidString,
+            "name": name,
             "type": type.stringValue,
             "currentBalance": currentBalance,
             "createdAt": createdAt,
@@ -471,4 +472,23 @@ extension Liability {
     
     @objc(removePayments:)
     @NSManaged public func removeFromPayments(_ values: NSSet)
+}
+
+// MARK: - Validation Errors
+
+public enum LiabilityValidationError: Error {
+    case invalidName(String)
+    case invalidValue(String)
+    case invalidDate(String)
+}
+
+extension LiabilityValidationError: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .invalidName(let message),
+             .invalidValue(let message),
+             .invalidDate(let message):
+            return message
+        }
+    }
 }

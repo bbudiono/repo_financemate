@@ -24,8 +24,5 @@ extension SplitAllocation {
         return NSFetchRequest<SplitAllocation>(entityName: "SplitAllocation")
     }
 
-    @NSManaged public var id: UUID
-    @NSManaged public var percentage: Double
-    @NSManaged public var taxCategory: String
-    @NSManaged public var lineItem: LineItem?
+    // Properties are now defined in the main class in Transaction.swift
 }

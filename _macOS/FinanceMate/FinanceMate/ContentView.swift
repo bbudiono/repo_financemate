@@ -37,6 +37,15 @@ struct ContentView: View {
                     Text("Dashboard")
                 }
                 .accessibilityIdentifier("Dashboard")
+            
+            // Net Wealth Tab - NEW FEATURE
+            NetWealthDashboardView()
+                .environment(\.managedObjectContext, viewContext)
+                .tabItem {
+                    Image(systemName: "chart.pie.fill")
+                    Text("Net Wealth")
+                }
+                .accessibilityIdentifier("NetWealth")
 
             // Transactions Tab
             TransactionsView(context: viewContext)

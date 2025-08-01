@@ -19,20 +19,5 @@ import Foundation
  * Last Updated: 2025-07-06
  */
 
-@objc(SplitAllocation)
-public class SplitAllocation: NSManagedObject {
-    // MARK: - Convenience Initializers
-    
-    /// Creates a new SplitAllocation in the specified context
-    static func create(
-        in context: NSManagedObjectContext,
-        percentage: Double,
-        taxCategory: String
-    ) -> SplitAllocation {
-        let splitAllocation = SplitAllocation(context: context)
-        splitAllocation.id = UUID()
-        splitAllocation.percentage = percentage
-        splitAllocation.taxCategory = taxCategory
-        return splitAllocation
-    }
-}
+// SplitAllocation class is now defined in Transaction.swift
+// This file is kept for any future extension methods

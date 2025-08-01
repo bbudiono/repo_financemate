@@ -67,7 +67,7 @@ public class Asset: NSManagedObject {
     /// Asset type as enum
     public var type: AssetType {
         get {
-            return AssetType.from(string: self.assetType ?? "Other")
+            return AssetType.from(string: self.assetType)
         }
         set {
             self.assetType = newValue.stringValue
@@ -88,19 +88,19 @@ public class Asset: NSManagedObject {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
         formatter.currencyCode = "AUD"
-        return formatter.string(from: NSNumber(value: purchasePrice))
+        return formatter.string(from: purchasePrice)
     }
     
     /// Capital gain/loss since purchase
     public var capitalGainLoss: Double? {
         guard let purchasePrice = purchasePrice else { return nil }
-        return currentValue - purchasePrice
+        return currentValue - purchasePrice.doubleValue
     }
     
     /// Capital gain/loss percentage
     public var capitalGainLossPercentage: Double? {
-        guard let purchasePrice = purchasePrice, purchasePrice > 0 else { return nil }
-        return ((currentValue - purchasePrice) / purchasePrice) * 100
+        guard let purchasePrice = purchasePrice, purchasePrice.doubleValue > 0 else { return nil }
+        return ((currentValue - purchasePrice.doubleValue) / purchasePrice.doubleValue) * 100
     }
     
     /// Time held since purchase (in days)
@@ -111,13 +111,13 @@ public class Asset: NSManagedObject {
     
     /// Most recent valuation from history
     public var mostRecentValuation: AssetValuation? {
-        let sortedValuations = valuationHistory.sorted { $0.date > $1.date }
+        let sortedValuations = (valuationHistory as? Set<AssetValuation>)?.sorted { $0.date > $1.date } ?? []
         return sortedValuations.first
     }
     
     /// Previous valuation for comparison
     public var previousValuation: AssetValuation? {
-        let sortedValuations = valuationHistory.sorted { $0.date > $1.date }
+        let sortedValuations = (valuationHistory as? Set<AssetValuation>)?.sorted { $0.date > $1.date } ?? []
         return sortedValuations.count > 1 ? sortedValuations[1] : nil
     }
     
@@ -150,7 +150,7 @@ public class Asset: NSManagedObject {
         asset.name = name
         asset.type = type
         asset.currentValue = currentValue
-        asset.purchasePrice = purchasePrice
+        asset.purchasePrice = purchasePrice != nil ? NSNumber(value: purchasePrice!) : nil
         asset.purchaseDate = purchaseDate
         asset.createdAt = Date()
         asset.lastUpdated = Date()
@@ -170,20 +170,20 @@ public class Asset: NSManagedObject {
     }
     
     private func validateAsset() throws {
-        guard let name = name, !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-            throw ValidationError.invalidName("Asset name cannot be empty")
+        guard !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            throw AssetValidationError.invalidName("Asset name cannot be empty")
         }
         
         guard currentValue >= 0 else {
-            throw ValidationError.invalidValue("Asset current value cannot be negative")
+            throw AssetValidationError.invalidValue("Asset current value cannot be negative")
         }
         
-        if let purchasePrice = purchasePrice, purchasePrice < 0 {
-            throw ValidationError.invalidValue("Asset purchase price cannot be negative")
+        if let purchasePrice = purchasePrice, purchasePrice.doubleValue < 0 {
+            throw AssetValidationError.invalidValue("Asset purchase price cannot be negative")
         }
         
         if let purchaseDate = purchaseDate, purchaseDate > Date() {
-            throw ValidationError.invalidDate("Asset purchase date cannot be in the future")
+            throw AssetValidationError.invalidDate("Asset purchase date cannot be in the future")
         }
     }
     
@@ -210,13 +210,13 @@ public class Asset: NSManagedObject {
     /// Add asset to financial entity
     public func assignTo(entity: FinancialEntity) {
         self.financialEntity = entity
-        entity.addToAssets(self)
+        // Note: Core Data handles the inverse relationship automatically
     }
     
     /// Remove asset from financial entity
     public func removeFromEntity() {
-        self.financialEntity?.removeFromAssets(self)
         self.financialEntity = nil
+        // Note: Core Data handles the inverse relationship automatically
     }
     
     // MARK: - Fetch Requests
@@ -328,8 +328,8 @@ public class Asset: NSManagedObject {
     /// Export asset data for reporting
     public func exportData() -> [String: Any] {
         var data: [String: Any] = [
-            "id": id?.uuidString ?? "",
-            "name": name ?? "",
+            "id": id.uuidString,
+            "name": name,
             "type": type.stringValue,
             "currentValue": currentValue,
             "createdAt": createdAt,
@@ -379,13 +379,13 @@ extension Asset {
 
 // MARK: - Validation Errors
 
-public enum ValidationError: Error {
+public enum AssetValidationError: Error {
     case invalidName(String)
     case invalidValue(String)
     case invalidDate(String)
 }
 
-extension ValidationError: LocalizedError {
+extension AssetValidationError: LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .invalidName(let message),
