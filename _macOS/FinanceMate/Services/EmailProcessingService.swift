@@ -116,16 +116,49 @@ class EmailProcessingService: ObservableObject {
     // MARK: - Gmail Integration
     
     private func authenticateGmail() async throws -> String {
-        // For testing, we'll use a placeholder implementation
-        // In production, this would implement full OAuth2 flow
-        guard let storedToken = retrieveStoredToken(for: "gmail") else {
-            throw EmailProcessingError.authenticationFailed("Gmail authentication required")
+        // Check for existing valid token first
+        if let storedToken = retrieveStoredToken(for: "gmail") {
+            do {
+                try await validateGmailToken(storedToken)
+                return storedToken
+            } catch {
+                // Token invalid, need to re-authenticate
+                logger.info("Stored Gmail token invalid, initiating re-authentication")
+            }
         }
         
-        // Validate token with test request
-        try await validateGmailToken(storedToken)
+        // Initiate OAuth2 flow for Gmail
+        let authToken = try await initiateGmailOAuth()
         
-        return storedToken
+        // Store token securely in Keychain
+        try storeTokenSecurely(authToken, for: "gmail")
+        
+        // Validate the new token
+        try await validateGmailToken(authToken)
+        
+        return authToken
+    }
+    
+    private func initiateGmailOAuth() async throws -> String {
+        // Gmail OAuth 2.0 configuration
+        let clientId = "your-gmail-client-id.apps.googleusercontent.com"
+        let redirectUri = "financemate://oauth/gmail"
+        let scope = "https://www.googleapis.com/auth/gmail.readonly"
+        
+        // In a real implementation, this would:
+        // 1. Open browser/web view for OAuth consent
+        // 2. Handle redirect back to app
+        // 3. Exchange auth code for access token
+        // 4. Refresh token management
+        
+        // For now, return placeholder that requires user setup
+        throw EmailProcessingError.authenticationFailed("""
+            Gmail authentication requires OAuth 2.0 setup:
+            1. Enable Gmail API in Google Cloud Console
+            2. Configure OAuth 2.0 credentials
+            3. Set redirect URI: financemate://oauth/gmail
+            4. Update clientId in EmailProcessingService
+            """)
     }
     
     private func validateGmailToken(_ token: String) async throws {
@@ -338,9 +371,74 @@ class EmailProcessingService: ObservableObject {
     // MARK: - Utility Methods
     
     private func retrieveStoredToken(for service: String) -> String? {
-        // For testing, return a placeholder token
-        // In production, this would retrieve from Keychain
-        return "test_token_\(service)_\(testEmailAccount)"
+        // Retrieve OAuth token from macOS Keychain
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrAccount as String: "\(service)_token",
+            kSecAttrService as String: "FinanceMate",
+            kSecReturnData as String: true,
+            kSecMatchLimit as String: kSecMatchLimitOne
+        ]
+        
+        var result: AnyObject?
+        let status = SecItemCopyMatching(query as CFDictionary, &result)
+        
+        guard status == errSecSuccess,
+              let data = result as? Data,
+              let token = String(data: data, encoding: .utf8) else {
+            logger.info("No stored token found for service: \(service)")
+            return nil
+        }
+        
+        return token
+    }
+    
+    private func storeTokenSecurely(_ token: String, for service: String) throws {
+        guard let tokenData = token.data(using: .utf8) else {
+            throw EmailProcessingError.invalidData("Failed to encode token data")
+        }
+        
+        // Delete existing token first
+        let deleteQuery: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrAccount as String: "\(service)_token",
+            kSecAttrService as String: "FinanceMate"
+        ]
+        SecItemDelete(deleteQuery as CFDictionary)
+        
+        // Store new token
+        let addQuery: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrAccount as String: "\(service)_token",
+            kSecAttrService as String: "FinanceMate",
+            kSecAttrDescription as String: "OAuth token for \(service) email access",
+            kSecValueData as String: tokenData,
+            kSecAttrAccessible as String: kSecAttrAccessibleWhenUnlockedThisDeviceOnly
+        ]
+        
+        let status = SecItemAdd(addQuery as CFDictionary, nil)
+        
+        guard status == errSecSuccess else {
+            throw EmailProcessingError.processingFailed("Failed to store OAuth token securely")
+        }
+        
+        logger.info("OAuth token stored securely for service: \(service)")
+    }
+    
+    func removeStoredToken(for service: String) throws {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrAccount as String: "\(service)_token",
+            kSecAttrService as String: "FinanceMate"
+        ]
+        
+        let status = SecItemDelete(query as CFDictionary)
+        
+        guard status == errSecSuccess || status == errSecItemNotFound else {
+            throw EmailProcessingError.processingFailed("Failed to remove stored token")
+        }
+        
+        logger.info("OAuth token removed for service: \(service)")
     }
     
     private func extractHeaderValue(from headers: [GmailHeader], name: String) -> String? {
@@ -391,9 +489,41 @@ class EmailProcessingService: ObservableObject {
     }
     
     private func downloadAttachment(_ attachment: EmailAttachment) async throws -> Data {
-        // Placeholder for attachment download
-        // In production, this would download from Gmail API
-        return Data()
+        // Download attachment from Gmail API
+        let url = URL(string: "\(APIConfiguration.gmailAPIBaseURL)/users/me/messages/\(attachment.id)/attachments/\(attachment.id)")!
+        
+        guard let token = retrieveStoredToken(for: "gmail") else {
+            throw EmailProcessingError.authenticationFailed("Gmail token not available")
+        }
+        
+        var request = URLRequest(url: url)
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        
+        let (data, response) = try await urlSession.data(for: request)
+        
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw EmailProcessingError.networkError("Invalid response from Gmail API")
+        }
+        
+        guard httpResponse.statusCode == 200 else {
+            throw EmailProcessingError.networkError("Failed to download attachment: HTTP \(httpResponse.statusCode)")
+        }
+        
+        // Parse Gmail attachment response
+        struct GmailAttachment: Codable {
+            let data: String
+            let size: Int
+        }
+        
+        let attachment_response = try JSONDecoder().decode(GmailAttachment.self, from: data)
+        
+        // Decode base64 attachment data
+        guard let attachmentData = Data(base64Encoded: attachment_response.data) else {
+            throw EmailProcessingError.invalidData("Failed to decode attachment data")
+        }
+        
+        return attachmentData
     }
     
     private func processEmailBody(_ email: EmailDocument) async throws -> FinancialDocument? {

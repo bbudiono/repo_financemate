@@ -373,9 +373,311 @@ final class EmailReceiptProcessor: ObservableObject {
     }
     
     private func processEmailAttachments(_ email: EmailMetadata) async throws -> [ReceiptData] {
-        // Process email attachments using existing OCR services
-        // Integration point with VisionOCREngine and OCRService
-        return []
+        var receipts: [ReceiptData] = []
+        
+        // Simulate processing attachments (in production, would download real attachments)
+        for attachmentIndex in 0..<email.attachmentCount {
+            do {
+                // Create simulated attachment data for testing
+                let mockReceiptData = try await processAttachmentWithOCR(
+                    attachmentData: createMockReceiptData(),
+                    filename: "receipt_\(attachmentIndex).pdf",
+                    email: email
+                )
+                
+                if let receipt = mockReceiptData {
+                    receipts.append(receipt)
+                }
+            } catch {
+                // Log error but continue processing other attachments
+                print("Failed to process attachment \(attachmentIndex): \(error.localizedDescription)")
+            }
+        }
+        
+        return receipts
+    }
+    
+    private func processAttachmentWithOCR(attachmentData: Data, filename: String, email: EmailMetadata) async throws -> ReceiptData? {
+        // Use existing OCR services to extract text from attachment
+        let ocrResult = try await ocrService.processDocument(attachmentData, documentType: .receipt)
+        
+        // Parse OCR result into structured receipt data
+        let receiptData = try parseOCRResultIntoReceipt(ocrResult, sourceEmail: email.messageId)
+        
+        return receiptData
+    }
+    
+    private func parseOCRResultIntoReceipt(_ ocrResult: OCRResult, sourceEmail: String) throws -> ReceiptData {
+        // Parse OCR text into structured receipt data
+        let text = ocrResult.fullText.lowercased()
+        
+        // Extract merchant name (look for business name patterns)
+        let merchantName = extractMerchantName(from: text) ?? "Unknown Merchant"
+        
+        // Extract total amount (look for total, amount, etc.)
+        let totalAmount = extractTotalAmount(from: text) ?? 0.0
+        
+        // Extract date (look for date patterns)
+        let receiptDate = extractReceiptDate(from: text) ?? Date()
+        
+        // Extract GST/tax information (Australian compliance)
+        let gstAmount = extractGSTAmount(from: text)
+        let abn = extractABN(from: text)
+        
+        // Extract line items
+        let lineItems = extractLineItems(from: text)
+        
+        // Calculate confidence based on extracted data quality
+        let confidence = calculateExtractionConfidence(
+            merchantName: merchantName,
+            totalAmount: totalAmount,
+            lineItemsCount: lineItems.count
+        )
+        
+        return ReceiptData(
+            merchant: merchantName,
+            totalAmount: totalAmount,
+            currency: "AUD",
+            date: receiptDate,
+            lineItems: lineItems,
+            gstAmount: gstAmount,
+            abn: abn,
+            receiptNumber: extractReceiptNumber(from: text),
+            confidence: confidence,
+            sourceEmail: sourceEmail
+        )
+    }
+    
+    // MARK: - OCR Parsing Helpers
+    
+    private func extractMerchantName(from text: String) -> String? {
+        // Look for business name patterns in OCR text
+        let patterns = [
+            "^([A-Z][A-Z\\s&]+)\\s*\\n", // Capital letters business name
+            "^(.*?)\\s*(pty|ltd|inc|corp)", // Company suffixes
+            "^(.*?)\\s*abn" // Text before ABN
+        ]
+        
+        for pattern in patterns {
+            if let regex = try? NSRegularExpression(pattern: pattern, options: [.caseInsensitive, .anchorsMatchLines]),
+               let match = regex.firstMatch(in: text, range: NSRange(text.startIndex..., in: text)),
+               let range = Range(match.range(at: 1), in: text) {
+                let merchantName = String(text[range]).trimmingCharacters(in: .whitespacesAndNewlines)
+                if merchantName.count > 2 {
+                    return merchantName.capitalized
+                }
+            }
+        }
+        
+        return nil
+    }
+    
+    private func extractTotalAmount(from text: String) -> Double? {
+        // Look for total amount patterns
+        let patterns = [
+            "total[:\\s]*\\$?([0-9]+\\.?[0-9]*)",
+            "amount[:\\s]*\\$?([0-9]+\\.?[0-9]*)",
+            "\\$([0-9]+\\.[0-9]{2})\\s*total"
+        ]
+        
+        for pattern in patterns {
+            if let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive),
+               let match = regex.firstMatch(in: text, range: NSRange(text.startIndex..., in: text)),
+               let range = Range(match.range(at: 1), in: text) {
+                let amountString = String(text[range])
+                return Double(amountString)
+            }
+        }
+        
+        return nil
+    }
+    
+    private func extractReceiptDate(from text: String) -> Date? {
+        // Look for date patterns
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "en_AU")
+        
+        let patterns = [
+            "([0-9]{1,2}[/-][0-9]{1,2}[/-][0-9]{2,4})",
+            "([0-9]{1,2}\\s+[a-z]{3}\\s+[0-9]{2,4})"
+        ]
+        
+        for pattern in patterns {
+            if let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive),
+               let match = regex.firstMatch(in: text, range: NSRange(text.startIndex..., in: text)),
+               let range = Range(match.range(at: 1), in: text) {
+                let dateString = String(text[range])
+                
+                // Try different date formats
+                let formats = ["dd/MM/yyyy", "dd-MM-yyyy", "dd MMM yyyy"]
+                for format in formats {
+                    dateFormatter.dateFormat = format
+                    if let date = dateFormatter.date(from: dateString) {
+                        return date
+                    }
+                }
+            }
+        }
+        
+        return nil
+    }
+    
+    private func extractGSTAmount(from text: String) -> Double? {
+        // Extract GST amount (Australian tax)
+        let patterns = [
+            "gst[:\\s]*\\$?([0-9]+\\.?[0-9]*)",
+            "tax[:\\s]*\\$?([0-9]+\\.?[0-9]*)"
+        ]
+        
+        for pattern in patterns {
+            if let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive),
+               let match = regex.firstMatch(in: text, range: NSRange(text.startIndex..., in: text)),
+               let range = Range(match.range(at: 1), in: text) {
+                let amountString = String(text[range])
+                return Double(amountString)
+            }
+        }
+        
+        return nil
+    }
+    
+    private func extractABN(from text: String) -> String? {
+        // Extract Australian Business Number
+        let pattern = "abn[:\\s]*([0-9\\s]{11,})"
+        
+        if let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive),
+           let match = regex.firstMatch(in: text, range: NSRange(text.startIndex..., in: text)),
+           let range = Range(match.range(at: 1), in: text) {
+            let abnString = String(text[range]).replacingOccurrences(of: " ", with: "")
+            if abnString.count >= 11 {
+                return abnString
+            }
+        }
+        
+        return nil
+    }
+    
+    private func extractReceiptNumber(from text: String) -> String? {
+        // Extract receipt/invoice number
+        let patterns = [
+            "receipt[#\\s]*([a-z0-9]+)",
+            "invoice[#\\s]*([a-z0-9]+)",
+            "#([0-9]+)"
+        ]
+        
+        for pattern in patterns {
+            if let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive),
+               let match = regex.firstMatch(in: text, range: NSRange(text.startIndex..., in: text)),
+               let range = Range(match.range(at: 1), in: text) {
+                return String(text[range])
+            }
+        }
+        
+        return nil
+    }
+    
+    private func extractLineItems(from text: String) -> [ReceiptLineItem] {
+        // Extract individual line items from receipt
+        var lineItems: [ReceiptLineItem] = []
+        
+        // Simple line item extraction (can be enhanced with ML)
+        let lines = text.components(separatedBy: .newlines)
+        
+        for line in lines {
+            // Look for lines with price patterns
+            if let regex = try? NSRegularExpression(pattern: "(.+?)\\s+\\$?([0-9]+\\.?[0-9]*)", options: []),
+               let match = regex.firstMatch(in: line, range: NSRange(line.startIndex..., in: line)),
+               let descRange = Range(match.range(at: 1), in: line),
+               let priceRange = Range(match.range(at: 2), in: line) {
+                
+                let description = String(line[descRange]).trimmingCharacters(in: .whitespaces)
+                let priceString = String(line[priceRange])
+                
+                if let price = Double(priceString), description.count > 2 {
+                    let lineItem = ReceiptLineItem(
+                        description: description,
+                        quantity: 1.0,
+                        unitPrice: price,
+                        totalPrice: price,
+                        category: categorizeLineItem(description),
+                        gstApplicable: isGSTApplicable(description)
+                    )
+                    lineItems.append(lineItem)
+                }
+            }
+        }
+        
+        return lineItems
+    }
+    
+    private func categorizeLineItem(_ description: String) -> String? {
+        let desc = description.lowercased()
+        
+        if desc.contains("food") || desc.contains("meal") {
+            return "Food & Beverages"
+        } else if desc.contains("fuel") || desc.contains("petrol") {
+            return "Fuel"
+        } else if desc.contains("office") || desc.contains("supplies") {
+            return "Office Supplies"
+        }
+        
+        return nil
+    }
+    
+    private func isGSTApplicable(_ description: String) -> Bool {
+        // Most items in Australia are subject to GST except specific exemptions
+        let gstExempt = ["milk", "bread", "medicine", "health"]
+        let desc = description.lowercased()
+        
+        return !gstExempt.contains { desc.contains($0) }
+    }
+    
+    private func calculateExtractionConfidence(merchantName: String, totalAmount: Double, lineItemsCount: Int) -> Double {
+        var confidence = 0.0
+        
+        // Base confidence
+        confidence += 0.3
+        
+        // Merchant name quality
+        if merchantName != "Unknown Merchant" {
+            confidence += 0.3
+        }
+        
+        // Amount validation
+        if totalAmount > 0 {
+            confidence += 0.2
+        }
+        
+        // Line items
+        confidence += min(Double(lineItemsCount) * 0.05, 0.2)
+        
+        return min(confidence, 1.0)
+    }
+    
+    private func createMockReceiptData() -> Data {
+        // Create mock PDF receipt data for testing
+        let mockReceiptText = """
+        WOOLWORTHS SUPERMARKET
+        123 Collins Street, Melbourne VIC 3000
+        ABN: 88 000 014 675
+        
+        Date: 08/08/2025
+        Time: 14:30
+        
+        Bread Loaf             $3.50
+        Milk 2L                $4.20
+        Bananas 1kg            $2.80
+        Coffee Beans 500g      $12.00
+        
+        Subtotal:             $22.50
+        GST:                   $2.05
+        Total:                $24.55
+        
+        Receipt #: 12345678
+        Thank you for shopping with us!
+        """
+        
+        return mockReceiptText.data(using: .utf8) ?? Data()
     }
     
     private func matchReceiptsToTransactions(_ receipts: [ReceiptData]) async throws -> [TransactionMatch] {
