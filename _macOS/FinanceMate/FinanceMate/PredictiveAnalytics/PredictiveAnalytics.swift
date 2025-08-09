@@ -253,7 +253,7 @@ enum TestScenario {
 
 // MARK: - Main Predictive Analytics Engine
 
-@MainActor
+// EMERGENCY FIX: Removed @MainActor to eliminate Swift Concurrency crashes
 class PredictiveAnalytics: ObservableObject {
     
     // MARK: - Properties
@@ -295,19 +295,19 @@ class PredictiveAnalytics: ObservableObject {
         trainingData = data
         
         // Analyze seasonal patterns
-        seasonalPatterns = await analyzeSeasonalPatterns(from: data)
+        seasonalPatterns = analyzeSeasonalPatterns(from: data)
         
         // Calculate model confidence based on data quality
         modelConfidence = calculateModelConfidence(from: data)
         
         // Train underlying split intelligence engine
-        await splitIntelligenceEngine.trainOnHistoricalData(data)
+        splitIntelligenceEngine.trainOnHistoricalData(data)
         
         lastTrainingDate = Date()
         logger.info("Training completed with confidence score: \(modelConfidence)")
     }
     
-    func clearTrainingData() async {
+    func clearTrainingData() {
         logger.info("Clearing training data")
         trainingData.removeAll()
         seasonalPatterns.removeAll()
@@ -317,7 +317,7 @@ class PredictiveAnalytics: ObservableObject {
     
     // MARK: - Tax Liability Prediction
     
-    func predictTaxLiability(financialYear: String, consideringSplitOptimization: Bool) async -> TaxLiabilityPrediction? {
+    func predictTaxLiability() -> TaxLiabilityPrediction? {
         logger.info("Predicting tax liability for financial year: \(financialYear)")
         
         guard !trainingData.isEmpty else {
@@ -355,7 +355,7 @@ class PredictiveAnalytics: ObservableObject {
         )
     }
     
-    func predictFinancialYearOutcome(year: String) async -> FinancialYearPrediction? {
+    func predictFinancialYearOutcome() -> FinancialYearPrediction? {
         logger.info("Predicting financial year outcome for: \(year)")
         
         // Analyze compliance with Australian tax law
@@ -373,9 +373,7 @@ class PredictiveAnalytics: ObservableObject {
     
     // MARK: - Investment Allocation Advice
     
-    func generateInvestmentAllocationAdvice(riskTolerance: RiskLevel, 
-                                          investmentHorizon: InvestmentHorizon,
-                                          currentPortfolioValue: Double) async -> InvestmentAllocationAdvice? {
+    func generateInvestmentAllocationAdvice() -> InvestmentAllocationAdvice? {
         logger.info("Generating investment allocation advice for \(riskTolerance) risk tolerance")
         
         // Generate allocations based on risk tolerance and horizon
@@ -397,7 +395,7 @@ class PredictiveAnalytics: ObservableObject {
     
     // MARK: - Budget Recommendations
     
-    func generateBudgetRecommendations(entity: Entity, budgetPeriod: BudgetPeriod) async -> BudgetRecommendations? {
+    func generateBudgetRecommendations() -> BudgetRecommendations? {
         logger.info("Generating budget recommendations for \(entity) entity, \(budgetPeriod) period")
         
         guard !trainingData.isEmpty else {
@@ -425,7 +423,7 @@ class PredictiveAnalytics: ObservableObject {
         )
     }
     
-    func generateSmartCategoryBudgets(categories: [String]) async -> [SmartCategoryBudget]? {
+    func generateSmartCategoryBudgets() -> [SmartCategoryBudget]? {
         logger.info("Generating smart category budgets for \(categories.count) categories")
         
         guard !trainingData.isEmpty else {
@@ -450,7 +448,7 @@ class PredictiveAnalytics: ObservableObject {
     
     // MARK: - Scenario Modeling
     
-    func modelScenario(parameters: ScenarioParameters, timeHorizon: TimeHorizon) async -> ScenarioResult? {
+    func modelScenario() -> ScenarioResult? {
         logger.info("Modeling scenario with \(parameters.incomeChangePercentage)% income change")
         
         guard !trainingData.isEmpty else {
@@ -485,7 +483,7 @@ class PredictiveAnalytics: ObservableObject {
         )
     }
     
-    func modelBusinessExpansionScenario(parameters: ScenarioParameters) async -> ScenarioResult? {
+    func modelBusinessExpansionScenario() -> ScenarioResult? {
         logger.info("Modeling business expansion scenario")
         
         guard !trainingData.isEmpty else {
@@ -524,7 +522,7 @@ class PredictiveAnalytics: ObservableObject {
     
     // MARK: - Seasonal Pattern Analysis
     
-    func identifySeasonalPatterns() async -> SeasonalPatterns? {
+    func identifySeasonalPatterns() -> SeasonalPatterns? {
         logger.info("Identifying seasonal patterns in financial data")
         
         guard !trainingData.isEmpty else {
@@ -536,7 +534,7 @@ class PredictiveAnalytics: ObservableObject {
     
     // MARK: - Confidence and Uncertainty
     
-    func predictWithConfidenceInterval(scenario: TestScenario, confidenceLevel: Double) async -> PredictionWithConfidence? {
+    func predictWithConfidenceInterval() -> PredictionWithConfidence? {
         logger.info("Generating prediction with \(confidenceLevel) confidence level")
         
         guard !trainingData.isEmpty else {
@@ -566,7 +564,7 @@ class PredictiveAnalytics: ObservableObject {
         )
     }
     
-    func quantifyPredictionUncertainty() async -> UncertaintyQuantification? {
+    func quantifyPredictionUncertainty() -> UncertaintyQuantification? {
         logger.info("Quantifying prediction uncertainty")
         
         guard !trainingData.isEmpty else {
@@ -588,7 +586,7 @@ class PredictiveAnalytics: ObservableObject {
     
     // MARK: - Australian Tax Specific Methods
     
-    func modelGSTImpact(registrationThreshold: Double) async -> GSTImpactModel? {
+    func modelGSTImpact() -> GSTImpactModel? {
         logger.info("Modeling GST impact with threshold: \(registrationThreshold)")
         
         guard !trainingData.isEmpty else {
@@ -610,7 +608,7 @@ class PredictiveAnalytics: ObservableObject {
     
     // MARK: - Integration Methods
     
-    func generateAnalyticsInsights() async -> AnalyticsInsights {
+    func generateAnalyticsInsights() -> AnalyticsInsights {
         logger.info("Generating analytics insights")
         
         let insights = [

@@ -101,7 +101,7 @@ struct SplitAllocationView: View {
                 }
             }
             .task {
-                await viewModel.fetchSplitAllocations(for: lineItem)
+                viewModel.fetchSplitAllocations(for: lineItem)
                 withAnimation(.easeInOut(duration: 1.0)) {
                     animateChart = true
                 }
@@ -325,9 +325,8 @@ struct SplitAllocationView: View {
                         get: { split.percentage },
                         set: { newValue in
                             split.percentage = newValue
-                            Task {
-                                await viewModel.updateSplitAllocation(split)
-                            }
+                            // EMERGENCY FIX: Removed Task block - immediate execution
+        viewModel.updateSplitAllocation(split)
                         }
                     ),
                     in: 0 ... 100,
@@ -339,9 +338,8 @@ struct SplitAllocationView: View {
 
             // Delete button
             Button(action: {
-                Task {
-                    await viewModel.deleteSplitAllocation(split)
-                }
+                // EMERGENCY FIX: Removed Task block - immediate execution
+        viewModel.deleteSplitAllocation(split)
             }) {
                 Image(systemName: "trash")
                     .foregroundColor(.red)
@@ -475,9 +473,8 @@ struct SplitAllocationView: View {
 
     private var addSplitButton: some View {
         Button(action: {
-            Task {
-                await viewModel.addSplitAllocation(to: lineItem)
-            }
+            // EMERGENCY FIX: Removed Task block - immediate execution
+        viewModel.addSplitAllocation(to: lineItem)
         }) {
             HStack {
                 if viewModel.isLoading {
@@ -513,24 +510,22 @@ struct SplitAllocationView: View {
             HStack(spacing: 12) {
                 Menu {
                     Button("50/50 Business/Personal") {
-                        Task {
-                            await viewModel.applyQuickSplit(
+                        // EMERGENCY FIX: Removed Task block - immediate execution
+        viewModel.applyQuickSplit(
                                 .fiftyFifty,
                                 primaryCategory: "Business",
                                 secondaryCategory: "Personal",
-                                to: lineItem
+                                for: lineItem
                             )
-                        }
                     }
                     Button("70/30 Business/Personal") {
-                        Task {
-                            await viewModel.applyQuickSplit(
+                        // EMERGENCY FIX: Removed Task block - immediate execution
+        viewModel.applyQuickSplit(
                                 .seventyThirty,
                                 primaryCategory: "Business",
                                 secondaryCategory: "Personal",
-                                to: lineItem
+                                for: lineItem
                             )
-                        }
                     }
                 } label: {
                     HStack {
@@ -548,9 +543,8 @@ struct SplitAllocationView: View {
                 .accessibilityIdentifier("QuickSplitMenu")
 
                 quickActionButton(title: "Clear All", action: {
-                    Task {
-                        await viewModel.clearAllSplits(for: lineItem)
-                    }
+                    // EMERGENCY FIX: Removed Task block - immediate execution
+        viewModel.clearAllSplits(for: lineItem)
                 }, isDestructive: true)
             }
         }

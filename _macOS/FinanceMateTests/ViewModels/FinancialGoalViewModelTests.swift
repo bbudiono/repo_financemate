@@ -22,15 +22,16 @@ import CoreData
  * Last Updated: 2025-07-11
  */
 
-@MainActor
+// EMERGENCY FIX: Removed to eliminate Swift Concurrency crashes
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
 class FinancialGoalViewModelTests: XCTestCase {
     
     var viewModel: FinancialGoalViewModel!
     var testContext: NSManagedObjectContext!
     var persistenceController: PersistenceController!
     
-    override func setUp() async throws {
-        try await super.setUp()
+    override func setUp() throws {
+        try super.setUp()
         
         // Create in-memory Core Data stack for testing
         persistenceController = PersistenceController(inMemory: true)
@@ -38,11 +39,11 @@ class FinancialGoalViewModelTests: XCTestCase {
         viewModel = FinancialGoalViewModel(context: testContext)
     }
     
-    override func tearDown() async throws {
+    override func tearDown() throws {
         viewModel = nil
         testContext = nil
         persistenceController = nil
-        try await super.tearDown()
+        try super.tearDown()
     }
     
     // MARK: - Initialization Tests
@@ -67,7 +68,7 @@ class FinancialGoalViewModelTests: XCTestCase {
     
     // MARK: - Goal Creation Tests
     
-    func testCreateValidGoal() async {
+    func testCreateValidGoal() {
         // Given: Valid goal data
         viewModel.goalTitle = "Emergency Fund"
         viewModel.goalDescription = "Save for 6 months of expenses"
@@ -80,7 +81,7 @@ class FinancialGoalViewModelTests: XCTestCase {
         viewModel.createGoal()
         
         // Wait for async operation
-        try? await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
+        try? Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
         
         // Then: Goal should be created successfully
         XCTAssertEqual(viewModel.goals.count, 1, "Should have one goal")
@@ -233,7 +234,7 @@ class FinancialGoalViewModelTests: XCTestCase {
     
     // MARK: - Goal Management Tests
     
-    func testFetchGoals() async {
+    func testFetchGoals() {
         // Given: Create a test goal directly in Core Data
         let testGoal = FinancialGoal(context: testContext)
         testGoal.id = UUID()
@@ -251,14 +252,14 @@ class FinancialGoalViewModelTests: XCTestCase {
         viewModel.fetchGoals()
         
         // Wait for async operation
-        try? await Task.sleep(nanoseconds: 100_000_000)
+        try? Task.sleep(nanoseconds: 100_000_000)
         
         // Then: Should fetch the goal
         XCTAssertEqual(viewModel.goals.count, 1, "Should fetch one goal")
         XCTAssertEqual(viewModel.goals.first?.title, "Test Goal", "Should fetch correct goal")
     }
     
-    func testUpdateGoalProgress() async {
+    func testUpdateGoalProgress() {
         // Given: Create and fetch a test goal
         let testGoal = FinancialGoal(context: testContext)
         testGoal.id = UUID()
@@ -272,7 +273,7 @@ class FinancialGoalViewModelTests: XCTestCase {
         
         try! testContext.save()
         viewModel.fetchGoals()
-        try? await Task.sleep(nanoseconds: 50_000_000)
+        try? Task.sleep(nanoseconds: 50_000_000)
         
         let goal = viewModel.goals.first!
         
@@ -280,7 +281,7 @@ class FinancialGoalViewModelTests: XCTestCase {
         viewModel.updateGoalProgress(goal, newAmount: 500.0)
         
         // Wait for async operation
-        try? await Task.sleep(nanoseconds: 100_000_000)
+        try? Task.sleep(nanoseconds: 100_000_000)
         
         // Then: Progress should be updated
         XCTAssertEqual(goal.currentAmount, 500.0, "Current amount should be updated")
@@ -288,7 +289,7 @@ class FinancialGoalViewModelTests: XCTestCase {
         XCTAssertEqual(goal.status, GoalStatus.active.rawValue, "Status should remain active")
     }
     
-    func testUpdateGoalProgressToCompletion() async {
+    func testUpdateGoalProgressToCompletion() {
         // Given: Create a test goal
         let testGoal = FinancialGoal(context: testContext)
         testGoal.id = UUID()
@@ -302,7 +303,7 @@ class FinancialGoalViewModelTests: XCTestCase {
         
         try! testContext.save()
         viewModel.fetchGoals()
-        try? await Task.sleep(nanoseconds: 50_000_000)
+        try? Task.sleep(nanoseconds: 50_000_000)
         
         let goal = viewModel.goals.first!
         
@@ -310,7 +311,7 @@ class FinancialGoalViewModelTests: XCTestCase {
         viewModel.updateGoalProgress(goal, newAmount: 1000.0)
         
         // Wait for async operation
-        try? await Task.sleep(nanoseconds: 100_000_000)
+        try? Task.sleep(nanoseconds: 100_000_000)
         
         // Then: Goal should be completed
         XCTAssertEqual(goal.currentAmount, 1000.0, "Current amount should equal target")
@@ -319,7 +320,7 @@ class FinancialGoalViewModelTests: XCTestCase {
         XCTAssertNotNil(goal.completedDate, "Completed date should be set")
     }
     
-    func testUpdateGoalProgressOverTarget() async {
+    func testUpdateGoalProgressOverTarget() {
         // Given: Create a test goal
         let testGoal = FinancialGoal(context: testContext)
         testGoal.id = UUID()
@@ -333,7 +334,7 @@ class FinancialGoalViewModelTests: XCTestCase {
         
         try! testContext.save()
         viewModel.fetchGoals()
-        try? await Task.sleep(nanoseconds: 50_000_000)
+        try? Task.sleep(nanoseconds: 50_000_000)
         
         let goal = viewModel.goals.first!
         
@@ -341,14 +342,14 @@ class FinancialGoalViewModelTests: XCTestCase {
         viewModel.updateGoalProgress(goal, newAmount: 1500.0)
         
         // Wait for async operation
-        try? await Task.sleep(nanoseconds: 100_000_000)
+        try? Task.sleep(nanoseconds: 100_000_000)
         
         // Then: Amount should be capped at target
         XCTAssertEqual(goal.currentAmount, 1000.0, "Current amount should not exceed target")
         XCTAssertEqual(goal.progressPercentage, 100.0, "Progress should be capped at 100%")
     }
     
-    func testDeleteGoal() async {
+    func testDeleteGoal() {
         // Given: Create a test goal
         let testGoal = FinancialGoal(context: testContext)
         testGoal.id = UUID()
@@ -362,7 +363,7 @@ class FinancialGoalViewModelTests: XCTestCase {
         
         try! testContext.save()
         viewModel.fetchGoals()
-        try? await Task.sleep(nanoseconds: 50_000_000)
+        try? Task.sleep(nanoseconds: 50_000_000)
         
         let goal = viewModel.goals.first!
         
@@ -370,7 +371,7 @@ class FinancialGoalViewModelTests: XCTestCase {
         viewModel.deleteGoal(goal)
         
         // Wait for async operation
-        try? await Task.sleep(nanoseconds: 100_000_000)
+        try? Task.sleep(nanoseconds: 100_000_000)
         
         // Then: Goal should be deleted
         XCTAssertEqual(viewModel.goals.count, 0, "Goal should be deleted")
@@ -378,7 +379,7 @@ class FinancialGoalViewModelTests: XCTestCase {
     
     // MARK: - Progress Tracking Tests
     
-    func testTotalProgressCalculation() async {
+    func testTotalProgressCalculation() {
         // Given: Multiple goals with different progress
         let goal1 = createTestGoal(title: "Goal 1", target: 1000.0, current: 500.0) // 50%
         let goal2 = createTestGoal(title: "Goal 2", target: 2000.0, current: 1000.0) // 50%
@@ -388,14 +389,14 @@ class FinancialGoalViewModelTests: XCTestCase {
         
         // When: Fetching goals
         viewModel.fetchGoals()
-        try? await Task.sleep(nanoseconds: 100_000_000)
+        try? Task.sleep(nanoseconds: 100_000_000)
         
         // Then: Total progress should be average (58.33%)
         let expectedProgress = (50.0 + 50.0 + 75.0) / 3.0
         XCTAssertEqual(viewModel.totalProgress, expectedProgress, accuracy: 0.1, "Total progress should be average")
     }
     
-    func testActiveAndCompletedGoalCounts() async {
+    func testActiveAndCompletedGoalCounts() {
         // Given: Mix of active and completed goals
         let activeGoal1 = createTestGoal(title: "Active 1", target: 1000.0, current: 500.0)
         activeGoal1.status = GoalStatus.active.rawValue
@@ -410,7 +411,7 @@ class FinancialGoalViewModelTests: XCTestCase {
         
         // When: Fetching goals
         viewModel.fetchGoals()
-        try? await Task.sleep(nanoseconds: 100_000_000)
+        try? Task.sleep(nanoseconds: 100_000_000)
         
         // Then: Counts should be correct
         XCTAssertEqual(viewModel.activeGoals, 2, "Should have 2 active goals")
@@ -419,7 +420,7 @@ class FinancialGoalViewModelTests: XCTestCase {
     
     // MARK: - Category and Filtering Tests
     
-    func testGoalsForCategory() async {
+    func testGoalsForCategory() {
         // Given: Goals in different categories
         let savingsGoal = createTestGoal(title: "Savings Goal", target: 1000.0, current: 0.0)
         savingsGoal.category = GoalCategory.savings.rawValue
@@ -429,7 +430,7 @@ class FinancialGoalViewModelTests: XCTestCase {
         
         try! testContext.save()
         viewModel.fetchGoals()
-        try? await Task.sleep(nanoseconds: 100_000_000)
+        try? Task.sleep(nanoseconds: 100_000_000)
         
         // When: Filtering by category
         let savingsGoals = viewModel.goalsForCategory(.savings)
@@ -485,7 +486,7 @@ class FinancialGoalViewModelTests: XCTestCase {
     
     // MARK: - Form Reset Tests
     
-    func testFormResetAfterGoalCreation() async {
+    func testFormResetAfterGoalCreation() {
         // Given: Form with data
         viewModel.goalTitle = "Test Goal"
         viewModel.goalDescription = "Test description"
@@ -495,7 +496,7 @@ class FinancialGoalViewModelTests: XCTestCase {
         
         // When: Creating goal successfully
         viewModel.createGoal()
-        try? await Task.sleep(nanoseconds: 100_000_000)
+        try? Task.sleep(nanoseconds: 100_000_000)
         
         // Then: Form should be reset (assuming no error)
         if viewModel.errorMessage == nil {

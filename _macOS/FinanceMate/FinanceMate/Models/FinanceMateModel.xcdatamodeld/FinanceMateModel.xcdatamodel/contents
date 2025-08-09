@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0"
+    lastSavedToolsVersion="23507" systemVersion="24F74" minimumToolsVersion="Automatic"
+    sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <!-- Core Transaction System -->
+    <entity name="Transaction" representedClassName="Transaction" syncable="YES">
+        <attribute name="id" optional="NO" attributeType="UUID" />
+        <attribute name="date" optional="NO" attributeType="Date" />
+        <attribute name="amount" optional="NO" attributeType="Double" />
+        <attribute name="category" optional="NO" attributeType="String" />
+        <attribute name="note" optional="YES" attributeType="String" />
+        <attribute name="createdAt" optional="NO" attributeType="Date" />
+        <attribute name="type" optional="NO" attributeType="String" defaultValue="expense" />
+        <attribute name="externalId" optional="YES" attributeType="String" />
+        <attribute name="entityId" optional="NO" attributeType="UUID" />
+        <relationship name="lineItems" optional="YES" toMany="YES" deletionRule="Cascade"
+            destinationEntity="LineItem" inverseName="transaction" inverseEntity="LineItem" />
+    </entity>
+
+    <entity name="LineItem" representedClassName="LineItem" syncable="YES">
+        <attribute name="id" optional="NO" attributeType="UUID" />
+        <attribute name="itemDescription" optional="NO" attributeType="String" />
+        <attribute name="amount" optional="NO" attributeType="Double" />
+        <relationship name="transaction" optional="NO" maxCount="1" deletionRule="Nullify"
+            destinationEntity="Transaction" inverseName="lineItems" inverseEntity="Transaction" />
+        <relationship name="splitAllocations" optional="YES" toMany="YES" deletionRule="Cascade"
+            destinationEntity="SplitAllocation" inverseName="lineItem" inverseEntity="SplitAllocation" />
+    </entity>
+
+    <entity name="SplitAllocation" representedClassName="SplitAllocation" syncable="YES">
+        <attribute name="id" optional="NO" attributeType="UUID" />
+        <attribute name="percentage" optional="NO" attributeType="Double" />
+        <attribute name="taxCategory" optional="NO" attributeType="String" />
+        <relationship name="lineItem" optional="NO" maxCount="1" deletionRule="Nullify"
+            destinationEntity="LineItem" inverseName="splitAllocations" inverseEntity="LineItem" />
+    </entity>
+
+    <!-- Asset Management -->
+    <entity name="Asset" representedClassName="Asset" syncable="YES">
+        <attribute name="id" optional="NO" attributeType="UUID" />
+        <attribute name="name" optional="NO" attributeType="String" />
+        <attribute name="assetType" optional="NO" attributeType="String" />
+        <attribute name="currentValue" optional="NO" attributeType="Double" />
+        <attribute name="purchasePrice" optional="YES" attributeType="Double" />
+        <attribute name="purchaseDate" optional="YES" attributeType="Date" />
+        <attribute name="createdAt" optional="NO" attributeType="Date" />
+        <attribute name="lastUpdated" optional="NO" attributeType="Date" />
+        <relationship name="valuationHistory" optional="YES" toMany="YES" deletionRule="Cascade"
+            destinationEntity="AssetValuation" inverseName="asset" inverseEntity="AssetValuation" />
+    </entity>
+
+    <!-- Liability Management -->
+    <entity name="Liability" representedClassName="Liability" syncable="YES">
+        <attribute name="id" optional="NO" attributeType="UUID" />
+        <attribute name="name" optional="NO" attributeType="String" />
+        <attribute name="liabilityType" optional="NO" attributeType="String" />
+        <attribute name="currentBalance" optional="NO" attributeType="Double" />
+        <attribute name="originalAmount" optional="YES" attributeType="Double" />
+        <attribute name="interestRate" optional="YES" attributeType="Double" />
+        <attribute name="minimumPayment" optional="YES" attributeType="Double" />
+        <attribute name="dueDate" optional="YES" attributeType="Date" />
+        <attribute name="createdAt" optional="NO" attributeType="Date" />
+        <attribute name="lastUpdated" optional="NO" attributeType="Date" />
+    </entity>
+
+    <!-- User Management -->
+    <entity name="User" representedClassName="User" syncable="YES">
+        <attribute name="id" optional="NO" attributeType="UUID" />
+        <attribute name="email" optional="NO" attributeType="String" />
+        <attribute name="firstName" optional="YES" attributeType="String" />
+        <attribute name="lastName" optional="YES" attributeType="String" />
+        <attribute name="createdAt" optional="NO" attributeType="Date" />
+        <attribute name="lastLoginAt" optional="YES" attributeType="Date" />
+        <attribute name="isActive" optional="NO" attributeType="Boolean" defaultValue="YES" />
+    </entity>
+
+    <!-- Financial Entity Management (Multi-Entity Architecture) -->
+    <entity name="FinancialEntity" representedClassName="FinancialEntity" syncable="YES">
+        <attribute name="id" optional="NO" attributeType="UUID" />
+        <attribute name="name" optional="NO" attributeType="String" />
+        <attribute name="type" optional="NO" attributeType="String" />
+        <attribute name="isActive" optional="NO" attributeType="Boolean" defaultValue="YES" />
+        <attribute name="createdAt" optional="NO" attributeType="Date" />
+        <attribute name="lastModified" optional="NO" attributeType="Date" />
+    </entity>
+
+    <!-- Net Wealth Tracking -->
+    <entity name="NetWealthSnapshot" representedClassName="NetWealthSnapshot" syncable="YES">
+        <attribute name="id" optional="NO" attributeType="UUID" />
+        <attribute name="totalAssets" optional="NO" attributeType="Double" defaultValue="0.0" />
+        <attribute name="totalLiabilities" optional="NO" attributeType="Double" defaultValue="0.0" />
+        <attribute name="netWealth" optional="NO" attributeType="Double" defaultValue="0.0" />
+        <attribute name="snapshotDate" optional="NO" attributeType="Date" />
+    </entity>
+
+    <!-- Asset Valuation History -->
+    <entity name="AssetValuation" representedClassName="AssetValuation" syncable="YES">
+        <attribute name="id" optional="NO" attributeType="UUID" />
+        <attribute name="value" optional="NO" attributeType="Double" />
+        <attribute name="date" optional="NO" attributeType="Date" />
+        <relationship name="asset" optional="YES" maxCount="1" deletionRule="Nullify"
+            destinationEntity="Asset" inverseName="valuationHistory" inverseEntity="Asset" />
+    </entity>
+
+    <!-- Settings Management -->
+    <entity name="Settings" representedClassName="Settings" syncable="YES">
+        <attribute name="id" optional="NO" attributeType="UUID" />
+        <attribute name="theme" optional="NO" attributeType="String" defaultValue="System" />
+        <attribute name="currency" optional="NO" attributeType="String" defaultValue="AUD" />
+        <attribute name="notifications" optional="NO" attributeType="Boolean" defaultValue="YES" />
+        <attribute name="lastModified" optional="NO" attributeType="Date" />
+    </entity>
+</model>

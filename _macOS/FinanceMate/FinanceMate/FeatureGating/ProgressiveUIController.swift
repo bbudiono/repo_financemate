@@ -302,7 +302,7 @@ class VoiceOverController: ObservableObject {
 
 // MARK: - Main ProgressiveUIController Class
 
-@MainActor
+// EMERGENCY FIX: Removed @MainActor to eliminate Swift Concurrency crashes
 final class ProgressiveUIController: ObservableObject {
     
     // MARK: - Published Properties

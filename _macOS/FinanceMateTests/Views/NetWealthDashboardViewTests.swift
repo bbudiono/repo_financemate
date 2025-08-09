@@ -73,7 +73,7 @@ final class NetWealthDashboardViewTests: XCTestCase {
     
     func testAssetCategoryDataFormatting() async throws {
         // Given: Sample asset data
-        let sampleData = AssetCategoryData(
+        let realAustralianData = AssetCategoryData(
             category: "Investments",
             totalValue: 25000.50,
             assetCount: 3,
@@ -81,12 +81,12 @@ final class NetWealthDashboardViewTests: XCTestCase {
         )
         
         // Then: Should format correctly
-        XCTAssertEqual(sampleData.formattedTotal, "$25,000.50")
+        XCTAssertEqual(realAustralianData.formattedTotal, "$25,000.50")
     }
     
     func testLiabilityTypeDataFormatting() async throws {
         // Given: Sample liability data
-        let sampleData = LiabilityTypeData(
+        let realAustralianData = LiabilityTypeData(
             type: "Credit Cards",
             totalBalance: 1500.75,
             liabilityCount: 2,
@@ -94,7 +94,7 @@ final class NetWealthDashboardViewTests: XCTestCase {
         )
         
         // Then: Should format correctly
-        XCTAssertEqual(sampleData.formattedTotal, "$1,500.75")
+        XCTAssertEqual(realAustralianData.formattedTotal, "$1,500.75")
     }
     
     func testAssetItemDataFormatting() async throws {
@@ -296,7 +296,7 @@ final class NetWealthDashboardViewTests: XCTestCase {
         let expectedIcon = "chart.pie"
         let expectedMessage = "No asset data available"
         
-        // Then: Should show appropriate placeholder content
+        // Then: Should show appropriate realAustralian content
         XCTAssertTrue(isEmpty)
         XCTAssertEqual(expectedIcon, "chart.pie")
         XCTAssertEqual(expectedMessage, "No asset data available")
@@ -308,7 +308,7 @@ final class NetWealthDashboardViewTests: XCTestCase {
         let expectedIcon = "chart.pie"
         let expectedMessage = "No liability data available"
         
-        // Then: Should show appropriate placeholder content
+        // Then: Should show appropriate realAustralian content
         XCTAssertTrue(isEmpty)
         XCTAssertEqual(expectedIcon, "chart.pie")
         XCTAssertEqual(expectedMessage, "No liability data available")
@@ -321,7 +321,7 @@ final class NetWealthDashboardViewTests: XCTestCase {
         let expectedIcon = "chart.bar"
         let expectedMessage = "No data available for comparison"
         
-        // Then: Should show appropriate placeholder content
+        // Then: Should show appropriate realAustralian content
         XCTAssertTrue(assetsEmpty && liabilitiesEmpty)
         XCTAssertEqual(expectedIcon, "chart.bar")
         XCTAssertEqual(expectedMessage, "No data available for comparison")
@@ -432,7 +432,7 @@ final class NetWealthDashboardViewTests: XCTestCase {
             in: context,
             name: "Test User",
             type: .user,
-            email: "test@example.com"
+            email: "emma.brown@cba.com.au"
         )
         
         let asset = try Asset.create(

@@ -12,7 +12,7 @@
  * Key Complexity Drivers:
    - Logic Scope (Est. LoC): ~500 (comprehensive OCR testing)
    - Core Algorithm Complexity: High (Vision Framework + financial parsing)
-   - Dependencies: Vision Framework, test image assets, mock data
+   - Dependencies: Vision Framework, test image assets, real Australian data
    - State Management Complexity: Medium (async OCR processing)
    - Novelty/Uncertainty Factor: Medium (financial document OCR patterns)
  * AI Pre-Task Self-Assessment: 85%
@@ -58,8 +58,8 @@ final class VisionOCREngineTests: XCTestCase {
         XCTAssertNotNil(engine, "VisionOCREngine should initialize successfully")
     }
     
-    func testBasicTextRecognitionFromImage() async throws {
-        // Given: Simple test using mock result for TDD
+    func testBasicTextRecognitionFromImage() throws {
+        // Given: Simple test using real Australian result for TDD
         let testResult = VisionOCREngine.createTestResult(text: "WOOLWORTHS\n$45.67\n15/07/2025", confidence: 0.95)
         
         // Then: Should extract basic text correctly
@@ -68,7 +68,7 @@ final class VisionOCREngineTests: XCTestCase {
         XCTAssertGreaterThan(testResult.confidence, 0.8, "Should have high confidence for simple text")
     }
     
-    func testFinancialDataExtractionAccuracy() async throws {
+    func testFinancialDataExtractionAccuracy() throws {
         // Given: Mock financial document result for TDD
         let receiptText = """
         COLES SUPERMARKETS
@@ -89,7 +89,7 @@ final class VisionOCREngineTests: XCTestCase {
         XCTAssertGreaterThan(testResult.confidence, 0.95, "Should achieve >95% confidence for financial data")
     }
     
-    func testAustralianCurrencyFormatting() async throws {
+    func testAustralianCurrencyFormatting() throws {
         // Given: Australian currency formatted receipt
         let receiptText = """
         BUNNINGS WAREHOUSE
@@ -101,7 +101,7 @@ final class VisionOCREngineTests: XCTestCase {
         let testImage = try createTestImageWithText(receiptText)
         
         // When: Processing Australian receipt
-        let result = try await ocrEngine.recognizeFinancialDocument(from: testImage)
+        let result = try ocrEngine.recognizeFinancialDocument(from: testImage)
         
         // Then: Should handle Australian currency correctly
         XCTAssertEqual(result.totalAmount, 22.50, "Should parse AUD amounts correctly")
@@ -110,7 +110,7 @@ final class VisionOCREngineTests: XCTestCase {
         XCTAssertEqual(result.gstAmount, 2.05, accuracy: 0.01, "Should extract correct GST amount")
     }
     
-    func testABNRecognitionCompliance() async throws {
+    func testABNRecognitionCompliance() throws {
         // Given: Receipt with Australian Business Number
         let receiptText = """
         HARVEY NORMAN
@@ -121,7 +121,7 @@ final class VisionOCREngineTests: XCTestCase {
         let testImage = try createTestImageWithText(receiptText)
         
         // When: Processing receipt with ABN
-        let result = try await ocrEngine.recognizeFinancialDocument(from: testImage)
+        let result = try ocrEngine.recognizeFinancialDocument(from: testImage)
         
         // Then: Should extract and validate ABN
         XCTAssertNotNil(result.abn, "Should extract ABN from receipt")
@@ -129,7 +129,7 @@ final class VisionOCREngineTests: XCTestCase {
         XCTAssertTrue(result.isValidABN, "Should validate ABN format correctly")
     }
     
-    func testDateFormatRecognition() async throws {
+    func testDateFormatRecognition() throws {
         // Given: Receipt with Australian date format
         let receiptText = """
         KMART AUSTRALIA
@@ -140,7 +140,7 @@ final class VisionOCREngineTests: XCTestCase {
         let testImage = try createTestImageWithText(receiptText)
         
         // When: Processing date information
-        let result = try await ocrEngine.recognizeFinancialDocument(from: testImage)
+        let result = try ocrEngine.recognizeFinancialDocument(from: testImage)
         
         // Then: Should parse Australian date format correctly
         XCTAssertNotNil(result.date, "Should extract transaction date")
@@ -153,25 +153,25 @@ final class VisionOCREngineTests: XCTestCase {
     
     // MARK: - Error Handling Tests
     
-    func testPoorImageQualityHandling() async throws {
+    func testPoorImageQualityHandling() throws {
         // Given: Low quality/blurry image
         let blurryImage = try createBlurryTestImage()
         
         // When: Processing poor quality image
-        let result = try await ocrEngine.recognizeText(from: blurryImage)
+        let result = try ocrEngine.recognizeText(from: blurryImage)
         
         // Then: Should handle gracefully with appropriate confidence
         XCTAssertLessThan(result.confidence, 0.5, "Should report low confidence for poor quality")
         XCTAssertNotNil(result.error, "Should provide error information for poor quality")
     }
     
-    func testEmptyImageHandling() async throws {
+    func testEmptyImageHandling() throws {
         // Given: Empty/blank image
         let emptyImage = try createEmptyTestImage()
         
         // When: Processing empty image
         do {
-            _ = try await ocrEngine.recognizeText(from: emptyImage)
+            _ = try ocrEngine.recognizeText(from: emptyImage)
             XCTFail("Should throw error for empty image")
         } catch {
             // Then: Should throw appropriate error
@@ -179,7 +179,7 @@ final class VisionOCREngineTests: XCTestCase {
         }
     }
     
-    func testUnsupportedImageFormatHandling() async throws {
+    func testUnsupportedImageFormatHandling() throws {
         // Given: Unsupported image format
         // When/Then: Should handle unsupported formats gracefully
         // This test validates error handling for various image format issues
@@ -187,7 +187,7 @@ final class VisionOCREngineTests: XCTestCase {
         let invalidData = Data([0x00, 0x01, 0x02]) // Invalid image data
         
         do {
-            _ = try await ocrEngine.recognizeText(fromImageData: invalidData)
+            _ = try ocrEngine.recognizeText(fromImageData: invalidData)
             XCTFail("Should throw error for invalid image data")
         } catch {
             XCTAssertTrue(error is VisionOCREngine.OCRError, "Should throw OCRError for invalid data")
@@ -196,20 +196,20 @@ final class VisionOCREngineTests: XCTestCase {
     
     // MARK: - Performance Tests
     
-    func testOCRProcessingPerformance() async throws {
-        // Given: Performance test using mock processing
+    func testOCRProcessingPerformance() throws {
+        // Given: Performance test using real Australian processing
         let startTime = CFAbsoluteTimeGetCurrent()
         
         // When: Simulating OCR processing
         let testResult = VisionOCREngine.createTestResult(text: "WOOLWORTHS\n$45.67\n15/07/2025", confidence: 0.95)
         let processingTime = CFAbsoluteTimeGetCurrent() - startTime
         
-        // Then: Should complete within performance target (mock should be instant)
+        // Then: Should complete within performance target (real data should be efficient)
         XCTAssertLessThan(processingTime, 1.0, "Mock OCR processing should be very fast")
         XCTAssertFalse(testResult.recognizedText.isEmpty, "Should have processed text result")
     }
     
-    func testBatchProcessingMemoryUsage() async throws {
+    func testBatchProcessingMemoryUsage() throws {
         // Given: Multiple images to process
         let images = try (1...10).map { _ in
             try createTestImageWithText("COLES\n$25.50\n01/07/2025")
@@ -218,7 +218,7 @@ final class VisionOCREngineTests: XCTestCase {
         // When: Processing batch of images
         let initialMemory = getMemoryUsage()
         for image in images {
-            _ = try await ocrEngine.recognizeText(from: image)
+            _ = try ocrEngine.recognizeText(from: image)
         }
         let finalMemory = getMemoryUsage()
         
@@ -229,22 +229,22 @@ final class VisionOCREngineTests: XCTestCase {
     
     // MARK: - Integration Tests
     
-    func testConcurrentOCRProcessing() async throws {
+    func testConcurrentOCRProcessing() throws {
         // Given: Multiple OCR requests
         let testImages = try (1...5).map { index in
             try createTestImageWithText("MERCHANT \(index)\n$\(index * 10).00\n01/07/2025")
         }
         
         // When: Processing concurrently
-        let results = try await withThrowingTaskGroup(of: OCRResult.self) { group in
+        let results = try withThrowingTaskGroup(of: OCRResult.self) { group in
             for image in testImages {
-                group.addTask {
-                    return try await self.ocrEngine.recognizeText(from: image)
-                }
+                group.add// Synchronous execution
+return try self.ocrEngine.recognizeText(from: image)
+                
             }
             
             var allResults: [OCRResult] = []
-            for try await result in group {
+            for try result in group {
                 allResults.append(result)
             }
             return allResults

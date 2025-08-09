@@ -75,12 +75,12 @@ struct DashboardAnalyticsView: View {
         }
         .background(Color.clear)
         .onAppear {
-            Task {
-                await viewModel.loadAnalyticsData()
-            }
+            // EMERGENCY FIX: Removed Task block - immediate execution
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
+        viewModel.loadAnalyticsData()
         }
         .refreshable {
-            await viewModel.refreshAnalyticsData()
+            viewModel.refreshAnalyticsData()
         }
         .overlay {
             if viewModel.isLoading {
@@ -89,9 +89,9 @@ struct DashboardAnalyticsView: View {
         }
         .alert("Analytics Error", isPresented: .constant(viewModel.errorMessage != nil)) {
             Button("Retry") {
-                Task {
-                    await viewModel.loadAnalyticsData()
-                }
+                // EMERGENCY FIX: Removed Task block - immediate execution
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
+        viewModel.loadAnalyticsData()
             }
             Button("Cancel", role: .cancel) {
                 viewModel.errorMessage = nil

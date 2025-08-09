@@ -1,0 +1,616 @@
+import Foundation
+import CoreData
+import Combine
+
+/**
+ * Purpose: Advanced multi-entity wealth consolidation and analysis service
+ * Issues & Complexity Summary: Complex cross-entity calculations with performance optimization
+ * Key Complexity Drivers:
+ *   - Logic Scope (Est. LoC): ~400
+ *   - Core Algorithm Complexity: High (multi-entity aggregation, performance attribution)
+ *   - Dependencies: Core Data entities, NetWealthService, FinancialEntity relationships
+ *   - State Management Complexity: High (cross-entity coordination, real-time updates)
+ *   - Novelty/Uncertainty Factor: Medium (entity relationship optimization)
+ * AI Pre-Task Self-Assessment: 92%
+ * Problem Estimate: 88%
+ * Initial Code Complexity Estimate: 90%
+ * Target Coverage: ≥95%
+ * Last Updated: 2025-08-08
+ */
+
+/// Multi-entity wealth analysis data structure
+public struct MultiEntityWealthBreakdown {
+    let entityBreakdowns: [EntityWealthBreakdown]
+    let consolidatedWealth: NetWealthResult
+    let crossEntityAnalysis: CrossEntityAnalysis
+    let performanceMetrics: EntityPerformanceMetrics
+    let calculatedAt: Date
+}
+
+/// Individual entity wealth breakdown
+public struct EntityWealthBreakdown {
+    let entity: FinancialEntity
+    let netWealthResult: NetWealthResult
+    let assetAllocation: [AssetAllocationData]
+    let liabilityBreakdown: [LiabilityBreakdownData]
+    let performanceScore: Double
+    let riskMetrics: EntityRiskMetrics
+}
+
+/// Cross-entity analysis metrics
+public struct CrossEntityAnalysis {
+    let totalConsolidatedWealth: Double
+    let entityContributions: [EntityContribution]
+    let diversificationScore: Double
+    let riskDistribution: RiskDistribution
+    let optimizationOpportunities: [OptimizationRecommendation]
+}
+
+/// Entity performance tracking
+public struct EntityPerformanceMetrics {
+    let growthRates: [EntityGrowthRate]
+    let riskAdjustedReturns: [EntityReturn]
+    let benchmarkComparisons: [BenchmarkComparison]
+    let efficiencyMetrics: [EfficiencyMetric]
+}
+
+/// Advanced multi-entity wealth consolidation service with predictive analytics
+// EMERGENCY FIX: Removed @MainActor to eliminate Swift Concurrency crashes
+public class MultiEntityWealthService: ObservableObject {
+    
+    // MARK: - Dependencies
+    
+    private let context: NSManagedObjectContext
+    private let netWealthService: NetWealthService
+    private let currencyFormatter: NumberFormatter
+    private var cancellables = Set<AnyCancellable>()
+    
+    // MARK: - Published Properties
+    
+    @Published public private(set) var multiEntityBreakdown: MultiEntityWealthBreakdown?
+    @Published public private(set) var isLoading: Bool = false
+    @Published public private(set) var errorMessage: String?
+    
+    // MARK: - Initialization
+    
+    public init(context: NSManagedObjectContext, netWealthService: NetWealthService) {
+        self.context = context
+        self.netWealthService = netWealthService
+        self.currencyFormatter = NumberFormatter()
+        self.currencyFormatter.numberStyle = .currency
+        self.currencyFormatter.currencyCode = "AUD"
+        self.currencyFormatter.locale = Locale(identifier: "en_AU")
+    }
+    
+    // MARK: - Multi-Entity Wealth Consolidation
+    
+    /// Calculate consolidated wealth across all financial entities
+    public func calculateMultiEntityWealth() {
+        isLoading = true
+        errorMessage = nil
+        
+        do {
+            // Fetch all active financial entities
+            let entityRequest: NSFetchRequest<FinancialEntity> = FinancialEntity.fetchRequest()
+            entityRequest.predicate = NSPredicate(format: "isActive == YES")
+            entityRequest.sortDescriptors = [
+                NSSortDescriptor(keyPath: \FinancialEntity.name, ascending: true)
+            ]
+            
+            let entities = try context.fetch(entityRequest)
+            
+            // Calculate wealth for each entity
+            var entityBreakdowns: [EntityWealthBreakdown] = []
+            var totalConsolidatedAssets: Double = 0
+            var totalConsolidatedLiabilities: Double = 0
+            
+            for entity in entities {
+                let entityBreakdown = calculateEntityWealth(entity: entity)
+                entityBreakdowns.append(entityBreakdown)
+                totalConsolidatedAssets += entityBreakdown.netWealthResult.totalAssets
+                totalConsolidatedLiabilities += entityBreakdown.netWealthResult.totalLiabilities
+            }
+            
+            // Create consolidated wealth result
+            let consolidatedWealth = NetWealthResult(
+                totalAssets: totalConsolidatedAssets,
+                totalLiabilities: totalConsolidatedLiabilities,
+                netWealth: totalConsolidatedAssets - totalConsolidatedLiabilities,
+                calculatedAt: Date()
+            )
+            
+            // Perform cross-entity analysis
+            let crossEntityAnalysis = performCrossEntityAnalysis(
+                entityBreakdowns: entityBreakdowns,
+                consolidatedWealth: consolidatedWealth
+            )
+            
+            // Calculate performance metrics
+            let performanceMetrics = calculatePerformanceMetrics(
+                entityBreakdowns: entityBreakdowns
+            )
+            
+            // Create final multi-entity breakdown
+            let multiEntityBreakdown = MultiEntityWealthBreakdown(
+                entityBreakdowns: entityBreakdowns,
+                consolidatedWealth: consolidatedWealth,
+                crossEntityAnalysis: crossEntityAnalysis,
+                performanceMetrics: performanceMetrics,
+                calculatedAt: Date()
+            )
+            
+            self.multiEntityBreakdown = multiEntityBreakdown
+            
+        } catch {
+            errorMessage = "Failed to calculate multi-entity wealth: \(error.localizedDescription)"
+        }
+        
+        isLoading = false
+    }
+    
+    // MARK: - Individual Entity Wealth Calculation
+    
+    /// Calculate comprehensive wealth breakdown for a specific entity
+    private func calculateEntityWealth() -> EntityWealthBreakdown {
+        // Fetch entity-specific assets
+        let assetRequest: NSFetchRequest<Asset> = Asset.fetchRequest()
+        assetRequest.predicate = NSPredicate(format: "financialEntity == %@", entity)
+        
+        // Fetch entity-specific liabilities
+        let liabilityRequest: NSFetchRequest<Liability> = Liability.fetchRequest()
+        liabilityRequest.predicate = NSPredicate(format: "financialEntity == %@", entity)
+        
+        do {
+            let assets = try context.fetch(assetRequest)
+            let liabilities = try context.fetch(liabilityRequest)
+            
+            let totalAssets = assets.reduce(0) { $0 + max(0, $1.currentValue) }
+            let totalLiabilities = liabilities.reduce(0) { $0 + max(0, $1.currentBalance) }
+            
+            let netWealthResult = NetWealthResult(
+                totalAssets: totalAssets,
+                totalLiabilities: totalLiabilities,
+                netWealth: totalAssets - totalLiabilities,
+                calculatedAt: Date()
+            )
+            
+            // Calculate asset allocation
+            let assetAllocation = calculateAssetAllocation(assets: assets, totalValue: totalAssets)
+            
+            // Calculate liability breakdown
+            let liabilityBreakdown = calculateLiabilityBreakdown(
+                liabilities: liabilities,
+                totalValue: totalLiabilities
+            )
+            
+            // Calculate performance score
+            let performanceScore = calculateEntityPerformanceScore(
+                netWealth: netWealthResult.netWealth,
+                assetAllocation: assetAllocation
+            )
+            
+            // Calculate risk metrics
+            let riskMetrics = calculateEntityRiskMetrics(
+                assets: assets,
+                liabilities: liabilities
+            )
+            
+            return EntityWealthBreakdown(
+                entity: entity,
+                netWealthResult: netWealthResult,
+                assetAllocation: assetAllocation,
+                liabilityBreakdown: liabilityBreakdown,
+                performanceScore: performanceScore,
+                riskMetrics: riskMetrics
+            )
+            
+        } catch {
+            // Return empty breakdown on error
+            return EntityWealthBreakdown(
+                entity: entity,
+                netWealthResult: NetWealthResult(
+                    totalAssets: 0,
+                    totalLiabilities: 0,
+                    netWealth: 0,
+                    calculatedAt: Date()
+                ),
+                assetAllocation: [],
+                liabilityBreakdown: [],
+                performanceScore: 0.0,
+                riskMetrics: EntityRiskMetrics(
+                    concentrationRisk: 0.0,
+                    liquidityRisk: 0.0,
+                    volatilityScore: 0.0,
+                    leverageRatio: 0.0
+                )
+            )
+        }
+    }
+    
+    // MARK: - Cross-Entity Analysis
+    
+    /// Perform comprehensive cross-entity analysis
+    private func performCrossEntityAnalysis() -> CrossEntityAnalysis {
+        
+        // Calculate entity contributions
+        let entityContributions = entityBreakdowns.map { breakdown in
+            let contributionPercentage = consolidatedWealth.netWealth > 0 ?
+                (breakdown.netWealthResult.netWealth / consolidatedWealth.netWealth) * 100 : 0
+            
+            return EntityContribution(
+                entity: breakdown.entity,
+                netWealthContribution: breakdown.netWealthResult.netWealth,
+                contributionPercentage: contributionPercentage,
+                assetContribution: breakdown.netWealthResult.totalAssets,
+                liabilityContribution: breakdown.netWealthResult.totalLiabilities
+            )
+        }
+        
+        // Calculate diversification score (higher is better)
+        let diversificationScore = calculateDiversificationScore(entityBreakdowns: entityBreakdowns)
+        
+        // Calculate risk distribution
+        let riskDistribution = calculateRiskDistribution(entityBreakdowns: entityBreakdowns)
+        
+        // Generate optimization recommendations
+        let optimizationOpportunities = generateOptimizationRecommendations(
+            entityBreakdowns: entityBreakdowns,
+            consolidatedWealth: consolidatedWealth
+        )
+        
+        return CrossEntityAnalysis(
+            totalConsolidatedWealth: consolidatedWealth.netWealth,
+            entityContributions: entityContributions,
+            diversificationScore: diversificationScore,
+            riskDistribution: riskDistribution,
+            optimizationOpportunities: optimizationOpportunities
+        )
+    }
+    
+    // MARK: - Performance Metrics Calculation
+    
+    /// Calculate comprehensive performance metrics across entities
+    private func calculatePerformanceMetrics() -> EntityPerformanceMetrics {
+        
+        // Calculate growth rates (placeholder - requires historical data)
+        let growthRates = entityBreakdowns.map { breakdown in
+            EntityGrowthRate(
+                entity: breakdown.entity,
+                monthlyGrowth: 0.0, // Will be calculated with historical data
+                quarterlyGrowth: 0.0,
+                yearlyGrowth: 0.0,
+                compound: breakdown.performanceScore / 100.0
+            )
+        }
+        
+        // Calculate risk-adjusted returns
+        let riskAdjustedReturns = entityBreakdowns.map { breakdown in
+            EntityReturn(
+                entity: breakdown.entity,
+                totalReturn: breakdown.performanceScore,
+                riskAdjustedReturn: breakdown.performanceScore / max(1.0, breakdown.riskMetrics.volatilityScore),
+                sharpeRatio: calculateSharpeRatio(
+                    return: breakdown.performanceScore,
+                    volatility: breakdown.riskMetrics.volatilityScore
+                )
+            )
+        }
+        
+        // Placeholder benchmark comparisons
+        let benchmarkComparisons = entityBreakdowns.map { breakdown in
+            BenchmarkComparison(
+                entity: breakdown.entity,
+                benchmark: "ASX 200", // Australian market benchmark
+                entityPerformance: breakdown.performanceScore,
+                benchmarkPerformance: 7.5, // Market average
+                relativePerformance: breakdown.performanceScore - 7.5
+            )
+        }
+        
+        // Calculate efficiency metrics
+        let efficiencyMetrics = entityBreakdowns.map { breakdown in
+            EfficiencyMetric(
+                entity: breakdown.entity,
+                assetUtilization: calculateAssetUtilization(breakdown: breakdown),
+                capitalEfficiency: calculateCapitalEfficiency(breakdown: breakdown),
+                riskEfficiency: calculateRiskEfficiency(breakdown: breakdown)
+            )
+        }
+        
+        return EntityPerformanceMetrics(
+            growthRates: growthRates,
+            riskAdjustedReturns: riskAdjustedReturns,
+            benchmarkComparisons: benchmarkComparisons,
+            efficiencyMetrics: efficiencyMetrics
+        )
+    }
+    
+    // MARK: - Helper Methods
+    
+    private func calculateAssetAllocation(assets: [Asset], totalValue: Double) -> [AssetAllocationData] {
+        guard totalValue > 0 else { return [] }
+        
+        let groupedAssets = Dictionary(grouping: assets, by: { $0.assetType })
+        
+        return groupedAssets.map { (type, assets) in
+            let typeTotal = assets.reduce(0) { $0 + $1.currentValue }
+            let percentage = (typeTotal / totalValue) * 100
+            
+            return AssetAllocationData(
+                assetType: type,
+                totalValue: typeTotal,
+                percentage: percentage,
+                assetCount: assets.count
+            )
+        }.sorted { $0.totalValue > $1.totalValue }
+    }
+    
+    private func calculateLiabilityBreakdown(
+        liabilities: [Liability],
+        totalValue: Double
+    ) -> [LiabilityBreakdownData] {
+        guard totalValue > 0 else { return [] }
+        
+        let groupedLiabilities = Dictionary(grouping: liabilities, by: { $0.liabilityType })
+        
+        return groupedLiabilities.map { (type, liabilities) in
+            let typeTotal = liabilities.reduce(0) { $0 + $1.currentBalance }
+            let percentage = (typeTotal / totalValue) * 100
+            
+            return LiabilityBreakdownData(
+                liabilityType: type,
+                totalValue: typeTotal,
+                percentage: percentage,
+                liabilityCount: liabilities.count
+            )
+        }.sorted { $0.totalValue > $1.totalValue }
+    }
+    
+    private func calculateEntityPerformanceScore(
+        netWealth: Double,
+        assetAllocation: [AssetAllocationData]
+    ) -> Double {
+        // Simple performance scoring based on net wealth and diversification
+        let wealthScore = min(100.0, max(0.0, netWealth / 1000000.0 * 50)) // Up to 50 points for wealth
+        let diversificationScore = min(50.0, Double(assetAllocation.count) * 10) // Up to 50 points for diversification
+        
+        return wealthScore + diversificationScore
+    }
+    
+    private func calculateEntityRiskMetrics(assets: [Asset], liabilities: [Liability]) -> EntityRiskMetrics {
+        let totalAssets = assets.reduce(0) { $0 + $1.currentValue }
+        let totalLiabilities = liabilities.reduce(0) { $0 + $1.currentBalance }
+        
+        // Concentration risk (higher concentration = higher risk)
+        let maxAssetValue = assets.max { $0.currentValue < $1.currentValue }?.currentValue ?? 0
+        let concentrationRisk = totalAssets > 0 ? (maxAssetValue / totalAssets) * 100 : 0
+        
+        // Liquidity risk (simplified calculation)
+        let liquidAssets = assets.filter { $0.assetType == "Cash" || $0.assetType == "Savings" }
+        let liquidityRatio = totalAssets > 0 ?
+            liquidAssets.reduce(0) { $0 + $1.currentValue } / totalAssets : 0
+        let liquidityRisk = max(0, 100 - (liquidityRatio * 100))
+        
+        // Volatility score (placeholder - would use historical data)
+        let volatilityScore = concentrationRisk * 0.5 + liquidityRisk * 0.3
+        
+        // Leverage ratio
+        let leverageRatio = totalAssets > 0 ? (totalLiabilities / totalAssets) * 100 : 0
+        
+        return EntityRiskMetrics(
+            concentrationRisk: concentrationRisk,
+            liquidityRisk: liquidityRisk,
+            volatilityScore: volatilityScore,
+            leverageRatio: leverageRatio
+        )
+    }
+    
+    private func calculateDiversificationScore(entityBreakdowns: [EntityWealthBreakdown]) -> Double {
+        // Higher score for more entities and balanced wealth distribution
+        let entityCount = entityBreakdowns.count
+        let totalWealth = entityBreakdowns.reduce(0) { $0 + $1.netWealthResult.netWealth }
+        
+        guard totalWealth > 0, entityCount > 0 else { return 0 }
+        
+        // Calculate balance score (lower variance = higher score)
+        let averageWealth = totalWealth / Double(entityCount)
+        let variance = entityBreakdowns.reduce(0) { sum, breakdown in
+            let diff = breakdown.netWealthResult.netWealth - averageWealth
+            return sum + (diff * diff)
+        } / Double(entityCount)
+        
+        let balanceScore = max(0, 100 - sqrt(variance) / averageWealth * 100)
+        let entityScore = min(100, Double(entityCount) * 20) // Up to 5 entities = 100 points
+        
+        return (balanceScore + entityScore) / 2
+    }
+    
+    private func calculateRiskDistribution(entityBreakdowns: [EntityWealthBreakdown]) -> RiskDistribution {
+        let totalEntities = entityBreakdowns.count
+        guard totalEntities > 0 else {
+            return RiskDistribution(lowRisk: 0, mediumRisk: 0, highRisk: 0)
+        }
+        
+        var lowRisk = 0
+        var mediumRisk = 0
+        var highRisk = 0
+        
+        for breakdown in entityBreakdowns {
+            let overallRisk = breakdown.riskMetrics.volatilityScore
+            if overallRisk < 30 {
+                lowRisk += 1
+            } else if overallRisk < 60 {
+                mediumRisk += 1
+            } else {
+                highRisk += 1
+            }
+        }
+        
+        return RiskDistribution(lowRisk: lowRisk, mediumRisk: mediumRisk, highRisk: highRisk)
+    }
+    
+    private func generateOptimizationRecommendations(
+        entityBreakdowns: [EntityWealthBreakdown],
+        consolidatedWealth: NetWealthResult
+    ) -> [OptimizationRecommendation] {
+        var recommendations: [OptimizationRecommendation] = []
+        
+        // High concentration risk recommendation
+        let highConcentrationEntities = entityBreakdowns.filter {
+            $0.riskMetrics.concentrationRisk > 70
+        }
+        
+        for entity in highConcentrationEntities {
+            recommendations.append(
+                OptimizationRecommendation(
+                    type: .diversification,
+                    priority: .high,
+                    entity: entity.entity,
+                    title: "Reduce Concentration Risk",
+                    description: "Entity has high concentration risk (\(String(format: "%.1f", entity.riskMetrics.concentrationRisk))%). Consider diversifying assets.",
+                    potentialImpact: entity.riskMetrics.concentrationRisk * 0.5
+                )
+            )
+        }
+        
+        // High leverage recommendation
+        let highLeverageEntities = entityBreakdowns.filter {
+            $0.riskMetrics.leverageRatio > 80
+        }
+        
+        for entity in highLeverageEntities {
+            recommendations.append(
+                OptimizationRecommendation(
+                    type: .deleveraging,
+                    priority: .medium,
+                    entity: entity.entity,
+                    title: "Reduce Leverage",
+                    description: "Entity has high leverage ratio (\(String(format: "%.1f", entity.riskMetrics.leverageRatio))%). Consider reducing debt.",
+                    potentialImpact: entity.riskMetrics.leverageRatio * 0.3
+                )
+            )
+        }
+        
+        return recommendations.sorted { $0.potentialImpact > $1.potentialImpact }
+    }
+    
+    private func calculateSharpeRatio(return: Double, volatility: Double) -> Double {
+        let riskFreeRate = 2.5 // Australian risk-free rate approximation
+        guard volatility > 0 else { return 0 }
+        return (return - riskFreeRate) / volatility
+    }
+    
+    private func calculateAssetUtilization(breakdown: EntityWealthBreakdown) -> Double {
+        // Measure how effectively assets are being used
+        let totalAssets = breakdown.netWealthResult.totalAssets
+        let netWealth = breakdown.netWealthResult.netWealth
+        
+        guard totalAssets > 0 else { return 0 }
+        return (netWealth / totalAssets) * 100
+    }
+    
+    private func calculateCapitalEfficiency(breakdown: EntityWealthBreakdown) -> Double {
+        // Measure efficiency of capital deployment
+        let performanceScore = breakdown.performanceScore
+        let leverageRatio = breakdown.riskMetrics.leverageRatio
+        
+        return performanceScore / max(1.0, leverageRatio / 100.0)
+    }
+    
+    private func calculateRiskEfficiency(breakdown: EntityWealthBreakdown) -> Double {
+        // Measure return per unit of risk
+        let performanceScore = breakdown.performanceScore
+        let volatilityScore = breakdown.riskMetrics.volatilityScore
+        
+        return performanceScore / max(1.0, volatilityScore)
+    }
+}
+
+// MARK: - Supporting Data Structures
+
+public struct AssetAllocationData {
+    let assetType: String
+    let totalValue: Double
+    let percentage: Double
+    let assetCount: Int
+}
+
+public struct LiabilityBreakdownData {
+    let liabilityType: String
+    let totalValue: Double
+    let percentage: Double
+    let liabilityCount: Int
+}
+
+public struct EntityRiskMetrics {
+    let concentrationRisk: Double // 0-100, higher is riskier
+    let liquidityRisk: Double // 0-100, higher is riskier
+    let volatilityScore: Double // 0-100, higher is more volatile
+    let leverageRatio: Double // 0-100, higher is more leveraged
+}
+
+public struct EntityContribution {
+    let entity: FinancialEntity
+    let netWealthContribution: Double
+    let contributionPercentage: Double
+    let assetContribution: Double
+    let liabilityContribution: Double
+}
+
+public struct RiskDistribution {
+    let lowRisk: Int
+    let mediumRisk: Int
+    let highRisk: Int
+}
+
+public struct OptimizationRecommendation {
+    let type: RecommendationType
+    let priority: Priority
+    let entity: FinancialEntity
+    let title: String
+    let description: String
+    let potentialImpact: Double
+    
+    enum RecommendationType {
+        case diversification
+        case deleveraging
+        case rebalancing
+        case taxOptimization
+    }
+    
+    enum Priority {
+        case low
+        case medium
+        case high
+    }
+}
+
+public struct EntityGrowthRate {
+    let entity: FinancialEntity
+    let monthlyGrowth: Double
+    let quarterlyGrowth: Double
+    let yearlyGrowth: Double
+    let compound: Double
+}
+
+public struct EntityReturn {
+    let entity: FinancialEntity
+    let totalReturn: Double
+    let riskAdjustedReturn: Double
+    let sharpeRatio: Double
+}
+
+public struct BenchmarkComparison {
+    let entity: FinancialEntity
+    let benchmark: String
+    let entityPerformance: Double
+    let benchmarkPerformance: Double
+    let relativePerformance: Double
+}
+
+public struct EfficiencyMetric {
+    let entity: FinancialEntity
+    let assetUtilization: Double
+    let capitalEfficiency: Double
+    let riskEfficiency: Double
+}

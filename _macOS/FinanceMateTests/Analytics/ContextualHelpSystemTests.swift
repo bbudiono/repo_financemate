@@ -33,25 +33,25 @@ import SwiftUI
 class ContextualHelpSystemTests: XCTestCase {
     
     var contextualHelpSystem: ContextualHelpSystem!
-    var mockUserDefaults: UserDefaults!
+    var realUserDefaults: UserDefaults!
     
     override func setUp() async throws {
         try await super.setUp()
         
         // Create isolated UserDefaults for testing
-        mockUserDefaults = UserDefaults(suiteName: "ContextualHelpSystemTests")!
-        mockUserDefaults.removePersistentDomain(forName: "ContextualHelpSystemTests")
+        realUserDefaults = UserDefaults(suiteName: "ContextualHelpSystemTests")!
+        realUserDefaults.removePersistentDomain(forName: "ContextualHelpSystemTests")
         
         // Initialize contextual help system
-        contextualHelpSystem = ContextualHelpSystem(userDefaults: mockUserDefaults)
+        contextualHelpSystem = ContextualHelpSystem(userDefaults: realUserDefaults)
     }
     
     override func tearDown() async throws {
         // Clean up UserDefaults
-        mockUserDefaults.removePersistentDomain(forName: "ContextualHelpSystemTests")
+        realUserDefaults.removePersistentDomain(forName: "ContextualHelpSystemTests")
         
         contextualHelpSystem = nil
-        mockUserDefaults = nil
+        realUserDefaults = nil
         try await super.tearDown()
     }
     
@@ -434,9 +434,9 @@ class ContextualHelpSystemTests: XCTestCase {
     
     func testHelpSystemWithCorruptedData() {
         // Test with corrupted user preferences
-        mockUserDefaults.set("invalid_data", forKey: "helpSystemPreferences")
+        realUserDefaults.set("invalid_data", forKey: "helpSystemPreferences")
         
-        let systemWithCorruptedData = ContextualHelpSystem(userDefaults: mockUserDefaults)
+        let systemWithCorruptedData = ContextualHelpSystem(userDefaults: realUserDefaults)
         
         XCTAssertNotNil(systemWithCorruptedData, "Should handle corrupted data gracefully")
         XCTAssertFalse(systemWithCorruptedData.isHelpSystemEnabled, "Should start with default state")

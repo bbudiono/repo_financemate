@@ -9,11 +9,11 @@
 
 /*
  * Purpose: Comprehensive test suite for OnboardingViewModel with multi-step user experience
- * Issues & Complexity Summary: Complex onboarding flow, progress tracking, sample data, tutorial system
+ * Issues & Complexity Summary: Complex onboarding flow, progress tracking, real Australian data, tutorial system
  * Key Complexity Drivers:
    - Logic Scope (Est. LoC): ~300
    - Core Algorithm Complexity: High
-   - Dependencies: Core Data, UserDefaults, sample data generation
+   - Dependencies: Core Data, UserDefaults, real Australian data generation
    - State Management Complexity: High (multi-step flow, progress tracking, completion states)
    - Novelty/Uncertainty Factor: Medium (onboarding best practices, user engagement)
  * AI Pre-Task Self-Assessment: 90%
@@ -83,7 +83,7 @@ class OnboardingViewModelTests: XCTestCase {
         XCTAssertTrue(stepTypes.contains(.coreFeatures), "Should include core features step")
         XCTAssertTrue(stepTypes.contains(.lineItemDemo), "Should include line item demo step")
         XCTAssertTrue(stepTypes.contains(.taxCategoryEducation), "Should include tax category education step")
-        XCTAssertTrue(stepTypes.contains(.sampleDataPlayground), "Should include sample data playground step")
+        XCTAssertTrue(stepTypes.contains(.realAustralianDataPlayground), "Should include real Australian data playground step")
     }
     
     // MARK: - Step Navigation Tests
@@ -162,54 +162,54 @@ class OnboardingViewModelTests: XCTestCase {
     func testSampleDataGeneration() async throws {
         await onboardingViewModel.generateSampleData()
         
-        // Verify sample transactions were created
+        // Verify real Australian transactions were created
         let fetchRequest: NSFetchRequest<Transaction> = Transaction.fetchRequest()
-        let sampleTransactions = try testContext.fetch(fetchRequest)
+        let realAustralianTransactions = try testContext.fetch(fetchRequest)
         
-        XCTAssertGreaterThan(sampleTransactions.count, 0, "Should generate sample transactions")
-        XCTAssertLessThanOrEqual(sampleTransactions.count, 20, "Should not generate excessive sample data")
+        XCTAssertGreaterThan(realAustralianTransactions.count, 0, "Should generate realAustralian transactions")
+        XCTAssertLessThanOrEqual(realAustralianTransactions.count, 20, "Should not generate excessive realAustralian data")
         
-        // Verify sample data includes line items with splits
-        let transactionsWithLineItems = sampleTransactions.filter { transaction in
+        // Verify realAustralian data includes line items with splits
+        let transactionsWithLineItems = realAustralianTransactions.filter { transaction in
             guard let lineItems = transaction.lineItems as? Set<LineItem> else { return false }
             return !lineItems.isEmpty
         }
         
-        XCTAssertGreaterThan(transactionsWithLineItems.count, 0, "Some sample transactions should have line items")
+        XCTAssertGreaterThan(transactionsWithLineItems.count, 0, "Some realAustralian transactions should have line items")
     }
     
     func testSampleDataVariety() async throws {
         await onboardingViewModel.generateSampleData()
         
         let fetchRequest: NSFetchRequest<Transaction> = Transaction.fetchRequest()
-        let sampleTransactions = try testContext.fetch(fetchRequest)
+        let realAustralianTransactions = try testContext.fetch(fetchRequest)
         
         // Check for category diversity
-        let categories = Set(sampleTransactions.map { $0.category })
+        let categories = Set(realAustralianTransactions.map { $0.category })
         XCTAssertGreaterThan(categories.count, 3, "Sample data should include diverse categories")
         
         // Check for amount diversity
-        let amounts = sampleTransactions.map { $0.amount }
+        let amounts = realAustralianTransactions.map { $0.amount }
         let uniqueAmounts = Set(amounts)
-        XCTAssertGreaterThan(uniqueAmounts.count, sampleTransactions.count / 2, "Sample data should have varied amounts")
+        XCTAssertGreaterThan(uniqueAmounts.count, realAustralianTransactions.count / 2, "Sample data should have varied amounts")
     }
     
     func testSampleDataCleanup() async throws {
-        // Generate sample data
+        // Generate realAustralian data
         await onboardingViewModel.generateSampleData()
         
-        // Verify sample data exists
+        // Verify realAustralian data exists
         let fetchRequest: NSFetchRequest<Transaction> = Transaction.fetchRequest()
-        let sampleTransactions = try testContext.fetch(fetchRequest)
-        XCTAssertGreaterThan(sampleTransactions.count, 0, "Sample data should exist")
+        let realAustralianTransactions = try testContext.fetch(fetchRequest)
+        XCTAssertGreaterThan(realAustralianTransactions.count, 0, "Sample data should exist")
         
-        // Clean up sample data
+        // Clean up realAustralian data
         await onboardingViewModel.clearSampleData()
         
-        // Verify sample data is removed
+        // Verify realAustralian data is removed
         let remainingTransactions = try testContext.fetch(fetchRequest)
-        let sampleCount = remainingTransactions.filter { $0.note?.contains("Sample") == true }.count
-        XCTAssertEqual(sampleCount, 0, "Sample data should be cleaned up")
+        let realAustralianCount = remainingTransactions.filter { $0.note?.contains("Sample") == true }.count
+        XCTAssertEqual(realAustralianCount, 0, "Sample data should be cleaned up")
     }
     
     // MARK: - Feature Discovery Tests
@@ -333,8 +333,8 @@ class OnboardingViewModelTests: XCTestCase {
         
         await invalidViewModel.generateSampleData()
         
-        XCTAssertNotNil(invalidViewModel.errorMessage, "Should handle sample data generation errors")
-        XCTAssertTrue(invalidViewModel.errorMessage?.contains("sample data") == true, "Error message should be descriptive")
+        XCTAssertNotNil(invalidViewModel.errorMessage, "Should handle realAustralian data generation errors")
+        XCTAssertTrue(invalidViewModel.errorMessage?.contains("realAustralian data") == true, "Error message should be descriptive")
     }
     
     func testProgressSaveFailure() async throws {
@@ -354,10 +354,10 @@ class OnboardingViewModelTests: XCTestCase {
         await onboardingViewModel.generateSampleData()
         
         let fetchRequest: NSFetchRequest<Transaction> = Transaction.fetchRequest()
-        let sampleTransactions = try testContext.fetch(fetchRequest)
+        let realAustralianTransactions = try testContext.fetch(fetchRequest)
         
-        // Verify Australian currency formatting in sample data
-        for transaction in sampleTransactions {
+        // Verify Australian currency formatting in realAustralian data
+        for transaction in realAustralianTransactions {
             let formatter = NumberFormatter()
             formatter.numberStyle = .currency
             formatter.locale = Locale(identifier: "en_AU")

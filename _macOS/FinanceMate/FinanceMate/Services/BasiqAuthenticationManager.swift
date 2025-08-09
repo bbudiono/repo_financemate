@@ -1,0 +1,168 @@
+//
+//  BasiqAuthenticationManager.swift
+//  FinanceMate
+//
+//  Created by Bernhard Budiono on 8/6/25.
+//
+
+import Foundation
+
+/// Manages authentication and token lifecycle for Basiq API
+/// Handles OAuth2 flow and token refresh
+// EMERGENCY FIX: Removed to eliminate Swift Concurrency crashes
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
+final class BasiqAuthenticationManager {
+    
+    // MARK: - Properties
+    
+    private let apiKey: String
+    private let baseURL: String
+    private let tokenStorage: TokenStorage
+    private var currentToken: BasiqToken?
+    private let session: URLSession
+    
+    // MARK: - Initialization
+    
+    init(apiKey: String, baseURL: String, tokenStorage: TokenStorage = TokenStorage.shared) {
+        self.apiKey = apiKey
+        self.baseURL = baseURL
+        self.tokenStorage = tokenStorage
+        self.session = URLSession.shared
+        
+        // Load cached token if available
+        loadCachedToken()
+    }
+    
+    // MARK: - Public Methods
+    
+    /// Get a valid access token, refreshing if necessary
+    func getAccessToken() throws -> String {
+        // Check if current token is valid
+        if let token = currentToken, !token.isExpired {
+            return token.accessToken
+        }
+        
+        // Generate new token
+        return try generateToken()
+    }
+    
+    /// Force refresh the access token
+    func refreshToken() throws -> String {
+        return try generateToken()
+    }
+    
+    /// Clear stored authentication
+    func clearAuthentication() {
+        currentToken = nil
+        tokenStorage.clearToken(for: "basiq_access_token")
+        tokenStorage.clearToken(for: "basiq_token_expiry")
+    }
+    
+    // MARK: - Private Methods
+    
+    private func generateToken() throws -> String {
+        let url = URL(string: "\(baseURL)/token")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("Basic \(apiKey)", forHTTPHeaderField: "Authorization")
+        request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        request.setValue("CORS", forHTTPHeaderField: "basiq-version")
+        
+        // Token scope for financial data access
+        let scope = "SERVER_ACCESS"
+        let bodyString = "scope=\(scope)"
+        request.httpBody = bodyString.data(using: .utf8)
+        
+        do {
+            let (data, response) = try session.data(for: request)
+            
+            guard let httpResponse = response as? HTTPURLResponse else {
+                throw FinancialServiceError.networkError(URLError(.badServerResponse))
+            }
+            
+            switch httpResponse.statusCode {
+            case 200...299:
+                let token = try JSONDecoder().decode(BasiqTokenResponse.self, from: data)
+                let basiqToken = BasiqToken(
+                    accessToken: token.access_token,
+                    expiresIn: token.expires_in,
+                    createdAt: Date()
+                )
+                
+                // Cache the token
+                currentToken = basiqToken
+                cacheToken(basiqToken)
+                
+                return basiqToken.accessToken
+                
+            case 401:
+                throw FinancialServiceError.invalidAPIKey
+            case 429:
+                let retryAfter = httpResponse.value(forHTTPHeaderField: "Retry-After")
+                    .flatMap { Double($0) } ?? 60
+                throw FinancialServiceError.rateLimitExceeded(retryAfter: retryAfter)
+            default:
+                let errorMessage = String(data: data, encoding: .utf8)
+                throw FinancialServiceError.serverError(
+                    statusCode: httpResponse.statusCode,
+                    message: errorMessage
+                )
+            }
+        } catch {
+            if error is FinancialServiceError {
+                throw error
+            }
+            throw FinancialServiceError.networkError(error)
+        }
+    }
+    
+    private func cacheToken(_ token: BasiqToken) {
+        tokenStorage.storeToken(token.accessToken, for: "basiq_access_token")
+        tokenStorage.storeToken(
+            String(token.expiryDate.timeIntervalSince1970),
+            for: "basiq_token_expiry"
+        )
+    }
+    
+    private func loadCachedToken() {
+        guard let accessToken = tokenStorage.retrieveToken(for: "basiq_access_token"),
+              let expiryString = tokenStorage.retrieveToken(for: "basiq_token_expiry"),
+              let expiryInterval = Double(expiryString) else {
+            return
+        }
+        
+        let expiryDate = Date(timeIntervalSince1970: expiryInterval)
+        let createdAt = expiryDate.addingTimeInterval(-3600) // Assume 1 hour validity
+        
+        currentToken = BasiqToken(
+            accessToken: accessToken,
+            expiresIn: 3600,
+            createdAt: createdAt
+        )
+    }
+}
+
+// MARK: - Supporting Types
+
+/// Basiq token response from API
+private struct BasiqTokenResponse: Codable {
+    let access_token: String
+    let token_type: String
+    let expires_in: Int
+}
+
+/// Internal token representation
+private struct BasiqToken {
+    let accessToken: String
+    let expiresIn: Int
+    let createdAt: Date
+    
+    var expiryDate: Date {
+        createdAt.addingTimeInterval(TimeInterval(expiresIn))
+    }
+    
+    var isExpired: Bool {
+        // Consider expired 1 minute before actual expiry for safety
+        Date() >= expiryDate.addingTimeInterval(-60)
+    }
+}

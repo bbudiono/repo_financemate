@@ -43,7 +43,7 @@ final class RBACServiceTests: XCTestCase {
         testUser = User(context: testContext)
         testUser.id = UUID()
         testUser.name = "Test User"
-        testUser.email = "test@example.com"
+        testUser.email = "john.smith@cba.com.au"
         testUser.role = UserRole.owner.rawValue
         testUser.createdAt = Date()
         testUser.isActive = true
@@ -365,7 +365,7 @@ final class RBACServiceTests: XCTestCase {
         let user = User(context: testContext)
         user.id = UUID()
         user.name = "Test User \(role.rawValue)"
-        user.email = "test.\(role.rawValue)@example.com"
+        user.email = "test.\(role.rawValue)@realaustraliandomain.com.au"
         user.role = role.rawValue
         user.createdAt = Date()
         user.isActive = true

@@ -1,0 +1,367 @@
+import Foundation
+import CoreData
+
+/**
+ * Purpose: Comprehensive net wealth calculation and analysis service
+ * Issues & Complexity Summary: Complex financial calculations with historical trend analysis
+ * Key Complexity Drivers:
+ *   - Logic Scope (Est. LoC): ~600
+ *   - Core Algorithm Complexity: High (wealth calculations, performance attribution)
+ *   - Dependencies: Core Data entities, Australian locale compliance
+ *   - State Management Complexity: High (real-time calculations, historical data)
+ *   - Novelty/Uncertainty Factor: Medium (financial calculation accuracy)
+ * AI Pre-Task Self-Assessment: 90%
+ * Problem Estimate: 85% 
+ * Initial Code Complexity Estimate: 90%
+ * Target Coverage: ≥95%
+ * Last Updated: 2025-08-01
+ */
+
+// EMERGENCY FIX: Removed @MainActor to eliminate Swift Concurrency crashes
+public class NetWealthService: ObservableObject {
+    
+    private let context: NSManagedObjectContext
+    private let currencyFormatter: NumberFormatter
+    
+    // MARK: - Initialization
+    
+    public init(context: NSManagedObjectContext) {
+        self.context = context
+        self.currencyFormatter = NumberFormatter()
+        self.currencyFormatter.numberStyle = .currency
+        self.currencyFormatter.currencyCode = "AUD"
+        self.currencyFormatter.locale = Locale(identifier: "en_AU")
+    }
+    
+    // MARK: - Real-time Net Wealth Calculation
+    
+    /// Calculate current net wealth from all assets and liabilities
+    public func calculateCurrentNetWealth() async -> NetWealthResult {
+        do {
+            // Fetch all assets
+            let assetRequest: NSFetchRequest<Asset> = Asset.fetchRequest()
+            let assets = try context.fetch(assetRequest)
+            let totalAssets = assets.reduce(0) { total, asset in
+                total + max(0, asset.currentValue) // Ensure no negative values
+            }
+            
+            // Fetch all liabilities  
+            let liabilityRequest: NSFetchRequest<Liability> = Liability.fetchRequest()
+            let liabilities = try context.fetch(liabilityRequest)
+            let totalLiabilities = liabilities.reduce(0) { total, liability in
+                total + max(0, liability.currentBalance) // Ensure no negative values
+            }
+            
+            let netWealth = totalAssets - totalLiabilities
+            
+            return NetWealthResult(
+                totalAssets: totalAssets,
+                totalLiabilities: totalLiabilities, 
+                netWealth: netWealth,
+                calculatedAt: Date()
+            )
+            
+        } catch {
+            print("Error calculating net wealth: \(error)")
+            return NetWealthResult(
+                totalAssets: 0.0,
+                totalLiabilities: 0.0,
+                netWealth: 0.0,
+                calculatedAt: Date()
+            )
+        }
+    }
+    
+    // MARK: - Historical Trend Analysis
+    
+    /// Get wealth trend data for a given date range
+    public func getWealthTrend(for dateRange: DateRange) async -> [WealthTrendDataPoint] {
+        do {
+            let request: NSFetchRequest<NetWealthSnapshot> = NetWealthSnapshot.fetchRequest()
+            request.predicate = NSPredicate(
+                format: "snapshotDate >= %@ AND snapshotDate <= %@",
+                dateRange.start as NSDate,
+                dateRange.end as NSDate
+            )
+            request.sortDescriptors = [NSSortDescriptor(keyPath: \NetWealthSnapshot.snapshotDate, ascending: true)]
+            
+            let snapshots = try context.fetch(request)
+            
+            return snapshots.map { snapshot in
+                WealthTrendDataPoint(
+                    date: snapshot.snapshotDate,
+                    totalAssets: snapshot.totalAssets,
+                    totalLiabilities: snapshot.totalLiabilities,
+                    netWealth: snapshot.netWealth
+                )
+            }
+            
+        } catch {
+            print("Error fetching wealth trend: \(error)")
+            return []
+        }
+    }
+    
+    /// Calculate wealth growth rate between two dates
+    public func calculateWealthGrowthRate(from startDate: Date, to endDate: Date) async -> Double {
+        do {
+            // Get snapshots closest to the requested dates
+            let startRequest: NSFetchRequest<NetWealthSnapshot> = NetWealthSnapshot.fetchRequest()
+            startRequest.predicate = NSPredicate(format: "snapshotDate <= %@", startDate as NSDate)
+            startRequest.sortDescriptors = [NSSortDescriptor(keyPath: \NetWealthSnapshot.snapshotDate, ascending: false)]
+            startRequest.fetchLimit = 1
+            
+            let endRequest: NSFetchRequest<NetWealthSnapshot> = NetWealthSnapshot.fetchRequest()
+            endRequest.predicate = NSPredicate(format: "snapshotDate <= %@", endDate as NSDate)
+            endRequest.sortDescriptors = [NSSortDescriptor(keyPath: \NetWealthSnapshot.snapshotDate, ascending: false)]
+            endRequest.fetchLimit = 1
+            
+            guard let startSnapshot = try context.fetch(startRequest).first,
+                  let endSnapshot = try context.fetch(endRequest).first,
+                  startSnapshot.netWealth > 0 else {
+                return 0.0
+            }
+            
+            let growthRate = ((endSnapshot.netWealth - startSnapshot.netWealth) / startSnapshot.netWealth) * 100
+            return growthRate
+            
+        } catch {
+            print("Error calculating growth rate: \(error)")
+            return 0.0
+        }
+    }
+    
+    // MARK: - Asset Allocation Analysis
+    
+    /// Get current asset allocation breakdown
+    public func getAssetAllocation() async -> AssetAllocationResult {
+        do {
+            let request: NSFetchRequest<Asset> = Asset.fetchRequest()
+            let assets = try context.fetch(request)
+            
+            let totalValue = assets.reduce(0) { $0 + $1.currentValue }
+            
+            guard totalValue > 0 else {
+                return AssetAllocationResult(allocations: [], totalValue: 0.0)
+            }
+            
+            // Group by asset type
+            var typeValues: [Asset.AssetType: Double] = [:]
+            for asset in assets {
+                let currentValue = typeValues[asset.type] ?? 0.0
+                typeValues[asset.type] = currentValue + asset.currentValue
+            }
+            
+            // Calculate percentages
+            let allocations = typeValues.map { (type, value) in
+                NetWealthAssetAllocation(
+                    assetType: type,
+                    value: value,
+                    percentage: (value / totalValue) * 100
+                )
+            }
+            
+            return AssetAllocationResult(
+                allocations: allocations,
+                totalValue: totalValue
+            )
+            
+        } catch {
+            print("Error calculating asset allocation: \(error)")
+            return AssetAllocationResult(allocations: [], totalValue: 0.0)
+        }
+    }
+    
+    // MARK: - Liability Analysis
+    
+    /// Calculate liability-to-asset ratio
+    public func calculateLiabilityToAssetRatio() async -> Double? {
+        let wealthResult = await calculateCurrentNetWealth()
+        
+        guard wealthResult.totalAssets > 0 else { return nil }
+        
+        return wealthResult.totalLiabilities / wealthResult.totalAssets
+    }
+    
+    // MARK: - Currency Formatting
+    
+    /// Format currency value in Australian dollars
+    public func formatCurrency(_ amount: Double) -> String {
+        return currencyFormatter.string(from: NSNumber(value: amount)) ?? "$0.00"
+    }
+    
+    // MARK: - Snapshot Management
+    
+    /// Create and save a new wealth snapshot
+    public func createWealthSnapshot() async -> NetWealthSnapshot {
+        let wealthResult = await calculateCurrentNetWealth()
+        
+        // Create snapshot - we'll need a default financial entity or create one
+        let entityRequest: NSFetchRequest<FinancialEntity> = FinancialEntity.fetchRequest()
+        entityRequest.fetchLimit = 1
+        
+        let entity: FinancialEntity
+        do {
+            if let existingEntity = try context.fetch(entityRequest).first {
+                entity = existingEntity
+            } else {
+                // Create default personal entity
+                entity = FinancialEntity.create(in: context, name: "Personal", type: FinancialEntity.EntityType.personal)
+            }
+        } catch {
+            // Fallback: create new entity
+            entity = FinancialEntity.create(in: context, name: "Personal", type: FinancialEntity.EntityType.personal)
+        }
+        
+        let snapshot = NetWealthSnapshot.create(
+            in: context,
+            entity: entity,
+            totalAssets: wealthResult.totalAssets,
+            totalLiabilities: wealthResult.totalLiabilities,
+            netWealth: wealthResult.netWealth,
+            snapshotDate: wealthResult.calculatedAt
+        )
+        
+        do {
+            try context.save()
+        } catch {
+            print("Error saving wealth snapshot: \(error)")
+        }
+        
+        return snapshot
+    }
+    
+    // MARK: - Performance Attribution
+    
+    /// Calculate performance attribution by asset type
+    public func calculatePerformanceAttribution(from startDate: Date, to endDate: Date) async -> PerformanceAttribution {
+        do {
+            // Get assets with historical valuations
+            let assetRequest: NSFetchRequest<Asset> = Asset.fetchRequest()
+            let assets = try context.fetch(assetRequest)
+            
+            var contributionsByType: [Asset.AssetType: Double] = [:]
+            var totalGain: Double = 0.0
+            
+            for asset in assets {
+                // Get historical valuation closest to start date
+                let startValuationRequest: NSFetchRequest<AssetValuation> = AssetValuation.fetchRequest()
+                startValuationRequest.predicate = NSPredicate(
+                    format: "asset == %@ AND date <= %@",
+                    asset, startDate as NSDate
+                )
+                startValuationRequest.sortDescriptors = [NSSortDescriptor(keyPath: \AssetValuation.date, ascending: false)]
+                startValuationRequest.fetchLimit = 1
+                
+                // Use current value as end value (or closest to end date)
+                let endValue = asset.currentValue
+                
+                if let startValuation = try context.fetch(startValuationRequest).first {
+                    let gain = endValue - startValuation.value
+                    totalGain += gain
+                    
+                    let currentTypeContribution = contributionsByType[asset.type] ?? 0.0
+                    contributionsByType[asset.type] = currentTypeContribution + gain
+                }
+            }
+            
+            return PerformanceAttribution(
+                totalGain: totalGain,
+                contributionsByType: contributionsByType,
+                periodStart: startDate,
+                periodEnd: endDate
+            )
+            
+        } catch {
+            print("Error calculating performance attribution: \(error)")
+            return PerformanceAttribution(
+                totalGain: 0.0,
+                contributionsByType: [:],
+                periodStart: startDate,
+                periodEnd: endDate
+            )
+        }
+    }
+}
+
+// MARK: - Supporting Data Structures
+
+/// Result of net wealth calculation
+public struct NetWealthResult {
+    public let totalAssets: Double
+    public let totalLiabilities: Double
+    public let netWealth: Double
+    public let calculatedAt: Date
+    
+    public init(totalAssets: Double, totalLiabilities: Double, netWealth: Double, calculatedAt: Date) {
+        self.totalAssets = totalAssets
+        self.totalLiabilities = totalLiabilities
+        self.netWealth = netWealth
+        self.calculatedAt = calculatedAt
+    }
+}
+
+/// Data point for wealth trend analysis
+public struct WealthTrendDataPoint {
+    public let date: Date
+    public let totalAssets: Double
+    public let totalLiabilities: Double
+    public let netWealth: Double
+    
+    public init(date: Date, totalAssets: Double, totalLiabilities: Double, netWealth: Double) {
+        self.date = date
+        self.totalAssets = totalAssets
+        self.totalLiabilities = totalLiabilities
+        self.netWealth = netWealth
+    }
+}
+
+/// Date range for analysis
+public struct DateRange {
+    public let start: Date
+    public let end: Date
+    
+    public init(start: Date, end: Date) {
+        self.start = start
+        self.end = end
+    }
+}
+
+/// Asset allocation for a single asset type
+public struct NetWealthAssetAllocation {
+    public let assetType: Asset.AssetType
+    public let value: Double  
+    public let percentage: Double
+    
+    public init(assetType: Asset.AssetType, value: Double, percentage: Double) {
+        self.assetType = assetType
+        self.value = value
+        self.percentage = percentage
+    }
+}
+
+/// Result of asset allocation analysis
+public struct AssetAllocationResult {
+    public let allocations: [NetWealthAssetAllocation]
+    public let totalValue: Double
+    
+    public init(allocations: [NetWealthAssetAllocation], totalValue: Double) {
+        self.allocations = allocations
+        self.totalValue = totalValue
+    }
+}
+
+/// Performance attribution analysis result
+public struct PerformanceAttribution {
+    public let totalGain: Double
+    public let contributionsByType: [Asset.AssetType: Double]
+    public let periodStart: Date
+    public let periodEnd: Date
+    
+    public init(totalGain: Double, contributionsByType: [Asset.AssetType: Double], periodStart: Date, periodEnd: Date) {
+        self.totalGain = totalGain
+        self.contributionsByType = contributionsByType
+        self.periodStart = periodStart
+        self.periodEnd = periodEnd
+    }
+}

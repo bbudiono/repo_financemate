@@ -6,7 +6,14 @@
 	objectVersion = 63;
 	objects = {
 
-/* Begin PBXBuildFile section */
+/* Begin PBXBuildFile section */		GOOGLEAUTHPROVIDERBUILD25AB /* GoogleAuthProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = GOOGLEAUTHPROVIDER2025AABB /* GoogleAuthProvider.swift */; };
+		APPLEAUTHPROVIDERBUILD25AB /* AppleAuthProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = APPLEAUTHPROVIDER2025AABB /* AppleAuthProvider.swift */; };
+		TOKENSTORAGEBUILD2025AABB /* TokenStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = TOKENSTORAGE2025AABBCCDD /* TokenStorage.swift */; };
+		USERPROFILEMANAGERBUILD25AB /* UserProfileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = USERPROFILEMANAGER2025AABB /* UserProfileManager.swift */; };
+		SESSIONMANAGERBUILD2025AABB /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = SESSIONMANAGER2025AABBCC /* SessionManager.swift */; };
+		AUTHMANAGERBUILD2025AABB /* AuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AUTHMANAGER2025AABBCC /* AuthenticationManager.swift */; };
+		AUTHSTATEBUILD2025MANAGERAABB /* AuthenticationStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AUTHSTATE2025MANAGER2025AABBCC /* AuthenticationStateManager.swift */; };
+
 		132B821DC9AFE622A644C547 /* CoreDataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A7564542A80A706E6E2D11 /* CoreDataTests.swift */; };
 		191A37A084EC09C6530C1BC7 /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B3687C5B96D2D8D3FD5D021 /* Transaction.swift */; };
 		20852594BC4C2DA2D8FC71E9 /* SandboxUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD7F4D7F9BD2D9270B04D26A /* SandboxUITests.swift */; };
@@ -83,7 +90,8 @@
 		SESSIONBUILD2025MODELAABBCC /* UserSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = SESSION001MODEL2025AABBCCDD /* UserSession.swift */; };
 
 			0C910700B6434186BA21775E /* FinancialEntityViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E80A064386044349451977D /* FinancialEntityViewModel.swift */; };
-		0491A4FB569940FEB5690E10 /* FinancialEntityViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C16F2AC4A7984C9297A13B03 /* FinancialEntityViewModelTests.swift */; };
+		0491A4FB569940FEB5690E10 /* FinancialEntityViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C16F2AC4A7984C9297A13B03 /* FinancialEntityViewModelTests.swift */; };		0296343D442F471FBA6D1DA1 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7853DF048EF040568AC2A67B /* LoginView.swift */; };
+
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -117,7 +125,14 @@
 		};
 /* End PBXContainerItemProxy section */
 
-/* Begin PBXFileReference section */
+/* Begin PBXFileReference section */		GOOGLEAUTHPROVIDER2025AABB /* GoogleAuthProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GoogleAuthProvider.swift"; sourceTree = "<group>"; };
+		APPLEAUTHPROVIDER2025AABB /* AppleAuthProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppleAuthProvider.swift"; sourceTree = "<group>"; };
+		TOKENSTORAGE2025AABBCCDD /* TokenStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TokenStorage.swift"; sourceTree = "<group>"; };
+		USERPROFILEMANAGER2025AABB /* UserProfileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileManager.swift; sourceTree = "<group>"; };
+		SESSIONMANAGER2025AABBCC /* SessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionManager.swift; sourceTree = "<group>"; };
+		AUTHMANAGER2025AABBCC /* AuthenticationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationManager.swift; sourceTree = "<group>"; };
+		AUTHSTATE2025MANAGER2025AABBCC /* AuthenticationStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationStateManager.swift; sourceTree = "<group>"; };
+
 		16E5FC92E8729141B4E8A759 /* TransactionsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsViewModelTests.swift; sourceTree = "<group>"; };
 		18A7564542A80A706E6E2D11 /* CoreDataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataTests.swift; sourceTree = "<group>"; };
 		20BCAF7C498E04948893CAE3 /* Transaction+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Transaction+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -170,7 +185,7 @@
 
 			2E80A064386044349451977D /* FinancialEntityViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinancialEntityViewModel.swift; sourceTree = "<group>"; };
 		C16F2AC4A7984C9297A13B03 /* FinancialEntityViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinancialEntityViewModelTests.swift; sourceTree = "<group>"; };
-		AUTH001SERVICE2025AABBCCDD /* AuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationService.swift; sourceTree = "<group>"; };
+		AUTH001SERVICE2025AABBCCDD /* AuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthenticationService.swift"; sourceTree = "<group>"; };
 		NETWEALTH001TEST2025AABBCC /* NetWealthServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetWealthServiceTests.swift; sourceTree = "<group>"; };
 		NETWEALTH002SERVICE2025AABBCC /* NetWealthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetWealthService.swift; sourceTree = "<group>"; };
 		ASSET001COREDATA2025AABBCCDD /* Asset+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Asset+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -189,7 +204,8 @@
 		AUDIT001COREDATA2025AABBCCDD /* AuditLog+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuditLog+CoreDataClass.swift"; sourceTree = "<group>"; };
 		SESSION001MODEL2025AABBCCDD /* UserSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSession.swift; sourceTree = "<group>"; };
 		NETWEALTHDASHVIEW001AABBCC /* NetWealthDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dashboard/NetWealthDashboardView.swift"; sourceTree = "<group>"; };
-		NETWEALTHDASHVM001AABBCC /* NetWealthDashboardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NetWealthDashboardViewModel.swift"; sourceTree = "<group>"; };
+		NETWEALTHDASHVM001AABBCC /* NetWealthDashboardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NetWealthDashboardViewModel.swift"; sourceTree = "<group>"; };		7853DF048EF040568AC2A67B /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -295,6 +311,10 @@
 			isa = PBXGroup;
 			children = (
 				AUTH002VIEWMODEL2025BBCCDDEE /* AuthenticationViewModel.swift */,
+				AUTHSTATE2025MANAGER2025AABBCC /* AuthenticationStateManager.swift */,
+				AUTHMANAGER2025AABBCC /* AuthenticationManager.swift */,
+				SESSIONMANAGER2025AABBCC /* SessionManager.swift */,
+				USERPROFILEMANAGER2025AABB /* UserProfileManager.swift */,
 				4644212388479F3F7BF7B7DE /* DashboardViewModel.swift */,
 				NETWEALTHDASHVM001AABBCC /* NetWealthDashboardViewModel.swift */,
 				ABCDEF0123456789ABCDEF01 /* LineItemViewModel.swift */,
@@ -315,6 +335,7 @@
 				994F717BD0FE4003BE6D8E12 /* AddEditTransactionView.swift */,
 				12A4667FC12C467998B0A1B8 /* TransactionsView.swift */,
 				D930C6316FF88FC1E6BCF1AC /* GlassmorphismModifier.swift */,
+				7853DF048EF040568AC2A67B /* LoginView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -409,6 +430,9 @@
 			isa = PBXGroup;
 			children = (
 				AUTH001SERVICE2025AABBCCDD /* AuthenticationService.swift */,
+				APPLEAUTHPROVIDER2025AABB /* AppleAuthProvider.swift */,
+				GOOGLEAUTHPROVIDER2025AABB /* GoogleAuthProvider.swift */,
+				TOKENSTORAGE2025AABBCCDD /* TokenStorage.swift */,
 				NETWEALTH002SERVICE2025AABBCC /* NetWealthService.swift */,
 			);
 			path = Services;
@@ -632,6 +656,10 @@
 				25E1A4A0009D4E86A514BDE0 /* TransactionsView.swift in Sources */,
 				4F2B70E89AE549E3AEFA2F86 /* AddEditTransactionView.swift in Sources */,
 				AUTHBUILD2025VIEWMODELAABBCC /* AuthenticationViewModel.swift in Sources */,
+				AUTHSTATEBUILD2025MANAGERAABB /* AuthenticationStateManager.swift in Sources */,
+				AUTHMANAGERBUILD2025AABB /* AuthenticationManager.swift in Sources */,
+				SESSIONMANAGERBUILD2025AABB /* SessionManager.swift in Sources */,
+				USERPROFILEMANAGERBUILD25AB /* UserProfileManager.swift in Sources */,
 				2B37EF5E2BA52029B8E507EE /* DashboardViewModel.swift in Sources */,
 				FEDCBA0987654321FEDCBA01 /* LineItemViewModel.swift in Sources */,
 				FEDCBA0987654321FEDCBA02 /* SplitAllocationViewModel.swift in Sources */,
@@ -639,6 +667,9 @@
 				367DABD88FB44283D6A54544 /* TransactionsViewModel.swift in Sources */,
 				2F964B2A58F0EEF8A2F41798 /* FinanceMateApp.swift in Sources */,
 				AUTHBUILD2025SERVICEAABBCCDD /* AuthenticationService.swift in Sources */,
+				APPLEAUTHPROVIDERBUILD25AB /* AppleAuthProvider.swift in Sources */,
+				GOOGLEAUTHPROVIDERBUILD25AB /* GoogleAuthProvider.swift in Sources */,
+			TOKENSTORAGEBUILD2025AABB /* TokenStorage.swift in Sources */,
 				USERBUILD2025COREDATAAABBCC /* User+CoreDataClass.swift in Sources */,
 				USERBUILD2025ROLEBBCCDDEE /* UserRole.swift in Sources */,
 				AUDITBUILD2025COREDATAAABBC /* AuditLog+CoreDataClass.swift in Sources */,

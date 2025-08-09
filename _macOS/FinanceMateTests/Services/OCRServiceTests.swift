@@ -23,7 +23,6 @@ import CoreData
  * Last Updated: 2025-07-08
  */
 
-@MainActor
 final class OCRServiceTests: XCTestCase {
     var ocrService: OCRService!
     var testContext: NSManagedObjectContext!
@@ -42,13 +41,13 @@ final class OCRServiceTests: XCTestCase {
     
     // MARK: - Text Recognition Tests
     
-    func testTextRecognitionAccuracy() async throws {
+    func testTextRecognitionAccuracy() throws {
         // Given: A test receipt image with known text content
         let testImage = createTestReceiptImage()
         let expectedText = "Coffee Shop\n$4.50\nGST $0.45\nTotal $4.95"
         
         // When: Processing the image through OCR
-        let result = try await ocrService.processReceiptImage(testImage)
+        let result = try ocrService.processReceiptImage(testImage)
         
         // Then: Should recognize text with high accuracy
         XCTAssertNotNil(result)
@@ -71,14 +70,14 @@ final class OCRServiceTests: XCTestCase {
         XCTAssertLessThanOrEqual(processedImage.size.height, 1024, "Should resize to optimal height")
     }
     
-    func testConfidenceScoring() async throws {
+    func testConfidenceScoring() throws {
         // Given: Images with different quality levels
         let highQualityImage = createTestReceiptImage()
         let lowQualityImage = createBlurryTestImage()
         
         // When: Processing both images
-        let highQualityResult = try await ocrService.processReceiptImage(highQualityImage)
-        let lowQualityResult = try await ocrService.processReceiptImage(lowQualityImage)
+        let highQualityResult = try ocrService.processReceiptImage(highQualityImage)
+        let lowQualityResult = try ocrService.processReceiptImage(lowQualityImage)
         
         // Then: Confidence scores should reflect image quality
         XCTAssertGreaterThan(highQualityResult.confidence, 0.85, "High quality should have high confidence")
@@ -86,12 +85,12 @@ final class OCRServiceTests: XCTestCase {
         XCTAssertTrue(lowQualityResult.requiresManualReview, "Low confidence should require manual review")
     }
     
-    func testLineItemExtraction() async throws {
+    func testLineItemExtraction() throws {
         // Given: A receipt with multiple line items
         let receiptImage = createMultiLineItemReceiptImage()
         
         // When: Processing the receipt
-        let result = try await ocrService.processReceiptImage(receiptImage)
+        let result = try ocrService.processReceiptImage(receiptImage)
         
         // Then: Should extract individual line items
         XCTAssertGreaterThan(result.lineItems.count, 1, "Should extract multiple line items")
@@ -104,13 +103,13 @@ final class OCRServiceTests: XCTestCase {
     
     // MARK: - Error Handling Tests
     
-    func testErrorHandling() async {
+    func testErrorHandling() {
         // Given: Invalid input scenarios
         let emptyImage = NSImage()
         
         // When/Then: Should handle errors gracefully
         do {
-            _ = try await ocrService.processReceiptImage(emptyImage)
+            _ = try ocrService.processReceiptImage(emptyImage)
             XCTFail("Should throw error for invalid image")
         } catch OCRError.imageProcessingFailed {
             // Expected error
@@ -119,12 +118,12 @@ final class OCRServiceTests: XCTestCase {
         }
     }
     
-    func testLowConfidenceHandling() async throws {
+    func testLowConfidenceHandling() throws {
         // Given: An image that produces low confidence results
         let poorQualityImage = createPoorQualityTestImage()
         
         // When: Processing the image
-        let result = try await ocrService.processReceiptImage(poorQualityImage)
+        let result = try ocrService.processReceiptImage(poorQualityImage)
         
         // Then: Should flag for manual review
         XCTAssertTrue(result.requiresManualReview, "Low confidence should require manual review")
@@ -141,11 +140,11 @@ final class OCRServiceTests: XCTestCase {
         measure {
             let expectation = XCTestExpectation(description: "OCR Processing")
             
-            Task {
-                do {
-                    _ = try await ocrService.processReceiptImage(testImage)
+            // Synchronous execution
+do {
+                    _ = try ocrService.processReceiptImage(testImage)
                     expectation.fulfill()
-                } catch {
+                 catch {
                     XCTFail("Processing failed: \(error)")
                     expectation.fulfill()
                 }
@@ -163,9 +162,9 @@ final class OCRServiceTests: XCTestCase {
         let initialMemory = getMemoryUsage()
         
         for image in largeImages {
-            Task {
-                try? await ocrService.processReceiptImage(image)
-            }
+            // Synchronous execution
+try? ocrService.processReceiptImage(image)
+            
         }
         
         let finalMemory = getMemoryUsage()
@@ -175,20 +174,20 @@ final class OCRServiceTests: XCTestCase {
         XCTAssertLessThan(memoryIncrease, 50_000_000, "Memory usage should stay under 50MB")
     }
     
-    func testConcurrentProcessing() async {
+    func testConcurrentProcessing() {
         // Given: Multiple images to process concurrently
         let testImages = (0..<3).map { _ in createTestReceiptImage() }
         
         // When: Processing concurrently
-        await withTaskGroup(of: OCRResult?.self) { group in
+        withTaskGroup(of: OCRResult?.self) { group in
             for image in testImages {
-                group.addTask {
-                    return try? await self.ocrService.processReceiptImage(image)
-                }
+                group.add// Synchronous execution
+return try? self.ocrService.processReceiptImage(image)
+                
             }
             
             var results: [OCRResult] = []
-            for await result in group {
+            for result in group {
                 if let result = result {
                     results.append(result)
                 }
@@ -205,12 +204,12 @@ final class OCRServiceTests: XCTestCase {
     
     // MARK: - Australian Locale Tests
     
-    func testAustralianCurrencyRecognition() async throws {
+    func testAustralianCurrencyRecognition() throws {
         // Given: An Australian receipt with AUD currency
         let ausReceiptImage = createAustralianReceiptImage()
         
         // When: Processing the receipt
-        let result = try await ocrService.processReceiptImage(ausReceiptImage)
+        let result = try ocrService.processReceiptImage(ausReceiptImage)
         
         // Then: Should recognize Australian currency format
         XCTAssertTrue(result.currencyCode == "AUD", "Should detect AUD currency")
@@ -218,12 +217,12 @@ final class OCRServiceTests: XCTestCase {
         XCTAssertTrue(result.hasGST, "Australian receipts should detect GST")
     }
     
-    func testGSTDetection() async throws {
+    func testGSTDetection() throws {
         // Given: A receipt with GST information
         let gstReceiptImage = createGSTReceiptImage()
         
         // When: Processing the receipt
-        let result = try await ocrService.processReceiptImage(gstReceiptImage)
+        let result = try ocrService.processReceiptImage(gstReceiptImage)
         
         // Then: Should detect and extract GST information
         XCTAssertTrue(result.hasGST, "Should detect GST presence")
@@ -231,12 +230,12 @@ final class OCRServiceTests: XCTestCase {
         XCTAssertEqual(result.gstAmount, result.totalAmount * 0.1 / 1.1, accuracy: 0.01, "GST should be 10% of total")
     }
     
-    func testABNDetection() async throws {
+    func testABNDetection() throws {
         // Given: A business receipt with ABN
         let abnReceiptImage = createABNReceiptImage()
         
         // When: Processing the receipt
-        let result = try await ocrService.processReceiptImage(abnReceiptImage)
+        let result = try ocrService.processReceiptImage(abnReceiptImage)
         
         // Then: Should detect ABN if present
         XCTAssertNotNil(result.merchantABN, "Should detect ABN when present")

@@ -22,7 +22,8 @@ import CoreData
  * Last Updated: 2025-07-06
  */
 
-@MainActor
+// EMERGENCY FIX: Removed to eliminate Swift Concurrency crashes
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
 final class TransactionsViewModelTests: XCTestCase {
     var viewModel: TransactionsViewModel!
     var persistenceController: PersistenceController!

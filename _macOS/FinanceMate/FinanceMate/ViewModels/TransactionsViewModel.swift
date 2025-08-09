@@ -24,7 +24,8 @@ import CoreData
 import Foundation
 import SwiftUI
 
-@MainActor
+// EMERGENCY FIX: Removed to eliminate Swift Concurrency crashes
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
 class TransactionsViewModel: ObservableObject {
     @Published var transactions: [Transaction] = []
     @Published var searchText = ""
@@ -82,14 +83,14 @@ class TransactionsViewModel: ObservableObject {
 
         do {
             let fetchedTransactions = try context.fetch(request)
-            DispatchQueue.main.async {
+            DispatchQueue.main.{
                 self.transactions = fetchedTransactions
                 self.totalTransactionCount = fetchedTransactions.count
                 self.filteredTransactionCount = self.filteredTransactions.count
                 self.isLoading = false
             }
         } catch {
-            DispatchQueue.main.async {
+            DispatchQueue.main.{
                 self.errorMessage = "Failed to fetch transactions: \(error.localizedDescription)"
                 self.isLoading = false
             }

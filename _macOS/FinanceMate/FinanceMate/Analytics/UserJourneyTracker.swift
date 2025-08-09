@@ -232,7 +232,8 @@ struct ActionableInsight {
 
 // MARK: - Main UserJourneyTracker Class
 
-@MainActor
+// EMERGENCY FIX: Removed to eliminate Swift Concurrency crashes
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
 final class UserJourneyTracker: ObservableObject {
     
     // MARK: - Published Properties
@@ -361,7 +362,7 @@ final class UserJourneyTracker: ObservableObject {
     
     // MARK: - Personalized Recommendations
     
-    func generatePersonalizedRecommendations() async -> [PersonalizedRecommendation] {
+    func generatePersonalizedRecommendations() -> [PersonalizedRecommendation] {
         var recommendations: [PersonalizedRecommendation] = []
         
         let userProfile = analyzeUserProfile()
@@ -415,7 +416,7 @@ final class UserJourneyTracker: ObservableObject {
     
     // MARK: - Smart Split Allocation Suggestions
     
-    func suggestSplitAllocations(for transaction: Transaction) async -> [SplitAllocationSuggestion] {
+    func suggestSplitAllocations() -> [SplitAllocationSuggestion] {
         var suggestions: [SplitAllocationSuggestion] = []
         
         let transactionInfo = analyzeTransaction(transaction)
@@ -667,9 +668,9 @@ final class UserJourneyTracker: ObservableObject {
     
     private func setupDataRetentionTimer() {
         Timer.scheduledTimer(withTimeInterval: 86400, repeats: true) { _ in
-            Task { @MainActor in
-                self.applyDataRetentionPolicy(maxAge: TimeInterval(self.dataRetentionDays * 86400))
-            }
+            // EMERGENCY FIX: Removed Task block - immediate execution
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
+        self.applyDataRetentionPolicy(maxAge: TimeInterval(self.dataRetentionDays * 86400))
         }
     }
     

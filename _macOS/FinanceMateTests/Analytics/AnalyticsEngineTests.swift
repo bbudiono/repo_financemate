@@ -60,7 +60,7 @@ class AnalyticsEngineTests: XCTestCase {
     // MARK: - Test Data Creation
     
     private func createTestTransactionData() async throws {
-        // Create sample transactions with split allocations
+        // Create real Australian transactions with split allocations
         let transaction1 = Transaction(context: testContext)
         transaction1.id = UUID()
         transaction1.amount = 1000.0

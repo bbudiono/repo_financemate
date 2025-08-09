@@ -22,7 +22,8 @@ import CoreData
  * Last Updated: 2025-07-07
  */
 
-@MainActor
+// EMERGENCY FIX: Removed to eliminate Swift Concurrency crashes
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
 final class SplitAllocationViewModelTests: XCTestCase {
     var viewModel: SplitAllocationViewModel!
     var persistenceController: PersistenceController!
@@ -103,16 +104,16 @@ final class SplitAllocationViewModelTests: XCTestCase {
     
     // MARK: - CRUD Operation Tests
     
-    func testAddSplitAllocationSuccess() async {
+    func testAddSplitAllocationSuccess() {
         // Given: Valid split allocation data
         viewModel.newSplitPercentage = 60.0
         viewModel.selectedTaxCategory = "Business"
         
         // When: Adding a split allocation
-        await viewModel.addSplitAllocation(to: testLineItem)
+        viewModel.addSplitAllocation(to: testLineItem)
         
         // Then: Split allocation should be created successfully
-        await viewModel.fetchSplitAllocations(for: testLineItem)
+        viewModel.fetchSplitAllocations(for: testLineItem)
         XCTAssertEqual(viewModel.splitAllocations.count, 1, "Should have one split allocation")
         XCTAssertEqual(viewModel.splitAllocations.first?.percentage ?? 0, 60.0, accuracy: 0.01, "Percentage should match")
         XCTAssertEqual(viewModel.splitAllocations.first?.taxCategory, "Business", "Tax category should match")
@@ -121,30 +122,30 @@ final class SplitAllocationViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.errorMessage, "Should have no error")
     }
     
-    func testAddSplitAllocationValidationFailure() async {
+    func testAddSplitAllocationValidationFailure() {
         // Given: Invalid split allocation data (negative percentage)
         viewModel.newSplitPercentage = -10.0
         viewModel.selectedTaxCategory = "Business"
         
         // When: Adding a split allocation
-        await viewModel.addSplitAllocation(to: testLineItem)
+        viewModel.addSplitAllocation(to: testLineItem)
         
         // Then: Should fail validation
         XCTAssertNotNil(viewModel.errorMessage, "Should have validation error")
         XCTAssertTrue(viewModel.errorMessage?.contains("percentage") == true, "Error should mention percentage")
-        await viewModel.fetchSplitAllocations(for: testLineItem)
+        viewModel.fetchSplitAllocations(for: testLineItem)
         XCTAssertEqual(viewModel.splitAllocations.count, 0, "Should have no split allocations")
     }
     
-    func testAddSplitAllocationExceedingTotalPercentage() async {
+    func testAddSplitAllocationExceedingTotalPercentage() {
         // Given: Existing split allocation at 70%
         _ = createTestSplitAllocation(percentage: 70.0, taxCategory: "Business")
-        await viewModel.fetchSplitAllocations(for: testLineItem)
+        viewModel.fetchSplitAllocations(for: testLineItem)
         
         // When: Attempting to add another 50% split (total would be 120%)
         viewModel.newSplitPercentage = 50.0
         viewModel.selectedTaxCategory = "Personal"
-        await viewModel.addSplitAllocation(to: testLineItem)
+        viewModel.addSplitAllocation(to: testLineItem)
         
         // Then: Should fail validation for exceeding 100%
         XCTAssertNotNil(viewModel.errorMessage, "Should have validation error")
@@ -152,41 +153,41 @@ final class SplitAllocationViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.splitAllocations.count, 1, "Should still have only one split allocation")
     }
     
-    func testUpdateSplitAllocationSuccess() async {
+    func testUpdateSplitAllocationSuccess() {
         // Given: An existing split allocation
         let splitAllocation = createTestSplitAllocation(percentage: 50.0, taxCategory: "Business")
-        await viewModel.fetchSplitAllocations(for: testLineItem)
+        viewModel.fetchSplitAllocations(for: testLineItem)
         
         // When: Updating the split allocation
         splitAllocation.percentage = 75.0
         splitAllocation.taxCategory = "Personal"
-        await viewModel.updateSplitAllocation(splitAllocation)
+        viewModel.updateSplitAllocation(splitAllocation)
         
         // Then: Split allocation should be updated
-        await viewModel.fetchSplitAllocations(for: testLineItem)
+        viewModel.fetchSplitAllocations(for: testLineItem)
         XCTAssertEqual(viewModel.splitAllocations.first?.percentage ?? 0, 75.0, accuracy: 0.01, "Percentage should be updated")
         XCTAssertEqual(viewModel.splitAllocations.first?.taxCategory, "Personal", "Tax category should be updated")
         XCTAssertEqual(viewModel.totalPercentage, 75.0, accuracy: 0.01, "Total percentage should be updated")
         XCTAssertNil(viewModel.errorMessage, "Should have no error")
     }
     
-    func testDeleteSplitAllocationSuccess() async {
+    func testDeleteSplitAllocationSuccess() {
         // Given: An existing split allocation
         let splitAllocation = createTestSplitAllocation(percentage: 40.0, taxCategory: "Investment")
-        await viewModel.fetchSplitAllocations(for: testLineItem)
+        viewModel.fetchSplitAllocations(for: testLineItem)
         XCTAssertEqual(viewModel.splitAllocations.count, 1, "Should have one split allocation")
         
         // When: Deleting the split allocation
-        await viewModel.deleteSplitAllocation(splitAllocation)
+        viewModel.deleteSplitAllocation(splitAllocation)
         
         // Then: Split allocation should be deleted
-        await viewModel.fetchSplitAllocations(for: testLineItem)
+        viewModel.fetchSplitAllocations(for: testLineItem)
         XCTAssertEqual(viewModel.splitAllocations.count, 0, "Should have no split allocations")
         XCTAssertEqual(viewModel.totalPercentage, 0.0, accuracy: 0.01, "Total percentage should be zero")
         XCTAssertNil(viewModel.errorMessage, "Should have no error")
     }
     
-    func testFetchSplitAllocationsForLineItem() async {
+    func testFetchSplitAllocationsForLineItem() {
         // Given: Multiple split allocations for different line items
         let otherLineItem = LineItem.create(in: context, itemDescription: "Other Item", amount: 150.0, transaction: testTransaction)
         try! context.save()
@@ -196,7 +197,7 @@ final class SplitAllocationViewModelTests: XCTestCase {
         _ = createTestSplitAllocation(percentage: 100.0, taxCategory: "Investment", lineItem: otherLineItem)
         
         // When: Fetching split allocations for test line item
-        await viewModel.fetchSplitAllocations(for: testLineItem)
+        viewModel.fetchSplitAllocations(for: testLineItem)
         
         // Then: Should only get split allocations for test line item
         XCTAssertEqual(viewModel.splitAllocations.count, 2, "Should have two split allocations for test line item")
@@ -206,10 +207,10 @@ final class SplitAllocationViewModelTests: XCTestCase {
     
     // MARK: - Real-Time Percentage Validation Tests
     
-    func testRealTimePercentageValidation() async {
+    func testRealTimePercentageValidation() {
         // Given: Multiple split allocations
         _ = createMultipleSplits(percentages: [40.0, 35.0], categories: ["Business", "Personal"])
-        await viewModel.fetchSplitAllocations(for: testLineItem)
+        viewModel.fetchSplitAllocations(for: testLineItem)
         
         // When: Checking real-time validation states
         // Then: Should calculate total percentage and validation correctly
@@ -218,10 +219,10 @@ final class SplitAllocationViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.remainingPercentage, 25.0, accuracy: 0.01, "Remaining percentage should be 25%")
     }
     
-    func testPerfectSplitValidation() async {
+    func testPerfectSplitValidation() {
         // Given: Split allocations totaling exactly 100%
         _ = createMultipleSplits(percentages: [60.0, 40.0], categories: ["Business", "Personal"])
-        await viewModel.fetchSplitAllocations(for: testLineItem)
+        viewModel.fetchSplitAllocations(for: testLineItem)
         
         // When: Checking validation
         // Then: Should be perfectly valid
@@ -230,10 +231,10 @@ final class SplitAllocationViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.remainingPercentage, 0.0, accuracy: 0.01, "Remaining percentage should be 0%")
     }
     
-    func testExceedingPercentageValidation() async {
+    func testExceedingPercentageValidation() {
         // Given: Split allocations exceeding 100%
         _ = createMultipleSplits(percentages: [70.0, 50.0], categories: ["Business", "Personal"])
-        await viewModel.fetchSplitAllocations(for: testLineItem)
+        viewModel.fetchSplitAllocations(for: testLineItem)
         
         // When: Checking validation
         // Then: Should be invalid (exceeding 100%)
@@ -242,9 +243,9 @@ final class SplitAllocationViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.remainingPercentage, -20.0, accuracy: 0.01, "Remaining percentage should be -20%")
     }
     
-    func testZeroPercentageValidation() async {
+    func testZeroPercentageValidation() {
         // Given: No split allocations
-        await viewModel.fetchSplitAllocations(for: testLineItem)
+        viewModel.fetchSplitAllocations(for: testLineItem)
         
         // When: Checking validation
         // Then: Should be valid (empty state)
@@ -373,24 +374,24 @@ final class SplitAllocationViewModelTests: XCTestCase {
     
     // MARK: - Loading State Tests
     
-    func testLoadingStatesDuringAdd() async {
+    func testLoadingStatesDuringAdd() {
         // Given: Valid split allocation data
         viewModel.newSplitPercentage = 50.0
         viewModel.selectedTaxCategory = "Business"
         
         // When: Adding split allocation (check loading state changes)
-        let addTask = Task {
-            await viewModel.addSplitAllocation(to: testLineItem)
-        }
+        let addTask = // EMERGENCY FIX: Removed Task block - immediate execution
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
+        viewModel.addSplitAllocation(to: testLineItem)
         
         // Then: Loading state should be managed properly
-        await addTask.value
+        addTask.value
         XCTAssertFalse(viewModel.isLoading, "Loading should be false after completion")
     }
     
     // MARK: - Error Handling Tests
     
-    func testErrorHandlingInvalidLineItem() async {
+    func testErrorHandlingInvalidLineItem() {
         // Given: Invalid line item (nil context)
         let invalidLineItem = LineItem(context: context)
         // Don't save to make it invalid
@@ -399,20 +400,20 @@ final class SplitAllocationViewModelTests: XCTestCase {
         viewModel.selectedTaxCategory = "Business"
         
         // When: Adding split allocation to invalid line item
-        await viewModel.addSplitAllocation(to: invalidLineItem)
+        viewModel.addSplitAllocation(to: invalidLineItem)
         
         // Then: Should handle error gracefully
         XCTAssertNotNil(viewModel.errorMessage, "Should have error message")
         XCTAssertFalse(viewModel.isLoading, "Loading should be false")
     }
     
-    func testErrorHandlingEmptyTaxCategory() async {
+    func testErrorHandlingEmptyTaxCategory() {
         // Given: Valid percentage but empty tax category
         viewModel.newSplitPercentage = 50.0
         viewModel.selectedTaxCategory = ""
         
         // When: Adding split allocation
-        await viewModel.addSplitAllocation(to: testLineItem)
+        viewModel.addSplitAllocation(to: testLineItem)
         
         // Then: Should fail validation
         XCTAssertNotNil(viewModel.errorMessage, "Should have validation error")
@@ -421,15 +422,15 @@ final class SplitAllocationViewModelTests: XCTestCase {
     
     // MARK: - Split Templates and Quick Actions Tests
     
-    func testQuickSplit5050() async {
+    func testQuickSplit5050() {
         // Given: Empty line item
-        await viewModel.fetchSplitAllocations(for: testLineItem)
+        viewModel.fetchSplitAllocations(for: testLineItem)
         
         // When: Applying 50/50 quick split
-        await viewModel.applyQuickSplit(.fiftyFifty, primaryCategory: "Business", secondaryCategory: "Personal", to: testLineItem)
+        viewModel.applyQuickSplit(.fiftyFifty, primaryCategory: "Business", secondaryCategory: "Personal", to: testLineItem)
         
         // Then: Should create two 50% splits
-        await viewModel.fetchSplitAllocations(for: testLineItem)
+        viewModel.fetchSplitAllocations(for: testLineItem)
         XCTAssertEqual(viewModel.splitAllocations.count, 2, "Should have two split allocations")
         
         let businessSplit = viewModel.splitAllocations.first { $0.taxCategory == "Business" }
@@ -443,15 +444,15 @@ final class SplitAllocationViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.isValidSplit, "Split should be valid")
     }
     
-    func testQuickSplit7030() async {
+    func testQuickSplit7030() {
         // Given: Empty line item
-        await viewModel.fetchSplitAllocations(for: testLineItem)
+        viewModel.fetchSplitAllocations(for: testLineItem)
         
         // When: Applying 70/30 quick split
-        await viewModel.applyQuickSplit(.seventyThirty, primaryCategory: "Business", secondaryCategory: "Personal", to: testLineItem)
+        viewModel.applyQuickSplit(.seventyThirty, primaryCategory: "Business", secondaryCategory: "Personal", to: testLineItem)
         
         // Then: Should create 70%/30% splits
-        await viewModel.fetchSplitAllocations(for: testLineItem)
+        viewModel.fetchSplitAllocations(for: testLineItem)
         XCTAssertEqual(viewModel.splitAllocations.count, 2, "Should have two split allocations")
         
         let businessSplit = viewModel.splitAllocations.first { $0.taxCategory == "Business" }
@@ -462,17 +463,17 @@ final class SplitAllocationViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.isValidSplit, "Split should be valid")
     }
     
-    func testClearAllSplits() async {
+    func testClearAllSplits() {
         // Given: Multiple existing split allocations
         _ = createMultipleSplits(percentages: [40.0, 35.0, 25.0], categories: ["Business", "Personal", "Investment"])
-        await viewModel.fetchSplitAllocations(for: testLineItem)
+        viewModel.fetchSplitAllocations(for: testLineItem)
         XCTAssertEqual(viewModel.splitAllocations.count, 3, "Should have three split allocations")
         
         // When: Clearing all splits
-        await viewModel.clearAllSplits(for: testLineItem)
+        viewModel.clearAllSplits(for: testLineItem)
         
         // Then: Should remove all split allocations
-        await viewModel.fetchSplitAllocations(for: testLineItem)
+        viewModel.fetchSplitAllocations(for: testLineItem)
         XCTAssertEqual(viewModel.splitAllocations.count, 0, "Should have no split allocations")
         XCTAssertEqual(viewModel.totalPercentage, 0.0, accuracy: 0.01, "Total percentage should be zero")
         XCTAssertTrue(viewModel.isValidSplit, "Empty state should be valid")
@@ -480,7 +481,7 @@ final class SplitAllocationViewModelTests: XCTestCase {
     
     // MARK: - Performance Tests
     
-    func testPerformanceWithLargeSplitDataset() async {
+    func testPerformanceWithLargeSplitDataset() {
         // Given: Large number of split allocations
         var splitData: [(Double, String)] = []
         for i in 0..<50 {
@@ -494,7 +495,7 @@ final class SplitAllocationViewModelTests: XCTestCase {
             _ = createTestSplitAllocation(percentage: percentage, taxCategory: category)
         }
         
-        await viewModel.fetchSplitAllocations(for: testLineItem)
+        viewModel.fetchSplitAllocations(for: testLineItem)
         
         let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
         
@@ -516,10 +517,10 @@ final class SplitAllocationViewModelTests: XCTestCase {
         XCTAssertTrue(testLineItem.splitAllocations.contains(splitAllocation), "Line item should contain the split allocation")
     }
     
-    func testCascadeDeleteSplitAllocations() async {
+    func testCascadeDeleteSplitAllocations() {
         // Given: Multiple split allocations for a line item
         _ = createMultipleSplits(percentages: [40.0, 60.0], categories: ["Business", "Personal"])
-        await viewModel.fetchSplitAllocations(for: testLineItem)
+        viewModel.fetchSplitAllocations(for: testLineItem)
         XCTAssertEqual(viewModel.splitAllocations.count, 2, "Should have two split allocations")
         
         // When: Deleting the line item

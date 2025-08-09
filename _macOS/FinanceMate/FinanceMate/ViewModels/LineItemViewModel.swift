@@ -28,7 +28,8 @@ struct LineItemData {
 }
 
 /// ViewModel for managing line item operations with Core Data integration
-@MainActor
+// EMERGENCY FIX: Removed to eliminate Swift Concurrency crashes
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
 final class LineItemViewModel: ObservableObject {
 
     // MARK: - Published Properties
@@ -63,7 +64,7 @@ final class LineItemViewModel: ObservableObject {
 
     /// Adds a new line item to the specified transaction
     /// - Parameter transaction: The transaction to add the line item to
-    func addLineItem(to transaction: Transaction) async {
+    func addLineItem(to transaction: Transaction) {
         guard validateNewLineItem() else {
             return
         }
@@ -85,7 +86,7 @@ final class LineItemViewModel: ObservableObject {
             newLineItem = LineItemData()
 
             // Refresh line items
-            await fetchLineItems(for: transaction)
+            fetchLineItems(for: transaction)
 
         } catch {
             errorMessage = "Failed to create line item: \(error.localizedDescription)"
@@ -96,7 +97,7 @@ final class LineItemViewModel: ObservableObject {
 
     /// Updates an existing line item
     /// - Parameter lineItem: The line item to update
-    func updateLineItem(_ lineItem: LineItem) async {
+    func updateLineItem(_ lineItem: LineItem) {
         do {
             isLoading = true
             errorMessage = nil
@@ -111,7 +112,7 @@ final class LineItemViewModel: ObservableObject {
             try context.save()
 
             // Refresh line items to reflect changes
-            await fetchLineItems(for: lineItem.transaction)
+            fetchLineItems(for: lineItem.transaction)
 
         } catch {
             errorMessage = "Failed to update line item: \(error.localizedDescription)"
@@ -122,7 +123,7 @@ final class LineItemViewModel: ObservableObject {
 
     /// Deletes a line item and its associated split allocations
     /// - Parameter lineItem: The line item to delete
-    func deleteLineItem(_ lineItem: LineItem) async {
+    func deleteLineItem(_ lineItem: LineItem) {
         do {
             isLoading = true
             errorMessage = nil
@@ -132,7 +133,7 @@ final class LineItemViewModel: ObservableObject {
             try context.save()
 
             // Refresh line items
-            await fetchLineItems(for: transaction)
+            fetchLineItems(for: transaction)
 
         } catch {
             errorMessage = "Failed to delete line item: \(error.localizedDescription)"
@@ -143,7 +144,7 @@ final class LineItemViewModel: ObservableObject {
 
     /// Fetches all line items for a specific transaction
     /// - Parameter transaction: The transaction to fetch line items for
-    func fetchLineItems(for transaction: Transaction) async {
+    func fetchLineItems(for transaction: Transaction) {
         do {
             isLoading = true
             errorMessage = nil

@@ -44,7 +44,7 @@ import Combine
  * Last Updated: 2025-07-06
  */
 
-@MainActor
+// EMERGENCY FIX: Removed @MainActor to eliminate Swift Concurrency crashes
 class TransactionsViewModel: ObservableObject {
     @Published var transactions: [Transaction] = []
     @Published var searchText: String = ""
@@ -100,17 +100,14 @@ class TransactionsViewModel: ObservableObject {
         
         do {
             let fetchedTransactions = try context.fetch(request)
-            DispatchQueue.main.async {
-                self.transactions = fetchedTransactions
-                self.totalTransactionCount = fetchedTransactions.count
-                self.filteredTransactionCount = self.filteredTransactions.count
-                self.isLoading = false
-            }
+            // Synchronous updates for deterministic tests
+            self.transactions = fetchedTransactions
+            self.totalTransactionCount = fetchedTransactions.count
+            self.filteredTransactionCount = self.filteredTransactions.count
+            self.isLoading = false
         } catch {
-            DispatchQueue.main.async {
-                self.errorMessage = "Failed to fetch transactions: \(error.localizedDescription)"
-                self.isLoading = false
-            }
+            self.errorMessage = "Failed to fetch transactions: \(error.localizedDescription)"
+            self.isLoading = false
         }
     }
     

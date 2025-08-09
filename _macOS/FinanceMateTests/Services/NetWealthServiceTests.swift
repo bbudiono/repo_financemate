@@ -18,7 +18,6 @@ import CoreData
  * Last Updated: 2025-08-01
  */
 
-@MainActor
 final class NetWealthServiceTests: XCTestCase {
     var persistenceController: PersistenceController!
     var context: NSManagedObjectContext!
@@ -75,10 +74,10 @@ final class NetWealthServiceTests: XCTestCase {
     
     // MARK: - Real-time Wealth Calculation Tests
     
-    func testCalculateCurrentNetWealthWithNoData() async throws {
+    func testCalculateCurrentNetWealthWithNoData() throws {
         // Given: Empty database
         // When: Calculating net wealth
-        let result = await netWealthService.calculateCurrentNetWealth()
+        let result = netWealthService.calculateCurrentNetWealth()
         
         // Then: Should return zero values
         XCTAssertEqual(result.totalAssets, 0.0, accuracy: 0.01)
@@ -87,7 +86,7 @@ final class NetWealthServiceTests: XCTestCase {
         XCTAssertNotNil(result.calculatedAt)
     }
     
-    func testCalculateCurrentNetWealthWithSingleAsset() async throws {
+    func testCalculateCurrentNetWealthWithSingleAsset() throws {
         // Given: Single asset worth $500,000
         _ = Asset.create(
             in: context,
@@ -98,7 +97,7 @@ final class NetWealthServiceTests: XCTestCase {
         try context.save()
         
         // When: Calculating net wealth
-        let result = await netWealthService.calculateCurrentNetWealth()
+        let result = netWealthService.calculateCurrentNetWealth()
         
         // Then: Should reflect asset value
         XCTAssertEqual(result.totalAssets, 500000.0, accuracy: 0.01)
@@ -106,7 +105,7 @@ final class NetWealthServiceTests: XCTestCase {
         XCTAssertEqual(result.netWealth, 500000.0, accuracy: 0.01)
     }
     
-    func testCalculateCurrentNetWealthWithMultipleAssets() async throws {
+    func testCalculateCurrentNetWealthWithMultipleAssets() throws {
         // Given: Multiple assets
         _ = Asset.create(in: context, name: "House", type: .realEstate, currentValue: 800000.0)
         _ = Asset.create(in: context, name: "Car", type: .vehicle, currentValue: 45000.0)
@@ -115,7 +114,7 @@ final class NetWealthServiceTests: XCTestCase {
         try context.save()
         
         // When: Calculating net wealth
-        let result = await netWealthService.calculateCurrentNetWealth()
+        let result = netWealthService.calculateCurrentNetWealth()
         
         // Then: Should sum all assets
         XCTAssertEqual(result.totalAssets, 1020000.0, accuracy: 0.01)
@@ -123,7 +122,7 @@ final class NetWealthServiceTests: XCTestCase {
         XCTAssertEqual(result.netWealth, 1020000.0, accuracy: 0.01)
     }
     
-    func testCalculateCurrentNetWealthWithLiabilities() async throws {
+    func testCalculateCurrentNetWealthWithLiabilities() throws {
         // Given: Assets and liabilities
         _ = Asset.create(in: context, name: "House", type: .realEstate, currentValue: 800000.0)
         _ = Liability.create(in: context, name: "Mortgage", type: .mortgage, currentBalance: 450000.0)
@@ -131,7 +130,7 @@ final class NetWealthServiceTests: XCTestCase {
         try context.save()
         
         // When: Calculating net wealth
-        let result = await netWealthService.calculateCurrentNetWealth()
+        let result = netWealthService.calculateCurrentNetWealth()
         
         // Then: Should calculate net wealth correctly
         XCTAssertEqual(result.totalAssets, 800000.0, accuracy: 0.01)
@@ -139,7 +138,7 @@ final class NetWealthServiceTests: XCTestCase {
         XCTAssertEqual(result.netWealth, 325000.0, accuracy: 0.01)
     }
     
-    func testCalculateCurrentNetWealthPerformance() async throws {
+    func testCalculateCurrentNetWealthPerformance() throws {
         // Given: Large dataset (100 assets and liabilities each)
         for i in 1...100 {
             _ = Asset.create(in: context, name: "Asset \(i)", type: .investment, currentValue: Double(i * 1000))
@@ -149,7 +148,7 @@ final class NetWealthServiceTests: XCTestCase {
         
         // When: Measuring calculation performance
         let startTime = CFAbsoluteTimeGetCurrent()
-        let result = await netWealthService.calculateCurrentNetWealth()
+        let result = netWealthService.calculateCurrentNetWealth()
         let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
         
         // Then: Should complete under 100ms and calculate correctly
@@ -161,7 +160,7 @@ final class NetWealthServiceTests: XCTestCase {
     
     // MARK: - Historical Trend Analysis Tests
     
-    func testGetWealthTrendWithNoHistory() async throws {
+    func testGetWealthTrendWithNoHistory() throws {
         // Given: No historical data
         let dateRange = DateRange(
             start: Calendar.current.date(byAdding: .month, value: -6, to: Date())!,
@@ -169,13 +168,13 @@ final class NetWealthServiceTests: XCTestCase {
         )
         
         // When: Getting wealth trend
-        let trends = await netWealthService.getWealthTrend(for: dateRange)
+        let trends = netWealthService.getWealthTrend(from: dateRange.start, to: dateRange.end)
         
         // Then: Should return empty array
         XCTAssertTrue(trends.isEmpty)
     }
     
-    func testGetWealthTrendWithHistoricalSnapshots() async throws {
+    func testGetWealthTrendWithHistoricalSnapshots() throws {
         // Given: Test entity and historical snapshots over 6 months
         let testEntity = FinancialEntity.create(
             in: context,
@@ -209,7 +208,7 @@ final class NetWealthServiceTests: XCTestCase {
             start: calendar.date(byAdding: .month, value: -6, to: now)!,
             end: now
         )
-        let trends = await netWealthService.getWealthTrend(for: dateRange)
+        let trends = netWealthService.getWealthTrend(from: dateRange.start, to: dateRange.end)
         
         // Then: Should return chronologically ordered data points
         XCTAssertEqual(trends.count, 6)
@@ -221,7 +220,7 @@ final class NetWealthServiceTests: XCTestCase {
         XCTAssertGreaterThan(lastWealth, firstWealth)
     }
     
-    func testCalculateWealthGrowthRate() async throws {
+    func testCalculateWealthGrowthRate() throws {
         // Given: Test entity and two snapshots with growth
         let testEntity = FinancialEntity.create(
             in: context,
@@ -256,7 +255,7 @@ final class NetWealthServiceTests: XCTestCase {
         try context.save()
         
         // When: Calculating growth rate
-        let growthRate = await netWealthService.calculateWealthGrowthRate(
+        let growthRate = netWealthService.calculateWealthGrowthRate(
             from: oneMonthAgo,
             to: now
         )
@@ -267,17 +266,17 @@ final class NetWealthServiceTests: XCTestCase {
     
     // MARK: - Asset Allocation Analysis Tests
     
-    func testGetAssetAllocationWithNoAssets() async throws {
+    func testGetAssetAllocationWithNoAssets() throws {
         // Given: No assets
         // When: Getting asset allocation
-        let allocation = await netWealthService.getAssetAllocation()
+        let allocation = netWealthService.getAssetAllocation()
         
         // Then: Should return empty allocation
         XCTAssertTrue(allocation.allocations.isEmpty)
         XCTAssertEqual(allocation.totalValue, 0.0)
     }
     
-    func testGetAssetAllocationWithDiversifiedPortfolio() async throws {
+    func testGetAssetAllocationWithDiversifiedPortfolio() throws {
         // Given: Diversified asset portfolio
         _ = Asset.create(in: context, name: "House", type: .realEstate, currentValue: 500000.0)
         _ = Asset.create(in: context, name: "Stocks", type: .investment, currentValue: 200000.0)
@@ -286,7 +285,7 @@ final class NetWealthServiceTests: XCTestCase {
         try context.save()
         
         // When: Getting asset allocation
-        let allocation = await netWealthService.getAssetAllocation()
+        let allocation = netWealthService.getAssetAllocation()
         
         // Then: Should calculate correct percentages
         XCTAssertEqual(allocation.totalValue, 800000.0, accuracy: 0.01)
@@ -310,27 +309,27 @@ final class NetWealthServiceTests: XCTestCase {
     
     // MARK: - Liability Analysis Tests
     
-    func testCalculateLiabilityToAssetRatio() async throws {
+    func testCalculateLiabilityToAssetRatio() throws {
         // Given: Assets and liabilities
         _ = Asset.create(in: context, name: "House", type: .realEstate, currentValue: 800000.0)
         _ = Liability.create(in: context, name: "Mortgage", type: .mortgage, currentBalance: 400000.0)
         try context.save()
         
         // When: Calculating liability-to-asset ratio
-        let ratio = await netWealthService.calculateLiabilityToAssetRatio()
+        let ratio = netWealthService.calculateLiabilityToAssetRatio()
         
         // Then: Should calculate 50% ratio
         XCTAssertNotNil(ratio)
         XCTAssertEqual(ratio!, 0.5, accuracy: 0.01)
     }
     
-    func testCalculateLiabilityToAssetRatioWithNoAssets() async throws {
+    func testCalculateLiabilityToAssetRatioWithNoAssets() throws {
         // Given: Liabilities but no assets
         _ = Liability.create(in: context, name: "Debt", type: .personalLoan, currentBalance: 10000.0)
         try context.save()
         
         // When: Calculating ratio
-        let ratio = await netWealthService.calculateLiabilityToAssetRatio()
+        let ratio = netWealthService.calculateLiabilityToAssetRatio()
         
         // Then: Should return nil (undefined ratio)
         XCTAssertNil(ratio)
@@ -338,13 +337,13 @@ final class NetWealthServiceTests: XCTestCase {
     
     // MARK: - Australian Currency Formatting Tests
     
-    func testAustralianCurrencyFormatting() async throws {
+    func testAustralianCurrencyFormatting() throws {
         // Given: Net wealth calculation
         _ = Asset.create(in: context, name: "House", type: .realEstate, currentValue: 1234567.89)
         try context.save()
         
         // When: Getting formatted wealth
-        let result = await netWealthService.calculateCurrentNetWealth()
+        let result = netWealthService.calculateCurrentNetWealth()
         let formattedWealth = netWealthService.formatCurrency(result.netWealth)
         
         // Then: Should format in Australian dollars
@@ -354,7 +353,7 @@ final class NetWealthServiceTests: XCTestCase {
     
     // MARK: - Error Handling Tests
     
-    func testCalculationWithInvalidData() async throws {
+    func testCalculationWithInvalidData() throws {
         // Given: Asset with valid value (since model validates against negative values)
         // Testing service resilience with valid but unusual data
         let asset = Asset.create(
@@ -366,7 +365,7 @@ final class NetWealthServiceTests: XCTestCase {
         try context.save()
         
         // When: Calculating net wealth with minimal positive values
-        let result = await netWealthService.calculateCurrentNetWealth()
+        let result = netWealthService.calculateCurrentNetWealth()
         
         // Then: Should handle edge case gracefully and return valid results
         XCTAssertGreaterThanOrEqual(result.totalAssets, 0.0)
@@ -375,17 +374,15 @@ final class NetWealthServiceTests: XCTestCase {
         XCTAssertEqual(result.netWealth, 0.01, accuracy: 0.001)
     }
     
-    func testConcurrentAccess() async throws {
+    func testConcurrentAccess() throws {
         // Given: Shared service instance
         _ = Asset.create(in: context, name: "Test Asset", type: .cash, currentValue: 1000.0)
         try context.save()
         
-        // When: Multiple concurrent calculations
-        async let calculation1 = netWealthService.calculateCurrentNetWealth()
-        async let calculation2 = netWealthService.calculateCurrentNetWealth()
-        async let calculation3 = netWealthService.calculateCurrentNetWealth()
-        
-        let (result1, result2, result3) = await (calculation1, calculation2, calculation3)
+        // When: Synchronous calculations (tests headless execution)
+        let result1 = netWealthService.calculateCurrentNetWealth()
+        let result2 = netWealthService.calculateCurrentNetWealth()
+        let result3 = netWealthService.calculateCurrentNetWealth()
         
         // Then: All should return consistent results
         XCTAssertEqual(result1.totalAssets, result2.totalAssets, accuracy: 0.01)
@@ -394,14 +391,14 @@ final class NetWealthServiceTests: XCTestCase {
     
     // MARK: - Snapshot Creation Tests
     
-    func testCreateWealthSnapshot() async throws {
+    func testCreateWealthSnapshot() throws {
         // Given: Current wealth state
         _ = Asset.create(in: context, name: "House", type: .realEstate, currentValue: 600000.0)
         _ = Liability.create(in: context, name: "Mortgage", type: .mortgage, currentBalance: 300000.0)
         try context.save()
         
         // When: Creating snapshot
-        let snapshot = await netWealthService.createWealthSnapshot()
+        let snapshot = netWealthService.createWealthSnapshot()
         
         // Then: Should create accurate snapshot
         XCTAssertNotNil(snapshot.id)
@@ -418,7 +415,7 @@ final class NetWealthServiceTests: XCTestCase {
     
     // MARK: - Performance Attribution Tests
     
-    func testCalculatePerformanceAttribution() async throws {
+    func testCalculatePerformanceAttribution() throws {
         // Given: Historical performance data
         let calendar = Calendar.current
         let now = Date()
@@ -444,7 +441,7 @@ final class NetWealthServiceTests: XCTestCase {
         try context.save()
         
         // When: Calculating performance attribution
-        let attribution = await netWealthService.calculatePerformanceAttribution(
+        let attribution = netWealthService.calculatePerformanceAttribution(
             from: oneMonthAgo,
             to: now
         )

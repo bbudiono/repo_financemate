@@ -24,7 +24,7 @@ import AppKit
  * Last Updated: 2025-07-08
  */
 
-@MainActor
+// EMERGENCY FIX: Removed @MainActor to eliminate Swift Concurrency crashes
 class OCRViewModel: ObservableObject {
     
     // MARK: - Published Properties
@@ -54,37 +54,37 @@ class OCRViewModel: ObservableObject {
     
     // MARK: - Public Interface
     
-    func processReceiptImage(_ image: NSImage) async {
-        await startProcessing()
+    func processReceiptImage() {
+        startProcessing()
         
         do {
             // Step 1: Preprocessing
-            await updateProcessingStep(.preprocessing, progress: 0.1)
+            updateProcessingStep(.preprocessing, progress: 0.1)
             
             // Step 2: Text Recognition
-            await updateProcessingStep(.textRecognition, progress: 0.3)
-            let ocrResult = try await ocrService.processReceiptImage(image)
+            updateProcessingStep(.textRecognition, progress: 0.3)
+            let ocrResult = try ocrService.processReceiptImage(image)
             
             // Step 3: Data Extraction
-            await updateProcessingStep(.dataExtraction, progress: 0.6)
+            updateProcessingStep(.dataExtraction, progress: 0.6)
             extractedData = ocrResult
             
             // Step 4: Transaction Matching
-            await updateProcessingStep(.transactionMatching, progress: 0.8)
-            matchedTransaction = await transactionMatcher.findMatchingTransaction(for: ocrResult)
+            updateProcessingStep(.transactionMatching, progress: 0.8)
+            matchedTransaction = transactionMatcher.findMatchingTransaction(for: ocrResult)
             
             // Step 5: Determine next action
-            await updateProcessingStep(.completed, progress: 1.0)
+            updateProcessingStep(.completed, progress: 1.0)
             
             if ocrResult.requiresManualReview || ocrResult.confidence < 0.8 {
-                await updateProcessingStep(.reviewRequired, progress: 1.0)
+                updateProcessingStep(.reviewRequired, progress: 1.0)
                 showReviewInterface = true
             }
             
-            await stopProcessing()
+            stopProcessing()
             
         } catch {
-            await handleProcessingError(error)
+            handleProcessingError(error)
         }
     }
     
@@ -163,7 +163,7 @@ class OCRViewModel: ObservableObject {
         extractedData = updatedData
     }
     
-    func createLineItemsFromOCR() async {
+    func createLineItemsFromOCR() {
         guard let transaction = matchedTransaction,
               let ocrData = extractedData,
               !ocrData.lineItems.isEmpty else { return }
@@ -200,27 +200,27 @@ class OCRViewModel: ObservableObject {
     
     // MARK: - Private Methods
     
-    private func startProcessing() async {
+    private func startProcessing() {
         isProcessing = true
         errorMessage = nil
         progress = 0.0
         processingStep = .idle
     }
     
-    private func stopProcessing() async {
+    private func stopProcessing() {
         isProcessing = false
     }
     
-    private func updateProcessingStep(_ step: OCRProcessingStep, progress: Double) async {
+    private func updateProcessingStep() {
         processingStep = step
         self.progress = progress
         
         // Add small delay to show progress visually
-        try? await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
+        try? Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
     }
     
-    private func handleProcessingError(_ error: Error) async {
-        await stopProcessing()
+    private func handleProcessingError() {
+        stopProcessing()
         processingStep = .failed
         
         if let ocrError = error as? OCRError {
@@ -235,14 +235,14 @@ class OCRViewModel: ObservableObject {
 
 extension OCRViewModel {
     
-    func retryProcessing() async {
+    func retryProcessing() {
         guard let lastImage = getLastProcessedImage() else {
             errorMessage = "No image available for retry"
             return
         }
         
         clearResults()
-        await processReceiptImage(lastImage)
+        processReceiptImage(lastImage)
     }
     
     func exportOCRData() -> OCRExportData? {
@@ -367,7 +367,7 @@ enum ValidationResult {
 
 extension OCRViewModel {
     
-    func createTransactionFromOCR() async -> Transaction? {
+    func createTransactionFromOCR() -> Transaction? {
         guard let ocrData = extractedData else { return nil }
         
         let transaction = Transaction.create(

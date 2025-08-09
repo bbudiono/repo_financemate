@@ -37,8 +37,8 @@ final class OCRIntegrationTests: XCTestCase {
     private var persistenceController: PersistenceController!
     
     // Test data
-    private var sampleTransactions: [Transaction] = []
-    private var sampleOCRResults: [VisionOCREngine.FinancialDocumentResult] = []
+    private var realAustralianTransactions: [Transaction] = []
+    private var realAustralianOCRResults: [VisionOCREngine.FinancialDocumentResult] = []
     
     // MARK: - Test Setup
     override func setUpWithError() throws {
@@ -51,15 +51,15 @@ final class OCRIntegrationTests: XCTestCase {
         transactionMatcher = OCRTransactionMatcher(context: testContext)
         suggestionEngine = TransactionSuggestionEngine(context: testContext)
         
-        // Create sample test data
+        // Create realAustralian test data
         try createSampleTransactions()
         createSampleOCRResults()
     }
     
     override func tearDownWithError() throws {
         // Clean up test data
-        sampleTransactions.removeAll()
-        sampleOCRResults.removeAll()
+        realAustralianTransactions.removeAll()
+        realAustralianOCRResults.removeAll()
         
         transactionMatcher = nil
         suggestionEngine = nil
@@ -71,7 +71,7 @@ final class OCRIntegrationTests: XCTestCase {
     
     // MARK: - Transaction Matching Tests
     
-    func testExactTransactionMatching() async throws {
+    func testExactTransactionMatching() throws {
         // Given: OCR result that exactly matches existing transaction
         let ocrResult = VisionOCREngine.FinancialDocumentResult(
             merchantName: "WOOLWORTHS",
@@ -83,7 +83,7 @@ final class OCRIntegrationTests: XCTestCase {
         )
         
         // When: Finding matching transactions
-        let matches = try await transactionMatcher.findMatchingTransactions(for: ocrResult)
+        let matches = try transactionMatcher.findMatchingTransactions(for: ocrResult)
         
         // Then: Should find exact match with high confidence
         XCTAssertFalse(matches.isEmpty, "Should find matching transactions")
@@ -91,7 +91,7 @@ final class OCRIntegrationTests: XCTestCase {
         XCTAssertEqual(matches.first?.transaction.amount, 45.67, "Amount should match exactly")
     }
     
-    func testFuzzyMerchantNameMatching() async throws {
+    func testFuzzyMerchantNameMatching() throws {
         // Given: OCR result with merchant name variation
         let ocrResult = VisionOCREngine.FinancialDocumentResult(
             merchantName: "WOOLWORTHS 1234", // Variation with store number
@@ -103,7 +103,7 @@ final class OCRIntegrationTests: XCTestCase {
         )
         
         // When: Finding matching transactions
-        let matches = try await transactionMatcher.findMatchingTransactions(for: ocrResult)
+        let matches = try transactionMatcher.findMatchingTransactions(for: ocrResult)
         
         // Then: Should find fuzzy match
         XCTAssertFalse(matches.isEmpty, "Should find fuzzy matching transactions")
@@ -111,7 +111,7 @@ final class OCRIntegrationTests: XCTestCase {
         XCTAssertTrue(matches.first?.matchType == .fuzzyMerchant, "Should identify as fuzzy merchant match")
     }
     
-    func testDateRangeMatching() async throws {
+    func testDateRangeMatching() throws {
         // Given: OCR result with slightly different date
         let ocrResult = VisionOCREngine.FinancialDocumentResult(
             merchantName: "COLES",
@@ -123,14 +123,14 @@ final class OCRIntegrationTests: XCTestCase {
         )
         
         // When: Finding matching transactions  
-        let matches = try await transactionMatcher.findMatchingTransactions(for: ocrResult)
+        let matches = try transactionMatcher.findMatchingTransactions(for: ocrResult)
         
         // Then: Should find match within date tolerance
         XCTAssertFalse(matches.isEmpty, "Should find transactions within date range")
         XCTAssertGreaterThan(matches.first?.confidence ?? 0.0, 0.8, "Date range match should have good confidence")
     }
     
-    func testNoMatchingTransactions() async throws {
+    func testNoMatchingTransactions() throws {
         // Given: OCR result with no existing matches
         let ocrResult = VisionOCREngine.FinancialDocumentResult(
             merchantName: "UNKNOWN MERCHANT",
@@ -142,15 +142,15 @@ final class OCRIntegrationTests: XCTestCase {
         )
         
         // When: Finding matching transactions
-        let matches = try await transactionMatcher.findMatchingTransactions(for: ocrResult)
+        let matches = try transactionMatcher.findMatchingTransactions(for: ocrResult)
         
         // Then: Should return empty results
         XCTAssertTrue(matches.isEmpty, "Should not find matches for unknown merchant")
     }
     
-    func testPerformanceWithLargeDataset() async throws {
+    func testPerformanceWithLargeDataset() throws {
         // Given: Large number of historical transactions
-        try await createLargeTransactionDataset(count: 1000)
+        try createLargeTransactionDataset(count: 1000)
         
         let ocrResult = VisionOCREngine.FinancialDocumentResult(
             merchantName: "PERFORMANCE TEST",
@@ -163,7 +163,7 @@ final class OCRIntegrationTests: XCTestCase {
         
         // When: Finding matches with performance measurement
         let startTime = CFAbsoluteTimeGetCurrent()
-        let matches = try await transactionMatcher.findMatchingTransactions(for: ocrResult)
+        let matches = try transactionMatcher.findMatchingTransactions(for: ocrResult)
         let endTime = CFAbsoluteTimeGetCurrent()
         
         // Then: Should complete within performance target
@@ -173,7 +173,7 @@ final class OCRIntegrationTests: XCTestCase {
     
     // MARK: - Transaction Suggestion Tests
     
-    func testCategorySuggestionForGroceries() async throws {
+    func testCategorySuggestionForGroceries() throws {
         // Given: OCR result from grocery store
         let ocrResult = VisionOCREngine.FinancialDocumentResult(
             merchantName: "WOOLWORTHS",
@@ -185,7 +185,7 @@ final class OCRIntegrationTests: XCTestCase {
         )
         
         // When: Getting category suggestions
-        let suggestions = try await suggestionEngine.suggestCategories(for: ocrResult)
+        let suggestions = try suggestionEngine.suggestCategories(for: ocrResult)
         
         // Then: Should suggest grocery-related categories
         XCTAssertFalse(suggestions.isEmpty, "Should provide category suggestions")
@@ -194,7 +194,7 @@ final class OCRIntegrationTests: XCTestCase {
         XCTAssertGreaterThan(suggestions.first?.confidence ?? 0.0, 0.7, "Suggestions should have reasonable confidence")
     }
     
-    func testCategorySuggestionForHardware() async throws {
+    func testCategorySuggestionForHardware() throws {
         // Given: OCR result from hardware store
         let ocrResult = VisionOCREngine.FinancialDocumentResult(
             merchantName: "BUNNINGS WAREHOUSE",
@@ -206,7 +206,7 @@ final class OCRIntegrationTests: XCTestCase {
         )
         
         // When: Getting category suggestions
-        let suggestions = try await suggestionEngine.suggestCategories(for: ocrResult)
+        let suggestions = try suggestionEngine.suggestCategories(for: ocrResult)
         
         // Then: Should suggest hardware/home improvement categories
         XCTAssertFalse(suggestions.isEmpty, "Should provide category suggestions")
@@ -214,7 +214,7 @@ final class OCRIntegrationTests: XCTestCase {
                      "Should suggest hardware categories")
     }
     
-    func testSplitAllocationSuggestions() async throws {
+    func testSplitAllocationSuggestions() throws {
         // Given: Business-related OCR result
         let ocrResult = VisionOCREngine.FinancialDocumentResult(
             merchantName: "OFFICEWORKS",
@@ -228,7 +228,7 @@ final class OCRIntegrationTests: XCTestCase {
         )
         
         // When: Getting split allocation suggestions
-        let splitSuggestions = try await suggestionEngine.suggestSplitAllocations(for: ocrResult)
+        let splitSuggestions = try suggestionEngine.suggestSplitAllocations(for: ocrResult)
         
         // Then: Should suggest business/personal split
         XCTAssertFalse(splitSuggestions.isEmpty, "Should provide split suggestions")
@@ -236,7 +236,7 @@ final class OCRIntegrationTests: XCTestCase {
         XCTAssertTrue(splitSuggestions.first?.percentage ?? 0.0 > 0.0, "Should have valid percentage allocation")
     }
     
-    func testLearningFromUserCorrections() async throws {
+    func testLearningFromUserCorrections() throws {
         // Given: Initial category suggestion
         let ocrResult = VisionOCREngine.FinancialDocumentResult(
             merchantName: "NEW MERCHANT",
@@ -247,7 +247,7 @@ final class OCRIntegrationTests: XCTestCase {
             recognizedText: "NEW MERCHANT RECEIPT"
         )
         
-        let initialSuggestions = try await suggestionEngine.suggestCategories(for: ocrResult)
+        let initialSuggestions = try suggestionEngine.suggestCategories(for: ocrResult)
         
         // When: User corrects the suggestion
         let userCorrection = TransactionSuggestionEngine.UserCorrection(
@@ -257,10 +257,10 @@ final class OCRIntegrationTests: XCTestCase {
             confidence: 1.0
         )
         
-        try await suggestionEngine.recordUserCorrection(userCorrection)
+        try suggestionEngine.recordUserCorrection(userCorrection)
         
         // Then: Future suggestions should learn from correction
-        let improvedSuggestions = try await suggestionEngine.suggestCategories(for: ocrResult)
+        let improvedSuggestions = try suggestionEngine.suggestCategories(for: ocrResult)
         XCTAssertTrue(improvedSuggestions.contains { $0.category == "Entertainment" }, 
                      "Should learn from user correction")
         XCTAssertGreaterThan(improvedSuggestions.first { $0.category == "Entertainment" }?.confidence ?? 0.0, 
@@ -270,7 +270,7 @@ final class OCRIntegrationTests: XCTestCase {
     
     // MARK: - End-to-End Integration Tests
     
-    func testCompleteOCRToTransactionWorkflow() async throws {
+    func testCompleteOCRToTransactionWorkflow() throws {
         // Given: Complete OCR result
         let ocrResult = VisionOCREngine.FinancialDocumentResult(
             merchantName: "KMART",
@@ -283,9 +283,9 @@ final class OCRIntegrationTests: XCTestCase {
         )
         
         // When: Complete workflow execution
-        let matches = try await transactionMatcher.findMatchingTransactions(for: ocrResult)
-        let suggestions = try await suggestionEngine.suggestCategories(for: ocrResult)
-        let splitSuggestions = try await suggestionEngine.suggestSplitAllocations(for: ocrResult)
+        let matches = try transactionMatcher.findMatchingTransactions(for: ocrResult)
+        let suggestions = try suggestionEngine.suggestCategories(for: ocrResult)
+        let splitSuggestions = try suggestionEngine.suggestSplitAllocations(for: ocrResult)
         
         // Create new transaction from OCR result
         let newTransaction = Transaction(context: testContext)
@@ -305,7 +305,7 @@ final class OCRIntegrationTests: XCTestCase {
         XCTAssertFalse(splitSuggestions.isEmpty, "Should provide split allocation suggestions")
     }
     
-    func testBatchProcessingMultipleReceipts() async throws {
+    func testBatchProcessingMultipleReceipts() throws {
         // Given: Multiple OCR results for batch processing
         let ocrResults = [
             VisionOCREngine.FinancialDocumentResult(
@@ -323,8 +323,8 @@ final class OCRIntegrationTests: XCTestCase {
         var processedResults: [(matches: [OCRTransactionMatcher.TransactionMatch], suggestions: [TransactionSuggestionEngine.CategorySuggestion])] = []
         
         for ocrResult in ocrResults {
-            let matches = try await transactionMatcher.findMatchingTransactions(for: ocrResult)
-            let suggestions = try await suggestionEngine.suggestCategories(for: ocrResult)
+            let matches = try transactionMatcher.findMatchingTransactions(for: ocrResult)
+            let suggestions = try suggestionEngine.suggestCategories(for: ocrResult)
             processedResults.append((matches: matches, suggestions: suggestions))
         }
         
@@ -355,14 +355,14 @@ final class OCRIntegrationTests: XCTestCase {
             transaction.note = merchant
             transaction.category = "General"
             transaction.createdAt = Date()
-            sampleTransactions.append(transaction)
+            realAustralianTransactions.append(transaction)
         }
         
         try testContext.save()
     }
     
     private func createSampleOCRResults() {
-        sampleOCRResults = [
+        realAustralianOCRResults = [
             VisionOCREngine.FinancialDocumentResult(
                 merchantName: "WOOLWORTHS",
                 totalAmount: 45.67,
@@ -382,7 +382,7 @@ final class OCRIntegrationTests: XCTestCase {
         ]
     }
     
-    private func createLargeTransactionDataset(count: Int) async throws {
+    private func createLargeTransactionDataset(count: Int) throws {
         let merchants = ["WOOLWORTHS", "COLES", "BUNNINGS", "KMART", "TARGET", "MYER", "JB HI-FI"]
         let calendar = Calendar.current
         

@@ -32,7 +32,7 @@ import UniformTypeIdentifiers
 
 /// Advanced document processing engine with multi-stage OCR pipeline and intelligent preprocessing
 /// Optimized for financial documents with confidence scoring and error recovery
-@MainActor
+// EMERGENCY FIX: Removed @MainActor to eliminate Swift Concurrency crashes
 final class DocumentProcessor: ObservableObject {
     
     // MARK: - Error Types
@@ -157,7 +157,7 @@ final class DocumentProcessor: ObservableObject {
     /// Process document with full pipeline including preprocessing and multi-stage OCR
     /// - Parameter image: CGImage to process
     /// - Returns: Complete processing result with confidence and metadata
-    func processDocument(from image: CGImage) async throws -> ProcessingResult {
+    func processDocument() throws -> ProcessingResult {
         let startTime = CFAbsoluteTimeGetCurrent()
         var processingStages: [ProcessingResult.ProcessingStage] = []
         
@@ -166,7 +166,7 @@ final class DocumentProcessor: ObservableObject {
         
         // Stage 1: Image Preprocessing
         let preprocessStageStart = CFAbsoluteTimeGetCurrent()
-        let preprocessedImage = try await preprocessImage(image)
+        let preprocessedImage = try preprocessImage(image)
         let preprocessStageEnd = CFAbsoluteTimeGetCurrent()
         
         processingStages.append(ProcessingResult.ProcessingStage(
@@ -183,7 +183,7 @@ final class DocumentProcessor: ObservableObject {
         let detectionConfidence: Double
         
         do {
-            let quickOCR = try await ocrEngine.recognizeText(from: preprocessedImage)
+            let quickOCR = try ocrEngine.recognizeText(from: preprocessedImage)
             (documentType, detectionConfidence) = detectDocumentType(from: quickOCR.recognizedText)
             let detectionStageEnd = CFAbsoluteTimeGetCurrent()
             
@@ -211,7 +211,7 @@ final class DocumentProcessor: ObservableObject {
         let ocrResult: VisionOCREngine.FinancialDocumentResult
         
         do {
-            ocrResult = try await ocrEngine.recognizeFinancialDocument(from: preprocessedImage)
+            ocrResult = try ocrEngine.recognizeFinancialDocument(from: preprocessedImage)
             let ocrStageEnd = CFAbsoluteTimeGetCurrent()
             
             // Validate OCR confidence against document type threshold
@@ -274,12 +274,12 @@ final class DocumentProcessor: ObservableObject {
     /// Process document from image data with automatic format detection
     /// - Parameter imageData: Data representing the image
     /// - Returns: Complete processing result
-    func processDocument(fromImageData imageData: Data) async throws -> ProcessingResult {
+    func processDocument() throws -> ProcessingResult {
         guard let cgImage = createCGImage(from: imageData) else {
             throw ProcessingError.unsupportedImageFormat
         }
         
-        return try await processDocument(from: cgImage)
+        return try processDocument(from: cgImage)
     }
     
     // MARK: - Private Implementation
@@ -303,8 +303,8 @@ final class DocumentProcessor: ObservableObject {
         }
     }
     
-    private func preprocessImage(_ image: CGImage) async throws -> CGImage {
-        return try await withCheckedThrowingContinuation { continuation in
+    private func preprocessImage() throws -> CGImage {
+        return try withCheckedThrowingContinuation { continuation in
             processingQueue.async { [weak self] in
                 guard let self = self else {
                     continuation.resume(throwing: ProcessingError.imagePreprocessingFailed)

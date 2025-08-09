@@ -30,7 +30,7 @@ import NaturalLanguage
 
 /// Intelligent suggestion engine for transaction categorization and split allocation
 /// Uses machine learning and pattern recognition to provide accurate financial categorization
-@MainActor
+// EMERGENCY FIX: Removed @MainActor to eliminate Swift Concurrency crashes
 final class TransactionSuggestionEngine: ObservableObject {
     
     // MARK: - Suggestion Types
@@ -162,9 +162,8 @@ final class TransactionSuggestionEngine: ObservableObject {
         self.nlTagger = NLTagger(tagSchemes: [.nameTypeOrLexicalClass, .tokenType])
         
         // Initialize patterns from historical data
-        Task {
-            await loadHistoricalPatterns()
-        }
+        // EMERGENCY FIX: Removed Task block - immediate execution
+        loadHistoricalPatterns()
     }
     
     // MARK: - Public Interface
@@ -172,12 +171,12 @@ final class TransactionSuggestionEngine: ObservableObject {
     /// Generate category suggestions for OCR result
     /// - Parameter ocrResult: Financial document OCR result
     /// - Returns: Array of category suggestions sorted by confidence
-    func suggestCategories(for ocrResult: VisionOCREngine.FinancialDocumentResult) async throws -> [CategorySuggestion] {
+    func suggestCategories() throws -> [CategorySuggestion] {
         var suggestions: [CategorySuggestion] = []
         
         // 1. Merchant-based suggestions
         if let merchantName = ocrResult.merchantName {
-            let merchantSuggestions = await generateMerchantBasedSuggestions(merchantName: merchantName)
+            let merchantSuggestions = generateMerchantBasedSuggestions(merchantName: merchantName)
             suggestions.append(contentsOf: merchantSuggestions)
         }
         
@@ -188,7 +187,7 @@ final class TransactionSuggestionEngine: ObservableObject {
         }
         
         // 3. Historical pattern suggestions
-        let historicalSuggestions = await generateHistoricalSuggestions(for: ocrResult)
+        let historicalSuggestions = generateHistoricalSuggestions(for: ocrResult)
         suggestions.append(contentsOf: historicalSuggestions)
         
         // 4. User learning suggestions
@@ -216,7 +215,7 @@ final class TransactionSuggestionEngine: ObservableObject {
     /// Generate split allocation suggestions for business/personal categorization
     /// - Parameter ocrResult: Financial document OCR result
     /// - Returns: Array of split allocation suggestions
-    func suggestSplitAllocations(for ocrResult: VisionOCREngine.FinancialDocumentResult) async throws -> [SplitAllocationSuggestion] {
+    func suggestSplitAllocations() throws -> [SplitAllocationSuggestion] {
         var splitSuggestions: [SplitAllocationSuggestion] = []
         
         guard let merchantName = ocrResult.merchantName else {
@@ -282,13 +281,13 @@ final class TransactionSuggestionEngine: ObservableObject {
     
     /// Record user correction for learning purposes
     /// - Parameter correction: User correction data
-    func recordUserCorrection(_ correction: UserCorrection) async throws {
+    func recordUserCorrection() throws {
         guard configuration.enableLearning else { return }
         
         userCorrections.append(correction)
         
         // Update merchant patterns with user feedback
-        await updateMerchantPattern(
+        updateMerchantPattern(
             merchant: correction.merchantName,
             category: correction.correctedCategory,
             confidence: correction.confidence
@@ -313,7 +312,7 @@ final class TransactionSuggestionEngine: ObservableObject {
     
     // MARK: - Private Implementation
     
-    private func generateMerchantBasedSuggestions(merchantName: String) async -> [CategorySuggestion] {
+    private func generateMerchantBasedSuggestions() -> [CategorySuggestion] {
         let normalizedMerchant = normalizeMerchantName(merchantName)
         var suggestions: [CategorySuggestion] = []
         
@@ -366,7 +365,7 @@ final class TransactionSuggestionEngine: ObservableObject {
         return suggestions
     }
     
-    private func generateHistoricalSuggestions(for ocrResult: VisionOCREngine.FinancialDocumentResult) async -> [CategorySuggestion] {
+    private func generateHistoricalSuggestions() -> [CategorySuggestion] {
         guard let merchantName = ocrResult.merchantName else { return [] }
         
         // Fetch similar historical transactions
@@ -578,13 +577,13 @@ final class TransactionSuggestionEngine: ObservableObject {
         }
     }
     
-    private func loadHistoricalPatterns() async {
+    private func loadHistoricalPatterns() {
         // In production, this would load from Core Data
         // For now, we'll use the empty initialization
         merchantPatterns = [:]
     }
     
-    private func updateMerchantPattern(merchant: String, category: String, confidence: Double) async {
+    private func updateMerchantPattern() {
         let normalizedMerchant = normalizeMerchantName(merchant)
         
         if var existingPattern = merchantPatterns[normalizedMerchant] {

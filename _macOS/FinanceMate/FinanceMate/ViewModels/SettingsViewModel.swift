@@ -22,7 +22,8 @@ import SwiftUI
  * Last Updated: 2025-07-05
  */
 
-@MainActor
+// EMERGENCY FIX: Removed to eliminate Swift Concurrency crashes
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
 class SettingsViewModel: ObservableObject {
 
     // MARK: - Published Properties

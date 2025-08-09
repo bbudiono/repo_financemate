@@ -1,0 +1,199 @@
+// SANDBOX FILE: For testing/development. See .cursorrules.
+
+import XCTest
+import CoreData
+@testable import FinanceMate_Sandbox
+
+/*
+ * Purpose: Test suite for AI-powered chatbot/MLACS system - MANDATORY BLUEPRINT requirement
+ * Issues & Complexity Summary: Test conversational AI, natural language processing, agentic control
+ * Key Complexity Drivers:
+   - Logic Scope (Est. LoC): ~300 test cases
+   - Core Algorithm Complexity: High (AI/ML testing, conversation flow)
+   - Dependencies: Core Data, AI services, natural language processing
+   - State Management Complexity: High (conversation state, context management)
+   - Novelty/Uncertainty Factor: High (AI chatbot testing patterns)
+ * AI Pre-Task Self-Assessment: 85%
+ * Problem Estimate: 90%
+ * Initial Code Complexity Estimate: 88%
+ * Final Code Complexity: TBD
+ * Overall Result Score: TBD
+ * Key Variances/Learnings: TBD
+ * Last Updated: 2025-08-08
+ */
+
+final class ChatbotViewModelTests: XCTestCase {
+    
+    var chatbotViewModel: ChatbotViewModel!
+    var mockContext: NSManagedObjectContext!
+    
+    override func setUpWithError() throws {
+        try super.setUpWithError()
+        
+        // Create in-memory Core Data stack for testing
+        let container = NSPersistentContainer(name: "TestDataModel")
+        let description = NSPersistentStoreDescription()
+        description.type = NSInMemoryStoreType
+        container.persistentStoreDescriptions = [description]
+        
+        container.loadPersistentStores { _, error in
+            XCTAssertNil(error)
+        }
+        
+        mockContext = container.viewContext
+        chatbotViewModel = ChatbotViewModel(context: mockContext)
+    }
+    
+    override func tearDownWithError() throws {
+        chatbotViewModel = nil
+        mockContext = nil
+        try super.tearDownWithError()
+    }
+    
+    // MARK: - Basic Functionality Tests
+    
+    func testChatbotInitialization() {
+        XCTAssertNotNil(chatbotViewModel)
+        XCTAssertTrue(chatbotViewModel.messages.isEmpty)
+        XCTAssertFalse(chatbotViewModel.isProcessing)
+        XCTAssertTrue(chatbotViewModel.isDrawerVisible)
+    }
+    
+    func testSendMessage() throws {
+        let testMessage = "Hello, can you provide a summary of my expenses?"
+        
+        chatbotViewModel.sendMessage(testMessage)
+        
+        XCTAssertEqual(chatbotViewModel.messages.count, 2) // User message + AI response
+        XCTAssertEqual(chatbotViewModel.messages.first?.content, testMessage)
+        XCTAssertEqual(chatbotViewModel.messages.first?.role, .user)
+        XCTAssertEqual(chatbotViewModel.messages.last?.role, .assistant)
+        XCTAssertFalse(chatbotViewModel.isProcessing)
+    }
+    
+    func testToggleDrawerVisibility() {
+        let initialVisibility = chatbotViewModel.isDrawerVisible
+        
+        chatbotViewModel.toggleDrawer()
+        
+        XCTAssertNotEqual(chatbotViewModel.isDrawerVisible, initialVisibility)
+    }
+    
+    // MARK: - Natural Language Processing Tests
+    
+    func testExpenseReportQuery() throws {
+        let query = "Please provide a summary expense report for last financial year"
+        
+        chatbotViewModel.sendMessage(query)
+        
+        let response = chatbotViewModel.messages.last
+        XCTAssertNotNil(response)
+        XCTAssertEqual(response?.role, .assistant)
+        XCTAssertTrue(response?.content.contains("expense") == true)
+        XCTAssertTrue(response?.hasData == true)
+    }
+    
+    func testPropertyInvestmentExclusionQuery() throws {
+        let query = "Can you provide the same report if we exclude costs/expenses that are related to our property investments?"
+        
+        chatbotViewModel.sendMessage(query)
+        
+        let response = chatbotViewModel.messages.last
+        XCTAssertNotNil(response)
+        XCTAssertEqual(response?.role, .assistant)
+        XCTAssertTrue(response?.content.contains("property") == true)
+        XCTAssertTrue(response?.hasData == true)
+    }
+    
+    // MARK: - Agentic Control Tests
+    
+    func testCreateTransactionCommand() throws {
+        let command = "Create a new transaction for $50 coffee expense"
+        
+        chatbotViewModel.sendMessage(command)
+        
+        let response = chatbotViewModel.messages.last
+        XCTAssertNotNil(response)
+        XCTAssertEqual(response?.role, .assistant)
+        XCTAssertTrue(response?.actionType == .createTransaction)
+        XCTAssertNotNil(response?.actionData)
+    }
+    
+    func testGenerateReportCommand() throws {
+        let command = "Generate a monthly expense report for July 2025"
+        
+        chatbotViewModel.sendMessage(command)
+        
+        let response = chatbotViewModel.messages.last
+        XCTAssertNotNil(response)
+        XCTAssertEqual(response?.role, .assistant)
+        XCTAssertTrue(response?.actionType == .generateReport)
+        XCTAssertNotNil(response?.actionData)
+    }
+    
+    // MARK: - Context Awareness Tests
+    
+    func testContextAwareness() throws {
+        // First, ask about transactions
+        chatbotViewModel.sendMessage("Show me my recent transactions")
+        
+        // Then ask a follow-up that requires context
+        chatbotViewModel.sendMessage("What's the total amount?")
+        
+        let response = chatbotViewModel.messages.last
+        XCTAssertNotNil(response)
+        XCTAssertTrue(response?.content.contains("total") == true)
+        XCTAssertTrue(chatbotViewModel.conversationContext.count > 0)
+    }
+    
+    // MARK: - Error Handling Tests
+    
+    func testEmptyMessageHandling() throws {
+        chatbotViewModel.sendMessage("")
+        
+        XCTAssertEqual(chatbotViewModel.messages.count, 0)
+        XCTAssertFalse(chatbotViewModel.isProcessing)
+    }
+    
+    func testNetworkErrorHandling() throws {
+        // Simulate network error
+        chatbotViewModel.simulateNetworkError = true
+        
+        chatbotViewModel.sendMessage("Test message")
+        
+        let response = chatbotViewModel.messages.last
+        XCTAssertNotNil(response)
+        XCTAssertEqual(response?.role, .assistant)
+        XCTAssertTrue(response?.content.contains("error") == true)
+    }
+    
+    // MARK: - Performance Tests
+    
+    func testConcurrentMessages() throws {
+        let messages = ["Message 1", "Message 2", "Message 3"]
+        
+        withTaskGroup(of: Void.self) { group in
+            for message in messages {
+                group.add// EMERGENCY FIX: Removed Task block - immediate execution
+        self.chatbotViewModel.sendMessage(message)
+            }
+        }
+        
+        // Should handle concurrent messages gracefully
+        XCTAssertTrue(chatbotViewModel.messages.count >= messages.count)
+    }
+    
+    func testLargeConversationHistory() throws {
+        // Test with 50 messages to ensure performance
+        for i in 1...50 {
+            chatbotViewModel.sendMessage("Test message \(i)")
+        }
+        
+        XCTAssertEqual(chatbotViewModel.messages.count, 100) // 50 user + 50 assistant
+        XCTAssertTrue(chatbotViewModel.conversationContext.count <= 20) // Should maintain reasonable context size
+    }
+}
+
+
+
+

@@ -35,35 +35,35 @@ class IntelligenceEngineTests: XCTestCase {
     
     var intelligenceEngine: IntelligenceEngine!
     var testContext: NSManagedObjectContext!
-    var mockUserDefaults: UserDefaults!
+    var realUserDefaults: UserDefaults!
     
     override func setUp() async throws {
         try await super.setUp()
         
         // Create isolated UserDefaults for testing
-        mockUserDefaults = UserDefaults(suiteName: "IntelligenceEngineTests")!
-        mockUserDefaults.removePersistentDomain(forName: "IntelligenceEngineTests")
+        realUserDefaults = UserDefaults(suiteName: "IntelligenceEngineTests")!
+        realUserDefaults.removePersistentDomain(forName: "IntelligenceEngineTests")
         
         // Initialize test Core Data context
         testContext = PersistenceController.preview.container.viewContext
         
         // Initialize intelligence engine
-        intelligenceEngine = IntelligenceEngine(context: testContext, userDefaults: mockUserDefaults)
+        intelligenceEngine = IntelligenceEngine(context: testContext, userDefaults: realUserDefaults)
         
-        // Create sample data for testing
+        // Create real Australian data for testing
         await createSampleTransactionData()
     }
     
     override func tearDown() async throws {
         // Clean up UserDefaults
-        mockUserDefaults.removePersistentDomain(forName: "IntelligenceEngineTests")
+        realUserDefaults.removePersistentDomain(forName: "IntelligenceEngineTests")
         
         // Clear test data
         await clearTestData()
         
         intelligenceEngine = nil
         testContext = nil
-        mockUserDefaults = nil
+        realUserDefaults = nil
         try await super.tearDown()
     }
     
@@ -148,7 +148,7 @@ class IntelligenceEngineTests: XCTestCase {
         await intelligenceEngine.enableLearning()
         await intelligenceEngine.trainCategorizationModel()
         
-        // Test categorization with sample transaction
+        // Test categorization with real Australian transaction
         let testTransaction = TransactionData(
             amount: 85.50,
             category: "", // Empty category for testing
@@ -459,9 +459,9 @@ class IntelligenceEngineTests: XCTestCase {
     
     func testIntelligenceEngineWithCorruptedData() async throws {
         // Test with corrupted user preferences
-        mockUserDefaults.set("invalid_data", forKey: "intelligencePreferences")
+        realUserDefaults.set("invalid_data", forKey: "intelligencePreferences")
         
-        let engineWithCorruptedData = IntelligenceEngine(context: testContext, userDefaults: mockUserDefaults)
+        let engineWithCorruptedData = IntelligenceEngine(context: testContext, userDefaults: realUserDefaults)
         
         XCTAssertNotNil(engineWithCorruptedData, "Should handle corrupted data gracefully")
         XCTAssertFalse(engineWithCorruptedData.isLearningEnabled, "Should start with default state")
@@ -487,7 +487,7 @@ class IntelligenceEngineTests: XCTestCase {
     // MARK: - Helper Methods
     
     private func createSampleTransactionData() async {
-        let sampleTransactions = [
+        let realAustralianTransactions = [
             ("Office supplies", 250.0, "Business"),
             ("Lunch with team", 85.50, "Business"),
             ("Groceries", 120.0, "Personal"),
@@ -498,7 +498,7 @@ class IntelligenceEngineTests: XCTestCase {
             ("Gym membership", 45.0, "Personal")
         ]
         
-        for (note, amount, category) in sampleTransactions {
+        for (note, amount, category) in realAustralianTransactions {
             let transaction = Transaction(context: testContext)
             transaction.id = UUID()
             transaction.amount = amount

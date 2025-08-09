@@ -30,7 +30,8 @@ import SwiftUI
 import CoreData
 import OSLog
 
-@MainActor
+// EMERGENCY FIX: Removed to eliminate Swift Concurrency crashes
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
 final class UserJourneyOptimizationViewModel: ObservableObject {
     
     // MARK: - Properties
@@ -69,16 +70,16 @@ final class UserJourneyOptimizationViewModel: ObservableObject {
     
     // MARK: - Journey State Management
     
-    func startUserJourney() async {
+    func startUserJourney() {
         currentJourneyState = .inProgress
         journeyData.startTime = Date()
         journeyData.currentStep = .welcome
         
-        await saveJourneyData()
+        saveJourneyData()
         logger.info("User journey started")
     }
     
-    func completeJourneyStep(_ step: JourneyStep) async {
+    func completeJourneyStep() {
         guard currentJourneyState == .inProgress else { return }
         guard !journeyData.completedSteps.contains(step) else { return }
         
@@ -96,16 +97,16 @@ final class UserJourneyOptimizationViewModel: ObservableObject {
             }
         }
         
-        await saveJourneyData()
-        await trackJourneyProgress()
+        saveJourneyData()
+        trackJourneyProgress()
         logger.info("Journey step completed: \(step.rawValue)")
     }
     
-    func recordJourneyAbandonment(_ step: JourneyStep, reason: String) async {
+    func recordJourneyAbandonment() {
         let abandonment = JourneyAbandonment(step: step, reason: reason, timestamp: Date())
         journeyData.abandonments.append(abandonment)
         
-        await saveJourneyData()
+        saveJourneyData()
         logger.info("Journey abandonment recorded at step: \(step.rawValue)")
     }
     
@@ -115,24 +116,24 @@ final class UserJourneyOptimizationViewModel: ObservableObject {
     
     // MARK: - Performance Optimization
     
-    func trackStepPerformance(_ step: JourneyStep, startTime: Date, endTime: Date) async {
+    func trackStepPerformance() {
         let duration = endTime.timeIntervalSince(startTime)
         performanceData.stepCompletionTimes[step] = duration
         
-        await savePerformanceData()
-        await updatePerformanceMetrics()
+        savePerformanceData()
+        updatePerformanceMetrics()
         logger.info("Step performance tracked: \(step.rawValue) - \(duration)s")
     }
     
-    func trackMemoryUsage(_ step: JourneyStep, memoryUsage: Double) async {
+    func trackMemoryUsage() {
         let memoryData = MemoryUsageData(step: step, memoryUsage: memoryUsage, timestamp: Date())
         performanceData.memoryUsageData.append(memoryData)
         
-        await savePerformanceData()
+        savePerformanceData()
         logger.info("Memory usage tracked: \(step.rawValue) - \(memoryUsage)MB")
     }
     
-    func generateOptimizationRecommendations() async -> [OptimizationRecommendation] {
+    func generateOptimizationRecommendations() -> [OptimizationRecommendation] {
         var recommendations: [OptimizationRecommendation] = []
         
         // Analyze performance bottlenecks
@@ -164,7 +165,7 @@ final class UserJourneyOptimizationViewModel: ObservableObject {
         return recommendations
     }
     
-    func analyzeMemoryUsage() async -> [MemoryOptimization] {
+    func analyzeMemoryUsage() -> [MemoryOptimization] {
         return performanceData.memoryUsageData.map { data in
             MemoryOptimization(
                 step: data.step,
@@ -181,25 +182,25 @@ final class UserJourneyOptimizationViewModel: ObservableObject {
     
     // MARK: - Conversion Funnel Analysis
     
-    func trackFunnelEntry(_ entry: FunnelStage) async {
+    func trackFunnelEntry() {
         funnelData.entries.append(FunnelEntry(stage: entry, timestamp: Date()))
-        await saveFunnelData()
+        saveFunnelData()
         logger.info("Funnel entry tracked: \(entry.rawValue)")
     }
     
-    func trackFunnelProgress(_ from: FunnelStage, _ to: FunnelStage) async {
+    func trackFunnelProgress() {
         funnelData.progressions.append(FunnelProgression(from: from, to: to, timestamp: Date()))
-        await saveFunnelData()
+        saveFunnelData()
         logger.info("Funnel progression tracked: \(from.rawValue) → \(to.rawValue)")
     }
     
-    func trackFunnelCompletion(_ from: FunnelStage, _ to: FunnelStage) async {
+    func trackFunnelCompletion() {
         funnelData.completions.append(FunnelCompletion(from: from, to: to, timestamp: Date()))
-        await saveFunnelData()
+        saveFunnelData()
         logger.info("Funnel completion tracked: \(from.rawValue) → \(to.rawValue)")
     }
     
-    func calculateConversionRates() async -> ConversionRates {
+    func calculateConversionRates() -> ConversionRates {
         let onboardingEntries = funnelData.entries.filter { $0.stage == .onboardingStart }.count
         let transactionEntries = funnelData.progressions.filter { $0.from == .onboardingStart && $0.to == .firstTransaction }.count
         let splitEntries = funnelData.progressions.filter { $0.from == .firstTransaction && $0.to == .firstSplit }.count
@@ -215,10 +216,10 @@ final class UserJourneyOptimizationViewModel: ObservableObject {
         return rates
     }
     
-    func identifyFunnelBottlenecks() async -> [FunnelBottleneck] {
+    func identifyFunnelBottlenecks() -> [FunnelBottleneck] {
         var bottlenecks: [FunnelBottleneck] = []
         
-        let conversionRates = await calculateConversionRates()
+        let conversionRates = calculateConversionRates()
         
         if conversionRates.onboardingToTransaction < 0.7 {
             bottlenecks.append(FunnelBottleneck(
@@ -247,7 +248,7 @@ final class UserJourneyOptimizationViewModel: ObservableObject {
     
     // MARK: - Feature Adoption Analysis
     
-    func trackFeatureUsage(_ feature: FeatureType, userId: String) async {
+    func trackFeatureUsage() {
         if featureAdoptionData[feature] == nil {
             featureAdoptionData[feature] = FeatureAdoptionData(feature: feature)
         }
@@ -256,24 +257,24 @@ final class UserJourneyOptimizationViewModel: ObservableObject {
         featureAdoptionData[feature]?.uniqueUsers.insert(userId)
         featureAdoptionData[feature]?.lastUsed = Date()
         
-        await saveFeatureAdoptionData()
+        saveFeatureAdoptionData()
         logger.info("Feature usage tracked: \(feature.rawValue) by user \(userId)")
     }
     
-    func trackFeatureUsageWithTime(_ feature: FeatureType, userId: String, timestamp: Date) async {
-        await trackFeatureUsage(feature, userId: userId)
+    func trackFeatureUsageWithTime() {
+        trackFeatureUsage(feature, userId: userId)
         
         let usage = FeatureUsageRecord(feature: feature, userId: userId, timestamp: timestamp)
         featureAdoptionData[feature]?.usageHistory.append(usage)
         
-        await saveFeatureAdoptionData()
+        saveFeatureAdoptionData()
     }
     
     func getFeatureAdoptionRates() -> [FeatureType: FeatureAdoptionData] {
         return featureAdoptionData
     }
     
-    func generateFeatureAdoptionOptimizations() async -> [FeatureOptimization] {
+    func generateFeatureAdoptionOptimizations() -> [FeatureOptimization] {
         var optimizations: [FeatureOptimization] = []
         
         for (feature, data) in featureAdoptionData {
@@ -291,7 +292,7 @@ final class UserJourneyOptimizationViewModel: ObservableObject {
         return optimizations
     }
     
-    func analyzeFeatureUsagePatterns() async -> [UsagePattern] {
+    func analyzeFeatureUsagePatterns() -> [UsagePattern] {
         var patterns: [UsagePattern] = []
         
         // Analyze time-based patterns
@@ -315,14 +316,14 @@ final class UserJourneyOptimizationViewModel: ObservableObject {
     
     // MARK: - A/B Testing Framework
     
-    func createABTest(_ test: ABTest) async {
+    func createABTest() {
         let testData = ABTestData(test: test)
         abTestData[test.name] = testData
-        await saveABTestData()
+        saveABTestData()
         logger.info("A/B test created: \(test.name)")
     }
     
-    func assignUserToVariant(_ testName: String, userId: String) async -> String? {
+    func assignUserToVariant() -> String? {
         guard let testData = abTestData[testName] else { return nil }
         
         // Check if user already assigned
@@ -342,7 +343,7 @@ final class UserJourneyOptimizationViewModel: ObservableObject {
             if random <= cumulativeAllocation && index < variants.count {
                 let variant = variants[index]
                 abTestData[testName]?.userAssignments[userId] = variant
-                await saveABTestData()
+                saveABTestData()
                 return variant
             }
         }
@@ -350,7 +351,7 @@ final class UserJourneyOptimizationViewModel: ObservableObject {
         return variants.first // Fallback
     }
     
-    func trackABTestConversion(_ testName: String, variant: String, userId: String, converted: Bool) async {
+    func trackABTestConversion() {
         guard var testData = abTestData[testName] else { return }
         
         if testData.variantResults[variant] == nil {
@@ -367,11 +368,11 @@ final class UserJourneyOptimizationViewModel: ObservableObject {
             Double(testData.variantResults[variant]?.totalUsers ?? 1)
         
         abTestData[testName] = testData
-        await saveABTestData()
+        saveABTestData()
         logger.info("A/B test conversion tracked: \(testName) - \(variant) - \(converted)")
     }
     
-    func getABTestResults(_ testName: String) async -> ABTestResults? {
+    func getABTestResults() -> ABTestResults? {
         guard let testData = abTestData[testName] else { return nil }
         
         let results = ABTestResults(
@@ -384,7 +385,7 @@ final class UserJourneyOptimizationViewModel: ObservableObject {
         return results
     }
     
-    func calculateStatisticalSignificance(_ testName: String) async -> StatisticalSignificance? {
+    func calculateStatisticalSignificance() -> StatisticalSignificance? {
         guard let testData = abTestData[testName],
               testData.variantResults.count >= 2 else { return nil }
         
@@ -419,13 +420,13 @@ final class UserJourneyOptimizationViewModel: ObservableObject {
     
     // MARK: - Journey Completion Analytics
     
-    func calculateJourneyCompletionRate() async -> Double {
+    func calculateJourneyCompletionRate() -> Double {
         let totalJourneys = max(1, journeyData.completedSteps.count + journeyData.abandonments.count)
         let completedJourneys = currentJourneyState == .completed ? 1 : 0
         return Double(completedJourneys) / Double(totalJourneys)
     }
     
-    func simulateUserJourney(userId: String, completionRate: Double) async {
+    func simulateUserJourney() {
         // Simulate journey for testing purposes
         let steps = JourneyStep.allCases
         let completedSteps = Int(Double(steps.count) * completionRate)
@@ -438,11 +439,11 @@ final class UserJourneyOptimizationViewModel: ObservableObject {
             currentJourneyState = .completed
         }
         
-        await saveJourneyData()
+        saveJourneyData()
     }
     
-    func getJourneyCompletionAnalytics() async -> JourneyCompletionAnalytics {
-        let completionRate = await calculateJourneyCompletionRate()
+    func getJourneyCompletionAnalytics() -> JourneyCompletionAnalytics {
+        let completionRate = calculateJourneyCompletionRate()
         
         var stepCompletionRates: [JourneyStep: Double] = [:]
         let totalSteps = JourneyStep.allCases.count
@@ -460,14 +461,14 @@ final class UserJourneyOptimizationViewModel: ObservableObject {
         )
     }
     
-    func trackTaxComplianceJourney(_ component: TaxComplianceComponent, completed: Bool) async {
+    func trackTaxComplianceJourney() {
         if completed {
             journeyData.taxComplianceData.completedComponents.insert(component)
         } else {
             journeyData.taxComplianceData.completedComponents.remove(component)
         }
         
-        await saveJourneyData()
+        saveJourneyData()
         logger.info("Tax compliance journey tracked: \(component.rawValue) - \(completed)")
     }
     
@@ -475,17 +476,17 @@ final class UserJourneyOptimizationViewModel: ObservableObject {
         return journeyData.taxComplianceData
     }
     
-    func trackUserSegment(_ userId: String, segment: UserSegment) async {
+    func trackUserSegment() {
         journeyData.userSegments[userId] = segment
-        await saveJourneyData()
+        saveJourneyData()
     }
     
-    func simulateSegmentedJourney(_ userId: String, segment: UserSegment, completionRate: Double) async {
-        await trackUserSegment(userId, segment: segment)
-        await simulateUserJourney(userId: userId, completionRate: completionRate)
+    func simulateSegmentedJourney() {
+        trackUserSegment(userId, segment: segment)
+        simulateUserJourney(userId: userId, completionRate: completionRate)
     }
     
-    func getSegmentationAnalysis() async -> [UserSegment: SegmentAnalysis] {
+    func getSegmentationAnalysis() -> [UserSegment: SegmentAnalysis] {
         var analysis: [UserSegment: SegmentAnalysis] = [:]
         
         let segmentGroups = Dictionary(grouping: journeyData.userSegments) { $0.value }
@@ -505,7 +506,7 @@ final class UserJourneyOptimizationViewModel: ObservableObject {
     
     // MARK: - Accessibility Optimization
     
-    func trackAccessibilityIssue(_ issue: AccessibilityIssueType, step: JourneyStep, severity: AccessibilitySeverity) async {
+    func trackAccessibilityIssue() {
         let accessibilityIssue = AccessibilityIssue(
             type: issue,
             step: step,
@@ -514,11 +515,11 @@ final class UserJourneyOptimizationViewModel: ObservableObject {
         )
         
         accessibilityData.identifiedIssues.append(accessibilityIssue)
-        await saveAccessibilityData()
+        saveAccessibilityData()
         logger.info("Accessibility issue tracked: \(issue.rawValue) at \(step.rawValue)")
     }
     
-    func trackAccessibilityFeatureUsage(_ feature: AccessibilityFeature, enabled: Bool, completionImpact: Double) async {
+    func trackAccessibilityFeatureUsage() {
         let usage = AccessibilityFeatureUsage(
             feature: feature,
             enabled: enabled,
@@ -527,10 +528,10 @@ final class UserJourneyOptimizationViewModel: ObservableObject {
         )
         
         accessibilityData.featureUsage.append(usage)
-        await saveAccessibilityData()
+        saveAccessibilityData()
     }
     
-    func generateAccessibilityImprovements() async -> [AccessibilityImprovement] {
+    func generateAccessibilityImprovements() -> [AccessibilityImprovement] {
         var improvements: [AccessibilityImprovement] = []
         
         // Analyze high-impact accessibility features
@@ -552,7 +553,7 @@ final class UserJourneyOptimizationViewModel: ObservableObject {
         return accessibilityData
     }
     
-    func trackInclusiveDesignMetric(_ metric: InclusiveDesignMetric, value: Double, step: JourneyStep) async {
+    func trackInclusiveDesignMetric() {
         let metricData = InclusiveDesignMetricData(
             metricType: metric,
             value: value,
@@ -561,7 +562,7 @@ final class UserJourneyOptimizationViewModel: ObservableObject {
         )
         
         accessibilityData.inclusiveDesignMetrics.append(metricData)
-        await saveAccessibilityData()
+        saveAccessibilityData()
     }
     
     func getInclusiveDesignMetrics() -> [InclusiveDesignMetricData] {
@@ -570,13 +571,13 @@ final class UserJourneyOptimizationViewModel: ObservableObject {
     
     // MARK: - Performance Monitoring
     
-    func startPerformanceMonitoring() async {
+    func startPerformanceMonitoring() {
         realTimePerformanceData.isMonitoring = true
         realTimePerformanceData.monitoringStartTime = Date()
         logger.info("Real-time performance monitoring started")
     }
     
-    func recordPerformanceMetric(_ type: PerformanceMetricType, value: Double, context: String) async {
+    func recordPerformanceMetric() {
         let metric = PerformanceMetric(
             type: type,
             value: value,
@@ -585,11 +586,11 @@ final class UserJourneyOptimizationViewModel: ObservableObject {
         )
         
         realTimePerformanceData.metrics.append(metric)
-        await saveRealTimePerformanceData()
+        saveRealTimePerformanceData()
         logger.info("Performance metric recorded: \(type.rawValue) = \(value)")
     }
     
-    func recordPerformanceMetricWithTimestamp(_ type: PerformanceMetricType, value: Double, timestamp: Date) async {
+    func recordPerformanceMetricWithTimestamp() {
         let metric = PerformanceMetric(
             type: type,
             value: value,
@@ -598,10 +599,10 @@ final class UserJourneyOptimizationViewModel: ObservableObject {
         )
         
         realTimePerformanceData.metrics.append(metric)
-        await saveRealTimePerformanceData()
+        saveRealTimePerformanceData()
     }
     
-    func generatePerformanceAlerts() async -> [PerformanceAlert] {
+    func generatePerformanceAlerts() -> [PerformanceAlert] {
         var alerts: [PerformanceAlert] = []
         
         // Check for critical performance issues
@@ -645,7 +646,7 @@ final class UserJourneyOptimizationViewModel: ObservableObject {
         return alerts
     }
     
-    func analyzePerformanceTrends() async -> [PerformanceTrend] {
+    func analyzePerformanceTrends() -> [PerformanceTrend] {
         var trends: [PerformanceTrend] = []
         
         let metricsByType = Dictionary(grouping: realTimePerformanceData.metrics) { $0.type }
@@ -696,7 +697,7 @@ final class UserJourneyOptimizationViewModel: ObservableObject {
         return completionTime.timeIntervalSince(startTime)
     }
     
-    private func updatePerformanceMetrics() async {
+    private func updatePerformanceMetrics() {
         // Update published performance metrics for UI
         performanceMetrics = PerformanceMetrics(
             averageResponseTime: performanceData.stepCompletionTimes.values.reduce(0, +) / Double(max(1, performanceData.stepCompletionTimes.count)),
@@ -705,7 +706,7 @@ final class UserJourneyOptimizationViewModel: ObservableObject {
         )
     }
     
-    private func trackJourneyProgress() async {
+    private func trackJourneyProgress() {
         // Track overall journey progress and update analytics
         let completionPercentage = Double(journeyData.completedSteps.count) / Double(JourneyStep.allCases.count)
         logger.info("Journey progress: \(Int(completionPercentage * 100))%")
@@ -729,7 +730,7 @@ final class UserJourneyOptimizationViewModel: ObservableObject {
         isOptimizationEnabled = userDefaults.bool(forKey: "optimizationEnabled")
     }
     
-    private func saveJourneyData() async {
+    private func saveJourneyData() {
         let journeyDataDict: [String: Any] = [
             "currentStep": journeyData.currentStep.rawValue,
             "completedStepsCount": journeyData.completedSteps.count,
@@ -738,27 +739,27 @@ final class UserJourneyOptimizationViewModel: ObservableObject {
         userDefaults.set(journeyDataDict, forKey: "journeyAnalyticsData")
     }
     
-    private func savePerformanceData() async {
+    private func savePerformanceData() {
         userDefaults.set(performanceData.stepCompletionTimes.count, forKey: "performanceDataCount")
     }
     
-    private func saveFunnelData() async {
+    private func saveFunnelData() {
         userDefaults.set(funnelData.entries.count, forKey: "funnelDataCount")
     }
     
-    private func saveFeatureAdoptionData() async {
+    private func saveFeatureAdoptionData() {
         userDefaults.set(featureAdoptionData.count, forKey: "featureAdoptionDataCount")
     }
     
-    private func saveABTestData() async {
+    private func saveABTestData() {
         userDefaults.set(abTestData.count, forKey: "abTestDataCount")
     }
     
-    private func saveAccessibilityData() async {
+    private func saveAccessibilityData() {
         userDefaults.set(accessibilityData.identifiedIssues.count, forKey: "accessibilityDataCount")
     }
     
-    private func saveRealTimePerformanceData() async {
+    private func saveRealTimePerformanceData() {
         userDefaults.set(realTimePerformanceData.metrics.count, forKey: "realTimePerformanceDataCount")
     }
 }

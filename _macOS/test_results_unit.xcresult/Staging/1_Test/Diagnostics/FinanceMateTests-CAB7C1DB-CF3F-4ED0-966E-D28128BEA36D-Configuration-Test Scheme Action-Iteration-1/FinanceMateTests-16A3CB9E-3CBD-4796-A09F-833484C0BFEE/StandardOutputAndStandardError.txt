@@ -1,0 +1,905 @@
+2025-08-08 21:55:25.458781+1000 FinanceMate[79297:4167005] ApplePersistenceIgnoreState: Existing state will not be touched. New state will be written to /var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/com.ablankcanvas.financemate.savedState
+Test Suite 'All tests' started at 2025-08-08 21:55:25.626.
+Test Suite 'FinanceMateTests.xctest' started at 2025-08-08 21:55:25.626.
+Test Suite 'CoreDataTests' started at 2025-08-08 21:55:25.626.
+Test Case '-[FinanceMateTests.CoreDataTests testFinancialEntityActivation]' started.
+2025-08-08 21:55:25.628427+1000 FinanceMate[79297:4167005] [error] CoreData: error: No NSEntityDescriptions in any model claim the NSManagedObject subclass 'FinancialEntity' so +entity is confused.  Have you loaded your NSManagedObjectModel yet ?
+CoreData: error: No NSEntityDescriptions in any model claim the NSManagedObject subclass 'FinancialEntity' so +entity is confused.  Have you loaded your NSManagedObjectModel yet ?
+2025-08-08 21:55:25.628456+1000 FinanceMate[79297:4167005] [error] CoreData: error: +[FinancialEntity entity] Failed to find a unique match for an NSEntityDescription to a managed object subclass
+CoreData: error: +[FinancialEntity entity] Failed to find a unique match for an NSEntityDescription to a managed object subclass
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/CoreDataTests.swift:231: error: -[FinanceMateTests.CoreDataTests testFinancialEntityActivation] : An NSManagedObject of class 'FinancialEntity' must have a valid NSEntityDescription. (NSInvalidArgumentException)
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/CoreDataTests.swift:37: error: -[FinanceMateTests.CoreDataTests testFinancialEntityActivation] : NSFetchRequest could not locate an NSEntityDescription for entity name 'Transaction' (NSInternalInconsistencyException)
+Test Case '-[FinanceMateTests.CoreDataTests testFinancialEntityActivation]' failed (0.541 seconds).
+Test Case '-[FinanceMateTests.CoreDataTests testFinancialEntityCreation]' started.
+2025-08-08 21:55:26.169153+1000 FinanceMate[79297:4167005] [error] CoreData: error: No NSEntityDescriptions in any model claim the NSManagedObject subclass 'FinancialEntity' so +entity is confused.  Have you loaded your NSManagedObjectModel yet ?
+CoreData: error: No NSEntityDescriptions in any model claim the NSManagedObject subclass 'FinancialEntity' so +entity is confused.  Have you loaded your NSManagedObjectModel yet ?
+2025-08-08 21:55:26.169172+1000 FinanceMate[79297:4167005] [error] CoreData: error: +[FinancialEntity entity] Failed to find a unique match for an NSEntityDescription to a managed object subclass
+CoreData: error: +[FinancialEntity entity] Failed to find a unique match for an NSEntityDescription to a managed object subclass
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/CoreDataTests.swift:123: error: -[FinanceMateTests.CoreDataTests testFinancialEntityCreation] : An NSManagedObject of class 'FinancialEntity' must have a valid NSEntityDescription. (NSInvalidArgumentException)
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/CoreDataTests.swift:37: error: -[FinanceMateTests.CoreDataTests testFinancialEntityCreation] : NSFetchRequest could not locate an NSEntityDescription for entity name 'Transaction' (NSInternalInconsistencyException)
+Test Case '-[FinanceMateTests.CoreDataTests testFinancialEntityCreation]' failed (0.016 seconds).
+Test Case '-[FinanceMateTests.CoreDataTests testFinancialEntityCRUD]' started.
+2025-08-08 21:55:26.185208+1000 FinanceMate[79297:4167005] [error] CoreData: error: No NSEntityDescriptions in any model claim the NSManagedObject subclass 'FinancialEntity' so +entity is confused.  Have you loaded your NSManagedObjectModel yet ?
+CoreData: error: No NSEntityDescriptions in any model claim the NSManagedObject subclass 'FinancialEntity' so +entity is confused.  Have you loaded your NSManagedObjectModel yet ?
+2025-08-08 21:55:26.185225+1000 FinanceMate[79297:4167005] [error] CoreData: error: +[FinancialEntity entity] Failed to find a unique match for an NSEntityDescription to a managed object subclass
+CoreData: error: +[FinancialEntity entity] Failed to find a unique match for an NSEntityDescription to a managed object subclass
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/CoreDataTests.swift:196: error: -[FinanceMateTests.CoreDataTests testFinancialEntityCRUD] : An NSManagedObject of class 'FinancialEntity' must have a valid NSEntityDescription. (NSInvalidArgumentException)
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/CoreDataTests.swift:37: error: -[FinanceMateTests.CoreDataTests testFinancialEntityCRUD] : NSFetchRequest could not locate an NSEntityDescription for entity name 'Transaction' (NSInternalInconsistencyException)
+Test Case '-[FinanceMateTests.CoreDataTests testFinancialEntityCRUD]' failed (0.015 seconds).
+Test Case '-[FinanceMateTests.CoreDataTests testFinancialEntityHierarchy]' started.
+2025-08-08 21:55:26.200375+1000 FinanceMate[79297:4167005] [error] CoreData: error: No NSEntityDescriptions in any model claim the NSManagedObject subclass 'FinancialEntity' so +entity is confused.  Have you loaded your NSManagedObjectModel yet ?
+CoreData: error: No NSEntityDescriptions in any model claim the NSManagedObject subclass 'FinancialEntity' so +entity is confused.  Have you loaded your NSManagedObjectModel yet ?
+2025-08-08 21:55:26.200393+1000 FinanceMate[79297:4167005] [error] CoreData: error: +[FinancialEntity entity] Failed to find a unique match for an NSEntityDescription to a managed object subclass
+CoreData: error: +[FinancialEntity entity] Failed to find a unique match for an NSEntityDescription to a managed object subclass
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/CoreDataTests.swift:167: error: -[FinanceMateTests.CoreDataTests testFinancialEntityHierarchy] : An NSManagedObject of class 'FinancialEntity' must have a valid NSEntityDescription. (NSInvalidArgumentException)
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/CoreDataTests.swift:37: error: -[FinanceMateTests.CoreDataTests testFinancialEntityHierarchy] : NSFetchRequest could not locate an NSEntityDescription for entity name 'Transaction' (NSInternalInconsistencyException)
+Test Case '-[FinanceMateTests.CoreDataTests testFinancialEntityHierarchy]' failed (0.016 seconds).
+Test Case '-[FinanceMateTests.CoreDataTests testFinancialEntityTypes]' started.
+2025-08-08 21:55:26.216129+1000 FinanceMate[79297:4167005] [error] CoreData: error: No NSEntityDescriptions in any model claim the NSManagedObject subclass 'FinancialEntity' so +entity is confused.  Have you loaded your NSManagedObjectModel yet ?
+CoreData: error: No NSEntityDescriptions in any model claim the NSManagedObject subclass 'FinancialEntity' so +entity is confused.  Have you loaded your NSManagedObjectModel yet ?
+2025-08-08 21:55:26.216149+1000 FinanceMate[79297:4167005] [error] CoreData: error: +[FinancialEntity entity] Failed to find a unique match for an NSEntityDescription to a managed object subclass
+CoreData: error: +[FinancialEntity entity] Failed to find a unique match for an NSEntityDescription to a managed object subclass
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/CoreDataTests.swift:146: error: -[FinanceMateTests.CoreDataTests testFinancialEntityTypes] : An NSManagedObject of class 'FinancialEntity' must have a valid NSEntityDescription. (NSInvalidArgumentException)
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/CoreDataTests.swift:37: error: -[FinanceMateTests.CoreDataTests testFinancialEntityTypes] : NSFetchRequest could not locate an NSEntityDescription for entity name 'Transaction' (NSInternalInconsistencyException)
+Test Case '-[FinanceMateTests.CoreDataTests testFinancialEntityTypes]' failed (0.015 seconds).
+Test Case '-[FinanceMateTests.CoreDataTests testTransactionCreationAndFetch]' started.
+FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 21:55:26.231172+1000 FinanceMate[79297:4167005] FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 21:55:28.082977+1000 FinanceMate[79389:4168457] ApplePersistenceIgnoreState: Existing state will not be touched. New state will be written to /var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/com.ablankcanvas.financemate.savedState
+
+Restarting after unexpected exit, crash, or test timeout; summary will include totals from previous launches.
+
+Test Suite 'Selected tests' started at 2025-08-08 21:55:28.309.
+Test Suite 'FinanceMateTests.xctest' started at 2025-08-08 21:55:28.310.
+Test Suite 'CoreDataTests' started at 2025-08-08 21:55:28.310.
+Test Case '-[FinanceMateTests.CoreDataTests testTransactionLineItemSplitting]' started.
+FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 21:55:28.312925+1000 FinanceMate[79389:4168457] FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 21:55:29.533635+1000 FinanceMate[79413:4168641] ApplePersistenceIgnoreState: Existing state will not be touched. New state will be written to /var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/com.ablankcanvas.financemate.savedState
+
+Restarting after unexpected exit, crash, or test timeout; summary will include totals from previous launches.
+
+Test Suite 'Selected tests' started at 2025-08-08 21:55:29.722.
+Test Suite 'FinanceMateTests.xctest' started at 2025-08-08 21:55:29.723.
+Test Suite 'CoreDataTests' started at 2025-08-08 21:55:29.723.
+Test Case '-[FinanceMateTests.CoreDataTests testTransactionLineItemSplitting]' started.
+FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 21:55:29.725133+1000 FinanceMate[79413:4168641] FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 21:55:51.237453+1000 FinanceMate[79922:4172189] ApplePersistenceIgnoreState: Existing state will not be touched. New state will be written to /var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/com.ablankcanvas.financemate.savedState
+
+Restarting after unexpected exit, crash, or test timeout; summary will include totals from previous launches.
+
+Test Suite 'Selected tests' started at 2025-08-08 21:55:51.329.
+Test Suite 'FinanceMateTests.xctest' started at 2025-08-08 21:55:51.329.
+Test Suite 'CoreDataTests' started at 2025-08-08 21:55:51.329.
+Test Suite 'CoreDataTests' passed at 2025-08-08 21:55:51.329.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'DashboardViewModelTests' started at 2025-08-08 21:55:51.330.
+Test Case '-[FinanceMateTests.DashboardViewModelTests testBackgroundContextOperations]' started.
+FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 21:55:51.331456+1000 FinanceMate[79922:4172189] FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 21:55:51.899661+1000 FinanceMate[79934:4172288] ApplePersistenceIgnoreState: Existing state will not be touched. New state will be written to /var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/com.ablankcanvas.financemate.savedState
+
+Restarting after unexpected exit, crash, or test timeout; summary will include totals from previous launches.
+
+Test Suite 'Selected tests' started at 2025-08-08 21:55:52.002.
+Test Suite 'FinanceMateTests.xctest' started at 2025-08-08 21:55:52.002.
+Test Suite 'DashboardViewModelTests' started at 2025-08-08 21:55:52.002.
+Test Case '-[FinanceMateTests.DashboardViewModelTests testBatchTransactionOperations]' started.
+FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 21:55:52.003623+1000 FinanceMate[79934:4172288] FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 21:55:52.900065+1000 FinanceMate[79970:4172487] ApplePersistenceIgnoreState: Existing state will not be touched. New state will be written to /var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/com.ablankcanvas.financemate.savedState
+
+Restarting after unexpected exit, crash, or test timeout; summary will include totals from previous launches.
+
+Test Suite 'Selected tests' started at 2025-08-08 21:55:53.110.
+Test Suite 'FinanceMateTests.xctest' started at 2025-08-08 21:55:53.110.
+Test Suite 'DashboardViewModelTests' started at 2025-08-08 21:55:53.110.
+Test Case '-[FinanceMateTests.DashboardViewModelTests testConcurrentDataAccess]' started.
+FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 21:55:53.112237+1000 FinanceMate[79970:4172547] FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 21:55:53.988676+1000 FinanceMate[79994:4172726] ApplePersistenceIgnoreState: Existing state will not be touched. New state will be written to /var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/com.ablankcanvas.financemate.savedState
+
+Restarting after unexpected exit, crash, or test timeout; summary will include totals from previous launches.
+
+Test Suite 'Selected tests' started at 2025-08-08 21:55:54.177.
+Test Suite 'FinanceMateTests.xctest' started at 2025-08-08 21:55:54.177.
+Test Suite 'DashboardViewModelTests' started at 2025-08-08 21:55:54.178.
+Test Case '-[FinanceMateTests.DashboardViewModelTests testDataCachingPerformance]' started.
+FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 21:55:54.179866+1000 FinanceMate[79994:4172726] FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 21:56:14.720955+1000 FinanceMate[80732:4177994] ApplePersistenceIgnoreState: Existing state will not be touched. New state will be written to /var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/com.ablankcanvas.financemate.savedState
+
+Restarting after unexpected exit, crash, or test timeout; summary will include totals from previous launches.
+
+Test Suite 'Selected tests' started at 2025-08-08 21:56:14.852.
+Test Suite 'FinanceMateTests.xctest' started at 2025-08-08 21:56:14.853.
+Test Suite 'DashboardViewModelTests' started at 2025-08-08 21:56:14.853.
+Test Case '-[FinanceMateTests.DashboardViewModelTests testDataIntegrityWithRollback]' started.
+FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 21:56:14.855050+1000 FinanceMate[80732:4177994] FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 21:56:36.401059+1000 FinanceMate[81379:4182635] ApplePersistenceIgnoreState: Existing state will not be touched. New state will be written to /var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/com.ablankcanvas.financemate.savedState
+
+Restarting after unexpected exit, crash, or test timeout; summary will include totals from previous launches.
+
+Test Suite 'Selected tests' started at 2025-08-08 21:56:36.490.
+Test Suite 'FinanceMateTests.xctest' started at 2025-08-08 21:56:36.490.
+Test Suite 'DashboardViewModelTests' started at 2025-08-08 21:56:36.490.
+Test Case '-[FinanceMateTests.DashboardViewModelTests testErrorStateHandling]' started.
+DashboardViewModel Error: invalidAmount("Amount must be a finite number")
+Test Case '-[FinanceMateTests.DashboardViewModelTests testErrorStateHandling]' passed (0.002 seconds).
+Test Case '-[FinanceMateTests.DashboardViewModelTests testFetchDashboardData]' started.
+FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 21:56:36.493898+1000 FinanceMate[81379:4182635] FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 21:56:58.080993+1000 FinanceMate[82212:4188776] ApplePersistenceIgnoreState: Existing state will not be touched. New state will be written to /var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/com.ablankcanvas.financemate.savedState
+
+Restarting after unexpected exit, crash, or test timeout; summary will include totals from previous launches.
+
+Test Suite 'Selected tests' started at 2025-08-08 21:56:58.319.
+Test Suite 'FinanceMateTests.xctest' started at 2025-08-08 21:56:58.319.
+Test Suite 'DashboardViewModelTests' started at 2025-08-08 21:56:58.319.
+Test Case '-[FinanceMateTests.DashboardViewModelTests testFetchDashboardDataWithEmptyData]' started.
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/DashboardViewModelTests.swift:112: error: -[FinanceMateTests.DashboardViewModelTests testFetchDashboardDataWithEmptyData] : NSFetchRequest could not locate an NSEntityDescription for entity name 'Transaction' (NSInternalInconsistencyException)
+2025-08-08 21:56:59.867211+1000 FinanceMate[82212:4188776] [Default] Flushing outgoing messages to the IDE with timeout 30.00s
+2025-08-08 21:56:59.867354+1000 FinanceMate[82212:4188801] [Default] Received confirmation that IDE processed remaining outgoing messages
+2025-08-08 21:56:59.867766+1000 FinanceMate[82212:4188776] *** Terminating app due to uncaught exception 'NSInternalInconsistencyException', reason: 'NSFetchRequest could not locate an NSEntityDescription for entity name 'Transaction''
+*** First throw call stack:
+(
+	0   CoreFoundation                      0x000000019f62eca0 __exceptionPreprocess + 176
+	1   libobjc.A.dylib                     0x000000019f0f2b90 objc_exception_throw + 88
+	2   CoreData                            0x00000001a67cf688 -[NSFetchRequest entity] + 0
+	3   CoreData                            0x00000001a68392c4 -[NSManagedObjectContext executeRequest:error:] + 212
+	4   CoreData                            0x00000001a68b1fb0 $sSo22NSManagedObjectContextC8CoreDataE5fetchySayxGSo14NSFetchRequestCyxGKSo0gH6ResultRzlF + 84
+	5   FinanceMate.debug.dylib             0x0000000101c275d0 $s11FinanceMate18DashboardViewModelC05fetchC4DatayyFyycfU_ + 516
+	6   FinanceMate.debug.dylib             0x0000000101c27eac $sIeg_IeyB_TR + 48
+	7   CoreData                            0x00000001a67cbbb0 developerSubmittedB
+*** Terminating app due to uncaught exception 'NSInternalInconsistencyException', reason: 'NSFetchRequest could not locate an NSEntityDescription for entity name 'Transaction''
+*** First throw call stack:
+(
+	0   CoreFoundation                      0x000000019f62eca0 __exceptionPreprocess + 176
+	1   libobjc.A.dylib                     0x000000019f0f2b90 objc_exception_throw + 88
+	2   CoreData                            0x00000001a67cf688 -[NSFetchRequest entity] + 0
+	3   CoreData                            0x00000001a68392c4 -[NSManagedObjectContext executeRequest:error:] + 212
+	4   CoreData                            0x00000001a68b1fb0 $sSo22NSManagedObjectContextC8CoreDataE5fetchySayxGSo14NSFetchRequestCyxGKSo0gH6ResultRzlF + 84
+	5   FinanceMate.debug.dylib             0x0000000101c275d0 $s11FinanceMate18DashboardViewModelC05fetchC4DatayyFyycfU_ + 516
+	6   FinanceMate.debug.dylib             0x0000000101c27eac $sIeg_IeyB_TR + 48
+	7   CoreData                            0x00000001a67cbbb0 developerSubmittedBlockToNSManagedObjectContextPerform + 252
+	8   libdispatch.dylib                   0x000000019f33485c _dispatch_client_callout + 16
+	9   libdispatch.dylib                   0x000000019f351b58 _dispatch_main_queue_drain.cold.5 + 812
+	10  libdispatch.dylib                   0x000000019f329db0 _dispatch_main_queue_drain + 180
+	11  libdispatch.dylib                   0x000000019f329cec _dispatch_main_queue_callback_4CF + 44
+	12  CoreFoundation                      0x000000019f5fbda4 __CFRUNLOOP_IS_SERVICING_THE_MAIN_DISPATCH_QUEUE__ + 16
+	13  CoreFoundation                      0x000000019f5bca9c __CFRunLoopRun + 1980
+	14  CoreFoundation                      0x000000019f5bbc58 CFRunLoopRunSpecific + 572
+	15  HIToolbox                           0x00000001ab05027c RunCurrentEventLoopInMode + 324
+	16  HIToolbox                           0x00000001ab05331c ReceiveNextEventCommon + 216
+	17  HIToolbox                           0x00000001ab1de484 _BlockUntilNextEventMatchingListInModeWithFilter + 76
+	18  AppKit                              0x00000001a34e3ab4 _DPSNextEvent + 684
+	19  AppKit                              0x00000001a3e825b0 -[NSApplication(NSEventRouting) _nextEventMatchingEventMask:untilDate:inMode:dequeue:] + 688
+	20  XCTestCore                          0x0000000101209c78 +[XCTWaiter _synchronouslyWaitForTimeInterval:] + 144
+	21  XCTestCore                          0x000000010120a474 -[XCTWaiter _performWait:manager:completionHandler:] + 916
+	22  XCTestCore                          0x0000000101208128 -[XCTWaiter _waitForExpectations:timeout:enforceOrder:synchronously:completionHandler:] + 580
+	23  XCTestCore                          0x0000000101207e94 -[XCTWaiter waitForExpectations:timeout:enforceOrder:] + 136
+	24  XCTestCore                          0x00000001012264f4 -[XCTestCase(AsynchronousTesting) waitForExpectations:timeout:enforceOrder:] + 88
+	25  FinanceMateTests                    0x000000010386c66c $s16FinanceMateTests018DashboardViewModelC0C09testFetchd13DataWithEmptyI0yyF + 1172
+	26  FinanceMateTests                    0x000000010386cd60 $s16FinanceMateTests018DashboardViewModelC0C09testFetchd13DataWithEmptyI0yyFTo + 44
+	27  CoreFoundation                      0x000000019f59e4d4 __invoking___ + 148
+	28  CoreFoundation                      0x000000019f59e364 -[NSInvocation invoke] + 424
+	29  XCTestCore                          0x00000001012135e4 +[XCTFailableInvocation invokeStandardConventionInvocation:completion:] + 68
+	30  XCTestCore                          0x0000000101213598 __90+[XCTFailableInvocation invokeInvocation:withTestMethodConvention:lastObservedErrorIssue:]_block_invoke_3 + 28
+	31  XCTestCore                          0x0000000101212cdc __81+[XCTFailableInvocation invokeWithAsynchronousWait:lastObservedErrorIssue:block:]_block_invoke + 364
+	32  XCTestCore                          0x0000000101223244 __49+[XCTSwiftErrorObservation observeErrorsInBlock:]_block_invoke + 36
+	33  XCTestCore                          0x000000010122e3b8 $sIyB_Ieg_TR + 24
+	34  XCTestCore                          0x000000010122e174 $sSo24XCTSwiftErrorObservationC10XCTestCoreE14_observeErrors33_4641E344ACA55A25D2B1EC985574C54DLL2inSo0abC6ResultCSgyyXE_tFZyyXEfU_ + 60
+	35  XCTestCore                          0x000000010122e1a8 $sSo24XCTSwiftErrorObservationC10XCTestCoreE14_observeErrors33_4641E344ACA55A25D2B1EC985574C54DLL2inSo0abC6ResultCSgyyXE_tFZyyXEfU_TA + 32
+	36  libswift_Concurrency.dylib          0x0000000288290a90 $ss9TaskLocalC9withValue_9operation4file4lineqd__x_qd__yKXESSSutKlF + 232
+	37  XCTestCore                          0x000000010122dfc8 $sSo24XCTSwiftErrorObservationC10XCTestCoreE14_observeErrors33_4641E344ACA55A25D2B1EC985574C54DLL2inSo0abC6ResultCSgyyXE_tFZ + 444
+	38  XCTestCore                          0x000000010122e36c $sSo24XCTSwiftErrorObservationC10XCTestCoreE14_observeErrors33_4641E344ACA55A25D2B1EC985574C54DLL2inSo0abC6ResultCSgyyXE_tFZTo + 104
+	39  XCTestCore                          0x000000010122313c +[XCTSwiftErrorObservation observeErrorsInBlock:] + 208
+	40  XCTestCore                          0x0000000101212a70 +[XCTFailableInvocation invokeWithAsynchronousWait:lastObservedErrorIssue:block:] + 228
+	41  XCTestCore                          0x0000000101213280 +[XCTFailableInvocation invokeInvocation:withTestMethodConvention:lastObservedErrorIssue:] + 540
+	42  XCTestCore                          0x0000000101213688 +[XCTFailableInvocation invokeInvocation:lastObservedErrorIssue:] + 72
+	43  XCTestCore                          0x00000001011ac540 -[XCTestCase invokeTestMethod:] + 64
+	44  XCTestCore                          0x00000001011acf44 __24-[XCTestCase invokeTest]_block_invoke_2.115 + 56
+	45  XCTestCore                          0x00000001011efaf4 -[XCTMemoryChecker _assertInvalidObjectsDeallocatedAfterScope:] + 84
+	46  XCTestCore                          0x00000001011b04a8 -[XCTestCase assertInvalidObjectsDeallocatedAfterScope:] + 92
+	47  XCTestCore                          0x00000001011acdcc __24-[XCTestCase invokeTest]_block_invoke.108 + 460
+	48  XCTestCore                          0x00000001011ec294 -[XCTestCase(XCTIssueHandling) _caughtUnhandledDeveloperExceptionPermittingControlFlowInterruptions:caughtInterruptionException:whileExecutingBlock:] + 168
+	49  XCTestCore                          0x00000001011ac804 -[XCTestCase invokeTest] + 632
+	50  XCTestCore                          0x00000001011ae51c __26-[XCTestCase performTest:]_block_invoke.166 + 36
+	51  XCTestCore                          0x00000001011ec294 -[XCTestCase(XCTIssueHandling) _caughtUnhandledDeveloperExceptionPermittingControlFlowInterruptions:caughtInterruptionException:whileExecutingBlock:] + 168
+	52  XCTestCore                          0x00000001011adf54 __26-[XCTestCase performTest:]_block_invoke.151 + 552
+	53  XCTestCore                          0x0000000101225a28 +[XCTContext _runInChildOfContext:forTestCase:markAsReportingBase:block:] + 180
+	54  XCTestCore                          0x0000000101225910 +[XCTContext runInContextForTestCase:markAsReportingBase:block:] + 104
+	55  XCTestCore                          0x00000001011ad9ec -[XCTestCase performTest:] + 308
+	56  XCTestCore                          0x00000001011a7260 -[XCTest runTest] + 48
+	57  XCTestCore                          0x00000001011de540 -[XCTestSuite runTestBasedOnRepetitionPolicy:testRun:] + 68
+	58  XCTestCore                          0x00000001011de35c __27-[XCTestSuite performTest:]_block_invoke + 164
+	59  XCTestCore                          0x00000001011ddd94 __59-[XCTestSuite _performProtectedSectionForTest:testSection:]_block_invoke + 48
+	60  XCTestCore                          0x0000000101225a28 +[XCTContext _runInChildOfContext:forTestCase:markAsReportingBase:block:] + 180
+	61  XCTestCore                          0x0000000101225910 +[XCTContext runInContextForTestCase:markAsReportingBase:block:] + 104
+	62  XCTestCore                          0x00000001011ddd04 -[XCTestSuite _performProtectedSectionForTest:testSection:] + 180
+	63  XCTestCore                          0x00000001011ddfe4 -[XCTestSuite performTest:] + 220
+	64  XCTestCore                      
+2025-08-08 21:56:59.873301+1000 FinanceMate[82212:4188776] [General] An uncaught exception was raised
+2025-08-08 21:56:59.873344+1000 FinanceMate[82212:4188776] [General] NSFetchRequest could not locate an NSEntityDescription for entity name 'Transaction'
+2025-08-08 21:56:59.873444+1000 FinanceMate[82212:4188776] [General] (
+	0   CoreFoundation                      0x000000019f62eca0 __exceptionPreprocess + 176
+	1   libobjc.A.dylib                     0x000000019f0f2b90 objc_exception_throw + 88
+	2   CoreData                            0x00000001a67cf688 -[NSFetchRequest entity] + 0
+	3   CoreData                            0x00000001a68392c4 -[NSManagedObjectContext executeRequest:error:] + 212
+	4   CoreData                            0x00000001a68b1fb0 $sSo22NSManagedObjectContextC8CoreDataE5fetchySayxGSo14NSFetchRequestCyxGKSo0gH6ResultRzlF + 84
+	5   FinanceMate.debug.dylib             0x0000000101c275d0 $s11FinanceMate18DashboardViewModelC05fetchC4DatayyFyycfU_ + 516
+	6   FinanceMate.debug.dylib             0x0000000101c27eac $sIeg_IeyB_TR + 48
+	7   CoreData                            0x00000001a67cbbb0 developerSubmittedBlockToNSManagedObjectContextPerform + 252
+	8   libdispatch.dylib                   0x000000019f33485c _dispatch_client_callout + 16
+	9   libdispatch.dylib                   0x000000019f351b58 _dispatch_main_queue_drain.cold.5 + 812
+	10  libdispatch.dylib                   0x000000019f329db0 _dispatch_main_queue_drain + 180
+	11  libdispatch.dylib                   0x000000019f329cec _dispatch_main_queue_callback_4CF + 44
+	12  CoreFoundation                      0x000000019f5fbda4 __CFRUNLOOP_IS_SERVICING_THE_MAIN_DISPATCH_QUEUE__ + 16
+	13  CoreFoundation                      0x000000019f5bca9c __CFRunLoopRun + 1980
+	14  CoreFoundation                      0x000000019f5bbc58 CFRunLoopRunSpecific + 572
+	15  HIToolbox                           0x00000001ab05027c RunCurrentEventLoopInMode + 324
+	16  HIToolbox                           0x00000001ab05331c ReceiveNextEventCommon + 216
+	17  HIToolbox                           0x00000001ab1de484 _BlockUntilNextEventMatchingListInModeWithFilter + 76
+	18  AppKit                              0x00000001a34e3ab4 _DPSNextEvent + 684
+	19  AppKit                              0x00000001a3e825b0 -[NSApplication(NSEventRouting) _nextEventMatchingEventMask:untilDate:inMode:dequeue:] + 688
+	20  XCTestCore                          0x0000000101209c78 +[XCTWaiter _synchronouslyWaitForTimeInterval:] + 144
+	21  XCTestCore                          0x000000010120a474 -[XCTWaiter _performWait:manager:completionHandler:] + 916
+	22  XCTestCore                          0x0000000101208128 -[XCTWaiter _waitForExpectations:timeout:enforceOrder:synchronously:completionHandler:] + 580
+	23  XCTestCore                          0x0000000101207e94 -[XCTWaiter waitForExpectations:timeout:enforceOrder:] + 136
+	24  XCTestCore                          0x00000001012264f4 -[XCTestCase(AsynchronousTesting) waitForExpectations:timeout:enforceOrder:] + 88
+	25  FinanceMateTests                    0x000000010386c66c $s16FinanceMateTests018DashboardViewModelC0C09testFetchd13DataWithEmptyI0yyF + 1172
+	26  FinanceMateTests                    0x000000010386cd60 $s16FinanceMateTests018DashboardViewModelC0C09testFetchd13DataWithEmptyI0yyFTo + 44
+	27  CoreFoundation                      0x000000019f59e4d4 __invoking___ + 148
+	28  CoreFoundation                      0x000000019f59e364 -[NSInvocation invoke] + 424
+	29  XCTestCore                          0x00000001012135e4 +[XCTFailableInvocation invokeStandardConventionInvocation:completion:] + 68
+	30  XCTestCore                          0x0000000101213598 __90+[XCTFailableInvocation invokeInvocation:withTestMethodConvention:lastObservedErrorIssue:]_block_invoke_3 + 28
+	31  XCTestCore                          0x0000000101212cdc __81+[XCTFailableInvocation invokeWithAsynchronousWait:lastObservedErrorIssue:block:]_block_invoke + 364
+	32  XCTestCore                          0x0000000101223244 __49+[XCTSwiftErrorObservation observeErrorsInBlock:]_block_invoke + 36
+	33  XCTestCore                          0x000000010122e3b8 $sIyB_Ieg_TR + 24
+	34  XCTestCore                          0x000000010122e174 $sSo24XCTSwiftErrorObservationC10XCTestCoreE14_observeErrors33_4641E344ACA55A25D2B1EC985574C54DLL2inSo0abC6ResultCSgyyXE_tFZyyXEfU_ + 60
+	35  XCTestCore                          0x000000010122e1a8 $sSo24XCTSwiftErrorObservationC10XCTestCoreE14_observeErrors33_4641E344ACA55A25D2B1EC985574C54DLL2inSo0abC6ResultCSgyyXE_tFZyyXEfU_TA + 32
+	36  libswift_Concurrency.dylib          0x0000000288290a90 $ss9TaskLocalC9withValue_9operation4file4lineqd__x_qd__yKXESSSutKlF + 232
+	37  XCTestCore                          0x000000010122dfc8 $sSo24XCTSwiftErrorObservationC10XCTestCoreE14_observeErrors33_4641E344ACA55A25D2B1EC985574C54DLL2inSo0abC6ResultCSgyyXE_tFZ + 444
+	38  XCTestCore                          0x000000010122e36c $sSo24XCTSwiftErrorObservationC10XCTestCoreE14_observeErrors33_4641E344ACA55A25D2B1EC985574C54DLL2inSo0abC6ResultCSgyyXE_tFZTo + 104
+	39  XCTestCore                          0x000000010122313c +[XCTSwiftErrorObservation observeErrorsInBlock:] + 208
+	40  XCTestCore                          0x0000000101212a70 +[XCTFailableInvocation invokeWithAsynchronousWait:lastObservedErrorIssue:block:] + 228
+	41  XCTestCore                          0x0000000101213280 +[XCTFailableInvocation invokeInvocation:withTestMethodConvention:lastObservedErrorIssue:] + 540
+	42  XCTestCore                          0x0000000101213688 +[XCTFailableInvocation invokeInvocation:lastObservedErrorIssue:] + 72
+	43  XCTestCore                          0x00000001011ac540 -[XCTestCase invokeTestMethod:] + 64
+	44  XCTestCore                          0x00000001011acf44 __24-[XCTestCase invokeTest]_block_invoke_2.115 + 56
+	45  XCTestCore                          0x00000001011efaf4 -[XCTMemoryChecker _assertInvalidObjectsDeallocatedAfterScope:] + 84
+	46  XCTestCore                          0x00000001011b04a8 -[XCTestCase assertInvalidObjectsDeallocatedAfterScope:] + 92
+	47  XCTestCore                          0x00000001011acdcc __24-[XCTestCase invokeTest]_block_invoke.108 + 460
+	48  XCTestCore                          0x00000001011ec294 -[XCTestCase(XCTIssueHandling) _caughtUnhandledDeveloperExceptionPermittingControlFlowInterruptions:caughtInterruptionException:whileExecutingBlock:] + 168
+	49  XCTestCore                          0x00000001011ac804 -[XCTestCase invokeTest] + 632
+	50  XCTestCore                          0x00000001011ae51c __26-[XCTestCase performTest:]_block_invoke.166 + 36
+	51  XCTestCore                          0x00000001011ec294 -[XCTestCase(XCTIssueHandling) _caughtUnhandledDeveloperExceptionPermittingControlFlowInterruptions:caughtInterruptionException:whileExecutingBlock:] + 168
+	52  XCTestCore                          0x00000001011adf54 __26-[XCTestCase performTest:]_block_invoke.151 + 552
+	53  XCTestCore                          0x0000000101225a28 +[XCTContext _runInChildOfContext:forTestCase:markAsReportingBase:block:] + 180
+	54  XCTestCore                          0x0000000101225910 +[XCTContext runInContextForTestCase:markAsReportingBase:block:] + 104
+	55  XCTestCore                          0x00000001011ad9ec -[XCTestCase performTest:] + 308
+	56  XCTestCore                          0x00000001011a7260 -[XCTest runTest] + 48
+	57  XCTestCore                          0x00000001011de540 -[XCTestSuite runTestBasedOnRepetitionPolicy:testRun:] + 68
+	58  XCTestCore                          0x00000001011de35c __27-[XCTestSuite performTest:]_block_invoke + 164
+	59  XCTestCore                          0x00000001011ddd94 __59-[XCTestSuite _performProtectedSectionForTest:testSection:]_block_invoke + 48
+	60  XCTestCore                          0x0000000101225a28 +[XCTContext _runInChildOfContext:forTestCase:markAsReportingBase:block:] + 180
+	61  XCTestCore                          0x0000000101225910 +[XCTContext runInContextForTestCase:markAsReportingBase:block:] + 104
+	62  XCTestCore                          0x00000001011ddd04 -[XCTestSuite _performProtectedSectionForTest:testSection:] + 180
+	63  XCTestCore                          0x00000001011ddfe4 -[XCTestSuite performTest:] + 220
+	64  XCTestCore                          0x00000001011a7260 -[XCTest runTest] + 48
+	65  XCTestCore                          0x00000001011de540 -[XCTestSuite runTestBasedOnRepetitionPolicy:testRun:] + 68
+	66  XCTestCore                          0x00000001011de35c __27-[XCTestSuite performTest:]_block_invoke + 164
+	67  XCTestCore                          0x00000001011ddd94 __59-[XCTestSuite _performProtectedSectionForTest:testSection:]_block_invoke + 48
+	68  XCTestCore                          0x0000000101225a28 +[XCTContext _runInChildOfContext:forTestCase:markAsReportingBase:block:] + 180
+	69  XCTestCore                          0x0000000101225910 +[XCTContext runInContextForTestCase:markAsReportingBase:block:] + 104
+	70  XCTestCore                          0x00000001011ddd04 -[XCTestSuite _performProtectedSectionForTest:testSection:] + 180
+	71  XCTestCore                          0x00000001011ddfe4 -[XCTestSuite performTest:] + 220
+	72  XCTestCore                          0x00000001011a7260 -[XCTest runTest] + 48
+	73  XCTestCore                          0x00000001011de540 -[XCTestSuite runTestBasedOnRepetitionPolicy:testRun:] + 68
+	74  XCTestCore                          0x00000001011de35c __27-[XCTestSuite performTest:]_block_invoke + 164
+	75  XCTestCore                          0x00000001011ddd94 __59-[XCTestSuite _performProtectedSectionForTest:testSection:]_block_invoke + 48
+	76  XCTestCore                          0x0000000101225a28 +[XCTContext _runInChildOfContext:forTestCase:markAsReportingBase:block:] + 180
+	77  XCTestCore                          0x0000000101225910 +[XCTContext runInContextForTestCase:markAsReportingBase:block:] + 104
+	78  XCTestCore                          0x00000001011ddd04 -[XCTestSuite _performProtectedSectionForTest:testSection:] + 180
+	79  XCTestCore                          0x00000001011ddfe4 -[XCTestSuite performTest:] + 220
+	80  XCTestCore                          0x00000001011a7260 -[XCTest runTest] + 48
+	81  XCTestCore                          0x00000001011d7f54 __89-[XCTTestRunSession executeTestsWithIdentifiers:skippingTestsWithIdentifiers:completion:]_block_invoke + 104
+	82  XCTestCore                          0x0000000101225a28 +[XCTContext _runInChildOfContext:forTestCase:markAsReportingBase:block:] + 180
+	83  XCTestCore                          0x0000000101225910 +[XCTContext runInContextForTestCase:markAsReportingBase:block:] + 104
+	84  XCTestCore                          0x00000001011d7e14 -[XCTTestRunSession executeTestsWithIdentifiers:skippingTestsWithIdentifiers:completion:] + 296
+	85  XCTestCore                          0x00000001011e5eb0 __72-[XCTExecutionWorker enqueueTestIdentifiersToRun:testIdentifiersToSkip:]_block_invoke_2 + 148
+	86  XCTestCore                          0x00000001011e7300 __XCTAsyncEnumerateWithWaiter_block_invoke + 256
+	87  XCTestCore                          0x00000001011e74b8 __XCTAsyncEnumerate_block_invoke.116 + 64
+	88  XCTestCore                          0x00000001011e5d14 XCTAsyncEnumerateWithWaiter + 576
+	89  XCTestCore                          0x00000001011e5a88 __72-[XCTExecutionWorker enqueueTestIdentifiersToRun:testIdentifiersToSkip:]_block_invoke + 136
+	90  XCTestCore                          0x00000001011e5ff4 -[XCTExecutionWorker runWithError:] + 84
+	91  XCTestCore                          0x00000001011a2d18 __25-[XCTestDriver _runTests]_block_invoke.332 + 56
+	92  XCTestCore                          0x00000001011e8114 -[XCTestObservationCenter _observeTestExecutionForTestBundle:inBlock:] + 212
+	93  XCTestCore                          0x00000001011a26fc -[XCTestDriver _runTests] + 1160
+	94  XCTestCore                          0x00000001011d9468 _XCTestMain + 120
+	95  libXCTestBundleInject.dylib         0x0000000100f4d438 __RunTests_block_invoke_2 + 0
+	96  CoreFoundation                      0x000000019f5ea2b4 __CFMachPortPerform + 288
+	97  CoreFoundation                      0x000000019f5be250 __CFRUNLOOP_IS_CALLING_OUT_TO_A_SOURCE1_PERFORM_FUNCTION__ + 60
+	98  CoreFoundation                      0x000000019f5be178 __CFRunLoopDoSource1 + 508
+	99  CoreFoundation                      0x000000019f5bcb78 __CFRunLoopRun + 2200
+	100 CoreFoundation                      0x000000019f5bbc58 CFRunLoopRunSpecific + 572
+	101 HIToolbox                           0x00000001ab05027c RunCurrentEventLoopInMode + 324
+	102 HIToolbox                           0x00000001ab0534e8 ReceiveNextEventCommon + 676
+	103 HIToolbox                           0x00000001ab1de484 _BlockUntilNextEventMatchingListInModeWithFilter + 76
+	104 AppKit                              0x00000001a34e3ab4 _DPSNextEvent + 684
+	105 AppKit                              0x00000001a3e825b0 -[NSApplication(NSEventRouting) _nextEventMatchingEventMask:untilDate:inMode:dequeue:] + 688
+	106 AppKit                              0x00000001a34d6c64 -[NSApplication run] + 480
+	107 AppKit                              0x00000001a34ad35c NSApplicationMain + 880
+	108 SwiftUI                             0x00000001cf80b878 $s7SwiftUI6runAppys5NeverOSo21NSApplicationDelegate_So11NSResponderCXcFTf4e_nAA07TestingdG0C_Tg5Tm + 160
+	109 SwiftUI                             0x00000001cfc69658 $s7SwiftUI6runAppys5NeverOxAA0D0RzlF + 108
+	110 SwiftUI                             0x00000001cffca5c0 $s7SwiftUI3AppPAAE4mainyyFZ + 224
+	111 FinanceMate.debug.dylib             0x0000000101c53100 $s11FinanceMate0aB3AppV5$mainyyFZ + 40
+	112 FinanceMate.debug.dylib             0x0000000101c53460 __debug_main_executable_dylib_entry_point + 12
+	113 dyld                                0x000000019f132b98 start + 6076
+)
+2025-08-08 21:56:59.880156+1000 FinanceMate[82212:4188776] [HIExceptions] FAULT: NSInternalInconsistencyException: NSFetchRequest could not locate an NSEntityDescription for entity name 'Transaction'; (user info absent)
+libc++abi: terminating due to uncaught exception of type NSException
+2025-08-08 21:57:20.480428+1000 FinanceMate[82952:4195326] ApplePersistenceIgnoreState: Existing state will not be touched. New state will be written to /var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/com.ablankcanvas.financemate.savedState
+
+Restarting after unexpected exit, crash, or test timeout; summary will include totals from previous launches.
+
+Test Suite 'Selected tests' started at 2025-08-08 21:57:20.609.
+Test Suite 'FinanceMateTests.xctest' started at 2025-08-08 21:57:20.609.
+Test Suite 'DashboardViewModelTests' started at 2025-08-08 21:57:20.609.
+Test Case '-[FinanceMateTests.DashboardViewModelTests testFetchPerformance]' started.
+FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 21:57:20.610798+1000 FinanceMate[82952:4195326] FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 21:57:42.112221+1000 FinanceMate[83616:4200905] ApplePersistenceIgnoreState: Existing state will not be touched. New state will be written to /var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/com.ablankcanvas.financemate.savedState
+
+Restarting after unexpected exit, crash, or test timeout; summary will include totals from previous launches.
+
+Test Suite 'Selected tests' started at 2025-08-08 21:57:42.231.
+Test Suite 'FinanceMateTests.xctest' started at 2025-08-08 21:57:42.232.
+Test Suite 'DashboardViewModelTests' started at 2025-08-08 21:57:42.232.
+Test Case '-[FinanceMateTests.DashboardViewModelTests testLoadingStateManagement]' started.
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/DashboardViewModelTests.swift:199: error: -[FinanceMateTests.DashboardViewModelTests testLoadingStateManagement] : NSFetchRequest could not locate an NSEntityDescription for entity name 'Transaction' (NSInternalInconsistencyException)
+2025-08-08 21:57:47.009587+1000 FinanceMate[83616:4200905] [Default] Flushing outgoing messages to the IDE with timeout 30.00s
+2025-08-08 21:57:47.009705+1000 FinanceMate[83616:4200932] [Default] Received confirmation that IDE processed remaining outgoing messages
+2025-08-08 21:57:47.010444+1000 FinanceMate[83616:4200905] *** Terminating app due to uncaught exception 'NSInternalInconsistencyException', reason: 'NSFetchRequest could not locate an NSEntityDescription for entity name 'Transaction''
+*** First throw call stack:
+(
+	0   CoreFoundation                      0x000000019f62eca0 __exceptionPreprocess + 176
+	1   libobjc.A.dylib                     0x000000019f0f2b90 objc_exception_throw + 88
+	2   CoreData                            0x00000001a67cf688 -[NSFetchRequest entity] + 0
+	3   CoreData                            0x00000001a68392c4 -[NSManagedObjectContext executeRequest:error:] + 212
+	4   CoreData                            0x00000001a68b1fb0 $sSo22NSManagedObjectContextC8CoreDataE5fetchySayxGSo14NSFetchRequestCyxGKSo0gH6ResultRzlF + 84
+	5   FinanceMate.debug.dylib             0x0000000100d6b5d0 $s11FinanceMate18DashboardViewModelC05fetchC4DatayyFyycfU_ + 516
+	6   FinanceMate.debug.dylib             0x0000000100d6beac $sIeg_IeyB_TR + 48
+	7   CoreData                            0x00000001a67cbbb0 developerSubmittedB
+*** Terminating app due to uncaught exception 'NSInternalInconsistencyException', reason: 'NSFetchRequest could not locate an NSEntityDescription for entity name 'Transaction''
+*** First throw call stack:
+(
+	0   CoreFoundation                      0x000000019f62eca0 __exceptionPreprocess + 176
+	1   libobjc.A.dylib                     0x000000019f0f2b90 objc_exception_throw + 88
+	2   CoreData                            0x00000001a67cf688 -[NSFetchRequest entity] + 0
+	3   CoreData                            0x00000001a68392c4 -[NSManagedObjectContext executeRequest:error:] + 212
+	4   CoreData                            0x00000001a68b1fb0 $sSo22NSManagedObjectContextC8CoreDataE5fetchySayxGSo14NSFetchRequestCyxGKSo0gH6ResultRzlF + 84
+	5   FinanceMate.debug.dylib             0x0000000100d6b5d0 $s11FinanceMate18DashboardViewModelC05fetchC4DatayyFyycfU_ + 516
+	6   FinanceMate.debug.dylib             0x0000000100d6beac $sIeg_IeyB_TR + 48
+	7   CoreData                            0x00000001a67cbbb0 developerSubmittedBlockToNSManagedObjectContextPerform + 252
+	8   libdispatch.dylib                   0x000000019f33485c _dispatch_client_callout + 16
+	9   libdispatch.dylib                   0x000000019f351b58 _dispatch_main_queue_drain.cold.5 + 812
+	10  libdispatch.dylib                   0x000000019f329db0 _dispatch_main_queue_drain + 180
+	11  libdispatch.dylib                   0x000000019f329cec _dispatch_main_queue_callback_4CF + 44
+	12  CoreFoundation                      0x000000019f5fbda4 __CFRUNLOOP_IS_SERVICING_THE_MAIN_DISPATCH_QUEUE__ + 16
+	13  CoreFoundation                      0x000000019f5bca9c __CFRunLoopRun + 1980
+	14  CoreFoundation                      0x000000019f5bbc58 CFRunLoopRunSpecific + 572
+	15  HIToolbox                           0x00000001ab05027c RunCurrentEventLoopInMode + 324
+	16  HIToolbox                           0x00000001ab05331c ReceiveNextEventCommon + 216
+	17  HIToolbox                           0x00000001ab1de484 _BlockUntilNextEventMatchingListInModeWithFilter + 76
+	18  AppKit                              0x00000001a34e3ab4 _DPSNextEvent + 684
+	19  AppKit                              0x00000001a3e825b0 -[NSApplication(NSEventRouting) _nextEventMatchingEventMask:untilDate:inMode:dequeue:] + 688
+	20  XCTestCore                          0x0000000100ad1c78 +[XCTWaiter _synchronouslyWaitForTimeInterval:] + 144
+	21  XCTestCore                          0x0000000100ad2474 -[XCTWaiter _performWait:manager:completionHandler:] + 916
+	22  XCTestCore                          0x0000000100ad0128 -[XCTWaiter _waitForExpectations:timeout:enforceOrder:synchronously:completionHandler:] + 580
+	23  XCTestCore                          0x0000000100acfe94 -[XCTWaiter waitForExpectations:timeout:enforceOrder:] + 136
+	24  XCTestCore                          0x0000000100aee4f4 -[XCTestCase(AsynchronousTesting) waitForExpectations:timeout:enforceOrder:] + 88
+	25  FinanceMateTests                    0x000000010213e9d8 $s16FinanceMateTests018DashboardViewModelC0C26testLoadingStateManagementyyF + 1368
+	26  FinanceMateTests                    0x000000010213f090 $s16FinanceMateTests018DashboardViewModelC0C26testLoadingStateManagementyyFTo + 44
+	27  CoreFoundation                      0x000000019f59e4d4 __invoking___ + 148
+	28  CoreFoundation                      0x000000019f59e364 -[NSInvocation invoke] + 424
+	29  XCTestCore                          0x0000000100adb5e4 +[XCTFailableInvocation invokeStandardConventionInvocation:completion:] + 68
+	30  XCTestCore                          0x0000000100adb598 __90+[XCTFailableInvocation invokeInvocation:withTestMethodConvention:lastObservedErrorIssue:]_block_invoke_3 + 28
+	31  XCTestCore                          0x0000000100adacdc __81+[XCTFailableInvocation invokeWithAsynchronousWait:lastObservedErrorIssue:block:]_block_invoke + 364
+	32  XCTestCore                          0x0000000100aeb244 __49+[XCTSwiftErrorObservation observeErrorsInBlock:]_block_invoke + 36
+	33  XCTestCore                          0x0000000100af63b8 $sIyB_Ieg_TR + 24
+	34  XCTestCore                          0x0000000100af6174 $sSo24XCTSwiftErrorObservationC10XCTestCoreE14_observeErrors33_4641E344ACA55A25D2B1EC985574C54DLL2inSo0abC6ResultCSgyyXE_tFZyyXEfU_ + 60
+	35  XCTestCore                          0x0000000100af61a8 $sSo24XCTSwiftErrorObservationC10XCTestCoreE14_observeErrors33_4641E344ACA55A25D2B1EC985574C54DLL2inSo0abC6ResultCSgyyXE_tFZyyXEfU_TA + 32
+	36  libswift_Concurrency.dylib          0x0000000288290a90 $ss9TaskLocalC9withValue_9operation4file4lineqd__x_qd__yKXESSSutKlF + 232
+	37  XCTestCore                          0x0000000100af5fc8 $sSo24XCTSwiftErrorObservationC10XCTestCoreE14_observeErrors33_4641E344ACA55A25D2B1EC985574C54DLL2inSo0abC6ResultCSgyyXE_tFZ + 444
+	38  XCTestCore                          0x0000000100af636c $sSo24XCTSwiftErrorObservationC10XCTestCoreE14_observeErrors33_4641E344ACA55A25D2B1EC985574C54DLL2inSo0abC6ResultCSgyyXE_tFZTo + 104
+	39  XCTestCore                          0x0000000100aeb13c +[XCTSwiftErrorObservation observeErrorsInBlock:] + 208
+	40  XCTestCore                          0x0000000100adaa70 +[XCTFailableInvocation invokeWithAsynchronousWait:lastObservedErrorIssue:block:] + 228
+	41  XCTestCore                          0x0000000100adb280 +[XCTFailableInvocation invokeInvocation:withTestMethodConvention:lastObservedErrorIssue:] + 540
+	42  XCTestCore                          0x0000000100adb688 +[XCTFailableInvocation invokeInvocation:lastObservedErrorIssue:] + 72
+	43  XCTestCore                          0x0000000100a74540 -[XCTestCase invokeTestMethod:] + 64
+	44  XCTestCore                          0x0000000100a74f44 __24-[XCTestCase invokeTest]_block_invoke_2.115 + 56
+	45  XCTestCore                          0x0000000100ab7af4 -[XCTMemoryChecker _assertInvalidObjectsDeallocatedAfterScope:] + 84
+	46  XCTestCore                          0x0000000100a784a8 -[XCTestCase assertInvalidObjectsDeallocatedAfterScope:] + 92
+	47  XCTestCore                          0x0000000100a74dcc __24-[XCTestCase invokeTest]_block_invoke.108 + 460
+	48  XCTestCore                          0x0000000100ab4294 -[XCTestCase(XCTIssueHandling) _caughtUnhandledDeveloperExceptionPermittingControlFlowInterruptions:caughtInterruptionException:whileExecutingBlock:] + 168
+	49  XCTestCore                          0x0000000100a74804 -[XCTestCase invokeTest] + 632
+	50  XCTestCore                          0x0000000100a7651c __26-[XCTestCase performTest:]_block_invoke.166 + 36
+	51  XCTestCore                          0x0000000100ab4294 -[XCTestCase(XCTIssueHandling) _caughtUnhandledDeveloperExceptionPermittingControlFlowInterruptions:caughtInterruptionException:whileExecutingBlock:] + 168
+	52  XCTestCore                          0x0000000100a75f54 __26-[XCTestCase performTest:]_block_invoke.151 + 552
+	53  XCTestCore                          0x0000000100aeda28 +[XCTContext _runInChildOfContext:forTestCase:markAsReportingBase:block:] + 180
+	54  XCTestCore                          0x0000000100aed910 +[XCTContext runInContextForTestCase:markAsReportingBase:block:] + 104
+	55  XCTestCore                          0x0000000100a759ec -[XCTestCase performTest:] + 308
+	56  XCTestCore                          0x0000000100a6f260 -[XCTest runTest] + 48
+	57  XCTestCore                          0x0000000100aa6540 -[XCTestSuite runTestBasedOnRepetitionPolicy:testRun:] + 68
+	58  XCTestCore                          0x0000000100aa635c __27-[XCTestSuite performTest:]_block_invoke + 164
+	59  XCTestCore                          0x0000000100aa5d94 __59-[XCTestSuite _performProtectedSectionForTest:testSection:]_block_invoke + 48
+	60  XCTestCore                          0x0000000100aeda28 +[XCTContext _runInChildOfContext:forTestCase:markAsReportingBase:block:] + 180
+	61  XCTestCore                          0x0000000100aed910 +[XCTContext runInContextForTestCase:markAsReportingBase:block:] + 104
+	62  XCTestCore                          0x0000000100aa5d04 -[XCTestSuite _performProtectedSectionForTest:testSection:] + 180
+	63  XCTestCore                          0x0000000100aa5fe4 -[XCTestSuite performTest:] + 220
+	64  XCTestCore                        
+2025-08-08 21:57:47.011543+1000 FinanceMate[83616:4200905] [General] An uncaught exception was raised
+2025-08-08 21:57:47.011581+1000 FinanceMate[83616:4200905] [General] NSFetchRequest could not locate an NSEntityDescription for entity name 'Transaction'
+2025-08-08 21:57:47.011716+1000 FinanceMate[83616:4200905] [General] (
+	0   CoreFoundation                      0x000000019f62eca0 __exceptionPreprocess + 176
+	1   libobjc.A.dylib                     0x000000019f0f2b90 objc_exception_throw + 88
+	2   CoreData                            0x00000001a67cf688 -[NSFetchRequest entity] + 0
+	3   CoreData                            0x00000001a68392c4 -[NSManagedObjectContext executeRequest:error:] + 212
+	4   CoreData                            0x00000001a68b1fb0 $sSo22NSManagedObjectContextC8CoreDataE5fetchySayxGSo14NSFetchRequestCyxGKSo0gH6ResultRzlF + 84
+	5   FinanceMate.debug.dylib             0x0000000100d6b5d0 $s11FinanceMate18DashboardViewModelC05fetchC4DatayyFyycfU_ + 516
+	6   FinanceMate.debug.dylib             0x0000000100d6beac $sIeg_IeyB_TR + 48
+	7   CoreData                            0x00000001a67cbbb0 developerSubmittedBlockToNSManagedObjectContextPerform + 252
+	8   libdispatch.dylib                   0x000000019f33485c _dispatch_client_callout + 16
+	9   libdispatch.dylib                   0x000000019f351b58 _dispatch_main_queue_drain.cold.5 + 812
+	10  libdispatch.dylib                   0x000000019f329db0 _dispatch_main_queue_drain + 180
+	11  libdispatch.dylib                   0x000000019f329cec _dispatch_main_queue_callback_4CF + 44
+	12  CoreFoundation                      0x000000019f5fbda4 __CFRUNLOOP_IS_SERVICING_THE_MAIN_DISPATCH_QUEUE__ + 16
+	13  CoreFoundation                      0x000000019f5bca9c __CFRunLoopRun + 1980
+	14  CoreFoundation                      0x000000019f5bbc58 CFRunLoopRunSpecific + 572
+	15  HIToolbox                           0x00000001ab05027c RunCurrentEventLoopInMode + 324
+	16  HIToolbox                           0x00000001ab05331c ReceiveNextEventCommon + 216
+	17  HIToolbox                           0x00000001ab1de484 _BlockUntilNextEventMatchingListInModeWithFilter + 76
+	18  AppKit                              0x00000001a34e3ab4 _DPSNextEvent + 684
+	19  AppKit                              0x00000001a3e825b0 -[NSApplication(NSEventRouting) _nextEventMatchingEventMask:untilDate:inMode:dequeue:] + 688
+	20  XCTestCore                          0x0000000100ad1c78 +[XCTWaiter _synchronouslyWaitForTimeInterval:] + 144
+	21  XCTestCore                          0x0000000100ad2474 -[XCTWaiter _performWait:manager:completionHandler:] + 916
+	22  XCTestCore                          0x0000000100ad0128 -[XCTWaiter _waitForExpectations:timeout:enforceOrder:synchronously:completionHandler:] + 580
+	23  XCTestCore                          0x0000000100acfe94 -[XCTWaiter waitForExpectations:timeout:enforceOrder:] + 136
+	24  XCTestCore                          0x0000000100aee4f4 -[XCTestCase(AsynchronousTesting) waitForExpectations:timeout:enforceOrder:] + 88
+	25  FinanceMateTests                    0x000000010213e9d8 $s16FinanceMateTests018DashboardViewModelC0C26testLoadingStateManagementyyF + 1368
+	26  FinanceMateTests                    0x000000010213f090 $s16FinanceMateTests018DashboardViewModelC0C26testLoadingStateManagementyyFTo + 44
+	27  CoreFoundation                      0x000000019f59e4d4 __invoking___ + 148
+	28  CoreFoundation                      0x000000019f59e364 -[NSInvocation invoke] + 424
+	29  XCTestCore                          0x0000000100adb5e4 +[XCTFailableInvocation invokeStandardConventionInvocation:completion:] + 68
+	30  XCTestCore                          0x0000000100adb598 __90+[XCTFailableInvocation invokeInvocation:withTestMethodConvention:lastObservedErrorIssue:]_block_invoke_3 + 28
+	31  XCTestCore                          0x0000000100adacdc __81+[XCTFailableInvocation invokeWithAsynchronousWait:lastObservedErrorIssue:block:]_block_invoke + 364
+	32  XCTestCore                          0x0000000100aeb244 __49+[XCTSwiftErrorObservation observeErrorsInBlock:]_block_invoke + 36
+	33  XCTestCore                          0x0000000100af63b8 $sIyB_Ieg_TR + 24
+	34  XCTestCore                          0x0000000100af6174 $sSo24XCTSwiftErrorObservationC10XCTestCoreE14_observeErrors33_4641E344ACA55A25D2B1EC985574C54DLL2inSo0abC6ResultCSgyyXE_tFZyyXEfU_ + 60
+	35  XCTestCore                          0x0000000100af61a8 $sSo24XCTSwiftErrorObservationC10XCTestCoreE14_observeErrors33_4641E344ACA55A25D2B1EC985574C54DLL2inSo0abC6ResultCSgyyXE_tFZyyXEfU_TA + 32
+	36  libswift_Concurrency.dylib          0x0000000288290a90 $ss9TaskLocalC9withValue_9operation4file4lineqd__x_qd__yKXESSSutKlF + 232
+	37  XCTestCore                          0x0000000100af5fc8 $sSo24XCTSwiftErrorObservationC10XCTestCoreE14_observeErrors33_4641E344ACA55A25D2B1EC985574C54DLL2inSo0abC6ResultCSgyyXE_tFZ + 444
+	38  XCTestCore                          0x0000000100af636c $sSo24XCTSwiftErrorObservationC10XCTestCoreE14_observeErrors33_4641E344ACA55A25D2B1EC985574C54DLL2inSo0abC6ResultCSgyyXE_tFZTo + 104
+	39  XCTestCore                          0x0000000100aeb13c +[XCTSwiftErrorObservation observeErrorsInBlock:] + 208
+	40  XCTestCore                          0x0000000100adaa70 +[XCTFailableInvocation invokeWithAsynchronousWait:lastObservedErrorIssue:block:] + 228
+	41  XCTestCore                          0x0000000100adb280 +[XCTFailableInvocation invokeInvocation:withTestMethodConvention:lastObservedErrorIssue:] + 540
+	42  XCTestCore                          0x0000000100adb688 +[XCTFailableInvocation invokeInvocation:lastObservedErrorIssue:] + 72
+	43  XCTestCore                          0x0000000100a74540 -[XCTestCase invokeTestMethod:] + 64
+	44  XCTestCore                          0x0000000100a74f44 __24-[XCTestCase invokeTest]_block_invoke_2.115 + 56
+	45  XCTestCore                          0x0000000100ab7af4 -[XCTMemoryChecker _assertInvalidObjectsDeallocatedAfterScope:] + 84
+	46  XCTestCore                          0x0000000100a784a8 -[XCTestCase assertInvalidObjectsDeallocatedAfterScope:] + 92
+	47  XCTestCore                          0x0000000100a74dcc __24-[XCTestCase invokeTest]_block_invoke.108 + 460
+	48  XCTestCore                          0x0000000100ab4294 -[XCTestCase(XCTIssueHandling) _caughtUnhandledDeveloperExceptionPermittingControlFlowInterruptions:caughtInterruptionException:whileExecutingBlock:] + 168
+	49  XCTestCore                          0x0000000100a74804 -[XCTestCase invokeTest] + 632
+	50  XCTestCore                          0x0000000100a7651c __26-[XCTestCase performTest:]_block_invoke.166 + 36
+	51  XCTestCore                          0x0000000100ab4294 -[XCTestCase(XCTIssueHandling) _caughtUnhandledDeveloperExceptionPermittingControlFlowInterruptions:caughtInterruptionException:whileExecutingBlock:] + 168
+	52  XCTestCore                          0x0000000100a75f54 __26-[XCTestCase performTest:]_block_invoke.151 + 552
+	53  XCTestCore                          0x0000000100aeda28 +[XCTContext _runInChildOfContext:forTestCase:markAsReportingBase:block:] + 180
+	54  XCTestCore                          0x0000000100aed910 +[XCTContext runInContextForTestCase:markAsReportingBase:block:] + 104
+	55  XCTestCore                          0x0000000100a759ec -[XCTestCase performTest:] + 308
+	56  XCTestCore                          0x0000000100a6f260 -[XCTest runTest] + 48
+	57  XCTestCore                          0x0000000100aa6540 -[XCTestSuite runTestBasedOnRepetitionPolicy:testRun:] + 68
+	58  XCTestCore                          0x0000000100aa635c __27-[XCTestSuite performTest:]_block_invoke + 164
+	59  XCTestCore                          0x0000000100aa5d94 __59-[XCTestSuite _performProtectedSectionForTest:testSection:]_block_invoke + 48
+	60  XCTestCore                          0x0000000100aeda28 +[XCTContext _runInChildOfContext:forTestCase:markAsReportingBase:block:] + 180
+	61  XCTestCore                          0x0000000100aed910 +[XCTContext runInContextForTestCase:markAsReportingBase:block:] + 104
+	62  XCTestCore                          0x0000000100aa5d04 -[XCTestSuite _performProtectedSectionForTest:testSection:] + 180
+	63  XCTestCore                          0x0000000100aa5fe4 -[XCTestSuite performTest:] + 220
+	64  XCTestCore                          0x0000000100a6f260 -[XCTest runTest] + 48
+	65  XCTestCore                          0x0000000100aa6540 -[XCTestSuite runTestBasedOnRepetitionPolicy:testRun:] + 68
+	66  XCTestCore                          0x0000000100aa635c __27-[XCTestSuite performTest:]_block_invoke + 164
+	67  XCTestCore                          0x0000000100aa5d94 __59-[XCTestSuite _performProtectedSectionForTest:testSection:]_block_invoke + 48
+	68  XCTestCore                          0x0000000100aeda28 +[XCTContext _runInChildOfContext:forTestCase:markAsReportingBase:block:] + 180
+	69  XCTestCore                          0x0000000100aed910 +[XCTContext runInContextForTestCase:markAsReportingBase:block:] + 104
+	70  XCTestCore                          0x0000000100aa5d04 -[XCTestSuite _performProtectedSectionForTest:testSection:] + 180
+	71  XCTestCore                          0x0000000100aa5fe4 -[XCTestSuite performTest:] + 220
+	72  XCTestCore                          0x0000000100a6f260 -[XCTest runTest] + 48
+	73  XCTestCore                          0x0000000100aa6540 -[XCTestSuite runTestBasedOnRepetitionPolicy:testRun:] + 68
+	74  XCTestCore                          0x0000000100aa635c __27-[XCTestSuite performTest:]_block_invoke + 164
+	75  XCTestCore                          0x0000000100aa5d94 __59-[XCTestSuite _performProtectedSectionForTest:testSection:]_block_invoke + 48
+	76  XCTestCore                          0x0000000100aeda28 +[XCTContext _runInChildOfContext:forTestCase:markAsReportingBase:block:] + 180
+	77  XCTestCore                          0x0000000100aed910 +[XCTContext runInContextForTestCase:markAsReportingBase:block:] + 104
+	78  XCTestCore                          0x0000000100aa5d04 -[XCTestSuite _performProtectedSectionForTest:testSection:] + 180
+	79  XCTestCore                          0x0000000100aa5fe4 -[XCTestSuite performTest:] + 220
+	80  XCTestCore                          0x0000000100a6f260 -[XCTest runTest] + 48
+	81  XCTestCore                          0x0000000100a9ff54 __89-[XCTTestRunSession executeTestsWithIdentifiers:skippingTestsWithIdentifiers:completion:]_block_invoke + 104
+	82  XCTestCore                          0x0000000100aeda28 +[XCTContext _runInChildOfContext:forTestCase:markAsReportingBase:block:] + 180
+	83  XCTestCore                          0x0000000100aed910 +[XCTContext runInContextForTestCase:markAsReportingBase:block:] + 104
+	84  XCTestCore                          0x0000000100a9fe14 -[XCTTestRunSession executeTestsWithIdentifiers:skippingTestsWithIdentifiers:completion:] + 296
+	85  XCTestCore                          0x0000000100aadeb0 __72-[XCTExecutionWorker enqueueTestIdentifiersToRun:testIdentifiersToSkip:]_block_invoke_2 + 148
+	86  XCTestCore                          0x0000000100aaf300 __XCTAsyncEnumerateWithWaiter_block_invoke + 256
+	87  XCTestCore                          0x0000000100aaf4b8 __XCTAsyncEnumerate_block_invoke.116 + 64
+	88  XCTestCore                          0x0000000100aadd14 XCTAsyncEnumerateWithWaiter + 576
+	89  XCTestCore                          0x0000000100aada88 __72-[XCTExecutionWorker enqueueTestIdentifiersToRun:testIdentifiersToSkip:]_block_invoke + 136
+	90  XCTestCore                          0x0000000100aadff4 -[XCTExecutionWorker runWithError:] + 84
+	91  XCTestCore                          0x0000000100a6ad18 __25-[XCTestDriver _runTests]_block_invoke.332 + 56
+	92  XCTestCore                          0x0000000100ab0114 -[XCTestObservationCenter _observeTestExecutionForTestBundle:inBlock:] + 212
+	93  XCTestCore                          0x0000000100a6a6fc -[XCTestDriver _runTests] + 1160
+	94  XCTestCore                          0x0000000100aa1468 _XCTestMain + 120
+	95  libXCTestBundleInject.dylib         0x0000000100265438 __RunTests_block_invoke_2 + 0
+	96  CoreFoundation                      0x000000019f5ea2b4 __CFMachPortPerform + 288
+	97  CoreFoundation                      0x000000019f5be250 __CFRUNLOOP_IS_CALLING_OUT_TO_A_SOURCE1_PERFORM_FUNCTION__ + 60
+	98  CoreFoundation                      0x000000019f5be178 __CFRunLoopDoSource1 + 508
+	99  CoreFoundation                      0x000000019f5bcb78 __CFRunLoopRun + 2200
+	100 CoreFoundation                      0x000000019f5bbc58 CFRunLoopRunSpecific + 572
+	101 HIToolbox                           0x00000001ab05027c RunCurrentEventLoopInMode + 324
+	102 HIToolbox                           0x00000001ab0534e8 ReceiveNextEventCommon + 676
+	103 HIToolbox                           0x00000001ab1de484 _BlockUntilNextEventMatchingListInModeWithFilter + 76
+	104 AppKit                              0x00000001a34e3ab4 _DPSNextEvent + 684
+	105 AppKit                              0x00000001a3e825b0 -[NSApplication(NSEventRouting) _nextEventMatchingEventMask:untilDate:inMode:dequeue:] + 688
+	106 AppKit                              0x00000001a34d6c64 -[NSApplication run] + 480
+	107 AppKit                              0x00000001a34ad35c NSApplicationMain + 880
+	108 SwiftUI                             0x00000001cf80b878 $s7SwiftUI6runAppys5NeverOSo21NSApplicationDelegate_So11NSResponderCXcFTf4e_nAA07TestingdG0C_Tg5Tm + 160
+	109 SwiftUI                             0x00000001cfc69658 $s7SwiftUI6runAppys5NeverOxAA0D0RzlF + 108
+	110 SwiftUI                             0x00000001cffca5c0 $s7SwiftUI3AppPAAE4mainyyFZ + 224
+	111 FinanceMate.debug.dylib             0x0000000100d97100 $s11FinanceMate0aB3AppV5$mainyyFZ + 40
+	112 FinanceMate.debug.dylib             0x0000000100d97460 __debug_main_executable_dylib_entry_point + 12
+	113 dyld                                0x000000019f132b98 start + 6076
+)
+2025-08-08 21:57:47.016064+1000 FinanceMate[83616:4200905] [HIExceptions] FAULT: NSInternalInconsistencyException: NSFetchRequest could not locate an NSEntityDescription for entity name 'Transaction'; (user info absent)
+libc++abi: terminating due to uncaught exception of type NSException
+2025-08-08 21:58:07.384034+1000 FinanceMate[84324:4207345] ApplePersistenceIgnoreState: Existing state will not be touched. New state will be written to /var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/com.ablankcanvas.financemate.savedState
+
+Restarting after unexpected exit, crash, or test timeout; summary will include totals from previous launches.
+
+Test Suite 'Selected tests' started at 2025-08-08 21:58:07.472.
+Test Suite 'FinanceMateTests.xctest' started at 2025-08-08 21:58:07.473.
+Test Suite 'DashboardViewModelTests' started at 2025-08-08 21:58:07.473.
+Test Case '-[FinanceMateTests.DashboardViewModelTests testPublishedPropertiesUpdating]' started.
+FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 21:58:07.474514+1000 FinanceMate[84324:4207345] FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 21:58:28.966630+1000 FinanceMate[85111:4212297] ApplePersistenceIgnoreState: Existing state will not be touched. New state will be written to /var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/com.ablankcanvas.financemate.savedState
+
+Restarting after unexpected exit, crash, or test timeout; summary will include totals from previous launches.
+
+Test Suite 'Selected tests' started at 2025-08-08 21:58:29.066.
+Test Suite 'FinanceMateTests.xctest' started at 2025-08-08 21:58:29.066.
+Test Suite 'DashboardViewModelTests' started at 2025-08-08 21:58:29.067.
+Test Case '-[FinanceMateTests.DashboardViewModelTests testSingleEntityDefinition]' started.
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/DashboardViewModelTests.swift:286: error: -[FinanceMateTests.DashboardViewModelTests testSingleEntityDefinition] : XCTAssertEqual failed: ("Optional(0)") is not equal to ("Optional(1)") - Should have exactly one Transaction entity definition
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/DashboardViewModelTests.swift:290: error: -[FinanceMateTests.DashboardViewModelTests testSingleEntityDefinition] : XCTAssertNotNil failed - Should be able to retrieve Transaction entity without conflicts
+Test Case '-[FinanceMateTests.DashboardViewModelTests testSingleEntityDefinition]' failed (0.109 seconds).
+Test Case '-[FinanceMateTests.DashboardViewModelTests testSpecificErrorTypes]' started.
+DashboardViewModel Error: invalidAmount("Amount must be a finite number")
+DashboardViewModel Error: Error Domain=NetworkError Code=-1009 "Network connection failed" UserInfo={NSLocalizedDescription=Network connection failed}
+DashboardViewModel Error: Error Domain=DataCorruption Code=500 "Data integrity check failed" UserInfo={NSLocalizedDescription=Data integrity check failed}
+Test Case '-[FinanceMateTests.DashboardViewModelTests testSpecificErrorTypes]' passed (1.050 seconds).
+Test Case '-[FinanceMateTests.DashboardViewModelTests testTotalBalanceCalculation]' started.
+FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 21:58:30.228285+1000 FinanceMate[85111:4212297] FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 21:58:51.219022+1000 FinanceMate[85892:4217544] ApplePersistenceIgnoreState: Existing state will not be touched. New state will be written to /var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/com.ablankcanvas.financemate.savedState
+
+Restarting after unexpected exit, crash, or test timeout; summary will include totals from previous launches.
+
+Test Suite 'Selected tests' started at 2025-08-08 21:58:51.312.
+Test Suite 'FinanceMateTests.xctest' started at 2025-08-08 21:58:51.312.
+Test Suite 'DashboardViewModelTests' started at 2025-08-08 21:58:51.313.
+Test Case '-[FinanceMateTests.DashboardViewModelTests testTransactionCountAccuracy]' started.
+FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 21:58:51.314283+1000 FinanceMate[85892:4217544] FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 21:59:12.810483+1000 FinanceMate[86720:4222462] ApplePersistenceIgnoreState: Existing state will not be touched. New state will be written to /var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/com.ablankcanvas.financemate.savedState
+
+Restarting after unexpected exit, crash, or test timeout; summary will include totals from previous launches.
+
+Test Suite 'Selected tests' started at 2025-08-08 21:59:12.894.
+Test Suite 'FinanceMateTests.xctest' started at 2025-08-08 21:59:12.895.
+Test Suite 'DashboardViewModelTests' started at 2025-08-08 21:59:12.895.
+Test Case '-[FinanceMateTests.DashboardViewModelTests testTransactionValidation]' started.
+DashboardViewModel Error: invalidAmount("Amount must be a finite number")
+Test Case '-[FinanceMateTests.DashboardViewModelTests testTransactionValidation]' passed (0.002 seconds).
+Test Case '-[FinanceMateTests.DashboardViewModelTests testViewModelInitialization]' started.
+Test Case '-[FinanceMateTests.DashboardViewModelTests testViewModelInitialization]' passed (0.001 seconds).
+Test Suite 'DashboardViewModelTests' passed at 2025-08-08 21:59:12.898.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.003 (0.003) seconds
+Test Suite 'FinancialEntityViewModelTests' started at 2025-08-08 21:59:12.898.
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testCreateChildEntity]' started.
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:60: error: -[FinanceMateTests.FinancialEntityViewModelTests testCreateChildEntity] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:74: error: -[FinanceMateTests.FinancialEntityViewModelTests testCreateChildEntity] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testCreateChildEntity]' failed (0.095 seconds).
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testCreateEntity]' started.
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:60: error: -[FinanceMateTests.FinancialEntityViewModelTests testCreateEntity] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:74: error: -[FinanceMateTests.FinancialEntityViewModelTests testCreateEntity] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testCreateEntity]' failed (0.010 seconds).
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testCreateEntityWithValidation]' started.
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:60: error: -[FinanceMateTests.FinancialEntityViewModelTests testCreateEntityWithValidation] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:74: error: -[FinanceMateTests.FinancialEntityViewModelTests testCreateEntityWithValidation] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testCreateEntityWithValidation]' failed (0.009 seconds).
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testCurrentEntityPersistence]' started.
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:60: error: -[FinanceMateTests.FinancialEntityViewModelTests testCurrentEntityPersistence] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:74: error: -[FinanceMateTests.FinancialEntityViewModelTests testCurrentEntityPersistence] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testCurrentEntityPersistence]' failed (0.009 seconds).
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testCurrentEntityValidation]' started.
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:60: error: -[FinanceMateTests.FinancialEntityViewModelTests testCurrentEntityValidation] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:74: error: -[FinanceMateTests.FinancialEntityViewModelTests testCurrentEntityValidation] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testCurrentEntityValidation]' failed (0.009 seconds).
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testDeleteEntity]' started.
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:60: error: -[FinanceMateTests.FinancialEntityViewModelTests testDeleteEntity] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:74: error: -[FinanceMateTests.FinancialEntityViewModelTests testDeleteEntity] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testDeleteEntity]' failed (0.009 seconds).
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testEntityCountUpdate]' started.
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:60: error: -[FinanceMateTests.FinancialEntityViewModelTests testEntityCountUpdate] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:74: error: -[FinanceMateTests.FinancialEntityViewModelTests testEntityCountUpdate] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testEntityCountUpdate]' failed (0.009 seconds).
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testEntityListUpdates]' started.
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:60: error: -[FinanceMateTests.FinancialEntityViewModelTests testEntityListUpdates] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:74: error: -[FinanceMateTests.FinancialEntityViewModelTests testEntityListUpdates] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testEntityListUpdates]' failed (0.008 seconds).
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testErrorHandling]' started.
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:60: error: -[FinanceMateTests.FinancialEntityViewModelTests testErrorHandling] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:74: error: -[FinanceMateTests.FinancialEntityViewModelTests testErrorHandling] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testErrorHandling]' failed (0.009 seconds).
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testFetchActiveEntities]' started.
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:60: error: -[FinanceMateTests.FinancialEntityViewModelTests testFetchActiveEntities] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:74: error: -[FinanceMateTests.FinancialEntityViewModelTests testFetchActiveEntities] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testFetchActiveEntities]' failed (0.009 seconds).
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testFetchAllEntities]' started.
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:60: error: -[FinanceMateTests.FinancialEntityViewModelTests testFetchAllEntities] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:74: error: -[FinanceMateTests.FinancialEntityViewModelTests testFetchAllEntities] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testFetchAllEntities]' failed (0.009 seconds).
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testFetchEntitiesByType]' started.
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:60: error: -[FinanceMateTests.FinancialEntityViewModelTests testFetchEntitiesByType] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:74: error: -[FinanceMateTests.FinancialEntityViewModelTests testFetchEntitiesByType] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testFetchEntitiesByType]' failed (0.009 seconds).
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testGetEntityDepth]' started.
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:60: error: -[FinanceMateTests.FinancialEntityViewModelTests testGetEntityDepth] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:74: error: -[FinanceMateTests.FinancialEntityViewModelTests testGetEntityDepth] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testGetEntityDepth]' failed (0.009 seconds).
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testGetEntityPath]' started.
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:60: error: -[FinanceMateTests.FinancialEntityViewModelTests testGetEntityPath] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:74: error: -[FinanceMateTests.FinancialEntityViewModelTests testGetEntityPath] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testGetEntityPath]' failed (0.009 seconds).
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testGetRootEntities]' started.
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:60: error: -[FinanceMateTests.FinancialEntityViewModelTests testGetRootEntities] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:74: error: -[FinanceMateTests.FinancialEntityViewModelTests testGetRootEntities] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testGetRootEntities]' failed (0.009 seconds).
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testLoadingStates]' started.
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:60: error: -[FinanceMateTests.FinancialEntityViewModelTests testLoadingStates] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:74: error: -[FinanceMateTests.FinancialEntityViewModelTests testLoadingStates] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testLoadingStates]' failed (0.009 seconds).
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testMoveEntityHierarchy]' started.
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:60: error: -[FinanceMateTests.FinancialEntityViewModelTests testMoveEntityHierarchy] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:74: error: -[FinanceMateTests.FinancialEntityViewModelTests testMoveEntityHierarchy] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testMoveEntityHierarchy]' failed (0.009 seconds).
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testPerformanceEntityLoad]' started.
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:60: error: -[FinanceMateTests.FinancialEntityViewModelTests testPerformanceEntityLoad] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:74: error: -[FinanceMateTests.FinancialEntityViewModelTests testPerformanceEntityLoad] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testPerformanceEntityLoad]' failed (0.009 seconds).
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testSearchEntities]' started.
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:60: error: -[FinanceMateTests.FinancialEntityViewModelTests testSearchEntities] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:74: error: -[FinanceMateTests.FinancialEntityViewModelTests testSearchEntities] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testSearchEntities]' failed (0.009 seconds).
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testSetCurrentEntity]' started.
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:60: error: -[FinanceMateTests.FinancialEntityViewModelTests testSetCurrentEntity] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:74: error: -[FinanceMateTests.FinancialEntityViewModelTests testSetCurrentEntity] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testSetCurrentEntity]' failed (0.010 seconds).
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testSwitchEntity]' started.
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:60: error: -[FinanceMateTests.FinancialEntityViewModelTests testSwitchEntity] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:74: error: -[FinanceMateTests.FinancialEntityViewModelTests testSwitchEntity] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testSwitchEntity]' failed (0.009 seconds).
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testUpdateEntity]' started.
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:60: error: -[FinanceMateTests.FinancialEntityViewModelTests testUpdateEntity] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:74: error: -[FinanceMateTests.FinancialEntityViewModelTests testUpdateEntity] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testUpdateEntity]' failed (0.009 seconds).
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testValidateCircularReference]' started.
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:60: error: -[FinanceMateTests.FinancialEntityViewModelTests testValidateCircularReference] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateTests/ViewModels/FinancialEntityViewModelTests.swift:74: error: -[FinanceMateTests.FinancialEntityViewModelTests testValidateCircularReference] : NSFetchRequest could not locate an NSEntityDescription for entity name 'FinancialEntity' (NSInternalInconsistencyException)
+Test Case '-[FinanceMateTests.FinancialEntityViewModelTests testValidateCircularReference]' failed (0.009 seconds).
+Test Suite 'FinancialEntityViewModelTests' failed at 2025-08-08 21:59:13.195.
+	 Executed 23 tests, with 46 failures (46 unexpected) in 0.295 (0.297) seconds
+Test Suite 'LineItemViewModelTests' started at 2025-08-08 21:59:13.196.
+Test Case '-[FinanceMateTests.LineItemViewModelTests testAddLineItemNegativeAmountValidation]' started.
+FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 21:59:13.196663+1000 FinanceMate[86720:4222462] FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 21:59:34.693625+1000 FinanceMate[87599:4228770] ApplePersistenceIgnoreState: Existing state will not be touched. New state will be written to /var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/com.ablankcanvas.financemate.savedState
+
+Restarting after unexpected exit, crash, or test timeout; summary will include totals from previous launches.
+
+Test Suite 'Selected tests' started at 2025-08-08 21:59:34.791.
+Test Suite 'FinanceMateTests.xctest' started at 2025-08-08 21:59:34.791.
+Test Suite 'LineItemViewModelTests' started at 2025-08-08 21:59:34.792.
+Test Case '-[FinanceMateTests.LineItemViewModelTests testAddLineItemSuccess]' started.
+FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 21:59:34.792984+1000 FinanceMate[87599:4228770] FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 21:59:56.289971+1000 FinanceMate[88220:4233584] ApplePersistenceIgnoreState: Existing state will not be touched. New state will be written to /var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/com.ablankcanvas.financemate.savedState
+
+Restarting after unexpected exit, crash, or test timeout; summary will include totals from previous launches.
+
+Test Suite 'Selected tests' started at 2025-08-08 21:59:56.400.
+Test Suite 'FinanceMateTests.xctest' started at 2025-08-08 21:59:56.400.
+Test Suite 'LineItemViewModelTests' started at 2025-08-08 21:59:56.400.
+Test Case '-[FinanceMateTests.LineItemViewModelTests testAddLineItemValidationFailure]' started.
+FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 21:59:56.401662+1000 FinanceMate[88220:4233584] FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 22:00:17.890144+1000 FinanceMate[88877:4238087] ApplePersistenceIgnoreState: Existing state will not be touched. New state will be written to /var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/com.ablankcanvas.financemate.savedState
+
+Restarting after unexpected exit, crash, or test timeout; summary will include totals from previous launches.
+
+Test Suite 'Selected tests' started at 2025-08-08 22:00:17.989.
+Test Suite 'FinanceMateTests.xctest' started at 2025-08-08 22:00:17.989.
+Test Suite 'LineItemViewModelTests' started at 2025-08-08 22:00:17.989.
+Test Case '-[FinanceMateTests.LineItemViewModelTests testAmountValidationMoreThanTwoDecimalPlaces]' started.
+FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 22:00:17.990858+1000 FinanceMate[88877:4238087] FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 22:00:39.485280+1000 FinanceMate[89711:4244313] ApplePersistenceIgnoreState: Existing state will not be touched. New state will be written to /var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/com.ablankcanvas.financemate.savedState
+
+Restarting after unexpected exit, crash, or test timeout; summary will include totals from previous launches.
+
+Test Suite 'Selected tests' started at 2025-08-08 22:00:39.584.
+Test Suite 'FinanceMateTests.xctest' started at 2025-08-08 22:00:39.585.
+Test Suite 'LineItemViewModelTests' started at 2025-08-08 22:00:39.585.
+Test Case '-[FinanceMateTests.LineItemViewModelTests testAmountValidationNegative]' started.
+FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 22:00:39.586516+1000 FinanceMate[89711:4244313] FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 22:01:01.609094+1000 FinanceMate[90400:4249248] ApplePersistenceIgnoreState: Existing state will not be touched. New state will be written to /var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/com.ablankcanvas.financemate.savedState
+
+Restarting after unexpected exit, crash, or test timeout; summary will include totals from previous launches.
+
+Test Suite 'Selected tests' started at 2025-08-08 22:01:01.737.
+Test Suite 'FinanceMateTests.xctest' started at 2025-08-08 22:01:01.737.
+Test Suite 'LineItemViewModelTests' started at 2025-08-08 22:01:01.737.
+Test Case '-[FinanceMateTests.LineItemViewModelTests testAmountValidationPositive]' started.
+FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 22:01:01.739171+1000 FinanceMate[90400:4249248] FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 22:01:23.405638+1000 FinanceMate[90727:4253222] ApplePersistenceIgnoreState: Existing state will not be touched. New state will be written to /var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/com.ablankcanvas.financemate.savedState
+
+Restarting after unexpected exit, crash, or test timeout; summary will include totals from previous launches.
+
+Test Suite 'Selected tests' started at 2025-08-08 22:01:23.498.
+Test Suite 'FinanceMateTests.xctest' started at 2025-08-08 22:01:23.498.
+Test Suite 'LineItemViewModelTests' started at 2025-08-08 22:01:23.498.
+Test Case '-[FinanceMateTests.LineItemViewModelTests testAmountValidationTwoDecimalPlaces]' started.
+FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 22:01:23.499648+1000 FinanceMate[90727:4253222] FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 22:01:45.022578+1000 FinanceMate[91091:4257055] ApplePersistenceIgnoreState: Existing state will not be touched. New state will be written to /var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/com.ablankcanvas.financemate.savedState
+
+Restarting after unexpected exit, crash, or test timeout; summary will include totals from previous launches.
+
+Test Suite 'Selected tests' started at 2025-08-08 22:01:45.137.
+Test Suite 'FinanceMateTests.xctest' started at 2025-08-08 22:01:45.137.
+Test Suite 'LineItemViewModelTests' started at 2025-08-08 22:01:45.137.
+Test Case '-[FinanceMateTests.LineItemViewModelTests testAmountValidationZero]' started.
+FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 22:01:45.138698+1000 FinanceMate[91091:4257055] FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 22:02:06.636547+1000 FinanceMate[91337:4260040] ApplePersistenceIgnoreState: Existing state will not be touched. New state will be written to /var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/com.ablankcanvas.financemate.savedState
+
+Restarting after unexpected exit, crash, or test timeout; summary will include totals from previous launches.
+
+Test Suite 'Selected tests' started at 2025-08-08 22:02:06.742.
+Test Suite 'FinanceMateTests.xctest' started at 2025-08-08 22:02:06.742.
+Test Suite 'LineItemViewModelTests' started at 2025-08-08 22:02:06.742.
+Test Case '-[FinanceMateTests.LineItemViewModelTests testAustralianCurrencyFormatting]' started.
+FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 22:02:06.743339+1000 FinanceMate[91337:4260040] FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 22:02:28.332423+1000 FinanceMate[91478:4263588] ApplePersistenceIgnoreState: Existing state will not be touched. New state will be written to /var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/com.ablankcanvas.financemate.savedState
+
+Restarting after unexpected exit, crash, or test timeout; summary will include totals from previous launches.
+
+Test Suite 'Selected tests' started at 2025-08-08 22:02:28.434.
+Test Suite 'FinanceMateTests.xctest' started at 2025-08-08 22:02:28.434.
+Test Suite 'LineItemViewModelTests' started at 2025-08-08 22:02:28.434.
+Test Case '-[FinanceMateTests.LineItemViewModelTests testCascadeDeleteLineItemWithSplits]' started.
+FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 22:02:28.435587+1000 FinanceMate[91478:4263588] FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 22:02:49.930497+1000 FinanceMate[91542:4265474] ApplePersistenceIgnoreState: Existing state will not be touched. New state will be written to /var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/com.ablankcanvas.financemate.savedState
+
+Restarting after unexpected exit, crash, or test timeout; summary will include totals from previous launches.
+
+Test Suite 'Selected tests' started at 2025-08-08 22:02:50.024.
+Test Suite 'FinanceMateTests.xctest' started at 2025-08-08 22:02:50.024.
+Test Suite 'LineItemViewModelTests' started at 2025-08-08 22:02:50.024.
+Test Case '-[FinanceMateTests.LineItemViewModelTests testConcurrentLineItemOperations]' started.
+FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 22:02:50.025904+1000 FinanceMate[91542:4265474] FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 22:03:11.517999+1000 FinanceMate[91647:4268289] ApplePersistenceIgnoreState: Existing state will not be touched. New state will be written to /var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/com.ablankcanvas.financemate.savedState
+
+Restarting after unexpected exit, crash, or test timeout; summary will include totals from previous launches.
+
+Test Suite 'Selected tests' started at 2025-08-08 22:03:11.608.
+Test Suite 'FinanceMateTests.xctest' started at 2025-08-08 22:03:11.609.
+Test Suite 'LineItemViewModelTests' started at 2025-08-08 22:03:11.609.
+Test Case '-[FinanceMateTests.LineItemViewModelTests testDeleteLineItemSuccess]' started.
+FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 22:03:11.610469+1000 FinanceMate[91647:4268289] FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 22:03:33.083154+1000 FinanceMate[91772:4271016] ApplePersistenceIgnoreState: Existing state will not be touched. New state will be written to /var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/com.ablankcanvas.financemate.savedState
+
+Restarting after unexpected exit, crash, or test timeout; summary will include totals from previous launches.
+
+Test Suite 'Selected tests' started at 2025-08-08 22:03:33.168.
+Test Suite 'FinanceMateTests.xctest' started at 2025-08-08 22:03:33.168.
+Test Suite 'LineItemViewModelTests' started at 2025-08-08 22:03:33.168.
+Test Case '-[FinanceMateTests.LineItemViewModelTests testDescriptionValidationEmptyString]' started.
+FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 22:03:33.169789+1000 FinanceMate[91772:4271016] FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 22:03:33.654424+1000 FinanceMate[91774:4272048] ApplePersistenceIgnoreState: Existing state will not be touched. New state will be written to /var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/com.ablankcanvas.financemate.savedState
+
+Restarting after unexpected exit, crash, or test timeout; summary will include totals from previous launches.
+
+Test Suite 'Selected tests' started at 2025-08-08 22:03:33.776.
+Test Suite 'FinanceMateTests.xctest' started at 2025-08-08 22:03:33.776.
+Test Suite 'LineItemViewModelTests' started at 2025-08-08 22:03:33.776.
+Test Case '-[FinanceMateTests.LineItemViewModelTests testDescriptionValidationExceedsMaxLength]' started.
+FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 22:03:33.777568+1000 FinanceMate[91774:4272048] FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 22:03:54.633310+1000 FinanceMate[91890:4273894] ApplePersistenceIgnoreState: Existing state will not be touched. New state will be written to /var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/com.ablankcanvas.financemate.savedState
+
+Restarting after unexpected exit, crash, or test timeout; summary will include totals from previous launches.
+
+Test Suite 'Selected tests' started at 2025-08-08 22:03:54.714.
+Test Suite 'FinanceMateTests.xctest' started at 2025-08-08 22:03:54.715.
+Test Suite 'LineItemViewModelTests' started at 2025-08-08 22:03:54.715.
+Test Case '-[FinanceMateTests.LineItemViewModelTests testDescriptionValidationMaxLength]' started.
+FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 22:03:54.716207+1000 FinanceMate[91890:4273894] FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 22:04:16.196051+1000 FinanceMate[91990:4276570] ApplePersistenceIgnoreState: Existing state will not be touched. New state will be written to /var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/com.ablankcanvas.financemate.savedState
+
+Restarting after unexpected exit, crash, or test timeout; summary will include totals from previous launches.
+
+Test Suite 'Selected tests' started at 2025-08-08 22:04:16.278.
+Test Suite 'FinanceMateTests.xctest' started at 2025-08-08 22:04:16.279.
+Test Suite 'LineItemViewModelTests' started at 2025-08-08 22:04:16.279.
+Test Case '-[FinanceMateTests.LineItemViewModelTests testDescriptionValidationWhitespaceOnly]' started.
+FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 22:04:16.280188+1000 FinanceMate[91990:4276570] FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 22:04:16.758165+1000 FinanceMate[91992:4277598] ApplePersistenceIgnoreState: Existing state will not be touched. New state will be written to /var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/com.ablankcanvas.financemate.savedState
+
+Restarting after unexpected exit, crash, or test timeout; summary will include totals from previous launches.
+
+Test Suite 'Selected tests' started at 2025-08-08 22:04:16.870.
+Test Suite 'FinanceMateTests.xctest' started at 2025-08-08 22:04:16.870.
+Test Suite 'LineItemViewModelTests' started at 2025-08-08 22:04:16.870.
+Test Case '-[FinanceMateTests.LineItemViewModelTests testErrorHandlingInvalidTransaction]' started.
+FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 22:04:16.871780+1000 FinanceMate[91992:4277598] FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 22:04:37.770573+1000 FinanceMate[92109:4279400] ApplePersistenceIgnoreState: Existing state will not be touched. New state will be written to /var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/com.ablankcanvas.financemate.savedState
+
+Restarting after unexpected exit, crash, or test timeout; summary will include totals from previous launches.
+
+Test Suite 'Selected tests' started at 2025-08-08 22:04:37.864.
+Test Suite 'FinanceMateTests.xctest' started at 2025-08-08 22:04:37.865.
+Test Suite 'LineItemViewModelTests' started at 2025-08-08 22:04:37.865.
+Test Case '-[FinanceMateTests.LineItemViewModelTests testFetchLineItemsForTransaction]' started.
+FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 22:04:37.866038+1000 FinanceMate[92109:4279400] FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 22:04:59.335056+1000 FinanceMate[92291:4283101] ApplePersistenceIgnoreState: Existing state will not be touched. New state will be written to /var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/com.ablankcanvas.financemate.savedState
+
+Restarting after unexpected exit, crash, or test timeout; summary will include totals from previous launches.
+
+Test Suite 'Selected tests' started at 2025-08-08 22:04:59.416.
+Test Suite 'FinanceMateTests.xctest' started at 2025-08-08 22:04:59.417.
+Test Suite 'LineItemViewModelTests' started at 2025-08-08 22:04:59.417.
+Test Case '-[FinanceMateTests.LineItemViewModelTests testFetchPerformanceWithLargeDataset]' started.
+FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 22:04:59.418321+1000 FinanceMate[92291:4283101] FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 22:05:21.042233+1000 FinanceMate[92537:4287008] ApplePersistenceIgnoreState: Existing state will not be touched. New state will be written to /var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/com.ablankcanvas.financemate.savedState
+
+Restarting after unexpected exit, crash, or test timeout; summary will include totals from previous launches.
+
+Test Suite 'Selected tests' started at 2025-08-08 22:05:21.153.
+Test Suite 'FinanceMateTests.xctest' started at 2025-08-08 22:05:21.153.
+Test Suite 'LineItemViewModelTests' started at 2025-08-08 22:05:21.153.
+Test Case '-[FinanceMateTests.LineItemViewModelTests testLineItemFetchPerformanceWithLargeDataset]' started.
+FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context
+2025-08-08 22:05:21.154489+1000 FinanceMate[92537:4287008] FinanceMate/Transaction+CoreDataProperties.swift:21: Fatal error: Transaction entity not found in the provided context

@@ -32,7 +32,8 @@ import SwiftUI
 import OSLog
 import Combine
 
-@MainActor
+// EMERGENCY FIX: Removed to eliminate Swift Concurrency crashes
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
 final class DashboardAnalyticsViewModel: ObservableObject {
     
     // MARK: - Properties
@@ -95,7 +96,7 @@ final class DashboardAnalyticsViewModel: ObservableObject {
     // MARK: - Public Methods
     
     /// Load comprehensive analytics data for dashboard display
-    func loadAnalyticsData() async {
+    func loadAnalyticsData() {
         isLoading = true
         errorMessage = nil
         
@@ -111,7 +112,7 @@ final class DashboardAnalyticsViewModel: ObservableObject {
             async let balanceData = loadTotalBalance()
             
             // Await all data loading operations
-            let (categories, trends, wealth, patterns, anomalies, balance) = await (
+            let (categories, trends, wealth, patterns, anomalies, balance) = (
                 categoryData, trendData, wealthData, patternData, anomalyData, balanceData
             )
             
@@ -137,8 +138,8 @@ final class DashboardAnalyticsViewModel: ObservableObject {
     }
     
     /// Refresh analytics data (for real-time updates)
-    func refreshAnalyticsData() async {
-        await loadAnalyticsData()
+    func refreshAnalyticsData() {
+        loadAnalyticsData()
     }
     
     /// Enable automatic refresh when data changes
@@ -170,9 +171,9 @@ final class DashboardAnalyticsViewModel: ObservableObject {
     
     // MARK: - Private Data Loading Methods
     
-    private func loadCategorySummaryCards() async -> [CategorySummaryCard] {
+    private func loadCategorySummaryCards() -> [CategorySummaryCard] {
         do {
-            let categoryTotals = try await analyticsEngine.aggregateSplitsByTaxCategory()
+            let categoryTotals = try analyticsEngine.aggregateSplitsByTaxCategory()
             let totalAmount = categoryTotals.values.reduce(0, +)
             
             let cards = categoryTotals.map { (category, amount) in
@@ -194,7 +195,7 @@ final class DashboardAnalyticsViewModel: ObservableObject {
         }
     }
     
-    private func loadTrendChartData() async -> [TrendDataPoint] {
+    private func loadTrendChartData() -> [TrendDataPoint] {
         do {
             let currentDate = Date()
             let calendar = Calendar.current
@@ -204,7 +205,7 @@ final class DashboardAnalyticsViewModel: ObservableObject {
             for monthOffset in 0..<12 {
                 guard let monthDate = calendar.date(byAdding: .month, value: -monthOffset, to: currentDate) else { continue }
                 
-                let monthlyData = try await analyticsEngine.analyzeMonthlyTrends(for: monthDate)
+                let monthlyData = try analyticsEngine.analyzeMonthlyTrends(for: monthDate)
                 
                 for (category, amount) in monthlyData.categories {
                     chartData.append(TrendDataPoint(
@@ -224,7 +225,7 @@ final class DashboardAnalyticsViewModel: ObservableObject {
         }
     }
     
-    private func loadWealthProgressionData() async -> [WealthProgressionPoint] {
+    private func loadWealthProgressionData() -> [WealthProgressionPoint] {
         do {
             let currentDate = Date()
             let calendar = Calendar.current
@@ -243,7 +244,7 @@ final class DashboardAnalyticsViewModel: ObservableObject {
                 
                 cumulativeBalance += weekTotal
                 
-                let splitBreakdown = try await calculateSplitBreakdown(for: weekTransactions)
+                let splitBreakdown = try calculateSplitBreakdown(for: weekTransactions)
                 
                 progressionData.append(WealthProgressionPoint(
                     date: weekDate,
@@ -261,10 +262,10 @@ final class DashboardAnalyticsViewModel: ObservableObject {
         }
     }
     
-    private func loadExpensePatterns() async -> [ExpensePattern] {
+    private func loadExpensePatterns() -> [ExpensePattern] {
         do {
             // Implement pattern recognition algorithm
-            let categoryTotals = try await analyticsEngine.aggregateSplitsByTaxCategory()
+            let categoryTotals = try analyticsEngine.aggregateSplitsByTaxCategory()
             var patterns: [ExpensePattern] = []
             
             // Detect spending patterns
@@ -292,10 +293,10 @@ final class DashboardAnalyticsViewModel: ObservableObject {
         }
     }
     
-    private func loadAnomalyDetection() async -> [AnalyticsAnomaly] {
+    private func loadAnomalyDetection() -> [AnalyticsAnomaly] {
         do {
             // Implement anomaly detection algorithm
-            let metrics = try await analyticsEngine.calculateFinancialMetrics()
+            let metrics = try analyticsEngine.calculateFinancialMetrics()
             var anomalies: [AnalyticsAnomaly] = []
             
             // Detect unusual split allocations
@@ -319,9 +320,9 @@ final class DashboardAnalyticsViewModel: ObservableObject {
         }
     }
     
-    private func loadTotalBalance() async -> Double {
+    private func loadTotalBalance() -> Double {
         do {
-            let balance = try await analyticsEngine.calculateRealTimeBalance()
+            let balance = try analyticsEngine.calculateRealTimeBalance()
             return balance.totalBalance
         } catch {
             logger.error("Error loading total balance: \(error.localizedDescription)")
@@ -342,9 +343,9 @@ final class DashboardAnalyticsViewModel: ObservableObject {
             .sink { [weak self] _ in
                 guard let self = self, self.autoRefreshEnabled else { return }
                 
-                Task {
-                    await self.refreshAnalyticsData()
-                }
+                // EMERGENCY FIX: Removed Task block - immediate execution
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
+        self.refreshAnalyticsData()
             }
             .store(in: &dataUpdateSubscription)
     }
@@ -398,7 +399,7 @@ final class DashboardAnalyticsViewModel: ObservableObject {
         }
     }
     
-    private func calculateSplitBreakdown(for transactions: [Transaction]) async throws -> [String: Double] {
+    private func calculateSplitBreakdown() throws -> [String: Double] {
         var breakdown: [String: Double] = [:]
         
         for transaction in transactions {

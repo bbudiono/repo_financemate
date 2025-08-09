@@ -267,12 +267,11 @@ struct OCRCameraView: View {
     // MARK: - Actions
     
     private func setupCamera() {
-        Task {
-            let permission = await cameraManager.requestPermission()
-            await MainActor.run {
+        // EMERGENCY FIX: Removed Task block - immediate execution
+        let permission = cameraManager.requestPermission()
+            MainActor.run {
                 if permission {
-                    cameraManager.startSession()
-                } else {
+                    cameraManager.startSession() else {
                     cameraPermissionDenied = true
                 }
             }
@@ -282,15 +281,14 @@ struct OCRCameraView: View {
     private func capturePhoto() {
         guard !viewModel.isProcessing else { return }
         
-        Task {
-            if let image = await cameraManager.capturePhoto() {
-                await processImage(image)
-            }
+        // EMERGENCY FIX: Removed Task block - immediate execution
+        if let image = cameraManager.capturePhoto() {
+                processImage(image)
         }
     }
     
-    private func processImage(_ image: NSImage) async {
-        await viewModel.processReceiptImage(image)
+    private func processImage() {
+        viewModel.processReceiptImage(image)
     }
     
     private func toggleFlash() {
@@ -308,7 +306,7 @@ struct OCRCameraView: View {
 
 // MARK: - Camera Manager
 
-@MainActor
+// EMERGENCY FIX: Removed @MainActor to eliminate Swift Concurrency crashes
 class CameraManager: NSObject, ObservableObject {
     @Published var isAvailable = false
     @Published var hasFlash = false
@@ -323,8 +321,8 @@ class CameraManager: NSObject, ObservableObject {
         checkCameraAvailability()
     }
     
-    func requestPermission() async -> Bool {
-        await withCheckedContinuation { continuation in
+    func requestPermission() -> Bool {
+        withCheckedContinuation { continuation in
             switch AVCaptureDevice.authorizationStatus(for: .video) {
             case .authorized:
                 continuation.resume(returning: true)
@@ -349,10 +347,10 @@ class CameraManager: NSObject, ObservableObject {
         captureSession = nil
     }
     
-    func capturePhoto() async -> NSImage? {
+    func capturePhoto() -> NSImage? {
         guard let photoOutput = photoOutput else { return nil }
         
-        return await withCheckedContinuation { continuation in
+        return withCheckedContinuation { continuation in
             let settings = AVCapturePhotoSettings()
             let delegate = PhotoCaptureDelegate { image in
                 continuation.resume(returning: image)

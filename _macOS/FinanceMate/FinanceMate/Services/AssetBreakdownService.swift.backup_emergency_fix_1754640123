@@ -1,0 +1,360 @@
+import Foundation
+import CoreData
+
+/**
+ * Purpose: Comprehensive asset breakdown and categorization service
+ * Issues & Complexity Summary: Complex asset categorization with financial calculations
+ * Key Complexity Drivers:
+ *   - Logic Scope (Est. LoC): ~400
+ *   - Core Algorithm Complexity: Medium (asset grouping, percentage calculations)
+ *   - Dependencies: Core Data entities, Australian locale compliance
+ *   - State Management Complexity: Medium (asset categories, filtering, sorting)
+ *   - Novelty/Uncertainty Factor: Low
+ * AI Pre-Task Self-Assessment: 85%
+ * Problem Estimate: 85% 
+ * Initial Code Complexity Estimate: 85%
+ * Target Coverage: ≥95%
+ * Last Updated: 2025-08-02
+ */
+
+// EMERGENCY FIX: Removed @MainActor to eliminate Swift Concurrency crashes
+public class AssetBreakdownService: ObservableObject {
+    
+    private let context: NSManagedObjectContext
+    private let currencyFormatter: NumberFormatter
+    
+    // MARK: - Initialization
+    
+    public init(context: NSManagedObjectContext) {
+        self.context = context
+        self.currencyFormatter = NumberFormatter()
+        self.currencyFormatter.numberStyle = .currency
+        self.currencyFormatter.currencyCode = "AUD"
+        self.currencyFormatter.locale = Locale(identifier: "en_AU")
+    }
+    
+    // MARK: - Asset Breakdown Calculation
+    
+    /// Get assets grouped by category for a specific entity
+    public func getAssetBreakdown() -> AssetBreakdownResult {
+        do {
+            let assetRequest: NSFetchRequest<Asset> = Asset.fetchRequest()
+            
+            if let entity = entity {
+                assetRequest.predicate = NSPredicate(format: "financialEntity == %@", entity)
+            }
+            
+            assetRequest.sortDescriptors = [
+                NSSortDescriptor(keyPath: \Asset.assetType, ascending: true),
+                NSSortDescriptor(keyPath: \Asset.currentValue, ascending: false)
+            ]
+            
+            let assets = try context.fetch(assetRequest)
+            
+            // Group assets by type
+            var assetsByCategory: [Asset.AssetType: [Asset]] = [:]
+            for asset in assets {
+                let type = asset.type
+                if assetsByCategory[type] == nil {
+                    assetsByCategory[type] = []
+                }
+                assetsByCategory[type]?.append(asset)
+            }
+            
+            // Calculate total value
+            let totalValue = assets.reduce(0) { total, asset in
+                total + max(0, asset.currentValue) // Ensure no negative values
+            }
+            
+            // Calculate category totals and percentages
+            var categoryTotals: [Asset.AssetType: Double] = [:]
+            var categoryPercentages: [Asset.AssetType: Double] = [:]
+            
+            for (type, typeAssets) in assetsByCategory {
+                let categoryTotal = typeAssets.reduce(0) { $0 + max(0, $1.currentValue) }
+                categoryTotals[type] = categoryTotal
+                
+                if totalValue > 0 {
+                    categoryPercentages[type] = (categoryTotal / totalValue) * 100
+                } else {
+                    categoryPercentages[type] = 0.0
+                }
+            }
+            
+            return AssetBreakdownResult(
+                assetsByCategory: assetsByCategory,
+                categoryTotals: categoryTotals,
+                categoryPercentages: categoryPercentages,
+                totalAssetValue: totalValue,
+                calculatedAt: Date()
+            )
+            
+        } catch {
+            print("Error calculating asset breakdown: \(error)")
+            return AssetBreakdownResult(
+                assetsByCategory: [:],
+                categoryTotals: [:],
+                categoryPercentages: [:],
+                totalAssetValue: 0.0,
+                calculatedAt: Date()
+            )
+        }
+    }
+    
+    // MARK: - Asset Category Analysis
+    
+    /// Get total value for a specific asset category
+    public func getCategoryTotal() -> Double {
+        do {
+            let assetRequest: NSFetchRequest<Asset> = Asset.fetchRequest()
+            
+            var predicates: [NSPredicate] = [
+                NSPredicate(format: "assetType == %@", type.stringValue)
+            ]
+            
+            if let entity = entity {
+                predicates.append(NSPredicate(format: "financialEntity == %@", entity))
+            }
+            
+            assetRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+            
+            let assets = try context.fetch(assetRequest)
+            
+            return assets.reduce(0) { total, asset in
+                total + max(0, asset.currentValue)
+            }
+            
+        } catch {
+            print("Error calculating category total: \(error)")
+            return 0.0
+        }
+    }
+    
+    /// Get percentage allocation for a specific asset category
+    public func getCategoryPercentage() -> Double {
+        let breakdown = getAssetBreakdown(for: entity)
+        return breakdown.categoryPercentages[type] ?? 0.0
+    }
+    
+    // MARK: - Asset Filtering and Sorting
+    
+    /// Filter assets by type
+    public func getFilteredAssets() -> [Asset] {
+        do {
+            let assetRequest: NSFetchRequest<Asset> = Asset.fetchRequest()
+            
+            var predicates: [NSPredicate] = [
+                NSPredicate(format: "assetType == %@", type.stringValue)
+            ]
+            
+            if let entity = entity {
+                predicates.append(NSPredicate(format: "financialEntity == %@", entity))
+            }
+            
+            assetRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+            assetRequest.sortDescriptors = [
+                NSSortDescriptor(keyPath: \Asset.currentValue, ascending: false)
+            ]
+            
+            return try context.fetch(assetRequest)
+            
+        } catch {
+            print("Error filtering assets: \(error)")
+            return []
+        }
+    }
+    
+    /// Get assets sorted by specified criteria
+    public func getSortedAssets() -> [Asset] {
+        do {
+            let assetRequest: NSFetchRequest<Asset> = Asset.fetchRequest()
+            
+            if let entity = entity {
+                assetRequest.predicate = NSPredicate(format: "financialEntity == %@", entity)
+            }
+            
+            switch sortOrder {
+            case .nameAscending:
+                assetRequest.sortDescriptors = [
+                    NSSortDescriptor(keyPath: \Asset.name, ascending: true)
+                ]
+            case .nameDescending:
+                assetRequest.sortDescriptors = [
+                    NSSortDescriptor(keyPath: \Asset.name, ascending: false)
+                ]
+            case .valueAscending:
+                assetRequest.sortDescriptors = [
+                    NSSortDescriptor(keyPath: \Asset.currentValue, ascending: true)
+                ]
+            case .valueDescending:
+                assetRequest.sortDescriptors = [
+                    NSSortDescriptor(keyPath: \Asset.currentValue, ascending: false)
+                ]
+            case .typeAscending:
+                assetRequest.sortDescriptors = [
+                    NSSortDescriptor(keyPath: \Asset.assetType, ascending: true),
+                    NSSortDescriptor(keyPath: \Asset.currentValue, ascending: false)
+                ]
+            case .typeDescending:
+                assetRequest.sortDescriptors = [
+                    NSSortDescriptor(keyPath: \Asset.assetType, ascending: false),
+                    NSSortDescriptor(keyPath: \Asset.currentValue, ascending: false)
+                ]
+            }
+            
+            return try context.fetch(assetRequest)
+            
+        } catch {
+            print("Error sorting assets: \(error)")
+            return []
+        }
+    }
+    
+    // MARK: - Asset CRUD Operations
+    
+    /// Add new asset to entity
+    public func addAsset() -> Asset? {
+        
+        let asset = Asset.create(
+            in: context,
+            name: name,
+            type: type,
+            currentValue: currentValue,
+            purchasePrice: purchasePrice,
+            purchaseDate: purchaseDate
+        )
+        
+        asset.financialEntity = entity
+        
+        do {
+            try context.save()
+            return asset
+        } catch {
+            print("Error adding asset: \(error)")
+            context.rollback()
+            return nil
+        }
+    }
+    
+    /// Update existing asset value
+    public func updateAsset() -> Bool {
+        // Create valuation history entry
+        let valuation = AssetValuation.create(
+            in: context,
+            value: asset.currentValue,
+            date: Date(),
+            asset: asset
+        )
+        
+        // Update current value
+        asset.currentValue = newValue
+        asset.lastUpdated = Date()
+        
+        do {
+            try context.save()
+            return true
+        } catch {
+            print("Error updating asset: \(error)")
+            context.rollback()
+            return false
+        }
+    }
+    
+    /// Delete asset
+    public func deleteAsset() -> Bool {
+        context.delete(asset)
+        
+        do {
+            try context.save()
+            return true
+        } catch {
+            print("Error deleting asset: \(error)")
+            context.rollback()
+            return false
+        }
+    }
+    
+    // MARK: - Currency Formatting
+    
+    /// Format currency value in Australian dollars
+    public func formatCurrency(_ amount: Double) -> String {
+        return currencyFormatter.string(from: NSNumber(value: amount)) ?? "$0.00"
+    }
+    
+    // MARK: - Helper Methods
+    
+    /// Check if asset breakdown is empty
+    public func isEmpty() -> Bool {
+        let breakdown = getAssetBreakdown(for: entity)
+        return breakdown.assetsByCategory.isEmpty
+    }
+    
+    /// Get asset count for entity
+    public func getAssetCount() -> Int {
+        do {
+            let assetRequest: NSFetchRequest<Asset> = Asset.fetchRequest()
+            
+            if let entity = entity {
+                assetRequest.predicate = NSPredicate(format: "financialEntity == %@", entity)
+            }
+            
+            return try context.count(for: assetRequest)
+            
+        } catch {
+            print("Error counting assets: \(error)")
+            return 0
+        }
+    }
+}
+
+// MARK: - Supporting Data Structures
+
+/// Result of asset breakdown calculation
+public struct AssetBreakdownResult {
+    public let assetsByCategory: [Asset.AssetType: [Asset]]
+    public let categoryTotals: [Asset.AssetType: Double]
+    public let categoryPercentages: [Asset.AssetType: Double]
+    public let totalAssetValue: Double
+    public let calculatedAt: Date
+    
+    public init(
+        assetsByCategory: [Asset.AssetType: [Asset]],
+        categoryTotals: [Asset.AssetType: Double],
+        categoryPercentages: [Asset.AssetType: Double],
+        totalAssetValue: Double,
+        calculatedAt: Date
+    ) {
+        self.assetsByCategory = assetsByCategory
+        self.categoryTotals = categoryTotals
+        self.categoryPercentages = categoryPercentages
+        self.totalAssetValue = totalAssetValue
+        self.calculatedAt = calculatedAt
+    }
+}
+
+/// Asset sorting options
+public enum AssetSortOrder: CaseIterable {
+    case nameAscending
+    case nameDescending
+    case valueAscending
+    case valueDescending
+    case typeAscending
+    case typeDescending
+    
+    var displayName: String {
+        switch self {
+        case .nameAscending:
+            return "Name (A-Z)"
+        case .nameDescending:
+            return "Name (Z-A)"
+        case .valueAscending:
+            return "Value (Low to High)"
+        case .valueDescending:
+            return "Value (High to Low)"
+        case .typeAscending:
+            return "Type (A-Z)"
+        case .typeDescending:
+            return "Type (Z-A)"
+        }
+    }
+}

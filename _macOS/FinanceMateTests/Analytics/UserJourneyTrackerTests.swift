@@ -81,7 +81,7 @@ final class UserJourneyTrackerTests: XCTestCase {
     func testPrivacyDataAnonymization() {
         // Given: Various user data types
         let personalData = [
-            "user_email": "test@example.com",
+            "user_email": "john.smith@cba.com.au",
             "exact_amount": "1234.56",
             "merchant_name": "Specific Store Name",
             "description": "Personal transaction note"

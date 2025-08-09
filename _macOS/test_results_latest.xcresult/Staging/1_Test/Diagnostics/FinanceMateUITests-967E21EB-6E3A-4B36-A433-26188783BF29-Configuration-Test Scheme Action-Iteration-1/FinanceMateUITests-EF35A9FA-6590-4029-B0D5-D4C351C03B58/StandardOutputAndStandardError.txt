@@ -1,0 +1,124 @@
+2025-08-08 21:44:12.889822+1000 FinanceMateUITests-Runner[71372:4095822] [Default] Running tests...
+Test Suite 'All tests' started at 2025-08-08 21:44:12.955.
+Test Suite 'FinanceMateUITests.xctest' started at 2025-08-08 21:44:12.955.
+Test Suite 'DashboardViewUITests' started at 2025-08-08 21:44:12.956.
+Test Case '-[FinanceMateUITests.DashboardViewUITests testActionButtons]' started.
+    t =     0.00s Start Test at 2025-08-08 21:44:12.956
+    t =     0.26s Set Up
+    t =     0.26s     Open com.ablankcanvas.financemate
+    t =     0.26s         Launch com.ablankcanvas.financemate
+    t =     0.52s             Wait for accessibility to load
+    t =    60.54s                 Capturing diagnostic spindump
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateUITests/DashboardViewUITests.swift:33: error: -[FinanceMateUITests.DashboardViewUITests testActionButtons] : Application 'com.ablankcanvas.financemate' has not loaded accessibility
+    t =    83.05s Tear Down
+    t =    83.05s                 Terminate com.ablankcanvas.financemate:0
+Test Case '-[FinanceMateUITests.DashboardViewUITests testActionButtons]' failed (83.094 seconds).
+Test Case '-[FinanceMateUITests.DashboardViewUITests testBalanceCard]' started.
+    t =     0.00s Start Test at 2025-08-08 21:45:36.050
+    t =     0.25s Set Up
+    t =     0.25s                 Open com.ablankcanvas.financemate
+    t =     0.25s                     Launch com.ablankcanvas.financemate
+    t =     0.59s                         Wait for accessibility to load
+    t =    60.60s                             Capturing diagnostic spindump
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateUITests/DashboardViewUITests.swift:33: error: -[FinanceMateUITests.DashboardViewUITests testBalanceCard] : Application 'com.ablankcanvas.financemate' has not loaded accessibility
+    t =    83.89s Tear Down
+    t =    83.89s                             Terminate com.ablankcanvas.financemate:0
+Test Case '-[FinanceMateUITests.DashboardViewUITests testBalanceCard]' failed (84.025 seconds).
+Test Case '-[FinanceMateUITests.DashboardViewUITests testBalanceDisplayFormatting]' started.
+    t =     0.00s Start Test at 2025-08-08 21:47:00.075
+    t =     0.27s Set Up
+    t =     0.28s                             Open com.ablankcanvas.financemate
+    t =     0.28s                                 Launch com.ablankcanvas.financemate
+    t =     0.60s                                     Wait for accessibility to load
+    t =    60.63s                                         Capturing diagnostic spindump
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateUITests/DashboardViewUITests.swift:33: error: -[FinanceMateUITests.DashboardViewUITests testBalanceDisplayFormatting] : Application 'com.ablankcanvas.financemate' has not loaded accessibility
+    t =    84.12s Tear Down
+    t =    84.12s                                         Terminate com.ablankcanvas.financemate:0
+Test Case '-[FinanceMateUITests.DashboardViewUITests testBalanceDisplayFormatting]' failed (84.150 seconds).
+Test Case '-[FinanceMateUITests.DashboardViewUITests testDashboardAccessibility]' started.
+    t =     0.00s Start Test at 2025-08-08 21:48:24.225
+    t =     0.24s Set Up
+    t =     0.24s                                         Open com.ablankcanvas.financemate
+    t =     0.24s                                             Launch com.ablankcanvas.financemate
+    t =     0.47s                                                 Wait for accessibility to load
+    t =    60.49s                                                     Capturing diagnostic spindump
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateUITests/DashboardViewUITests.swift:33: error: -[FinanceMateUITests.DashboardViewUITests testDashboardAccessibility] : Application 'com.ablankcanvas.financemate' has not loaded accessibility
+    t =    83.55s Tear Down
+    t =    83.55s                                                     Terminate com.ablankcanvas.financemate:0
+Test Case '-[FinanceMateUITests.DashboardViewUITests testDashboardAccessibility]' failed (83.586 seconds).
+Test Case '-[FinanceMateUITests.DashboardViewUITests testDashboardHeader]' started.
+    t =     0.00s Start Test at 2025-08-08 21:49:47.811
+    t =     0.25s Set Up
+    t =     0.25s                                                     Open com.ablankcanvas.financemate
+    t =     0.25s                                                         Launch com.ablankcanvas.financemate
+    t =     0.48s                                                             Wait for accessibility to load
+    t =    60.50s                                                                 Capturing diagnostic spindump
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateUITests/DashboardViewUITests.swift:33: error: -[FinanceMateUITests.DashboardViewUITests testDashboardHeader] : Application 'com.ablankcanvas.financemate' has not loaded accessibility
+    t =    84.30s Tear Down
+    t =    84.31s                                                                 Terminate com.ablankcanvas.financemate:0
+Test Case '-[FinanceMateUITests.DashboardViewUITests testDashboardHeader]' failed (84.325 seconds).
+Test Case '-[FinanceMateUITests.DashboardViewUITests testDashboardIntegrationWithOtherViews]' started.
+    t =     0.00s Start Test at 2025-08-08 21:51:12.136
+    t =     0.26s Set Up
+    t =     0.26s                                                                 Open com.ablankcanvas.financemate
+    t =     0.26s                                                                     Launch com.ablankcanvas.financemate
+    t =     0.47s                                                                         Wait for accessibility to load
+    t =    60.49s                                                                             Capturing diagnostic spindump
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateUITests/DashboardViewUITests.swift:33: error: -[FinanceMateUITests.DashboardViewUITests testDashboardIntegrationWithOtherViews] : Application 'com.ablankcanvas.financemate' has not loaded accessibility
+    t =    83.15s Tear Down
+    t =    83.15s                                                                             Terminate com.ablankcanvas.financemate:0
+Test Case '-[FinanceMateUITests.DashboardViewUITests testDashboardIntegrationWithOtherViews]' failed (83.187 seconds).
+Test Case '-[FinanceMateUITests.DashboardViewUITests testDashboardPerformance]' started.
+    t =     0.00s Start Test at 2025-08-08 21:52:35.323
+    t =     0.32s Set Up
+    t =     0.32s                                                                             Open com.ablankcanvas.financemate
+    t =     0.32s                                                                                 Launch com.ablankcanvas.financemate
+    t =     0.78s                                                                                     Wait for accessibility to load
+    t =     1.11s                                                                                     Setting up automation session
+    t =     1.13s                                                                                     Wait for com.ablankcanvas.financemate to idle
+    t =     1.13s     Unable to monitor event loop
+    t =     1.14s                                                                             Checking existence of `"Dashboard" Button`
+    t =     1.14s                                                                                 Requesting snapshot of accessibility hierarchy for app with pid 75279
+    t =     2.15s                                                                             Checking existence of `"Dashboard" Button` (retry 1)
+    t =     3.16s                                                                             Checking existence of `"Dashboard" Button` (retry 2)
+    t =     3.41s                                                                         Checking existence of `"Transactions" Button`
+    t =     4.42s                                                                         Checking existence of `"Transactions" Button` (retry 1)
+    t =     5.42s                                                                         Checking existence of `"Transactions" Button` (retry 2)
+    t =     5.42s                                                                         Checking existence of `"Transactions" Button`
+    t =     6.43s                                                                         Checking existence of `"Transactions" Button` (retry 1)
+    t =     7.43s                                                                         Checking existence of `"Transactions" Button` (retry 2)
+    t =     7.44s                                                                         Checking existence of `"Transactions" Button`
+    t =     8.44s                                                                         Checking existence of `"Transactions" Button` (retry 1)
+    t =     9.45s                                                                         Checking existence of `"Transactions" Button` (retry 2)
+    t =     9.45s                                                                         Checking existence of `"Transactions" Button`
+    t =    10.45s                                                                         Checking existence of `"Transactions" Button` (retry 1)
+    t =    11.46s                                                                         Checking existence of `"Transactions" Button` (retry 2)
+    t =    11.46s                                                                         Checking existence of `"Transactions" Button`
+    t =    12.46s                                                                         Checking existence of `"Transactions" Button` (retry 1)
+    t =    13.47s                                                                         Checking existence of `"Transactions" Button` (retry 2)
+    t =    13.47s                                                                         Checking existence of `"Transactions" Button`
+    t =    14.47s                                                                         Checking existence of `"Transactions" Button` (retry 1)
+    t =    15.48s                                                                         Checking existence of `"Transactions" Button` (retry 2)
+    t =    15.48s                                                                         Checking existence of `"Transactions" Button`
+    t =    16.48s                                                                         Checking existence of `"Transactions" Button` (retry 1)
+    t =    17.49s                                                                         Checking existence of `"Transactions" Button` (retry 2)
+    t =    17.49s                                                                         Checking existence of `"Transactions" Button`
+    t =    18.50s                                                                         Checking existence of `"Transactions" Button` (retry 1)
+    t =    19.51s                                                                         Checking existence of `"Transactions" Button` (retry 2)
+    t =    19.51s                                                                         Checking existence of `"Transactions" Button`
+    t =    20.51s                                                                         Checking existence of `"Transactions" Button` (retry 1)
+    t =    21.52s                                                                         Checking existence of `"Transactions" Button` (retry 2)
+    t =    21.52s                                                                         Checking existence of `"Transactions" Button`
+    t =    22.53s                                                                         Checking existence of `"Transactions" Button` (retry 1)
+    t =    23.53s                                                                         Checking existence of `"Transactions" Button` (retry 2)
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMateUITests/DashboardViewUITests.swift:450: Test Case '-[FinanceMateUITests.DashboardViewUITests testDashboardPerformance]' measured [Time, seconds] average: 2.012, relative standard deviation: 0.078%, values: [2.012529, 2.012201, 2.013635, 2.009879, 2.010213, 2.011360, 2.012445, 2.014640, 2.014527, 2.013479], performanceMetricID:com.apple.XCTPerformanceMetric_WallClockTime, baselineName: "", baselineAverage: , polarity: prefers smaller, maxPercentRegression: 10.000%, maxPercentRelativeStandardDeviation: 10.000%, maxRegression: 0.100, maxStandardDeviation: 0.100
+    t =    23.54s Tear Down
+    t =    23.54s                                                                             Terminate com.ablankcanvas.financemate:0
+    t =    23.63s                                                                         Checking for crash reports corresponding to unexpected termination of com.ablankcanvas.financemate
+Test Case '-[FinanceMateUITests.DashboardViewUITests testDashboardPerformance]' passed (43.639 seconds).
+Test Case '-[FinanceMateUITests.DashboardViewUITests testDashboardScreenshots]' started.
+    t =     0.00s Start Test at 2025-08-08 21:53:18.962
+    t =     0.34s Set Up
+    t =     0.39s                                                                             Open com.ablankcanvas.financemate
+    t =     0.40s                                                                                 Launch com.ablankcanvas.financemate
+    t =     0.80s                                                                                     Wait for accessibility to load

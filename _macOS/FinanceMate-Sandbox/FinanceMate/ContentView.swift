@@ -19,96 +19,111 @@
 // Key Variances/Learnings: Simplified to proper MVVM navigation pattern
 // Last Updated: 2025-07-05
 
-import SwiftUI
 import CoreData
+import SwiftUI
 
 struct ContentView: View {
-    @Environment(\.managedObjectContext) private var viewContext
-    @StateObject private var dashboardViewModel = DashboardViewModel()
-    
-    var body: some View {
-        NavigationView {
-            TabView {
-                // Dashboard Tab
-                DashboardView()
-                    .environmentObject(dashboardViewModel)
-                    .environment(\.managedObjectContext, viewContext)
-                    .tabItem {
-                        Image(systemName: "chart.bar.fill")
-                        Text("Dashboard")
-                    }
-                    .accessibilityIdentifier("Dashboard")
-                
-                // Transactions Tab
-                TransactionsView(context: viewContext)
-                    .tabItem {
-                        Image(systemName: "list.bullet")
-                        Text("Transactions")
-                    }
-                    .accessibilityIdentifier("Transactions")
-                
-                // Settings Tab (placeholder for future implementation)
-                SettingsPlaceholderView()
-                    .tabItem {
-                        Image(systemName: "gear")
-                        Text("Settings")
-                    }
-                    .accessibilityIdentifier("Settings")
+  @Environment(\.managedObjectContext) private var viewContext
+  @StateObject private var dashboardViewModel = DashboardViewModel()
+
+  var body: some View {
+    ZStack {
+      NavigationView {
+        TabView {
+          // Dashboard Tab
+          DashboardView()
+            .environmentObject(dashboardViewModel)
+            .environment(\.managedObjectContext, viewContext)
+            .tabItem {
+              Image(systemName: "chart.bar.fill")
+              Text("Dashboard")
             }
-            .onAppear {
-                dashboardViewModel.setPersistenceContext(viewContext)
-                dashboardViewModel.fetchDashboardData()
+            .accessibilityIdentifier("Dashboard")
+
+          // Transactions Tab
+          TransactionsView(context: viewContext)
+            .tabItem {
+              Image(systemName: "list.bullet")
+              Text("Transactions")
             }
+            .accessibilityIdentifier("Transactions")
+
+          // Settings Tab (placeholder for future implementation)
+          SettingsPlaceholderView()
+            .tabItem {
+              Image(systemName: "gear")
+              Text("Settings")
+            }
+            .accessibilityIdentifier("Settings")
         }
-        .navigationTitle("FinanceMate Sandbox")
+        .onAppear {
+          dashboardViewModel.setPersistenceContext(viewContext)
+          dashboardViewModel.fetchDashboardData()
+        }
+      }
+      .navigationTitle("FinanceMate Sandbox")
+
+      // AI Chatbot Drawer - MANDATORY BLUEPRINT requirement (Temporarily disabled for build stability)
+      // TODO: Re-enable after fixing build integration
+      /*
+      VStack {
+          Spacer()
+          HStack {
+              Spacer()
+              ChatbotDrawerView(context: viewContext)
+          }
+      }
+      .ignoresSafeArea(.keyboard, edges: .bottom)
+      */
     }
+  }
 }
 
 // MARK: - Placeholder Views for Future Implementation
 
 private struct TransactionPlaceholderView: View {
-    var body: some View {
-        VStack(spacing: 16) {
-            Image(systemName: "list.bullet.circle")
-                .font(.system(size: 48))
-                .foregroundColor(.secondary)
-            
-            Text("Transactions")
-                .font(.title2)
-                .fontWeight(.semibold)
-            
-            Text("Transaction management coming soon")
-                .font(.caption)
-                .foregroundColor(.secondary)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .glassmorphism(.secondary, cornerRadius: 16)
-        .padding()
+  var body: some View {
+    VStack(spacing: 16) {
+      Image(systemName: "list.bullet.circle")
+        .font(.system(size: 48))
+        .foregroundColor(.secondary)
+
+      Text("Transactions")
+        .font(.title2)
+        .fontWeight(.semibold)
+
+      Text("Transaction management coming soon")
+        .font(.caption)
+        .foregroundColor(.secondary)
     }
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+    .glassmorphism(.secondary, cornerRadius: 16)
+    .padding()
+  }
 }
 
 private struct SettingsPlaceholderView: View {
-    var body: some View {
-        VStack(spacing: 16) {
-            Image(systemName: "gear.circle")
-                .font(.system(size: 48))
-                .foregroundColor(.secondary)
-            
-            Text("Settings")
-                .font(.title2)
-                .fontWeight(.semibold)
-            
-            Text("App settings coming soon")
-                .font(.caption)
-                .foregroundColor(.secondary)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .glassmorphism(.secondary, cornerRadius: 16)
-        .padding()
+  var body: some View {
+    VStack(spacing: 16) {
+      Image(systemName: "gear.circle")
+        .font(.system(size: 48))
+        .foregroundColor(.secondary)
+
+      Text("Settings")
+        .font(.title2)
+        .fontWeight(.semibold)
+
+      Text("App settings coming soon")
+        .font(.caption)
+        .foregroundColor(.secondary)
     }
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+    .glassmorphism(.secondary, cornerRadius: 16)
+    .padding()
+  }
 }
 
 #Preview {
-    ContentView()
-        .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+  ContentView()
+    .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 }

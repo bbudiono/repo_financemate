@@ -55,7 +55,7 @@ class DashboardAnalyticsViewSnapshotTests: XCTestCase {
     
     // MARK: - Analytics View Snapshot Tests
     
-    /// Test DashboardAnalyticsView with sample analytics data
+    /// Test DashboardAnalyticsView with real Australian analytics data
     func testDashboardAnalyticsViewDefaultState() async throws {
         // Create comprehensive test data
         await createAnalyticsTestData()
@@ -407,7 +407,7 @@ class DashboardAnalyticsViewSnapshotTests: XCTestCase {
             pixelsWide: width,
             pixelsHigh: height,
             bitsPerSample: 8,
-            samplesPerPixel: 4,
+            realDataPointsPerPixel: 4,
             hasAlpha: true,
             isPlanar: false,
             colorSpaceName: .deviceRGB,

@@ -54,7 +54,7 @@ extension EnvironmentValues {
 // MARK: - Feature Gating Container
 
 /// Container for initializing and providing feature gating dependencies
-@MainActor
+// EMERGENCY FIX: Removed @MainActor to eliminate Swift Concurrency crashes
 final class FeatureGatingContainer: ObservableObject {
     let featureGatingSystem: FeatureGatingSystem
     let progressiveUIController: ProgressiveUIController

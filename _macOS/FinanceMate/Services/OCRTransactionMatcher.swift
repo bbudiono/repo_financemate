@@ -30,7 +30,7 @@ import NaturalLanguage
 
 /// Advanced transaction matching engine that correlates OCR results with existing transactions
 /// Uses fuzzy matching, date proximity, and amount comparison for intelligent transaction identification
-@MainActor
+// EMERGENCY FIX: Removed @MainActor to eliminate Swift Concurrency crashes
 final class OCRTransactionMatcher: ObservableObject {
     
     // MARK: - Match Types
@@ -109,7 +109,7 @@ final class OCRTransactionMatcher: ObservableObject {
     /// Find matching transactions for OCR result using comprehensive matching algorithms
     /// - Parameter ocrResult: Financial document OCR result
     /// - Returns: Array of transaction matches sorted by confidence
-    func findMatchingTransactions(for ocrResult: VisionOCREngine.FinancialDocumentResult) async throws -> [TransactionMatch] {
+    func findMatchingTransactions() throws -> [TransactionMatch] {
         let fetchRequest: NSFetchRequest<Transaction> = Transaction.fetchRequest()
         
         // Build predicate for initial filtering
@@ -138,7 +138,7 @@ final class OCRTransactionMatcher: ObservableObject {
         let potentialMatches = try context.fetch(fetchRequest)
         
         // Score and rank matches
-        let scoredMatches = await scoreTransactionMatches(ocrResult: ocrResult, transactions: potentialMatches)
+        let scoredMatches = scoreTransactionMatches(ocrResult: ocrResult, transactions: potentialMatches)
         
         // Filter by minimum confidence and limit results
         let filteredMatches = scoredMatches
@@ -182,12 +182,11 @@ final class OCRTransactionMatcher: ObservableObject {
     
     // MARK: - Private Implementation
     
-    private func scoreTransactionMatches(ocrResult: VisionOCREngine.FinancialDocumentResult, 
-                                       transactions: [Transaction]) async -> [TransactionMatch] {
+    private func scoreTransactionMatches() -> [TransactionMatch] {
         var matches: [TransactionMatch] = []
         
         for transaction in transactions {
-            let matchResult = await scoreIndividualMatch(ocrResult: ocrResult, transaction: transaction)
+            let matchResult = scoreIndividualMatch(ocrResult: ocrResult, transaction: transaction)
             if let match = matchResult {
                 matches.append(match)
             }
@@ -197,8 +196,7 @@ final class OCRTransactionMatcher: ObservableObject {
         return matches.sorted { $0.confidence > $1.confidence }
     }
     
-    private func scoreIndividualMatch(ocrResult: VisionOCREngine.FinancialDocumentResult, 
-                                    transaction: Transaction) async -> TransactionMatch? {
+    private func scoreIndividualMatch() -> TransactionMatch? {
         var matchingFactors: [TransactionMatch.MatchingFactor] = []
         var totalScore: Double = 0.0
         var matchType: MatchType = .partial
@@ -207,7 +205,7 @@ final class OCRTransactionMatcher: ObservableObject {
         // 1. Merchant Name Matching
         if let ocrMerchant = ocrResult.merchantName, 
            let transactionNote = transaction.note {
-            let merchantScore = await scoreMerchantMatch(ocr: ocrMerchant, transaction: transactionNote)
+            let merchantScore = scoreMerchantMatch(ocr: ocrMerchant, transaction: transactionNote)
             matchingFactors.append(TransactionMatch.MatchingFactor(
                 type: "merchant",
                 score: merchantScore,
@@ -282,7 +280,7 @@ final class OCRTransactionMatcher: ObservableObject {
         )
     }
     
-    private func scoreMerchantMatch(ocr: String, transaction: String) async -> Double {
+    private func scoreMerchantMatch() -> Double {
         let normalizedOCR = merchantNormalizer.normalize(ocr)
         let normalizedTransaction = merchantNormalizer.normalize(transaction)
         

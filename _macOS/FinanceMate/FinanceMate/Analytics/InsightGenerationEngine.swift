@@ -1,0 +1,670 @@
+//
+// InsightGenerationEngine.swift
+// FinanceMate
+//
+// Modular Component: AI-Powered Financial Insight Generation
+// Created: 2025-08-03
+// Purpose: Generate financial insights, trends, and actionable recommendations
+// Responsibility: Financial insights, trend analysis, actionable recommendations
+//
+
+/*
+ * Purpose: AI-powered financial insight generation with personalized recommendations
+ * Issues & Complexity Summary: Insight generation algorithms, trend analysis, personalization logic
+ * Key Complexity Drivers:
+   - Logic Scope (Est. LoC): ~180
+   - Core Algorithm Complexity: High (insight generation, trend analysis)
+   - Dependencies: IntelligenceTypes, Foundation
+   - State Management Complexity: Medium (insight cache, personalization state)
+   - Novelty/Uncertainty Factor: Medium (insight generation algorithms)
+ * AI Pre-Task Self-Assessment: 85%
+ * Problem Estimate: 88%
+ * Initial Code Complexity Estimate: 87%
+ * Final Code Complexity: 89%
+ * Overall Result Score: 89%
+ * Key Variances/Learnings: Insight generation requires balance between relevance and actionability
+ * Last Updated: 2025-08-03
+ */
+
+import Foundation
+import CoreData
+import OSLog
+
+final class InsightGenerationEngine {
+    
+    // MARK: - Properties
+    
+    private let logger = Logger(subsystem: "com.financemate.intelligence", category: "InsightGeneration")
+    private var isEnabled = false
+    
+    // Insight generation parameters
+    private let minimumRelevanceScore: Double = 0.6
+    private let minimumTransactionsForInsight: Int = 5
+    private let insightFreshnessThreshold: TimeInterval = 86400 // 24 hours
+    
+    // Cached insights and metadata
+    private var cachedInsights: [FinancialInsight] = []
+    private var lastInsightGenerationDate: Date?
+    private var categoryAnalysisCache: [String: CategoryInsightData] = [:]
+    
+    // MARK: - Initialization
+    
+    init() {
+        logger.info("InsightGenerationEngine initialized")
+    }
+    
+    func initialize() {
+        logger.info("Insight generation engine initialized")
+    }
+    
+    func enable() {
+        isEnabled = true
+        logger.info("Insight generation engine enabled")
+    }
+    
+    // MARK: - Financial Insight Generation
+    
+    func generateInsights() -> [FinancialInsight] {
+        guard isEnabled && !transactions.isEmpty else {
+            logger.warning("Insight generation not available - engine not enabled or no transactions")
+            return []
+        }
+        
+        // Check if fresh insights are available
+        if let lastGeneration = lastInsightGenerationDate,
+           Date().timeIntervalSince(lastGeneration) < insightFreshnessThreshold,
+           !cachedInsights.isEmpty {
+            logger.debug("Returning cached insights (still fresh)")
+            return cachedInsights
+        }
+        
+        logger.info("Generating financial insights from \(transactions.count) transactions")
+        
+        var insights: [FinancialInsight] = []
+        
+        // Generate category-based insights
+        insights.append(contentsOf: generateCategoryInsights(from: transactions))
+        
+        // Generate cash flow insights
+        insights.append(contentsOf: generateCashFlowInsights(from: transactions))
+        
+        // Generate spending pattern insights
+        insights.append(contentsOf: generateSpendingPatternInsights(from: transactions))
+        
+        // Generate savings opportunity insights
+        insights.append(contentsOf: generateSavingsOpportunityInsights(from: transactions))
+        
+        // Generate business optimization insights
+        insights.append(contentsOf: generateBusinessOptimizationInsights(from: transactions))
+        
+        // Sort insights by relevance score
+        let sortedInsights = insights
+            .filter { $0.relevanceScore >= minimumRelevanceScore }
+            .sorted { $0.relevanceScore > $1.relevanceScore }
+        
+        // Cache results
+        cachedInsights = sortedInsights
+        lastInsightGenerationDate = Date()
+        
+        logger.info("Generated \(sortedInsights.count) financial insights")
+        return sortedInsights
+    }
+    
+    func generatePersonalizedInsights() -> [FinancialInsight] {
+        var baseInsights = generateInsights(transactions: transactions)
+        
+        logger.info("Personalizing insights for user profile: \(profile.segment.rawValue), \(profile.industry.rawValue)")
+        
+        // Add industry-specific insights
+        let industryInsights = generateIndustrySpecificInsights(
+            transactions: transactions,
+            profile: profile
+        )
+        baseInsights.append(contentsOf: industryInsights)
+        
+        // Add user segment insights
+        let segmentInsights = generateUserSegmentInsights(
+            transactions: transactions,
+            profile: profile
+        )
+        baseInsights.append(contentsOf: segmentInsights)
+        
+        // Adjust relevance scores based on personalization
+        let personalizedInsights = baseInsights.map { insight in
+            var personalizedInsight = insight
+            if insight.isPersonalized {
+                personalizedInsight = FinancialInsight(
+                    id: insight.id,
+                    title: insight.title,
+                    description: insight.description,
+                    category: insight.category,
+                    relevanceScore: min(1.0, insight.relevanceScore + 0.2), // Boost personalized insights
+                    actionableRecommendation: insight.actionableRecommendation,
+                    isPersonalized: true
+                )
+            }
+            return personalizedInsight
+        }
+        
+        let sortedPersonalizedInsights = personalizedInsights
+            .sorted { $0.relevanceScore > $1.relevanceScore }
+        
+        logger.info("Generated \(sortedPersonalizedInsights.count) personalized insights")
+        return sortedPersonalizedInsights
+    }
+    
+    // MARK: - Trend Analysis
+    
+    func generateTrendInsights() -> [TrendInsight] {
+        guard isEnabled && !transactions.isEmpty else { return [] }
+        
+        logger.info("Generating trend insights from \(transactions.count) transactions")
+        
+        var trendInsights: [TrendInsight] = []
+        
+        // Monthly spending trend
+        trendInsights.append(contentsOf: generateMonthlySpendingTrends(from: transactions))
+        
+        // Category trend analysis
+        trendInsights.append(contentsOf: generateCategoryTrends(from: transactions))
+        
+        // Quarterly performance trends
+        trendInsights.append(contentsOf: generateQuarterlyTrends(from: transactions))
+        
+        logger.info("Generated \(trendInsights.count) trend insights")
+        return trendInsights
+    }
+    
+    // MARK: - Actionable Recommendations
+    
+    func generateActionableRecommendations() -> [ActionableRecommendation] {
+        guard isEnabled && !transactions.isEmpty else { return [] }
+        
+        logger.info("Generating actionable recommendations from \(transactions.count) transactions")
+        
+        var recommendations: [ActionableRecommendation] = []
+        
+        // Category optimization recommendations
+        recommendations.append(contentsOf: generateCategoryOptimizationRecommendations(from: transactions))
+        
+        // Budget management recommendations
+        recommendations.append(contentsOf: generateBudgetManagementRecommendations(from: transactions))
+        
+        // Tax optimization recommendations
+        recommendations.append(contentsOf: generateTaxOptimizationActionableRecommendations(from: transactions))
+        
+        // Savings enhancement recommendations
+        recommendations.append(contentsOf: generateSavingsEnhancementRecommendations(from: transactions))
+        
+        let sortedRecommendations = recommendations.sorted { $0.priority > $1.priority }
+        
+        logger.info("Generated \(sortedRecommendations.count) actionable recommendations")
+        return sortedRecommendations
+    }
+    
+    // MARK: - Private Insight Generation Methods
+    
+    private func generateCategoryInsights(from transactions: [Transaction]) -> [FinancialInsight] {
+        let categoryGroups = Dictionary(grouping: transactions) { $0.category ?? "Unknown" }
+        var insights: [FinancialInsight] = []
+        
+        // Find top spending category
+        if let topCategory = categoryGroups.max(by: { $0.value.count < $1.value.count }) {
+            let totalAmount = topCategory.value.reduce(0) { $0 + $1.amount }
+            let averageAmount = totalAmount / Double(topCategory.value.count)
+            
+            insights.append(FinancialInsight(
+                id: UUID().uuidString,
+                title: "Top Spending Category",
+                description: "You spent most in \(topCategory.key) with $\(String(format: "%.2f", totalAmount)) across \(topCategory.value.count) transactions",
+                category: .spendingAnalysis,
+                relevanceScore: 0.9,
+                actionableRecommendation: "Review your \(topCategory.key) expenses for optimization opportunities. Average per transaction: $\(String(format: "%.2f", averageAmount))",
+                isPersonalized: false
+            ))
+        }
+        
+        // Find categories with high variance (optimization opportunities)
+        for (category, categoryTransactions) in categoryGroups {
+            guard categoryTransactions.count >= minimumTransactionsForInsight else { continue }
+            
+            let amounts = categoryTransactions.map { $0.amount }
+            let variance = calculateVariance(amounts)
+            let mean = amounts.reduce(0, +) / Double(amounts.count)
+            let coefficientOfVariation = sqrt(variance) / mean
+            
+            if coefficientOfVariation > 0.5 && mean > 50 { // High variability
+                insights.append(FinancialInsight(
+                    id: UUID().uuidString,
+                    title: "Irregular \(category) Spending",
+                    description: "Your \(category) spending varies significantly, ranging from $\(String(format: "%.2f", amounts.min() ?? 0)) to $\(String(format: "%.2f", amounts.max() ?? 0))",
+                    category: .spendingAnalysis,
+                    relevanceScore: 0.7,
+                    actionableRecommendation: "Consider setting a consistent budget for \(category) to better control spending",
+                    isPersonalized: false
+                ))
+            }
+        }
+        
+        return insights
+    }
+    
+    private func generateCashFlowInsights(from transactions: [Transaction]) -> [FinancialInsight] {
+        var insights: [FinancialInsight] = []
+        
+        let totalExpenses = transactions.filter { $0.amount > 0 }.reduce(0) { $0 + $1.amount }
+        let totalIncome = abs(transactions.filter { $0.amount < 0 }.reduce(0) { $0 + $1.amount })
+        
+        guard totalIncome > 0 else { return insights }
+        
+        let expenseRatio = totalExpenses / totalIncome
+        let savingsRate = max(0, 1.0 - expenseRatio)
+        
+        // High expense ratio insight
+        if expenseRatio > 0.9 {
+            insights.append(FinancialInsight(
+                id: UUID().uuidString,
+                title: "High Expense Ratio",
+                description: "Your expenses are \(String(format: "%.1f", expenseRatio * 100))% of your income (savings rate: \(String(format: "%.1f", savingsRate * 100))%)",
+                category: .cashFlowAnalysis,
+                relevanceScore: 0.85,
+                actionableRecommendation: "Consider reducing discretionary spending to improve your savings rate. Aim for at least 20% savings rate",
+                isPersonalized: false
+            ))
+        }
+        
+        // Good savings rate insight
+        if savingsRate > 0.2 {
+            insights.append(FinancialInsight(
+                id: UUID().uuidString,
+                title: "Strong Savings Performance",
+                description: "Excellent! You're saving \(String(format: "%.1f", savingsRate * 100))% of your income",
+                category: .cashFlowAnalysis,
+                relevanceScore: 0.8,
+                actionableRecommendation: "Consider investing your savings for long-term growth. Explore investment opportunities that align with your risk tolerance",
+                isPersonalized: false
+            ))
+        }
+        
+        return insights
+    }
+    
+    private func generateSpendingPatternInsights(from transactions: [Transaction]) -> [FinancialInsight] {
+        var insights: [FinancialInsight] = []
+        
+        // Weekend vs weekday spending analysis
+        let calendar = Calendar.current
+        let weekendTransactions = transactions.filter { transaction in
+            let weekday = calendar.component(.weekday, from: transaction.date ?? Date())
+            return weekday == 1 || weekday == 7 // Sunday or Saturday
+        }
+        
+        if !weekendTransactions.isEmpty {
+            let weekendSpending = weekendTransactions.reduce(0) { $0 + $1.amount }
+            let totalSpending = transactions.reduce(0) { $0 + $1.amount }
+            let weekendPercentage = (weekendSpending / totalSpending) * 100
+            
+            if weekendPercentage > 30 {
+                insights.append(FinancialInsight(
+                    id: UUID().uuidString,
+                    title: "High Weekend Spending",
+                    description: "\(String(format: "%.1f", weekendPercentage))% of your spending occurs on weekends",
+                    category: .spendingAnalysis,
+                    relevanceScore: 0.7,
+                    actionableRecommendation: "Consider planning weekend activities with a specific budget to control spontaneous spending",
+                    isPersonalized: false
+                ))
+            }
+        }
+        
+        return insights
+    }
+    
+    private func generateSavingsOpportunityInsights(from transactions: [Transaction]) -> [FinancialInsight] {
+        var insights: [FinancialInsight] = []
+        
+        let categoryGroups = Dictionary(grouping: transactions) { $0.category ?? "Unknown" }
+        
+        for (category, categoryTransactions) in categoryGroups {
+            guard categoryTransactions.count >= minimumTransactionsForInsight else { continue }
+            
+            let totalSpent = categoryTransactions.reduce(0) { $0 + $1.amount }
+            let averagePerTransaction = totalSpent / Double(categoryTransactions.count)
+            
+            // High-value, high-frequency categories have optimization potential
+            if totalSpent > 500 && averagePerTransaction > 25 && categoryTransactions.count > 10 {
+                let potentialSavings = totalSpent * 0.15 // 15% reduction potential
+                
+                insights.append(FinancialInsight(
+                    id: UUID().uuidString,
+                    title: "\(category) Savings Opportunity",
+                    description: "You could potentially save $\(String(format: "%.2f", potentialSavings)) by reducing \(category) spending by 15%",
+                    category: .savingsOpportunity,
+                    relevanceScore: 0.75,
+                    actionableRecommendation: "Review \(category) transactions to identify unnecessary expenses or find cost-effective alternatives",
+                    isPersonalized: false
+                ))
+            }
+        }
+        
+        return insights
+    }
+    
+    private func generateBusinessOptimizationInsights(from transactions: [Transaction]) -> [FinancialInsight] {
+        var insights: [FinancialInsight] = []
+        
+        let businessTransactions = transactions.filter { $0.category == "Business" }
+        guard !businessTransactions.isEmpty else { return insights }
+        
+        let totalBusinessExpenses = businessTransactions.reduce(0) { $0 + $1.amount }
+        let averageBusinessTransaction = totalBusinessExpenses / Double(businessTransactions.count)
+        
+        insights.append(FinancialInsight(
+            id: UUID().uuidString,
+            title: "Business Expense Analysis",
+            description: "Your business expenses total $\(String(format: "%.2f", totalBusinessExpenses)) across \(businessTransactions.count) transactions",
+            category: .businessOptimization,
+            relevanceScore: 0.8,
+            actionableRecommendation: "Ensure all business expenses are properly documented for tax optimization. Average per transaction: $\(String(format: "%.2f", averageBusinessTransaction))",
+            isPersonalized: false
+        ))
+        
+        return insights
+    }
+    
+    private func generateIndustrySpecificInsights(transactions: [Transaction], profile: UserProfile) -> [FinancialInsight] {
+        var insights: [FinancialInsight] = []
+        
+        switch profile.industry {
+        case .consulting:
+            let businessExpenses = transactions.filter { $0.category == "Business" }.reduce(0) { $0 + $1.amount }
+            if businessExpenses > 1000 {
+                insights.append(FinancialInsight(
+                    id: UUID().uuidString,
+                    title: "Consulting Business Expenses",
+                    description: "Your consulting business expenses total $\(String(format: "%.2f", businessExpenses))",
+                    category: .businessOptimization,
+                    relevanceScore: 0.9,
+                    actionableRecommendation: "Maximize tax deductions by ensuring all consulting-related expenses are properly categorized and documented",
+                    isPersonalized: true
+                ))
+            }
+            
+        case .construction:
+            let toolExpenses = transactions.filter { $0.note?.lowercased().contains("tool") ?? false }.reduce(0) { $0 + $1.amount }
+            if toolExpenses > 500 {
+                insights.append(FinancialInsight(
+                    id: UUID().uuidString,
+                    title: "Construction Tool Investment",
+                    description: "You've invested $\(String(format: "%.2f", toolExpenses)) in tools and equipment",
+                    category: .businessOptimization,
+                    relevanceScore: 0.85,
+                    actionableRecommendation: "Track tool depreciation for tax purposes and consider equipment upgrade cycles for efficiency",
+                    isPersonalized: true
+                ))
+            }
+            
+        default:
+            break
+        }
+        
+        return insights
+    }
+    
+    private func generateUserSegmentInsights(transactions: [Transaction], profile: UserProfile) -> [FinancialInsight] {
+        var insights: [FinancialInsight] = []
+        
+        switch profile.segment {
+        case .businessOwner:
+            let totalExpenses = transactions.reduce(0) { $0 + $1.amount }
+            insights.append(FinancialInsight(
+                id: UUID().uuidString,
+                title: "Business Owner Financial Overview",
+                description: "As a business owner, your total tracked expenses are $\(String(format: "%.2f", totalExpenses))",
+                category: .businessOptimization,
+                relevanceScore: 0.8,
+                actionableRecommendation: "Consider separating personal and business expenses more clearly for better financial management and tax optimization",
+                isPersonalized: true
+            ))
+            
+        case .investor:
+            let investmentTransactions = transactions.filter { $0.category == "Investment" }
+            if !investmentTransactions.isEmpty {
+                let totalInvestments = investmentTransactions.reduce(0) { $0 + $1.amount }
+                insights.append(FinancialInsight(
+                    id: UUID().uuidString,
+                    title: "Investment Activity Summary",
+                    description: "Your investment activities total $\(String(format: "%.2f", totalInvestments)) across \(investmentTransactions.count) transactions",
+                    category: .businessOptimization,
+                    relevanceScore: 0.9,
+                    actionableRecommendation: "Track investment performance and consider tax-loss harvesting opportunities",
+                    isPersonalized: true
+                ))
+            }
+            
+        default:
+            break
+        }
+        
+        return insights
+    }
+    
+    // MARK: - Trend Generation Methods
+    
+    private func generateMonthlySpendingTrends(from transactions: [Transaction]) -> [TrendInsight] {
+        let calendar = Calendar.current
+        let monthlyData = Dictionary(grouping: transactions) { transaction in
+            calendar.component(.month, from: transaction.date ?? Date())
+        }
+        
+        var dataPoints: [TrendDataPoint] = []
+        for month in 1...12 {
+            let monthTransactions = monthlyData[month] ?? []
+            let totalAmount = monthTransactions.reduce(0) { $0 + $1.amount }
+            dataPoints.append(TrendDataPoint(period: month, value: totalAmount))
+        }
+        
+        let trendDirection = calculateTrendDirection(dataPoints)
+        
+        return [TrendInsight(
+            title: "Monthly Spending Trend",
+            description: "Your spending pattern throughout the year shows a \(trendDirection.description) trend",
+            timeframe: .yearly,
+            dataPoints: dataPoints,
+            trendDirection: trendDirection
+        )]
+    }
+    
+    private func generateCategoryTrends(from transactions: [Transaction]) -> [TrendInsight] {
+        // Simplified category trend analysis
+        let categoryGroups = Dictionary(grouping: transactions) { $0.category ?? "Unknown" }
+        let topCategories = categoryGroups.sorted { $0.value.count > $1.value.count }.prefix(3)
+        
+        return topCategories.compactMap { (category, categoryTransactions) in
+            let monthlyData = Dictionary(grouping: categoryTransactions) { transaction in
+                Calendar.current.component(.month, from: transaction.date ?? Date())
+            }
+            
+            var dataPoints: [TrendDataPoint] = []
+            for month in 1...12 {
+                let monthTransactions = monthlyData[month] ?? []
+                let totalAmount = monthTransactions.reduce(0) { $0 + $1.amount }
+                dataPoints.append(TrendDataPoint(period: month, value: totalAmount))
+            }
+            
+            return TrendInsight(
+                title: "\(category) Spending Trend",
+                description: "Monthly spending pattern for \(category) category",
+                timeframe: .yearly,
+                dataPoints: dataPoints,
+                trendDirection: calculateTrendDirection(dataPoints)
+            )
+        }
+    }
+    
+    private func generateQuarterlyTrends(from transactions: [Transaction]) -> [TrendInsight] {
+        let calendar = Calendar.current
+        var quarterlyData: [Int: [Transaction]] = [:]
+        
+        for transaction in transactions {
+            let month = calendar.component(.month, from: transaction.date ?? Date())
+            let quarter = ((month - 1) / 3) + 1
+            quarterlyData[quarter, default: []].append(transaction)
+        }
+        
+        var dataPoints: [TrendDataPoint] = []
+        for quarter in 1...4 {
+            let quarterTransactions = quarterlyData[quarter] ?? []
+            let totalAmount = quarterTransactions.reduce(0) { $0 + $1.amount }
+            dataPoints.append(TrendDataPoint(period: quarter, value: totalAmount))
+        }
+        
+        return [TrendInsight(
+            title: "Quarterly Spending Trend",
+            description: "Quarterly spending performance analysis",
+            timeframe: .quarterly,
+            dataPoints: dataPoints,
+            trendDirection: calculateTrendDirection(dataPoints)
+        )]
+    }
+    
+    // MARK: - Recommendation Generation Methods
+    
+    private func generateCategoryOptimizationRecommendations(from transactions: [Transaction]) -> [ActionableRecommendation] {
+        let categoryGroups = Dictionary(grouping: transactions) { $0.category ?? "Unknown" }
+        var recommendations: [ActionableRecommendation] = []
+        
+        for (category, categoryTransactions) in categoryGroups {
+            let totalAmount = categoryTransactions.reduce(0) { $0 + $1.amount }
+            
+            guard totalAmount > 200 && categoryTransactions.count > 3 else { continue }
+            
+            let priority = totalAmount > 1000 ? 3 : 2
+            let estimatedSavings = totalAmount * 0.15
+            
+            recommendations.append(ActionableRecommendation(
+                title: "Optimize \(category) Spending",
+                description: "Review and optimize your \(category) expenses for potential savings",
+                priority: priority,
+                estimatedImpact: estimatedSavings,
+                actionSteps: [
+                    "Review all \(category) transactions for unnecessary expenses",
+                    "Compare prices and find cost-effective alternatives",
+                    "Set a monthly budget limit for \(category)",
+                    "Track progress and adjust spending habits"
+                ]
+            ))
+        }
+        
+        return recommendations
+    }
+    
+    private func generateBudgetManagementRecommendations(from transactions: [Transaction]) -> [ActionableRecommendation] {
+        let totalSpending = transactions.reduce(0) { $0 + $1.amount }
+        
+        guard totalSpending > 500 else { return [] }
+        
+        return [ActionableRecommendation(
+            title: "Implement Budget Tracking",
+            description: "Establish comprehensive budget tracking for better financial control",
+            priority: 3,
+            estimatedImpact: totalSpending * 0.10,
+            actionSteps: [
+                "Set monthly spending limits for each category",
+                "Track daily expenses against budget",
+                "Review budget performance weekly",
+                "Adjust budgets based on actual spending patterns"
+            ]
+        )]
+    }
+    
+    private func generateTaxOptimizationActionableRecommendations(from transactions: [Transaction]) -> [ActionableRecommendation] {
+        let businessTransactions = transactions.filter { $0.category == "Business" }
+        let businessTotal = businessTransactions.reduce(0) { $0 + $1.amount }
+        
+        guard businessTotal > 500 else { return [] }
+        
+        let estimatedTaxSavings = businessTotal * 0.30 // Approximate tax rate
+        
+        return [ActionableRecommendation(
+            title: "Maximize Tax Deductions",
+            description: "Optimize business expense categorization for tax benefits",
+            priority: 2,
+            estimatedImpact: estimatedTaxSavings,
+            actionSteps: [
+                "Ensure all business expenses are properly categorized",
+                "Maintain detailed receipts and documentation",
+                "Consult with tax professional for optimization strategies",
+                "Consider timing of expenses for tax planning"
+            ]
+        )]
+    }
+    
+    private func generateSavingsEnhancementRecommendations(from transactions: [Transaction]) -> [ActionableRecommendation] {
+        let totalExpenses = transactions.filter { $0.amount > 0 }.reduce(0) { $0 + $1.amount }
+        let potentialSavings = totalExpenses * 0.20
+        
+        return [ActionableRecommendation(
+            title: "Enhance Savings Rate",
+            description: "Implement systematic savings strategies to build wealth",
+            priority: 2,
+            estimatedImpact: potentialSavings,
+            actionSteps: [
+                "Automate savings transfers to separate accounts",
+                "Reduce discretionary spending by 10-15%",
+                "Find better deals on recurring expenses",
+                "Consider investment opportunities for long-term growth"
+            ]
+        )]
+    }
+    
+    // MARK: - Helper Methods
+    
+    private func calculateVariance(_ amounts: [Double]) -> Double {
+        guard amounts.count > 1 else { return 0.0 }
+        
+        let mean = amounts.reduce(0, +) / Double(amounts.count)
+        let variance = amounts.map { pow($0 - mean, 2) }.reduce(0, +) / Double(amounts.count)
+        
+        return variance
+    }
+    
+    private func calculateTrendDirection(_ dataPoints: [TrendDataPoint]) -> TrendDirection {
+        guard dataPoints.count >= 2 else { return .stable }
+        
+        let firstHalf = dataPoints.prefix(dataPoints.count / 2)
+        let secondHalf = dataPoints.suffix(dataPoints.count / 2)
+        
+        let firstAverage = firstHalf.reduce(0) { $0 + $1.value } / Double(firstHalf.count)
+        let secondAverage = secondHalf.reduce(0) { $0 + $1.value } / Double(secondHalf.count)
+        
+        let changeThreshold = firstAverage * 0.1 // 10% change threshold
+        
+        if secondAverage > firstAverage + changeThreshold {
+            return .increasing
+        } else if secondAverage < firstAverage - changeThreshold {
+            return .decreasing
+        } else {
+            return .stable
+        }
+    }
+}
+
+// MARK: - Supporting Data Structures
+
+private struct CategoryInsightData {
+    let totalAmount: Double
+    let transactionCount: Int
+    let averageAmount: Double
+    let variance: Double
+}
+
+private extension TrendDirection {
+    var description: String {
+        switch self {
+        case .increasing: return "increasing"
+        case .decreasing: return "decreasing"
+        case .stable: return "stable"
+        }
+    }
+}

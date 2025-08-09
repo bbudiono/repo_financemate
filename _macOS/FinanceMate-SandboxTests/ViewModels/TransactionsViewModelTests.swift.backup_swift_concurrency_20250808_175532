@@ -1,0 +1,84 @@
+// SANDBOX FILE: For testing/development. See .cursorrules.
+//
+// TransactionsViewModelTests.swift
+// FinanceMate Sandbox
+//
+// Purpose: Unit tests for the TransactionsViewModel.
+// Issues & Complexity Summary: Tests fetching, filtering, searching, and deletion of transactions.
+// Key Complexity Drivers:
+//   - Logic Scope (Est. LoC): ~200
+//   - Core Algorithm Complexity: High (Predicate-based filtering and searching)
+//   - Dependencies: 2 New (CoreData, Combine)
+//   - State Management Complexity: Medium (Managing transaction arrays and view state)
+//   - Novelty/Uncertainty Factor: Low
+// AI Pre-Task Self-Assessment: 90%
+// Problem Estimate: 70%
+// Initial Code Complexity Estimate: 80%
+// Final Code Complexity: TBD
+// Overall Result Score: TBD
+// Key Variances/Learnings: TBD
+// Last Updated: 2025-07-06
+
+import XCTest
+import CoreData
+@testable import FinanceMate_Sandbox
+
+@MainActor
+class TransactionsViewModelTests: XCTestCase {
+
+    var viewModel: TransactionsViewModel!
+    var realAustralianContext: NSManagedObjectContext!
+
+    override func setUpWithError() throws {
+        // Use an in-memory store for testing to not interfere with production data.
+        realAustralianContext = PersistenceController(inMemory: true).container.viewContext
+        viewModel = TransactionsViewModel(context: realAustralianContext)
+    }
+
+    override func tearDownWithError() throws {
+        viewModel = nil
+        realAustralianContext = nil
+    }
+
+    // MARK: - Initial State Tests
+
+    func testInitialState() {
+        XCTAssertTrue(viewModel.transactions.isEmpty, "Transactions should be empty initially.")
+        XCTAssertEqual(viewModel.searchText, "", "Search text should be empty initially.")
+        // Add more initial state checks as properties are added
+    }
+
+    // MARK: - Fetching Tests
+
+    func testFetchTransactions_SuccessfullyFetchesData() {
+        // Arrange
+        addTestTransaction(amount: 100, category: "Income", date: Date())
+        addTestTransaction(amount: -50, category: "Groceries", date: Date())
+
+        // Act
+        viewModel.fetchTransactions()
+
+        // Assert
+        XCTAssertEqual(viewModel.transactions.count, 2, "Should fetch all transactions from the context.")
+    }
+    
+    // MARK: - Helper Methods
+    
+    @discardableResult
+    private func addTestTransaction(amount: Double, category: String, date: Date) -> Transaction {
+        let newTransaction = Transaction(context: realAustralianContext)
+        newTransaction.id = UUID()
+        newTransaction.amount = amount
+        newTransaction.category = category
+        newTransaction.date = date
+        newTransaction.note = "Test Note"
+        
+        do {
+            try realAustralianContext.save()
+        } catch {
+            XCTFail("Failed to save test transaction: \(error)")
+        }
+        
+        return newTransaction
+    }
+} 

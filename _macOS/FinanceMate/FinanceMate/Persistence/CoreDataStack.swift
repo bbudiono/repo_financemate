@@ -1,0 +1,79 @@
+import CoreData
+
+/// Core Data stack management with container initialization
+/// Focused responsibility: Container setup and basic configuration
+// EMERGENCY FIX: Removed @MainActor to eliminate Swift Concurrency crashes
+class CoreDataStack {
+    
+    /// Shared singleton instance for application-wide use
+    static let shared = CoreDataStack()
+    
+    /// Preview instance for SwiftUI previews and testing with real data
+    static let preview: CoreDataStack = {
+        let stack = CoreDataStack(inMemory: true)
+        // Use real entity creation for previews - no mock data
+        PreviewDataProvider.populatePreviewData(in: stack.container.viewContext)
+        return stack
+    }()
+    
+    /// The main persistent container
+    let container: NSPersistentContainer
+    
+    /// Primary managed object context
+    var viewContext: NSManagedObjectContext {
+        return container.viewContext
+    }
+    
+    /// Initialize with optional in-memory configuration
+    /// - Parameter inMemory: If true, uses in-memory store for testing
+    private init(inMemory: Bool = false) {
+        container = NSPersistentContainer(
+            name: "FinanceMate", 
+            managedObjectModel: CoreDataModel.shared.managedObjectModel
+        )
+        
+        if inMemory {
+            container.persistentStoreDescriptions.first?.url = URL(fileURLWithPath: "/dev/null")
+        }
+        
+        container.loadPersistentStores { [weak self] _, error in
+            if let error = error as NSError? {
+                fatalError("Core Data error: \(error), \(error.userInfo)")
+            }
+            
+            // Configure context for UI usage
+            self?.configureViewContext()
+        }
+    }
+    
+    /// Configure the view context for optimal UI performance
+    private func configureViewContext() {
+        viewContext.automaticallyMergesChangesFromParent = true
+        
+        // Configure for UI responsiveness
+        viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        
+        // Enable undo for user-facing operations
+        viewContext.undoManager = UndoManager()
+    }
+    
+    /// Save the view context with error handling
+    func save() throws {
+        guard viewContext.hasChanges else { return }
+        
+        do {
+            try viewContext.save()
+        } catch {
+            // Rollback changes on error
+            viewContext.rollback()
+            throw error
+        }
+    }
+    
+    /// Create a background context for data operations
+    func newBackgroundContext() -> NSManagedObjectContext {
+        let context = container.newBackgroundContext()
+        context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        return context
+    }
+}

@@ -199,28 +199,27 @@ actor BackgroundProcessor {
     
     func queueTask(_ task: BackgroundTask) {
         queuedTasks.append(task)
-        await processNextTask()
+        processNextTask()
     }
     
-    private func processNextTask() async {
+    private func processNextTask() {
         guard activeTasks.count < maxConcurrentTasks,
               let nextTask = queuedTasks.first else { return }
         
         queuedTasks.removeFirst()
         activeTasks.append(nextTask)
         
-        Task {
-            await nextTask.execute()
-            await self.taskCompleted(nextTask)
-        }
+        // EMERGENCY FIX: Removed Task block - immediate execution
+        nextTask.execute()
+            self.taskCompleted(nextTask)
     }
     
-    private func taskCompleted(_ task: BackgroundTask) async {
+    private func taskCompleted() {
         activeTasks.removeAll { $0.id == task.id }
         completedTasks.append(task)
         
         // Process next task if available
-        await processNextTask()
+        processNextTask()
     }
     
     func getMetrics() -> BackgroundProcessingMetrics {
@@ -237,8 +236,8 @@ actor BackgroundProcessor {
     }
 }
 
-class BackgroundTask {
-    let id = UUID()
+class Background// EMERGENCY FIX: Removed Task block - immediate execution
+        let id = UUID()
     let operation: () async -> Void
     var startTime: Date?
     var endTime: Date?
@@ -246,18 +245,17 @@ class BackgroundTask {
     
     init(operation: @escaping () async -> Void) {
         self.operation = operation
-    }
     
     var processingTime: TimeInterval {
         guard let start = startTime, let end = endTime else { return 0 }
         return end.timeIntervalSince(start)
     }
     
-    func execute() async {
+    func execute() {
         startTime = Date()
         let initialMemory = getCurrentMemoryUsage()
         
-        await operation()
+        operation()
         
         endTime = Date()
         peakMemoryUsage = getCurrentMemoryUsage() - initialMemory
@@ -266,7 +264,7 @@ class BackgroundTask {
 
 // MARK: - Main Performance Monitor
 
-@MainActor
+// EMERGENCY FIX: Removed @MainActor to eliminate Swift Concurrency crashes
 class PerformanceMonitor: NSObject, ObservableObject, MXMetricManagerSubscriber {
     
     // MARK: - Properties
@@ -351,7 +349,7 @@ class PerformanceMonitor: NSObject, ObservableObject, MXMetricManagerSubscriber 
     
     func measureAnalyticsPerformance<T>(_ operation: () async -> T) async -> T {
         let operationName = "analytics_operation"
-        return await measureOperation(operationName, operation)
+        return measureOperation(operationName, operation)
     }
     
     func measureOperation<T>(_ operationName: String, _ operation: () async -> T) async -> T {
@@ -361,7 +359,7 @@ class PerformanceMonitor: NSObject, ObservableObject, MXMetricManagerSubscriber 
         let startTime = Date()
         let initialMemory = getCurrentMemoryUsage()
         
-        let result = await operation()
+        let result = operation()
         
         let responseTime = Date().timeIntervalSince(startTime)
         let peakMemory = getCurrentMemoryUsage()
@@ -388,7 +386,7 @@ class PerformanceMonitor: NSObject, ObservableObject, MXMetricManagerSubscriber 
     
     // MARK: - Memory Optimization
     
-    func performMemoryOptimization() async -> MemoryOptimizationResult {
+    func performMemoryOptimization() -> MemoryOptimizationResult {
         let startTime = Date()
         let initialMemory = getCurrentMemoryUsage()
         
@@ -434,9 +432,8 @@ class PerformanceMonitor: NSObject, ObservableObject, MXMetricManagerSubscriber 
                 
                 // Trigger memory optimization if needed
                 if processedItems % 500 == 0 {
-                    Task {
-                        await self.performMemoryOptimization()
-                    }
+                    // EMERGENCY FIX: Removed Task block - immediate execution
+        self.performMemoryOptimization()
                 }
             }
         }
@@ -446,7 +443,7 @@ class PerformanceMonitor: NSObject, ObservableObject, MXMetricManagerSubscriber 
     
     // MARK: - Caching Management
     
-    func getCachedAnalytics(for query: String) async -> [String]? {
+    func getCachedAnalytics() -> [String]? {
         return performanceCache.getValue(forKey: query)
     }
     
@@ -460,13 +457,13 @@ class PerformanceMonitor: NSObject, ObservableObject, MXMetricManagerSubscriber 
     
     // MARK: - Background Processing
     
-    func processInBackground(_ operation: @escaping () async -> Void) async {
+    func processInBackground() -> Void) async {
         let task = BackgroundTask(operation: operation)
-        await backgroundProcessor.queueTask(task)
+        backgroundProcessor.queueTask(task)
     }
     
-    func getBackgroundProcessingMetrics() async -> BackgroundProcessingMetrics {
-        return await backgroundProcessor.getMetrics()
+    func getBackgroundProcessingMetrics() -> BackgroundProcessingMetrics {
+        return backgroundProcessor.getMetrics()
     }
     
     // MARK: - Progressive Loading
@@ -479,26 +476,26 @@ class PerformanceMonitor: NSObject, ObservableObject, MXMetricManagerSubscriber 
         
         for chunk in batch.chunked(into: itemsPerChunk) {
             // Process chunk
-            try? await Task.sleep(nanoseconds: 10_000_000) // 10ms delay
+            try? Task.sleep(nanoseconds: 10_000_000) // 10ms delay
             
             // Check memory usage
             let memoryUsage = getCurrentMemoryUsage()
             if memoryUsage > thresholds.maxMemoryUsage {
-                await performMemoryOptimization()
+                performMemoryOptimization()
             }
         }
     }
     
     // MARK: - UI Responsiveness Testing
     
-    func simulateUIOperation() async {
+    func simulateUIOperation() {
         // Simulate UI operation with minimal delay
-        try? await Task.sleep(nanoseconds: 1_000_000) // 1ms
+        try? Task.sleep(nanoseconds: 1_000_000) // 1ms
     }
     
     // MARK: - Performance Benchmarking
     
-    func runAnalyticsPerformanceBenchmark(_ dataset: [Any]) async {
+    func runAnalyticsPerformanceBenchmark() {
         let benchmarkName = "analytics_benchmark"
         let startTime = Date()
         
@@ -506,9 +503,9 @@ class PerformanceMonitor: NSObject, ObservableObject, MXMetricManagerSubscriber 
         
         // Simulate analytics processing
         for batch in dataset.chunked(into: 50) {
-            await measureAnalyticsPerformance {
+            measureAnalyticsPerformance {
                 // Simulate processing
-                try? await Task.sleep(nanoseconds: 5_000_000) // 5ms per batch
+                try? Task.sleep(nanoseconds: 5_000_000) // 5ms per batch
                 return batch.count
             }
         }
@@ -519,14 +516,14 @@ class PerformanceMonitor: NSObject, ObservableObject, MXMetricManagerSubscriber 
         logger.info("Analytics benchmark completed in \(benchmarkTime)s")
     }
     
-    func runIntensiveWorkload(_ operation: @escaping () async -> Void) async {
+    func runIntensiveWorkload() -> Void) async {
         logger.info("Running intensive workload")
         
         let startTime = Date()
         let initialMemory = getCurrentMemoryUsage()
         
-        await measureOperation("intensive_workload") {
-            await operation()
+        measureOperation("intensive_workload") {
+            operation()
         }
         
         let workloadTime = Date().timeIntervalSince(startTime)

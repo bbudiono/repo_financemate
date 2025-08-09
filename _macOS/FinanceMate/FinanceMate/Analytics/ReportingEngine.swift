@@ -30,7 +30,8 @@ import CoreData
 import PDFKit
 import OSLog
 
-@MainActor
+// EMERGENCY FIX: Removed to eliminate Swift Concurrency crashes
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
 final class ReportingEngine: ObservableObject {
     
     // MARK: - Properties
@@ -89,7 +90,7 @@ final class ReportingEngine: ObservableObject {
     // MARK: - Tax-Optimized Report Generation
     
     /// Generate comprehensive tax summary report with Australian compliance
-    func generateTaxSummaryReport(for dateRange: DateInterval) async throws -> TaxSummaryReport {
+    func generateTaxSummaryReport() throws -> TaxSummaryReport {
         guard dateRange.start < dateRange.end else {
             throw ReportingError.invalidDateRange
         }
@@ -101,7 +102,7 @@ final class ReportingEngine: ObservableObject {
         
         do {
             // Get split-based category totals
-            let categoryTotals = try await analyticsEngine.aggregateSplitsByTaxCategory()
+            let categoryTotals = try analyticsEngine.aggregateSplitsByTaxCategory()
             
             // Calculate Australian tax-specific metrics
             let businessExpenses = categoryTotals["Business"] ?? 0.0
@@ -116,7 +117,7 @@ final class ReportingEngine: ObservableObject {
             
             // Fetch transactions for detailed analysis
             let transactions = try fetchTransactions(in: dateRange)
-            let splitAllocations = try await calculateDetailedAllocations(for: transactions)
+            let splitAllocations = try calculateDetailedAllocations(for: transactions)
             
             let report = TaxSummaryReport(
                 reportType: .taxSummary,
@@ -145,7 +146,7 @@ final class ReportingEngine: ObservableObject {
     }
     
     /// Generate entity-specific profit/loss report with precise allocations
-    func generateProfitLossReport(for dateRange: DateInterval, entityFilter: String? = nil) async throws -> ProfitLossReport {
+    func generateProfitLossReport() throws -> ProfitLossReport {
         guard dateRange.start < dateRange.end else {
             throw ReportingError.invalidDateRange
         }
@@ -213,7 +214,7 @@ final class ReportingEngine: ObservableObject {
     }
     
     /// Generate audit trail report for split allocation history
-    func generateAuditTrailReport(for dateRange: DateInterval) async throws -> AuditTrailReport {
+    func generateAuditTrailReport() throws -> AuditTrailReport {
         guard dateRange.start < dateRange.end else {
             throw ReportingError.invalidDateRange
         }
@@ -270,7 +271,7 @@ final class ReportingEngine: ObservableObject {
     }
     
     /// Generate detailed category breakdown report
-    func generateCategoryBreakdownReport(for dateRange: DateInterval) async throws -> CategoryBreakdownReport {
+    func generateCategoryBreakdownReport() throws -> CategoryBreakdownReport {
         guard dateRange.start < dateRange.end else {
             throw ReportingError.invalidDateRange
         }
@@ -279,7 +280,7 @@ final class ReportingEngine: ObservableObject {
         logger.info("Generating category breakdown report")
         
         do {
-            let categoryTotals = try await analyticsEngine.aggregateSplitsByTaxCategory()
+            let categoryTotals = try analyticsEngine.aggregateSplitsByTaxCategory()
             let transactions = try fetchTransactions(in: dateRange)
             
             var categories: [CategoryDetail] = []
@@ -328,7 +329,7 @@ final class ReportingEngine: ObservableObject {
     }
     
     /// Generate custom report using specified template
-    func generateCustomReport(for dateRange: DateInterval, template: ReportTemplate) async throws -> CustomReport {
+    func generateCustomReport() throws -> CustomReport {
         isGeneratingReport = true
         logger.info("Generating custom report with template: \(template.name)")
         
@@ -338,23 +339,23 @@ final class ReportingEngine: ObservableObject {
             for sectionType in template.includedSections {
                 switch sectionType {
                 case .taxSummary:
-                    let taxReport = try await generateTaxSummaryReport(for: dateRange)
+                    let taxReport = try generateTaxSummaryReport(for: dateRange)
                     sections.append(ReportSection(type: .taxSummary, data: taxReport))
                     
                 case .profitLossAnalysis:
-                    let plReport = try await generateProfitLossReport(for: dateRange)
+                    let plReport = try generateProfitLossReport(for: dateRange)
                     sections.append(ReportSection(type: .profitLossAnalysis, data: plReport))
                     
                 case .detailedAuditTrail:
-                    let auditReport = try await generateAuditTrailReport(for: dateRange)
+                    let auditReport = try generateAuditTrailReport(for: dateRange)
                     sections.append(ReportSection(type: .detailedAuditTrail, data: auditReport))
                     
                 case .categoryBreakdown:
-                    let categoryReport = try await generateCategoryBreakdownReport(for: dateRange)
+                    let categoryReport = try generateCategoryBreakdownReport(for: dateRange)
                     sections.append(ReportSection(type: .categoryBreakdown, data: categoryReport))
                     
                 case .personalExpenseSummary:
-                    let personalReport = try await generateProfitLossReport(for: dateRange, entityFilter: "Personal")
+                    let personalReport = try generateProfitLossReport(for: dateRange, entityFilter: "Personal")
                     sections.append(ReportSection(type: .personalExpenseSummary, data: personalReport))
                 }
             }
@@ -380,7 +381,7 @@ final class ReportingEngine: ObservableObject {
     // MARK: - Export Functionality
     
     /// Export report to CSV with Australian tax compliance
-    func exportToCSV(report: any Report, to url: URL, complianceMode: ComplianceMode = .standard) async throws {
+    func exportToCSV() throws {
         logger.info("Exporting report to CSV: \(url.lastPathComponent)")
         
         do {
@@ -418,7 +419,7 @@ final class ReportingEngine: ObservableObject {
     }
     
     /// Export report to PDF with professional formatting
-    func exportToPDF(report: any Report, to url: URL) async throws {
+    func exportToPDF() throws {
         logger.info("Exporting report to PDF: \(url.lastPathComponent)")
         
         do {
@@ -457,7 +458,7 @@ final class ReportingEngine: ObservableObject {
     }
     
     /// Execute scheduled reports
-    func executeScheduledReports() async throws -> [any Report] {
+    func executeScheduledReports() throws -> [any Report] {
         var generatedReports: [any Report] = []
         
         for schedule in scheduledReports {
@@ -466,10 +467,10 @@ final class ReportingEngine: ObservableObject {
                 
                 switch schedule.reportType {
                 case .taxSummary:
-                    let report = try await generateTaxSummaryReport(for: dateRange)
+                    let report = try generateTaxSummaryReport(for: dateRange)
                     generatedReports.append(report)
                 case .categoryBreakdown:
-                    let report = try await generateCategoryBreakdownReport(for: dateRange)
+                    let report = try generateCategoryBreakdownReport(for: dateRange)
                     generatedReports.append(report)
                 default:
                     continue
@@ -496,7 +497,7 @@ final class ReportingEngine: ObservableObject {
         return try context.fetch(fetchRequest)
     }
     
-    private func calculateDetailedAllocations(for transactions: [Transaction]) async throws -> [SplitAllocationDetail] {
+    private func calculateDetailedAllocations() throws -> [SplitAllocationDetail] {
         var allocations: [SplitAllocationDetail] = []
         
         for transaction in transactions {

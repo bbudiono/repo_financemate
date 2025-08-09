@@ -34,7 +34,7 @@ import Combine
 /// - Loading state management
 /// - Error handling and user feedback
 /// - Core Data integration with reactive updates
-@MainActor
+// EMERGENCY FIX: Removed @MainActor to eliminate Swift Concurrency crashes
 class DashboardViewModel: ObservableObject {
     
     // MARK: - Published Properties
@@ -122,21 +122,18 @@ class DashboardViewModel: ObservableObject {
         isLoading = true
         errorMessage = nil
         
-        Task {
-            do {
-                let (balance, count, recent) = try await calculateDashboardMetrics()
-                
-                await MainActor.run {
-                    self.totalBalance = balance
-                    self.transactionCount = count
-                    self.recentTransactions = recent
-                    self.isLoading = false
-                }
-            } catch {
-                await MainActor.run {
-                    self.errorMessage = "Failed to load dashboard data: \(error.localizedDescription)"
-                    self.isLoading = false
-                }
+        do {
+            let (balance, count, recent) = try calculateDashboardMetrics()
+            DispatchQueue.main.async {
+                self.totalBalance = balance
+                self.transactionCount = count
+                self.recentTransactions = recent
+                self.isLoading = false
+            }
+        } catch {
+            DispatchQueue.main.async {
+                self.errorMessage = "Failed to load dashboard data: \(error.localizedDescription)"
+                self.isLoading = false
             }
         }
     }
@@ -188,33 +185,36 @@ class DashboardViewModel: ObservableObject {
     
     /// Calculate dashboard metrics asynchronously
     /// - Returns: Tuple containing (totalBalance, transactionCount, recentTransactions)
-    private func calculateDashboardMetrics() async throws -> (Double, Int, [Transaction]) {
-        return try await withCheckedThrowingContinuation { continuation in
-            context.perform {
-                do {
-                    // Fetch all transactions for balance calculation
-                    let balanceRequest: NSFetchRequest<Transaction> = Transaction.fetchRequest()
-                    let allTransactions = try self.context.fetch(balanceRequest)
-                    
-                    // Calculate total balance
-                    let balance = allTransactions.reduce(0.0) { $0 + $1.amount }
-                    let count = allTransactions.count
-                    
-                    // Fetch recent transactions (limited to 5, sorted by date)
-                    let recentRequest: NSFetchRequest<Transaction> = Transaction.fetchRequest()
-                    recentRequest.sortDescriptors = [
-                        NSSortDescriptor(keyPath: \Transaction.date, ascending: false)
-                    ]
-                    recentRequest.fetchLimit = 5
-                    
-                    let recentTransactions = try self.context.fetch(recentRequest)
-                    
-                    continuation.resume(returning: (balance, count, recentTransactions))
-                } catch {
-                    continuation.resume(throwing: error)
-                }
+    private func calculateDashboardMetrics() throws -> (Double, Int, [Transaction]) {
+        var result: (Double, Int, [Transaction]) = (0.0, 0, [])
+        var thrownError: Error?
+        
+        context.performAndWait {
+            do {
+                // Fetch all transactions for balance calculation
+                let balanceRequest: NSFetchRequest<Transaction> = Transaction.fetchRequest()
+                let allTransactions = try self.context.fetch(balanceRequest)
+                
+                // Calculate total balance and count
+                let balance = allTransactions.reduce(0.0) { $0 + $1.amount }
+                let count = allTransactions.count
+                
+                // Fetch recent transactions (limited to 5, sorted by date)
+                let recentRequest: NSFetchRequest<Transaction> = Transaction.fetchRequest()
+                recentRequest.sortDescriptors = [
+                    NSSortDescriptor(keyPath: \Transaction.date, ascending: false)
+                ]
+                recentRequest.fetchLimit = 5
+                let recentTransactions = try self.context.fetch(recentRequest)
+                
+                result = (balance, count, recentTransactions)
+            } catch {
+                thrownError = error
             }
         }
+        
+        if let error = thrownError { throw error }
+        return result
     }
     
     // MARK: - Enhanced Core Data Integration Features
@@ -225,31 +225,28 @@ class DashboardViewModel: ObservableObject {
     ///   - category: Transaction category (validated for non-empty)
     ///   - note: Optional transaction note
     func validateAndAddTransaction(amount: Double, category: String, note: String?) {
-        Task { @MainActor in
-            isLoading = true
-            errorMessage = nil
+        isLoading = true
+        errorMessage = nil
+        
+        do {
+            // Validate transaction data
+            try validateTransactionData(amount: amount, category: category)
             
-            do {
-                // Validate transaction data
-                try validateTransactionData(amount: amount, category: category)
-                
-                // Create and save transaction
-                let transaction = Transaction(context: context)
-                transaction.id = UUID()
-                transaction.amount = amount
-                transaction.category = category
-                transaction.note = note
-                transaction.date = Date()
-                
-                try context.save()
-                
-                // Refresh dashboard data
-                await refreshDataAfterChange()
-                
-            } catch {
-                handleError(error)
-            }
+            // Create and save transaction
+            let transaction = Transaction(context: context)
+            transaction.id = UUID()
+            transaction.amount = amount
+            transaction.category = category
+            transaction.note = note
+            transaction.date = Date()
             
+            try context.save()
+            
+            // Refresh dashboard data
+            refreshDataAfterChange()
+            isLoading = false
+        } catch {
+            handleError(error)
             isLoading = false
         }
     }
@@ -257,33 +254,30 @@ class DashboardViewModel: ObservableObject {
     /// Adds multiple transactions in a single batch operation for performance
     /// - Parameter transactions: Array of transaction tuples (amount, category, note)
     func addTransactionsBatch(_ transactions: [(amount: Double, category: String, note: String?)]) {
-        Task { @MainActor in
-            isLoading = true
-            errorMessage = nil
-            
-            do {
-                // Begin batch operation
-                context.performAndWait {
-                    for transactionData in transactions {
-                        let transaction = Transaction(context: context)
-                        transaction.id = UUID()
-                        transaction.amount = transactionData.amount
-                        transaction.category = transactionData.category
-                        transaction.note = transactionData.note
-                        transaction.date = Date()
-                    }
+        isLoading = true
+        errorMessage = nil
+        
+        do {
+            // Begin batch operation
+            context.performAndWait {
+                for transactionData in transactions {
+                    let transaction = Transaction(context: context)
+                    transaction.id = UUID()
+                    transaction.amount = transactionData.amount
+                    transaction.category = transactionData.category
+                    transaction.note = transactionData.note
+                    transaction.date = Date()
                 }
-                
-                // Save all changes in single operation
-                try context.save()
-                
-                // Refresh dashboard data
-                await refreshDataAfterChange()
-                
-            } catch {
-                handleError(error)
             }
             
+            // Save all changes in single operation
+            try context.save()
+            
+            // Refresh dashboard data
+            refreshDataAfterChange()
+            isLoading = false
+        } catch {
+            handleError(error)
             isLoading = false
         }
     }
@@ -291,28 +285,25 @@ class DashboardViewModel: ObservableObject {
     /// Performs a Core Data operation with automatic rollback on failure
     /// - Parameter operation: Throwing closure to execute
     func performTransactionWithRollback(_ operation: @escaping () throws -> Void) {
-        Task { @MainActor in
-            isLoading = true
-            errorMessage = nil
+        isLoading = true
+        errorMessage = nil
+        
+        // Save current state for potential rollback
+        let hadUnsavedChanges = context.hasChanges
+        
+        do {
+            try operation()
+            try context.save()
             
-            // Save current state for potential rollback
-            let hasUnsavedChanges = context.hasChanges
-            
-            do {
-                try operation()
-                try context.save()
-                
-                // Refresh dashboard data
-                await refreshDataAfterChange()
-                
-            } catch {
-                // Rollback changes on error
-                if hasUnsavedChanges {
-                    context.rollback()
-                }
-                handleError(error)
+            // Refresh dashboard data
+            refreshDataAfterChange()
+            isLoading = false
+        } catch {
+            // Rollback changes on error
+            if hadUnsavedChanges {
+                context.rollback()
             }
-            
+            handleError(error)
             isLoading = false
         }
     }
@@ -376,31 +367,27 @@ class DashboardViewModel: ObservableObject {
     
     /// Test method for validation error scenarios
     func testValidationError() {
-        Task { @MainActor in
-            do {
-                try validateTransactionData(amount: Double.nan, category: "")
-            } catch {
-                handleError(error)
-            }
+        do {
+            try validateTransactionData(amount: Double.nan, category: "")
+        } catch {
+            handleError(error)
         }
     }
     
     /// Test method for network error scenarios
     func testNetworkError() {
-        Task { @MainActor in
-            let networkError = NSError(domain: "NetworkError", code: -1009, 
+        // EMERGENCY FIX: Removed Task block - immediate execution
+        let networkError = NSError(domain: "NetworkError", code: -1009, 
                                      userInfo: [NSLocalizedDescriptionKey: "Network connection failed"])
             handleError(networkError)
-        }
     }
     
     /// Test method for data corruption error scenarios
     func testDataCorruptionError() {
-        Task { @MainActor in
-            let dataError = NSError(domain: "DataCorruption", code: 500,
+        // EMERGENCY FIX: Removed Task block - immediate execution
+        let dataError = NSError(domain: "DataCorruption", code: 500,
                                   userInfo: [NSLocalizedDescriptionKey: "Data integrity check failed"])
             handleError(dataError)
-        }
     }
     
     // MARK: - Private Helper Methods
@@ -457,9 +444,9 @@ class DashboardViewModel: ObservableObject {
     }
     
     /// Refreshes data after changes and updates cache
-    private func refreshDataAfterChange() async {
+    private func refreshDataAfterChange() {
         do {
-            let (balance, count, recent) = try await calculateDashboardMetrics()
+            let (balance, count, recent) = try calculateDashboardMetrics()
             
             totalBalance = balance
             transactionCount = count

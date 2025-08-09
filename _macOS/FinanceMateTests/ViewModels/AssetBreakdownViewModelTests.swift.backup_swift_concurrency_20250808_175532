@@ -1,0 +1,587 @@
+//
+// AssetBreakdownViewModelTests.swift
+// FinanceMateTests
+//
+// Purpose: Comprehensive unit tests for AssetBreakdownViewModel MVVM architecture
+// Issues & Complexity Summary: Testing ObservableObject patterns, Core Data integration, asset categorization logic
+// Key Complexity Drivers:
+//   - Logic Scope (Est. LoC): ~200
+//   - Core Algorithm Complexity: Medium-High (asset grouping, calculations)
+//   - Dependencies: 4 (Core Data, XCTest, Combine, Asset entities)
+//   - State Management Complexity: Medium-High (asset categories, filtering)
+//   - Novelty/Uncertainty Factor: Low
+// AI Pre-Task Self-Assessment: 85%
+// Problem Estimate: 90%
+// Initial Code Complexity Estimate: 88%
+// Final Code Complexity: TBD
+// Overall Result Score: TBD
+// Key Variances/Learnings: TDD approach for asset breakdown MVVM testing patterns
+// Last Updated: 2025-08-02
+
+import XCTest
+import CoreData
+import Combine
+@testable import FinanceMate
+
+@MainActor
+class AssetBreakdownViewModelTests: XCTestCase {
+    
+    var viewModel: AssetBreakdownViewModel!
+    var persistenceController: PersistenceController!
+    var context: NSManagedObjectContext!
+    var cancellables: Set<AnyCancellable>!
+    var testEntity: FinancialEntity!
+    
+    override func setUp() {
+        super.setUp()
+        
+        // Create in-memory Core Data stack for testing
+        persistenceController = PersistenceController(inMemory: true)
+        context = persistenceController.container.viewContext
+        
+        // Create test financial entity
+        testEntity = FinancialEntity.create(
+            in: context,
+            name: "Test Personal Entity",
+            type: .personal
+        )
+        
+        try! context.save()
+        
+        // Initialize ViewModel with test context and entity
+        viewModel = AssetBreakdownViewModel(context: context, entity: testEntity)
+        cancellables = Set<AnyCancellable>()
+    }
+    
+    override func tearDown() {
+        cancellables?.removeAll()
+        viewModel = nil
+        testEntity = nil
+        context = nil
+        persistenceController = nil
+        super.tearDown()
+    }
+    
+    // MARK: - Initialization Tests
+    
+    func testViewModelInitialization() {
+        XCTAssertNotNil(viewModel, "AssetBreakdownViewModel should initialize successfully")
+        XCTAssertEqual(viewModel.entity, testEntity, "Should be initialized with correct entity")
+        XCTAssertTrue(viewModel.assetsByCategory.isEmpty, "Initial asset categories should be empty")
+        XCTAssertEqual(viewModel.totalAssetValue, 0.0, "Initial total asset value should be zero")
+        XCTAssertFalse(viewModel.isLoading, "Should not be loading on initialization")
+        XCTAssertNil(viewModel.errorMessage, "Should have no error message on initialization")
+    }
+    
+    func testViewModelInitializationWithoutEntity() {
+        let nilEntityViewModel = AssetBreakdownViewModel(context: context, entity: nil)
+        XCTAssertNotNil(nilEntityViewModel, "ViewModel should initialize with nil entity")
+        XCTAssertNil(nilEntityViewModel.entity, "Entity should be nil")
+        XCTAssertTrue(nilEntityViewModel.assetsByCategory.isEmpty, "Asset categories should be empty")
+    }
+    
+    // MARK: - Asset Category Grouping Tests
+    
+    func testAssetCategoryGrouping() async {
+        // Given: Assets of different types
+        createDiverseTestAssets()
+        
+        // When: Fetching asset breakdown data
+        let expectation = XCTestExpectation(description: "Asset breakdown data fetched")
+        
+        viewModel.$isLoading
+            .dropFirst()
+            .sink { isLoading in
+                if !isLoading {
+                    expectation.fulfill()
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.fetchAssetBreakdown()
+        
+        await fulfillment(of: [expectation], timeout: 5.0)
+        
+        // Then: Assets should be grouped correctly by category
+        XCTAssertEqual(viewModel.assetsByCategory.keys.count, 5, "Should have 5 asset categories")
+        XCTAssertTrue(viewModel.assetsByCategory.keys.contains(.realEstate), "Should contain real estate category")
+        XCTAssertTrue(viewModel.assetsByCategory.keys.contains(.investment), "Should contain investment category")
+        XCTAssertTrue(viewModel.assetsByCategory.keys.contains(.cash), "Should contain cash category")
+        XCTAssertTrue(viewModel.assetsByCategory.keys.contains(.vehicle), "Should contain vehicle category")
+        XCTAssertTrue(viewModel.assetsByCategory.keys.contains(.other), "Should contain other category")
+        
+        // Verify asset counts per category
+        XCTAssertEqual(viewModel.assetsByCategory[.realEstate]?.count, 2, "Should have 2 real estate assets")
+        XCTAssertEqual(viewModel.assetsByCategory[.investment]?.count, 2, "Should have 2 investment assets")
+        XCTAssertEqual(viewModel.assetsByCategory[.cash]?.count, 1, "Should have 1 cash asset")
+        XCTAssertEqual(viewModel.assetsByCategory[.vehicle]?.count, 1, "Should have 1 vehicle asset")
+        XCTAssertEqual(viewModel.assetsByCategory[.other]?.count, 1, "Should have 1 other asset")
+    }
+    
+    func testEmptyAssetCategories() async {
+        // Given: No assets for the entity
+        
+        // When: Fetching asset breakdown data
+        let expectation = XCTestExpectation(description: "Empty asset breakdown fetched")
+        
+        viewModel.$isLoading
+            .dropFirst()
+            .sink { isLoading in
+                if !isLoading {
+                    expectation.fulfill()
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.fetchAssetBreakdown()
+        
+        await fulfillment(of: [expectation], timeout: 2.0)
+        
+        // Then: Should have empty categories
+        XCTAssertTrue(viewModel.assetsByCategory.isEmpty, "Asset categories should be empty")
+        XCTAssertEqual(viewModel.totalAssetValue, 0.0, "Total asset value should be zero")
+        XCTAssertTrue(viewModel.isEmpty, "Breakdown should be in empty state")
+    }
+    
+    // MARK: - Asset Value Calculations Tests
+    
+    func testAssetCategoryValueCalculations() async {
+        // Given: Assets with known values
+        createDiverseTestAssets()
+        
+        // When: Calculating category totals
+        await fetchAndWaitForCompletion()
+        
+        // Then: Category totals should be calculated correctly
+        let realEstateTotal = viewModel.getCategoryTotal(.realEstate)
+        let investmentTotal = viewModel.getCategoryTotal(.investment)
+        let cashTotal = viewModel.getCategoryTotal(.cash)
+        let vehicleTotal = viewModel.getCategoryTotal(.vehicle)
+        let otherTotal = viewModel.getCategoryTotal(.other)
+        
+        XCTAssertEqual(realEstateTotal, 1_350_000.0, "Real estate total should be 1,350,000") // 800k + 550k
+        XCTAssertEqual(investmentTotal, 275_000.0, "Investment total should be 275,000") // 150k + 125k
+        XCTAssertEqual(cashTotal, 75_000.0, "Cash total should be 75,000")
+        XCTAssertEqual(vehicleTotal, 45_000.0, "Vehicle total should be 45,000")
+        XCTAssertEqual(otherTotal, 25_000.0, "Other total should be 25,000")
+        
+        // Verify total asset value
+        let expectedTotal = 1_350_000.0 + 275_000.0 + 75_000.0 + 45_000.0 + 25_000.0
+        XCTAssertEqual(viewModel.totalAssetValue, expectedTotal, "Total asset value should match sum of categories")
+    }
+    
+    func testAssetCategoryPercentageCalculations() async {
+        // Given: Assets with known values
+        createDiverseTestAssets()
+        
+        // When: Calculating category percentages
+        await fetchAndWaitForCompletion()
+        
+        // Then: Category percentages should be calculated correctly
+        let realEstatePercentage = viewModel.getCategoryPercentage(.realEstate)
+        let investmentPercentage = viewModel.getCategoryPercentage(.investment)
+        let cashPercentage = viewModel.getCategoryPercentage(.cash)
+        
+        // Real estate should be largest percentage (~77.5%)
+        XCTAssertGreaterThan(realEstatePercentage, 75.0, "Real estate should be >75% of assets")
+        XCTAssertLessThan(realEstatePercentage, 80.0, "Real estate should be <80% of assets")
+        
+        // Investment should be second largest (~15.8%)
+        XCTAssertGreaterThan(investmentPercentage, 15.0, "Investments should be >15% of assets")
+        XCTAssertLessThan(investmentPercentage, 20.0, "Investments should be <20% of assets")
+        
+        // Cash should be smaller percentage (~4.3%)
+        XCTAssertGreaterThan(cashPercentage, 4.0, "Cash should be >4% of assets")
+        XCTAssertLessThan(cashPercentage, 5.0, "Cash should be <5% of assets")
+        
+        // All percentages should sum to 100
+        let totalPercentage = Asset.AssetType.allCases.reduce(0.0) { total, type in
+            total + viewModel.getCategoryPercentage(type)
+        }
+        XCTAssertEqual(totalPercentage, 100.0, accuracy: 0.1, "All percentages should sum to 100%")
+    }
+    
+    // MARK: - Asset Filtering and Sorting Tests
+    
+    func testAssetFilteringByType() async {
+        // Given: Mixed assets
+        createDiverseTestAssets()
+        await fetchAndWaitForCompletion()
+        
+        // When: Filtering by specific type
+        viewModel.filterAssets(by: .realEstate)
+        
+        // Then: Only real estate assets should be visible
+        XCTAssertEqual(viewModel.selectedCategory, .realEstate, "Selected category should be real estate")
+        XCTAssertEqual(viewModel.filteredAssets.count, 2, "Should have 2 filtered real estate assets")
+        
+        let filteredValues = viewModel.filteredAssets.map { $0.currentValue }
+        XCTAssertTrue(filteredValues.contains(800_000.0), "Should contain primary residence value")
+        XCTAssertTrue(filteredValues.contains(550_000.0), "Should contain investment property value")
+    }
+    
+    func testAssetSortingByValue() async {
+        // Given: Assets with different values
+        createDiverseTestAssets()
+        await fetchAndWaitForCompletion()
+        
+        // When: Sorting by value (descending)
+        viewModel.sortAssets(by: .valueDescending)
+        
+        // Then: Assets should be sorted by value
+        XCTAssertEqual(viewModel.sortOrder, .valueDescending, "Sort order should be value descending")
+        
+        let allAssets = viewModel.assetsByCategory.values.flatMap { $0 }
+        let sortedAssets = allAssets.sorted { $0.currentValue > $1.currentValue }
+        
+        XCTAssertEqual(allAssets.first?.currentValue, sortedAssets.first?.currentValue, "First asset should have highest value")
+        XCTAssertEqual(allAssets.last?.currentValue, sortedAssets.last?.currentValue, "Last asset should have lowest value")
+    }
+    
+    func testAssetSortingByName() async {
+        // Given: Assets with different names
+        createDiverseTestAssets()
+        await fetchAndWaitForCompletion()
+        
+        // When: Sorting by name (ascending)
+        viewModel.sortAssets(by: .nameAscending)
+        
+        // Then: Assets should be sorted alphabetically
+        XCTAssertEqual(viewModel.sortOrder, .nameAscending, "Sort order should be name ascending")
+        
+        for categoryAssets in viewModel.assetsByCategory.values {
+            let sortedNames = categoryAssets.map { $0.name }.sorted()
+            let actualNames = categoryAssets.map { $0.name }
+            XCTAssertEqual(actualNames, sortedNames, "Assets in category should be sorted by name")
+        }
+    }
+    
+    // MARK: - Asset CRUD Operations Tests
+    
+    func testAddNewAsset() async {
+        // Given: Initial empty state
+        XCTAssertTrue(viewModel.isEmpty, "Should start empty")
+        
+        // When: Adding new asset
+        let expectation = XCTestExpectation(description: "Asset added")
+        
+        viewModel.$totalAssetValue
+            .dropFirst()
+            .sink { value in
+                if value > 0 {
+                    expectation.fulfill()
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.addAsset(
+            name: "New Investment Account",
+            type: .investment,
+            currentValue: 50_000.0,
+            purchasePrice: 45_000.0,
+            purchaseDate: Date().addingTimeInterval(-365 * 24 * 60 * 60) // 1 year ago
+        )
+        
+        await fulfillment(of: [expectation], timeout: 5.0)
+        
+        // Then: Asset should be added to correct category
+        XCTAssertFalse(viewModel.isEmpty, "Should no longer be empty")
+        XCTAssertEqual(viewModel.totalAssetValue, 50_000.0, "Total value should reflect new asset")
+        XCTAssertEqual(viewModel.assetsByCategory[.investment]?.count, 1, "Should have 1 investment asset")
+        
+        let addedAsset = viewModel.assetsByCategory[.investment]?.first
+        XCTAssertEqual(addedAsset?.name, "New Investment Account", "Asset name should match")
+        XCTAssertEqual(addedAsset?.currentValue, 50_000.0, "Asset value should match")
+        XCTAssertEqual(addedAsset?.financialEntity, testEntity, "Asset should be linked to entity")
+    }
+    
+    func testUpdateExistingAsset() async {
+        // Given: Existing asset
+        let asset = Asset.create(
+            in: context,
+            name: "Test Stock Portfolio",
+            type: .investment,
+            currentValue: 100_000.0
+        )
+        asset.financialEntity = testEntity
+        try! context.save()
+        
+        await fetchAndWaitForCompletion()
+        
+        // When: Updating asset value
+        let expectation = XCTestExpectation(description: "Asset updated")
+        
+        viewModel.$totalAssetValue
+            .dropFirst()
+            .sink { value in
+                if value == 125_000.0 {
+                    expectation.fulfill()
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.updateAsset(asset, newValue: 125_000.0)
+        
+        await fulfillment(of: [expectation], timeout: 5.0)
+        
+        // Then: Asset value should be updated
+        XCTAssertEqual(viewModel.totalAssetValue, 125_000.0, "Total value should reflect update")
+        
+        let updatedAsset = viewModel.assetsByCategory[.investment]?.first { $0.id == asset.id }
+        XCTAssertEqual(updatedAsset?.currentValue, 125_000.0, "Asset value should be updated")
+        XCTAssertNotNil(updatedAsset?.valuationHistory.first, "Should have valuation history entry")
+    }
+    
+    func testDeleteAsset() async {
+        // Given: Existing assets
+        createDiverseTestAssets()
+        await fetchAndWaitForCompletion()
+        
+        let initialTotal = viewModel.totalAssetValue
+        let assetToDelete = viewModel.assetsByCategory[.cash]?.first
+        
+        XCTAssertNotNil(assetToDelete, "Should have cash asset to delete")
+        
+        // When: Deleting asset
+        let expectation = XCTestExpectation(description: "Asset deleted")
+        
+        viewModel.$totalAssetValue
+            .dropFirst()
+            .sink { value in
+                if value < initialTotal {
+                    expectation.fulfill()
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.deleteAsset(assetToDelete!)
+        
+        await fulfillment(of: [expectation], timeout: 5.0)
+        
+        // Then: Asset should be removed
+        XCTAssertEqual(viewModel.totalAssetValue, initialTotal - 75_000.0, "Total should decrease by deleted asset value")
+        XCTAssertTrue(viewModel.assetsByCategory[.cash]?.isEmpty ?? true, "Cash category should be empty")
+    }
+    
+    // MARK: - State Management Tests
+    
+    func testLoadingStateManagement() {
+        // Given: Initial state
+        XCTAssertFalse(viewModel.isLoading, "Should not be loading initially")
+        
+        // When: Starting fetch operation
+        let loadingExpectation = XCTestExpectation(description: "Loading state activated")
+        let completionExpectation = XCTestExpectation(description: "Loading state deactivated")
+        
+        var loadingStateChanges: [Bool] = []
+        
+        viewModel.$isLoading
+            .sink { isLoading in
+                loadingStateChanges.append(isLoading)
+                if isLoading && loadingStateChanges.count == 1 {
+                    loadingExpectation.fulfill()
+                } else if !isLoading && loadingStateChanges.count > 1 {
+                    completionExpectation.fulfill()
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.fetchAssetBreakdown()
+        
+        wait(for: [loadingExpectation, completionExpectation], timeout: 5.0)
+        
+        // Then: Loading state should transition correctly
+        XCTAssertTrue(loadingStateChanges.contains(true), "Should have activated loading state")
+        XCTAssertFalse(viewModel.isLoading, "Should not be loading after completion")
+    }
+    
+    func testErrorStateHandling() async {
+        // Given: Invalid context scenario
+        let invalidViewModel = AssetBreakdownViewModel(context: context, entity: nil)
+        
+        // When: Attempting to fetch with nil entity
+        let expectation = XCTestExpectation(description: "Error state handled")
+        
+        invalidViewModel.$errorMessage
+            .compactMap { $0 }
+            .sink { errorMessage in
+                expectation.fulfill()
+            }
+            .store(in: &cancellables)
+        
+        invalidViewModel.testInvalidEntityError()
+        
+        await fulfillment(of: [expectation], timeout: 2.0)
+        
+        // Then: Error should be handled gracefully
+        XCTAssertNotNil(invalidViewModel.errorMessage, "Should have error message")
+        XCTAssertTrue(invalidViewModel.errorMessage?.contains("entity required") == true, "Should contain entity error message")
+        XCTAssertFalse(invalidViewModel.isLoading, "Should not be loading after error")
+    }
+    
+    // MARK: - Publisher Tests
+    
+    func testPublishedPropertiesUpdating() async {
+        // Given: Observers for published properties
+        var categoryUpdates: [Int] = []
+        var totalValueUpdates: [Double] = []
+        
+        viewModel.$assetsByCategory
+            .sink { categories in
+                categoryUpdates.append(categories.keys.count)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$totalAssetValue
+            .sink { total in
+                totalValueUpdates.append(total)
+            }
+            .store(in: &cancellables)
+        
+        // When: Data changes
+        createDiverseTestAssets()
+        await fetchAndWaitForCompletion()
+        
+        // Then: Published properties should update
+        XCTAssertTrue(categoryUpdates.count > 1, "Categories should update multiple times")
+        XCTAssertTrue(totalValueUpdates.count > 1, "Total value should update multiple times")
+        XCTAssertEqual(categoryUpdates.last, 5, "Final category count should be 5")
+        XCTAssertGreaterThan(totalValueUpdates.last ?? 0, 0, "Final total value should be positive")
+    }
+    
+    // MARK: - Performance Tests
+    
+    func testLargeAssetDatasetPerformance() {
+        // Given: Large number of assets
+        let entity = FinancialEntity.create(in: context, name: "Performance Test Entity", type: .personal)
+        
+        for i in 1...1000 {
+            let assetType: Asset.AssetType = Asset.AssetType.allCases[i % Asset.AssetType.allCases.count]
+            let asset = Asset.create(
+                in: context,
+                name: "Asset \(i)",
+                type: assetType,
+                currentValue: Double(i * 1000)
+            )
+            asset.financialEntity = entity
+        }
+        
+        try! context.save()
+        
+        let performanceViewModel = AssetBreakdownViewModel(context: context, entity: entity)
+        
+        // When: Measuring fetch performance
+        measure {
+            let expectation = XCTestExpectation(description: "Performance test completed")
+            
+            performanceViewModel.$isLoading
+                .dropFirst()
+                .sink { isLoading in
+                    if !isLoading {
+                        expectation.fulfill()
+                    }
+                }
+                .store(in: &cancellables)
+            
+            performanceViewModel.fetchAssetBreakdown()
+            
+            wait(for: [expectation], timeout: 10.0)
+        }
+        
+        // Then: Should handle large datasets efficiently
+        XCTAssertEqual(performanceViewModel.assetsByCategory.keys.count, Asset.AssetType.allCases.count, "Should have all asset types")
+        XCTAssertGreaterThan(performanceViewModel.totalAssetValue, 0, "Should have calculated total value")
+    }
+    
+    // MARK: - Helper Methods
+    
+    private func createDiverseTestAssets() {
+        // Real Estate Assets
+        let primaryResidence = Asset.create(
+            in: context,
+            name: "Primary Residence",
+            type: .realEstate,
+            currentValue: 800_000.0,
+            purchasePrice: 650_000.0,
+            purchaseDate: Date().addingTimeInterval(-5 * 365 * 24 * 60 * 60) // 5 years ago
+        )
+        primaryResidence.financialEntity = testEntity
+        
+        let investmentProperty = Asset.create(
+            in: context,
+            name: "Investment Property",
+            type: .realEstate,
+            currentValue: 550_000.0,
+            purchasePrice: 475_000.0,
+            purchaseDate: Date().addingTimeInterval(-3 * 365 * 24 * 60 * 60) // 3 years ago
+        )
+        investmentProperty.financialEntity = testEntity
+        
+        // Investment Assets
+        let stockPortfolio = Asset.create(
+            in: context,
+            name: "Stock Portfolio",
+            type: .investment,
+            currentValue: 150_000.0,
+            purchasePrice: 120_000.0,
+            purchaseDate: Date().addingTimeInterval(-2 * 365 * 24 * 60 * 60) // 2 years ago
+        )
+        stockPortfolio.financialEntity = testEntity
+        
+        let retirementFund = Asset.create(
+            in: context,
+            name: "401k Retirement Fund",
+            type: .investment,
+            currentValue: 125_000.0
+        )
+        retirementFund.financialEntity = testEntity
+        
+        // Cash Asset
+        let emergencyFund = Asset.create(
+            in: context,
+            name: "Emergency Fund",
+            type: .cash,
+            currentValue: 75_000.0
+        )
+        emergencyFund.financialEntity = testEntity
+        
+        // Vehicle Asset
+        let primaryVehicle = Asset.create(
+            in: context,
+            name: "Primary Vehicle",
+            type: .vehicle,
+            currentValue: 45_000.0,
+            purchasePrice: 55_000.0,
+            purchaseDate: Date().addingTimeInterval(-2 * 365 * 24 * 60 * 60) // 2 years ago
+        )
+        primaryVehicle.financialEntity = testEntity
+        
+        // Other Asset
+        let artwork = Asset.create(
+            in: context,
+            name: "Art Collection",
+            type: .other,
+            currentValue: 25_000.0
+        )
+        artwork.financialEntity = testEntity
+        
+        try! context.save()
+    }
+    
+    private func fetchAndWaitForCompletion() async {
+        let expectation = XCTestExpectation(description: "Asset breakdown data fetched")
+        
+        viewModel.$isLoading
+            .dropFirst()
+            .sink { isLoading in
+                if !isLoading {
+                    expectation.fulfill()
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.fetchAssetBreakdown()
+        
+        await fulfillment(of: [expectation], timeout: 5.0)
+    }
+}

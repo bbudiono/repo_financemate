@@ -34,7 +34,8 @@ struct SplitAllocationData {
 }
 
 /// ViewModel for managing split allocation operations with real-time percentage validation and tax category management
-@MainActor
+// EMERGENCY FIX: Removed to eliminate Swift Concurrency crashes
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
 final class SplitAllocationViewModel: ObservableObject {
 
     // MARK: - Published Properties
@@ -104,7 +105,7 @@ final class SplitAllocationViewModel: ObservableObject {
 
     /// Adds a new split allocation to the specified line item
     /// - Parameter lineItem: The line item to add the split allocation to
-    func addSplitAllocation(to lineItem: LineItem) async {
+    func addSplitAllocation(to lineItem: LineItem) {
         guard validateNewSplitAllocation() else {
             return
         }
@@ -134,7 +135,7 @@ final class SplitAllocationViewModel: ObservableObject {
             // Keep selectedTaxCategory for user convenience
 
             // Refresh split allocations
-            await fetchSplitAllocations(for: lineItem)
+            fetchSplitAllocations(for: lineItem)
 
         } catch {
             errorMessage = "Failed to create split allocation: \(error.localizedDescription)"
@@ -145,7 +146,7 @@ final class SplitAllocationViewModel: ObservableObject {
 
     /// Updates an existing split allocation
     /// - Parameter splitAllocation: The split allocation to update
-    func updateSplitAllocation(_ splitAllocation: SplitAllocation) async {
+    func updateSplitAllocation(_ splitAllocation: SplitAllocation) {
         do {
             isLoading = true
             errorMessage = nil
@@ -174,7 +175,7 @@ final class SplitAllocationViewModel: ObservableObject {
             try context.save()
 
             // Refresh split allocations to reflect changes
-            await fetchSplitAllocations(for: splitAllocation.lineItem)
+            fetchSplitAllocations(for: splitAllocation.lineItem)
 
         } catch {
             errorMessage = "Failed to update split allocation: \(error.localizedDescription)"
@@ -185,7 +186,7 @@ final class SplitAllocationViewModel: ObservableObject {
 
     /// Deletes a split allocation
     /// - Parameter splitAllocation: The split allocation to delete
-    func deleteSplitAllocation(_ splitAllocation: SplitAllocation) async {
+    func deleteSplitAllocation(_ splitAllocation: SplitAllocation) {
         do {
             isLoading = true
             errorMessage = nil
@@ -195,7 +196,7 @@ final class SplitAllocationViewModel: ObservableObject {
             try context.save()
 
             // Refresh split allocations
-            await fetchSplitAllocations(for: lineItem)
+            fetchSplitAllocations(for: lineItem)
 
         } catch {
             errorMessage = "Failed to delete split allocation: \(error.localizedDescription)"
@@ -206,7 +207,7 @@ final class SplitAllocationViewModel: ObservableObject {
 
     /// Fetches all split allocations for a specific line item
     /// - Parameter lineItem: The line item to fetch split allocations for
-    func fetchSplitAllocations(for lineItem: LineItem) async {
+    func fetchSplitAllocations(for lineItem: LineItem) {
         do {
             isLoading = true
             errorMessage = nil
@@ -292,14 +293,9 @@ final class SplitAllocationViewModel: ObservableObject {
     ///   - primaryCategory: The primary tax category
     ///   - secondaryCategory: The secondary tax category
     ///   - lineItem: The line item to apply the split to
-    func applyQuickSplit(
-        _ splitType: QuickSplitType,
-        primaryCategory: String,
-        secondaryCategory: String,
-        to lineItem: LineItem
-    ) async {
+    func applyQuickSplit(_ splitType: QuickSplitType, primaryCategory: String, secondaryCategory: String, for lineItem: LineItem) {
         // Clear existing splits first
-        await clearAllSplits(for: lineItem)
+        clearAllSplits(for: lineItem)
 
         let (primaryPercentage, secondaryPercentage) = getQuickSplitPercentages(splitType)
 
@@ -326,7 +322,7 @@ final class SplitAllocationViewModel: ObservableObject {
             try context.save()
 
             // Refresh split allocations
-            await fetchSplitAllocations(for: lineItem)
+            fetchSplitAllocations(for: lineItem)
 
         } catch {
             errorMessage = "Failed to apply quick split: \(error.localizedDescription)"
@@ -349,7 +345,7 @@ final class SplitAllocationViewModel: ObservableObject {
 
     /// Clears all split allocations for a line item
     /// - Parameter lineItem: The line item to clear splits for
-    func clearAllSplits(for lineItem: LineItem) async {
+    func clearAllSplits(for lineItem: LineItem) {
         do {
             isLoading = true
             errorMessage = nil
@@ -366,7 +362,7 @@ final class SplitAllocationViewModel: ObservableObject {
             try context.save()
 
             // Refresh split allocations
-            await fetchSplitAllocations(for: lineItem)
+            fetchSplitAllocations(for: lineItem)
 
         } catch {
             errorMessage = "Failed to clear splits: \(error.localizedDescription)"

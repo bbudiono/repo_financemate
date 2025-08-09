@@ -29,7 +29,7 @@ import Foundation
  * Last Updated: 2025-07-09
  */
 
-@MainActor
+// EMERGENCY FIX: Removed @MainActor to eliminate Swift Concurrency crashes
 class TransactionSyncService: ObservableObject {
     
     // MARK: - Published Properties
@@ -78,7 +78,7 @@ class TransactionSyncService: ObservableObject {
     
     // MARK: - Core Sync Methods
     
-    func syncAllConnectedAccounts() async throws {
+    func syncAllConnectedAccounts() throws {
         syncStatus = .syncing
         syncProgress = 0.0
         errorMessage = nil
@@ -100,7 +100,7 @@ class TransactionSyncService: ObservableObject {
                     throw SyncError.cancelled
                 }
                 
-                try await syncSpecificAccount(account)
+                try syncSpecificAccount(account)
                 
                 // Update progress
                 let progress = Double(index + 1) / totalAccounts
@@ -117,7 +117,7 @@ class TransactionSyncService: ObservableObject {
         }
     }
     
-    func syncSpecificAccount(_ account: BankAccount, since: Date? = nil) async throws {
+    func syncSpecificAccount() throws {
         guard account.isConnected else {
             throw SyncError.accountNotConnected
         }
@@ -127,13 +127,13 @@ class TransactionSyncService: ObservableObject {
         
         do {
             // Fetch transactions from API
-            let apiTransactions = try await bankAPI.fetchTransactions(for: account, since: since)
+            let apiTransactions = try bankAPI.fetchTransactions(for: account, since: since)
             
             // Validate and process transactions
-            let validatedTransactions = try await validationEngine.validateTransactions(apiTransactions)
+            let validatedTransactions = try validationEngine.validateTransactions(apiTransactions)
             
             // Merge with existing data
-            let newTransactions = try await mergeTransactions(validatedTransactions, for: account)
+            let newTransactions = try mergeTransactions(validatedTransactions, for: account)
             
             // Update counts
             newTransactionCount += newTransactions.count
@@ -161,7 +161,7 @@ class TransactionSyncService: ObservableObject {
     
     // MARK: - Private Helper Methods
     
-    private func mergeTransactions(_ validatedTransactions: [ValidatedTransaction], for account: BankAccount) async throws -> [Transaction] {
+    private func mergeTransactions() throws -> [Transaction] {
         var newTransactions: [Transaction] = []
         
         for validatedTransaction in validatedTransactions {
@@ -256,9 +256,9 @@ class TransactionSyncService: ObservableObject {
 // MARK: - Supporting Classes
 
 class BankAPIService {
-    func fetchTransactions(for account: BankAccount, since: Date? = nil) async throws -> [BankTransaction] {
+    func fetchTransactions() throws -> [BankTransaction] {
         // Simulate API call delay
-        try await Task.sleep(nanoseconds: 200_000_000) // 0.2 second
+        try Task.sleep(nanoseconds: 200_000_000) // 0.2 second
         
         // In a real implementation, this would:
         // 1. Authenticate with Basiq API using account credentials
@@ -307,14 +307,14 @@ class BankAPIService {
 }
 
 class TransactionValidationEngine {
-    func validateTransactions(_ transactions: [BankTransaction]) async throws -> [ValidatedTransaction] {
+    func validateTransactions() throws -> [ValidatedTransaction] {
         var validatedTransactions: [ValidatedTransaction] = []
         
         for transaction in transactions {
             // Validate transaction data
-            if await isValidTransaction(transaction) {
+            if isValidTransaction(transaction) {
                 // Check for duplicates
-                if await !isDuplicate(transaction) {
+                if !isDuplicate(transaction) {
                     let validatedTransaction = ValidatedTransaction(from: transaction)
                     validatedTransactions.append(validatedTransaction)
                 }
@@ -324,7 +324,7 @@ class TransactionValidationEngine {
         return validatedTransactions
     }
     
-    private func isValidTransaction(_ transaction: BankTransaction) async -> Bool {
+    private func isValidTransaction() -> Bool {
         // Validate transaction data integrity
         guard !transaction.id.isEmpty else { return false }
         guard !transaction.description.isEmpty else { return false }
@@ -334,7 +334,7 @@ class TransactionValidationEngine {
         return true
     }
     
-    private func isDuplicate(_ transaction: BankTransaction) async -> Bool {
+    private func isDuplicate() -> Bool {
         // In a real implementation, this would check against existing transactions
         // using a hash-based approach or database lookup
         return false
@@ -453,9 +453,9 @@ extension BankAccount {
 extension TransactionSyncService {
     
     /// Convenience method to sync all accounts with progress tracking
-    func syncAllAccountsWithProgress() async {
+    func syncAllAccountsWithProgress() {
         do {
-            try await syncAllConnectedAccounts()
+            try syncAllConnectedAccounts()
         } catch {
             handleError(error)
         }

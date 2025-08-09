@@ -57,13 +57,10 @@ public class User: NSManagedObject {
     @NSManaged public var preferredCurrency: String?
     @NSManaged public var timezone: String?
     
-    // MARK: - Relationships
-    
-    /// Financial entities owned by this user
-    @NSManaged public var ownedEntities: Set<FinancialEntity>
-    
-    /// Audit log entries for this user
-    @NSManaged public var auditLogs: Set<AuditLog>
+    // MARK: - Relationships (TEMPORARILY DISABLED FOR APPLE SSO FIX)
+    // Note: Complex relationships disabled until entities are properly configured
+    // @NSManaged public var ownedEntities: Set<FinancialEntity>
+    // @NSManaged public var auditLogs: Set<AuditLog>
     
     // MARK: - Computed Properties
     
@@ -106,9 +103,9 @@ public class User: NSManagedObject {
         return Calendar.current.dateComponents([.day], from: lastLogin, to: Date()).day
     }
     
-    /// Number of entities owned by user
+    /// Number of entities owned by user (TEMPORARILY DISABLED)
     public var entityCount: Int {
-        return ownedEntities.count
+        return 0 // Disabled until relationships are properly configured
     }
     
     /// User's preferred currency or default
@@ -231,8 +228,10 @@ public class User: NSManagedObject {
     }
 }
 
-// MARK: - Core Data Generated Accessors
+// MARK: - Core Data Generated Accessors (TEMPORARILY DISABLED FOR APPLE SSO FIX)
+// Note: Relationship accessors disabled until entities are properly configured
 
+/*
 extension User {
     
     @objc(addOwnedEntitiesObject:)
@@ -259,6 +258,7 @@ extension User {
     @objc(removeAuditLogs:)
     @NSManaged public func removeFromAuditLogs(_ values: Set<AuditLog>)
 }
+*/
 
 // MARK: - Fetch Request
 

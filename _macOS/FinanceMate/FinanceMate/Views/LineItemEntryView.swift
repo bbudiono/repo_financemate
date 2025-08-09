@@ -91,7 +91,7 @@ struct LineItemEntryView: View {
         }
       }
       .task {
-        await viewModel.fetchLineItems(for: transaction)
+        viewModel.fetchLineItems(for: transaction)
       }
       .alert("Validation Error", isPresented: $showingValidationError) {
         Button("OK") {}
@@ -191,9 +191,8 @@ struct LineItemEntryView: View {
       }
 
       Button(action: {
-        Task {
-          await viewModel.deleteLineItem(lineItem)
-        }
+        // EMERGENCY FIX: Removed Task block - immediate execution
+        viewModel.deleteLineItem(lineItem)
       }) {
         Image(systemName: "trash")
           .foregroundColor(.red)
@@ -289,9 +288,8 @@ struct LineItemEntryView: View {
 
   private var addButton: some View {
     Button(action: {
-      Task {
-        await addLineItem()
-      }
+      // EMERGENCY FIX: Removed Task block - immediate execution
+        addLineItem()
     }) {
       HStack {
         if viewModel.isLoading {
@@ -432,9 +430,8 @@ struct LineItemEntryView: View {
       }
 
       Button(action: {
-        Task {
-          await clearAllLineItems()
-        }
+        // EMERGENCY FIX: Removed Task block - immediate execution
+        clearAllLineItems()
       }) {
         HStack {
           Image(systemName: "trash")
@@ -493,7 +490,7 @@ struct LineItemEntryView: View {
     }
   }
 
-  private func addLineItem() async {
+  private func addLineItem() {
     guard isFormValid else { return }
 
     guard let amountValue = Double(amount) else {
@@ -517,7 +514,7 @@ struct LineItemEntryView: View {
     viewModel.newLineItem.amount = amountValue
 
     // Add the line item
-    await viewModel.addLineItem(to: transaction)
+    viewModel.addLineItem(to: transaction)
 
     // Check for errors
     if let errorMessage = viewModel.errorMessage {
@@ -531,10 +528,10 @@ struct LineItemEntryView: View {
     amount = ""
   }
 
-  private func clearAllLineItems() async {
+  private func clearAllLineItems() {
     // Delete all line items
     for lineItem in viewModel.lineItems {
-      await viewModel.deleteLineItem(lineItem)
+      viewModel.deleteLineItem(lineItem)
     }
   }
 }

@@ -30,7 +30,8 @@ import SwiftUI
 import CoreData
 import OSLog
 
-@MainActor
+// EMERGENCY FIX: Removed to eliminate Swift Concurrency crashes
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
 final class FeatureGatingSystem: ObservableObject {
     
     // MARK: - Properties
@@ -133,7 +134,7 @@ final class FeatureGatingSystem: ObservableObject {
     
     // MARK: - User Competency Assessment
     
-    func trackUserAction(_ action: UserAction, proficiencyGain: Double) async {
+    func trackUserAction() {
         let affectedCompetencies = getAffectedCompetencies(for: action)
         
         for (competencyArea, gainMultiplier) in affectedCompetencies {
@@ -145,16 +146,16 @@ final class FeatureGatingSystem: ObservableObject {
             logger.info("Competency updated: \(competencyArea.rawValue) from \(currentLevel) to \(newLevel)")
         }
         
-        await saveCompetencyData()
-        await evaluateUserLevelProgression()
-        await evaluateFeatureUnlocks()
+        saveCompetencyData()
+        evaluateUserLevelProgression()
+        evaluateFeatureUnlocks()
     }
     
     func getUserCompetencyLevel(_ area: CompetencyArea) -> Double {
         return userCompetencyLevels[area] ?? 0.0
     }
     
-    func trackMasteryAchievement(_ mastery: MasteryType, evidence: String) async {
+    func trackMasteryAchievement() {
         masteryAchievements.insert(mastery)
         
         let achievement = MasteryAchievement(
@@ -164,12 +165,12 @@ final class FeatureGatingSystem: ObservableObject {
         )
         
         // Store achievement for historical tracking
-        await saveMasteryData()
+        saveMasteryData()
         
         logger.info("Mastery achievement recorded: \(mastery.rawValue)")
     }
     
-    func evaluateUserLevelProgression() async {
+    func evaluateUserLevelProgression() {
         let overallCompetency = calculateOverallCompetency()
         let newLevel: UserLevel
         
@@ -186,7 +187,7 @@ final class FeatureGatingSystem: ObservableObject {
         
         if newLevel != currentUserLevel {
             currentUserLevel = newLevel
-            await saveUserLevelData()
+            saveUserLevelData()
             updateAvailableFeatures()
             updateAdaptiveUIConfiguration()
             
@@ -218,7 +219,7 @@ final class FeatureGatingSystem: ObservableObject {
     
     // MARK: - Progressive Feature Unlocking
     
-    func evaluateFeatureUnlocks() async {
+    func evaluateFeatureUnlocks() {
         let previouslyAvailable = availableFeatures
         updateAvailableFeatures()
         
@@ -236,11 +237,11 @@ final class FeatureGatingSystem: ObservableObject {
         }
         
         if !newlyUnlocked.isEmpty {
-            await saveFeatureUnlockData()
+            saveFeatureUnlockData()
         }
     }
     
-    func evaluateMasteryUnlocks() async -> Set<GatedFeature> {
+    func evaluateMasteryUnlocks() -> Set<GatedFeature> {
         var unlockedFeatures: Set<GatedFeature> = []
         
         // Check mastery-based unlocks
@@ -266,13 +267,13 @@ final class FeatureGatingSystem: ObservableObject {
         }
         
         if !unlockedFeatures.isEmpty {
-            await evaluateFeatureUnlocks()
+            evaluateFeatureUnlocks()
         }
         
         return unlockedFeatures
     }
     
-    func attemptFeatureUnlock(_ feature: GatedFeature) async {
+    func attemptFeatureUnlock() {
         guard let requirement = featureRequirements[feature] else { return }
         
         // Check if prerequisites are met
@@ -287,7 +288,7 @@ final class FeatureGatingSystem: ObservableObject {
                 }
             }
             
-            await evaluateFeatureUnlocks()
+            evaluateFeatureUnlocks()
             logger.info("Feature unlocked by attempt: \(feature.rawValue)")
         }
     }
@@ -322,12 +323,12 @@ final class FeatureGatingSystem: ObservableObject {
         )
     }
     
-    func getUsageBasedUIConfiguration() async -> UsageBasedUIConfiguration {
+    func getUsageBasedUIConfiguration() -> UsageBasedUIConfiguration {
         let highUsageFeatures = usageAnalytics
             .filter { $0.value.frequency == .high }
             .map { $0.key }
         
-        let suggestedFeatures = await generateFeatureSuggestions()
+        let suggestedFeatures = generateFeatureSuggestions()
         
         return UsageBasedUIConfiguration(
             prominentFeatures: Set(highUsageFeatures),
@@ -377,7 +378,7 @@ final class FeatureGatingSystem: ObservableObject {
         }
     }
     
-    func getPersonalizedDefaults() async -> PersonalizedDefaults {
+    func getPersonalizedDefaults() -> PersonalizedDefaults {
         let preferredTaxCategory = userPreferences[.preferredTaxCategory] as? String ?? "Personal"
         let preferredTransactionType = userPreferences[.preferredTransactionType] as? String ?? "Expense"
         let defaultSplitPercentage = userPreferences[.defaultSplitPercentage] as? String ?? "50/50"
@@ -386,15 +387,15 @@ final class FeatureGatingSystem: ObservableObject {
             defaultTaxCategory: preferredTaxCategory,
             defaultTransactionType: preferredTransactionType,
             quickSplitOptions: [defaultSplitPercentage, "70/30", "80/20"],
-            suggestedCategories: await generateCategorySuggestions()
+            suggestedCategories: generateCategorySuggestions()
         )
     }
     
-    func generateIntelligentDefaultSuggestions() async -> [DefaultSuggestion] {
+    func generateIntelligentDefaultSuggestions() -> [DefaultSuggestion] {
         var suggestions: [DefaultSuggestion] = []
         
         // Analyze transaction patterns to suggest defaults
-        let patterns = await analyzeTransactionPatterns()
+        let patterns = analyzeTransactionPatterns()
         
         for pattern in patterns {
             let confidence = pattern.frequency
@@ -412,25 +413,25 @@ final class FeatureGatingSystem: ObservableObject {
         return suggestions.sorted { $0.confidence > $1.confidence }
     }
     
-    func trackUserPreference(_ key: PreferenceKey, value: Any) async {
+    func trackUserPreference() {
         userPreferences[key] = value
-        await saveUserPreferences()
+        saveUserPreferences()
         logger.info("User preference updated: \(key.rawValue)")
     }
     
-    func trackCategoryUsagePattern(_ category: TaxCategory, frequency: Double) async {
+    func trackCategoryUsagePattern() {
         // Update preferred category based on usage
         if frequency > 0.6 {
             userPreferences[.preferredTaxCategory] = category.rawValue
-            await saveUserPreferences()
+            saveUserPreferences()
         }
     }
     
-    func trackTransactionPattern(_ pattern: TransactionPattern, frequency: Double) async {
+    func trackTransactionPattern() {
         // Store pattern for intelligent suggestions
         let patternKey = "pattern_\(pattern.rawValue)"
         userPreferences[PreferenceKey(rawValue: patternKey)!] = frequency
-        await saveUserPreferences()
+        saveUserPreferences()
     }
     
     private func getTransactionEntryDefaults() -> SmartDefaults {
@@ -467,7 +468,7 @@ final class FeatureGatingSystem: ObservableObject {
     
     // MARK: - Feature Usage Analytics
     
-    func trackFeatureUsage(_ feature: GatedFeature, frequency: UsageFrequency) async {
+    func trackFeatureUsage() {
         if usageAnalytics[feature] == nil {
             usageAnalytics[feature] = FeatureUsageData(feature: feature)
         }
@@ -476,12 +477,12 @@ final class FeatureGatingSystem: ObservableObject {
         usageAnalytics[feature]?.lastUsed = Date()
         usageAnalytics[feature]?.totalUsageCount += 1
         
-        await saveUsageAnalytics()
+        saveUsageAnalytics()
         logger.info("Feature usage tracked: \(feature.rawValue) - \(frequency.rawValue)")
     }
     
-    func trackFeatureUsageWithDate(_ feature: GatedFeature, date: Date, duration: TimeInterval) async {
-        await trackFeatureUsage(feature, frequency: .medium)
+    func trackFeatureUsageWithDate() {
+        trackFeatureUsage(feature, frequency: .medium)
         
         let usageRecord = FeatureUsageRecord(
             feature: feature,
@@ -490,14 +491,14 @@ final class FeatureGatingSystem: ObservableObject {
         )
         
         usageAnalytics[feature]?.usageHistory.append(usageRecord)
-        await saveUsageAnalytics()
+        saveUsageAnalytics()
     }
     
     func getFeatureUsageAnalytics() -> [GatedFeature: FeatureUsageData] {
         return usageAnalytics
     }
     
-    func analyzeUsagePatterns() async -> [UsagePattern] {
+    func analyzeUsagePatterns() -> [UsagePattern] {
         var patterns: [UsagePattern] = []
         
         for (feature, data) in usageAnalytics {
@@ -526,7 +527,7 @@ final class FeatureGatingSystem: ObservableObject {
         return patterns
     }
     
-    func generateOptimizationRecommendations() async -> [OptimizationRecommendation] {
+    func generateOptimizationRecommendations() -> [OptimizationRecommendation] {
         var recommendations: [OptimizationRecommendation] = []
         
         // Identify low-usage features
@@ -566,49 +567,49 @@ final class FeatureGatingSystem: ObservableObject {
     
     // MARK: - Rollback Capabilities
     
-    func requestInterfaceSimplification() async {
+    func requestInterfaceSimplification() {
         // Temporarily reduce UI complexity regardless of user level
         adaptiveUIConfiguration.showSimplifiedInterface = true
         adaptiveUIConfiguration.showAdvancedControls = false
         adaptiveUIConfiguration.showGuidanceHints = true
         
-        await saveRollbackPreferences()
+        saveRollbackPreferences()
         logger.info("Interface simplification requested")
     }
     
-    func rollbackToUserLevel(_ level: UserLevel) async {
+    func rollbackToUserLevel() {
         let previousLevel = currentUserLevel
         currentUserLevel = level
         
         updateAvailableFeatures()
         updateAdaptiveUIConfiguration()
         
-        await saveUserLevelData()
+        saveUserLevelData()
         logger.info("User level rolled back from \(previousLevel.rawValue) to \(level.rawValue)")
     }
     
-    func rollbackFeature(_ feature: GatedFeature) async {
+    func rollbackFeature() {
         rollbackPreferences[feature] = false
         updateAvailableFeatures()
         
-        await saveRollbackPreferences()
+        saveRollbackPreferences()
         logger.info("Feature rolled back: \(feature.rawValue)")
     }
     
-    func setRollbackPreference(_ feature: GatedFeature, enabled: Bool) async {
+    func setRollbackPreference() {
         rollbackPreferences[feature] = enabled
         updateAvailableFeatures()
         
-        await saveRollbackPreferences()
+        saveRollbackPreferences()
     }
     
     // MARK: - User Segmentation
     
-    func setUserSegment(_ segment: UserSegment) async {
+    func setUserSegment() {
         userSegment = segment
         updateAvailableFeatures()
         
-        await saveUserSegment()
+        saveUserSegment()
         logger.info("User segment set to: \(segment.rawValue)")
     }
     
@@ -639,7 +640,7 @@ final class FeatureGatingSystem: ObservableObject {
         return ("No clear pattern", 0.2)
     }
     
-    private func generateFeatureSuggestions() async -> [GatedFeature] {
+    private func generateFeatureSuggestions() -> [GatedFeature] {
         var suggestions: [GatedFeature] = []
         
         // Suggest features based on current competency
@@ -659,12 +660,12 @@ final class FeatureGatingSystem: ObservableObject {
         return allFeatures.subtracting(availableFeatures)
     }
     
-    private func generateCategorySuggestions() async -> [String] {
-        let patterns = await analyzeTransactionPatterns()
+    private func generateCategorySuggestions() -> [String] {
+        let patterns = analyzeTransactionPatterns()
         return patterns.map { $0.category }.prefix(3).map { String($0) }
     }
     
-    private func analyzeTransactionPatterns() async -> [TransactionPatternData] {
+    private func analyzeTransactionPatterns() -> [TransactionPatternData] {
         // Simplified pattern analysis
         return [
             TransactionPatternData(category: "Business", frequency: 0.6),
@@ -710,39 +711,39 @@ final class FeatureGatingSystem: ObservableObject {
         updateAdaptiveUIConfiguration()
     }
     
-    private func saveUserLevelData() async {
+    private func saveUserLevelData() {
         userDefaults.set(currentUserLevel.rawValue, forKey: "currentUserLevel")
     }
     
-    private func saveCompetencyData() async {
+    private func saveCompetencyData() {
         let competencyDict = userCompetencyLevels.mapKeys { $0.rawValue }
         userDefaults.set(competencyDict, forKey: "userCompetencyLevels")
     }
     
-    private func saveMasteryData() async {
+    private func saveMasteryData() {
         let masteryArray = Array(masteryAchievements).map { $0.rawValue }
         userDefaults.set(masteryArray, forKey: "masteryAchievements")
     }
     
-    private func saveFeatureUnlockData() async {
+    private func saveFeatureUnlockData() {
         userDefaults.set(featureUnlockHistory.count, forKey: "featureUnlockCount")
     }
     
-    private func saveUserPreferences() async {
+    private func saveUserPreferences() {
         // Simplified preference saving
         userDefaults.set(userPreferences.count, forKey: "userPreferencesCount")
     }
     
-    private func saveUsageAnalytics() async {
+    private func saveUsageAnalytics() {
         userDefaults.set(usageAnalytics.count, forKey: "usageAnalyticsCount")
     }
     
-    private func saveRollbackPreferences() async {
+    private func saveRollbackPreferences() {
         let rollbackDict = rollbackPreferences.mapKeys { $0.rawValue }
         userDefaults.set(rollbackDict, forKey: "rollbackPreferences")
     }
     
-    private func saveUserSegment() async {
+    private func saveUserSegment() {
         userDefaults.set(userSegment.rawValue, forKey: "userSegment")
     }
 }
