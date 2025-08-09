@@ -163,6 +163,11 @@ xcodebuild test -project _macOS/FinanceMate.xcodeproj -scheme FinanceMate -desti
 xcodebuild test -project _macOS/FinanceMate.xcodeproj -scheme FinanceMate -destination 'platform=macOS' -only-testing:FinanceMateUITests
 ```
 
+### Latest Headless Validation (Non-Interactive)
+- Build: PASSED
+- Tests: 126 passed, 0 failed
+- Artifacts: see `_macOS/validation_results_20250810-011719/` and `docs/reports/Test_Run_20250810.md`
+
 ---
 
 ## 📱 Screenshots
