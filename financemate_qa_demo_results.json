@@ -1,0 +1,183 @@
+{
+  "timestamp": "2025-08-08T22:38:44.058052",
+  "test_scenarios": [
+    {
+      "category": "Basic Financial Literacy",
+      "difficulty": "Beginner",
+      "results": [
+        {
+          "question": "What is a budget?",
+          "quality_score": 8.925,
+          "processing_time": 1.5012030601501465,
+          "server": "perplexity-ask",
+          "confidence": 0.95
+        },
+        {
+          "question": "How much should I save each month?",
+          "quality_score": 8.82,
+          "processing_time": 1.5011677742004395,
+          "server": "taskmaster-ai",
+          "confidence": 0.88
+        },
+        {
+          "question": "What is an emergency fund?",
+          "quality_score": 4.425,
+          "processing_time": 1.5005691051483154,
+          "server": "local_knowledge",
+          "confidence": 0.75
+        },
+        {
+          "question": "What's the difference between saving and investing?",
+          "quality_score": 4.725,
+          "processing_time": 1.5009078979492188,
+          "server": "local_knowledge",
+          "confidence": 0.75
+        }
+      ]
+    },
+    {
+      "category": "Personal Finance Management",
+      "difficulty": "Intermediate",
+      "results": [
+        {
+          "question": "How do I calculate my net wealth?",
+          "quality_score": 5.425,
+          "processing_time": 1.5008668899536133,
+          "server": "local_knowledge",
+          "confidence": 0.75
+        },
+        {
+          "question": "What percentage of income should I invest?",
+          "quality_score": 6.025,
+          "processing_time": 1.500579833984375,
+          "server": "local_knowledge",
+          "confidence": 0.75
+        },
+        {
+          "question": "How can I reduce my monthly expenses?",
+          "quality_score": 4.725,
+          "processing_time": 1.5011231899261475,
+          "server": "local_knowledge",
+          "confidence": 0.75
+        },
+        {
+          "question": "Should I pay off debt or invest first?",
+          "quality_score": 5.725,
+          "processing_time": 1.5002479553222656,
+          "server": "local_knowledge",
+          "confidence": 0.75
+        }
+      ]
+    },
+    {
+      "category": "Australian Financial Planning",
+      "difficulty": "Advanced",
+      "results": [
+        {
+          "question": "What are the tax implications of property investment in Australia?",
+          "quality_score": 7.58,
+          "processing_time": 1.5011610984802246,
+          "server": "perplexity-ask",
+          "confidence": 0.92
+        },
+        {
+          "question": "How does salary sacrifice work for superannuation?",
+          "quality_score": 5.725,
+          "processing_time": 1.5011167526245117,
+          "server": "local_knowledge",
+          "confidence": 0.75
+        },
+        {
+          "question": "What's the best strategy for negative gearing?",
+          "quality_score": 5.425,
+          "processing_time": 1.5004491806030273,
+          "server": "local_knowledge",
+          "confidence": 0.75
+        },
+        {
+          "question": "How do I claim work-from-home tax deductions in Australia?",
+          "quality_score": 5.725,
+          "processing_time": 1.5011568069458008,
+          "server": "local_knowledge",
+          "confidence": 0.75
+        }
+      ]
+    },
+    {
+      "category": "FinanceMate Integration",
+      "difficulty": "Application-Specific",
+      "results": [
+        {
+          "question": "How can FinanceMate help me track my spending?",
+          "quality_score": 5.925,
+          "processing_time": 1.5016992092132568,
+          "server": "local_knowledge",
+          "confidence": 0.75
+        },
+        {
+          "question": "What reports can I generate in FinanceMate?",
+          "quality_score": 4.925,
+          "processing_time": 1.5022461414337158,
+          "server": "local_knowledge",
+          "confidence": 0.75
+        },
+        {
+          "question": "How do I categorize transactions effectively?",
+          "quality_score": 4.925,
+          "processing_time": 1.5011169910430908,
+          "server": "local_knowledge",
+          "confidence": 0.75
+        },
+        {
+          "question": "Can FinanceMate help with my investment tracking?",
+          "quality_score": 6.225,
+          "processing_time": 1.5011448860168457,
+          "server": "local_knowledge",
+          "confidence": 0.75
+        }
+      ]
+    },
+    {
+      "category": "Complex Financial Scenarios",
+      "difficulty": "Expert",
+      "results": [
+        {
+          "question": "I earn $120,000, have a $400,000 mortgage, and want to invest $2,000 monthly. What's the best strategy?",
+          "quality_score": 8.365,
+          "processing_time": 1.5008220672607422,
+          "server": "perplexity-ask",
+          "confidence": 0.91
+        },
+        {
+          "question": "How should I structure my finances to buy a second investment property worth $800,000?",
+          "quality_score": 5.725,
+          "processing_time": 1.5011110305786133,
+          "server": "local_knowledge",
+          "confidence": 0.75
+        },
+        {
+          "question": "I'm 35 with $150,000 in super and want to retire at 60. How much should I save?",
+          "quality_score": 5.725,
+          "processing_time": 1.5002810955047607,
+          "server": "local_knowledge",
+          "confidence": 0.75
+        },
+        {
+          "question": "What's the optimal tax strategy for a couple earning $180,000 combined with two investment properties?",
+          "quality_score": 5.025,
+          "processing_time": 1.5011589527130127,
+          "server": "local_knowledge",
+          "confidence": 0.75
+        }
+      ]
+    }
+  ],
+  "performance_metrics": {
+    "total_questions": 20,
+    "average_quality_score": 6.0,
+    "average_processing_time": 1.5,
+    "questions_above_8": 3,
+    "questions_above_9": 0
+  },
+  "integration_status": {}
+}

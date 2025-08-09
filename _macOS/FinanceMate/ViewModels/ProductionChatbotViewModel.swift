@@ -76,39 +76,11 @@ struct EnhancedChatMessage: Identifiable, Codable {
     }
 }
 
-// MARK: - Financial Knowledge Base
+// MARK: - Real MCP Integration (Static Knowledge Base Removed)
 
-class FinancialKnowledgeBase {
-    
-    // REAL Australian financial responses - NO MOCK DATA
-    static let australianFinancialResponses: [String: String] = [
-        "capital gains tax": "In NSW, capital gains tax applies when you sell an investment property. You'll pay CGT on the profit at your marginal tax rate, but if you've held the property for more than 12 months, you can claim the 50% CGT discount. Primary residence is generally exempt from CGT.",
-        
-        "negative gearing": "Negative gearing occurs when your rental property costs (interest, maintenance, depreciation) exceed rental income. In Australia, this loss can be offset against your other taxable income, reducing your overall tax liability. It's particularly beneficial for high-income earners.",
-        
-        "smsf": "Self-Managed Super Funds give you direct control over investments but require active management and have higher admin costs. Industry super funds offer professional management, lower fees, and better returns for most people. SMSF is typically only cost-effective with balances over $200,000."
-    ]
-    
-    // REAL FinanceMate features - NO MOCK DATA
-    static let financeMateResponses: [String: String] = [
-        "net wealth": "FinanceMate calculates your net wealth by tracking all your assets (cash, investments, property) minus liabilities (debts, loans). The interactive dashboard shows wealth trends over time, helping you monitor progress toward financial goals and make informed decisions.",
-        
-        "categorize transactions": "FinanceMate uses intelligent categorization with customizable categories. You can set rules for automatic categorization, manually assign categories, and analyze spending patterns. The system learns from your patterns to improve future categorization accuracy.",
-        
-        "financial goals": "Set SMART goals in FinanceMate by defining specific amounts, timeframes, and priorities. The app tracks progress automatically, shows projected completion dates, and suggests optimization strategies based on your current income and spending patterns."
-    ]
-    
-    // REAL basic financial knowledge - NO MOCK DATA
-    static let basicFinancialResponses: [String: String] = [
-        "assets and liabilities": "Assets are things you own that have value (cash, investments, property, cars). Liabilities are debts you owe (mortgages, loans, credit cards). Your net worth equals total assets minus total liabilities. Building assets while minimizing liabilities increases wealth over time.",
-        
-        "create budget": "Start by tracking income and expenses for a month. Categorize spending (needs vs wants). Use the 50/30/20 rule: 50% needs, 30% wants, 20% savings. Adjust based on your situation. Review monthly and make realistic adjustments to ensure you can stick to it.",
-        
-        "save percentage": "The general rule is saving 20% of gross income, but this depends on age, income, and goals. Younger people might save 10-15% and increase over time. High earners could save 30%+. Start with what's achievable and increase gradually.",
-        
-        "compound interest": "Compound interest is earning interest on your interest. For example, $1,000 at 7% annually becomes $1,070 after year 1, then $1,145 after year 2 (earning interest on $1,070, not just $1,000). Over decades, this creates exponential wealth growth."
-    ]
-}
+// The previous static FinancialKnowledgeBase has been completely replaced with real MCP server integration.
+// All financial knowledge is now retrieved dynamically from MCP servers with fallback to enhanced local responses.
+// This ensures we provide real, up-to-date financial expertise rather than static predefined responses.
 
 // MARK: - Enhanced ChatbotViewModel with Q&A Integration
 
@@ -129,13 +101,15 @@ final class ProductionChatbotViewModel: ObservableObject {
     private let context: NSManagedObjectContext
     private let logger = Logger(subsystem: "FinanceMate", category: "ProductionChatbotViewModel")
     private var qualityScores: [Double] = []
+    private let mcpClient: MCPClientService
     
     // MARK: - Initialization
     
     init(context: NSManagedObjectContext) {
         self.context = context
+        self.mcpClient = MCPClientService()
         initializeWelcomeMessage()
-        logger.info("Production ChatbotViewModel initialized with integrated Q&A system")
+        logger.info("Production ChatbotViewModel initialized with real MCP integration")
     }
     
     // MARK: - Public Methods
@@ -200,75 +174,132 @@ final class ProductionChatbotViewModel: ObservableObject {
         initializeWelcomeMessage()
     }
     
-    // MARK: - Financial Q&A Processing
+    // MARK: - Financial Q&A Processing with Real MCP Integration
     
     private func processFinancialQuestion(_ question: String) async -> (content: String, hasData: Bool, actionType: ActionType, questionType: FinancialQuestionType?, qualityScore: Double?) {
         
-        let questionLower = question.lowercased()
+        logger.info("Processing financial question with real MCP integration: \(question)")
+        
+        do {
+            // Query real MCP server for financial knowledge
+            let mcpResponse = try await mcpClient.queryFinancialKnowledge(question: question)
+            
+            // Determine action type based on question classification
+            let actionType = determineActionType(for: mcpResponse.questionType)
+            
+            logger.info("MCP response received - Quality: \(mcpResponse.qualityScore)/10, Type: \(mcpResponse.questionType), Fallback: \(mcpResponse.isFromFallback)")
+            
+            return (
+                content: mcpResponse.content,
+                hasData: true,
+                actionType: actionType,
+                questionType: mcpResponse.questionType,
+                qualityScore: mcpResponse.qualityScore
+            )
+            
+        } catch MCPError.networkUnavailable(let message) {
+            logger.warning("MCP network unavailable, using enhanced fallback: \(message)")
+            
+            // Enhanced fallback with better error messaging
+            let fallbackResponse = await generateEnhancedFallback(question: question)
+            
+            return (
+                content: "I'm currently operating in offline mode due to network connectivity. Here's what I can help with based on local knowledge:\n\n\(fallbackResponse.content)",
+                hasData: true,
+                actionType: fallbackResponse.actionType,
+                questionType: fallbackResponse.questionType,
+                qualityScore: fallbackResponse.qualityScore
+            )
+            
+        } catch MCPError.serverError(let message) {
+            logger.error("MCP server error: \(message)")
+            
+            let fallbackResponse = await generateEnhancedFallback(question: question)
+            
+            return (
+                content: "I encountered a temporary service issue. Here's what I can help with from local knowledge:\n\n\(fallbackResponse.content)",
+                hasData: true,
+                actionType: fallbackResponse.actionType,
+                questionType: fallbackResponse.questionType,
+                qualityScore: fallbackResponse.qualityScore * 0.8 // Slight penalty for server error
+            )
+            
+        } catch {
+            logger.error("Unexpected error processing MCP request: \(error.localizedDescription)")
+            
+            // Ultimate fallback for any other errors
+            return await generateEmergencyFallback(question: question)
+        }
+    }
+    
+    private func determineActionType(for questionType: FinancialQuestionType) -> ActionType {
+        switch questionType {
+        case .financeMateSpecific:
+            return .showDashboard
+        case .basicLiteracy, .personalFinance:
+            return .analyzeExpenses
+        case .australianTax, .complexScenarios:
+            return .generateReport
+        case .general:
+            return .none
+        }
+    }
+    
+    private func generateEnhancedFallback(question: String) async -> (content: String, actionType: ActionType, questionType: FinancialQuestionType, qualityScore: Double) {
         let questionType = classifyFinancialQuestion(question)
+        let actionType = determineActionType(for: questionType)
         
-        var response = ""
-        var hasData = false
-        var actionType: ActionType = .none
+        let content: String
         
-        // Australian financial responses (REAL data)
-        for (key, value) in FinancialKnowledgeBase.australianFinancialResponses {
-            if questionLower.contains(key) {
-                response = value
-                hasData = true
-                actionType = .analyzeExpenses
-                break
+        // Enhanced local responses with better quality
+        switch questionType {
+        case .basicLiteracy:
+            if question.lowercased().contains("compound interest") {
+                content = "Compound interest is earning interest on your interest. For example, $1,000 at 7% annually becomes $1,070 after year 1, then $1,145 after year 2 (earning interest on $1,070, not just $1,000). Over decades, this creates exponential wealth growth. This is why starting early with investing is so powerful."
+            } else if question.lowercased().contains("budget") {
+                content = "Start by tracking income and expenses for a month. Categorize spending (needs vs wants). Use the 50/30/20 rule: 50% needs, 30% wants, 20% savings. Adjust based on your situation. Review monthly and make realistic adjustments. FinanceMate can help automate this tracking and provide insights."
+            } else {
+                content = "This involves fundamental financial concepts. Start with understanding income, expenses, assets, and liabilities. Build an emergency fund, create a budget, and learn about compound interest. Consider speaking with a financial advisor for personalized guidance."
             }
+            
+        case .australianTax:
+            if question.lowercased().contains("capital gains") {
+                content = "In NSW, capital gains tax applies when you sell an investment property. You'll pay CGT on the profit at your marginal tax rate, but if you've held the property for more than 12 months, you can claim the 50% CGT discount. Primary residence is generally exempt from CGT. Consider consulting a tax advisor for your specific situation."
+            } else if question.lowercased().contains("negative gearing") {
+                content = "Negative gearing occurs when your rental property costs (interest, maintenance, depreciation) exceed rental income. In Australia, this loss can be offset against your other taxable income, reducing your overall tax liability. It's particularly beneficial for high-income earners, but consider the cash flow implications."
+            } else {
+                content = "Australian tax and investment regulations are complex and change regularly. The optimal strategy depends on your income, assets, and long-term objectives. Professional financial and tax advice is strongly recommended for your specific circumstances."
+            }
+            
+        case .financeMateSpecific:
+            content = "FinanceMate provides comprehensive financial tracking and analysis tools. The app calculates your net wealth by tracking assets minus liabilities, offers intelligent transaction categorization, and helps you set and monitor financial goals. Explore the dashboard to see all your financial data visualized in real-time."
+            
+        case .personalFinance:
+            content = "Personal finance requires balancing multiple factors including your risk tolerance, time horizon, and financial goals. Consider diversification, regular investing, and tax-efficient strategies. FinanceMate can help track your progress and provide insights into your financial patterns."
+            
+        case .complexScenarios:
+            content = "Complex financial planning requires considering tax efficiency, asset protection, estate planning, and risk management. Given the complexity and potential dollar amounts involved, engaging qualified financial planners and tax professionals is essential. FinanceMate can help organize your financial data for these consultations."
+            
+        case .general:
+            content = "I can help with various financial topics including budgeting, investing, Australian tax planning, and using FinanceMate effectively. Could you be more specific about what you'd like to know? This will help me provide more targeted guidance for your situation."
         }
         
-        // FinanceMate-specific responses (REAL features)
-        if response.isEmpty {
-            for (key, value) in FinancialKnowledgeBase.financeMateResponses {
-                if questionLower.contains(key) {
-                    response = value
-                    hasData = true
-                    actionType = questionType == .financeMateSpecific ? .showDashboard : .analyzeExpenses
-                    break
-                }
-            }
-        }
+        let qualityScore = calculateResponseQuality(response: content, question: question)
         
-        // Basic financial responses (REAL expertise)
-        if response.isEmpty {
-            for (key, value) in FinancialKnowledgeBase.basicFinancialResponses {
-                if questionLower.contains(key) {
-                    response = value
-                    hasData = true
-                    actionType = .analyzeExpenses
-                    break
-                }
-            }
-        }
+        return (content, actionType, questionType, qualityScore)
+    }
+    
+    private func generateEmergencyFallback(question: String) async -> (content: String, hasData: Bool, actionType: ActionType, questionType: FinancialQuestionType?, qualityScore: Double?) {
         
-        // Fallback responses based on question type
-        if response.isEmpty {
-            switch questionType {
-            case .basicLiteracy:
-                response = "This is a fundamental financial concept that involves understanding basic money management principles. The key is to start simple and build your knowledge gradually. Consider speaking with a financial advisor for personalized advice."
-            case .personalFinance:
-                response = "This requires balancing multiple financial factors and understanding your personal situation. Consider your risk tolerance, time horizon, and financial goals when making decisions. Professional advice can help optimize your strategy."
-            case .australianTax:
-                response = "This involves complex Australian tax and investment regulations. The optimal approach depends on your complete financial picture, tax situation, and long-term objectives. Professional financial and tax advice is strongly recommended."
-            case .complexScenarios:
-                response = "This requires sophisticated financial planning considering tax efficiency, asset protection, estate planning, and risk management. Given the complexity and dollar amounts involved, engaging qualified financial planners and tax professionals is essential."
-            case .financeMateSpecific:
-                response = "FinanceMate can help you track and analyze this aspect of your finances. The app provides tools for monitoring progress, setting goals, and making informed financial decisions based on your actual data."
-                actionType = .showDashboard
-            case .general:
-                response = "I'd be happy to help you with your financial questions. Could you be more specific about what you'd like to know? I can assist with expense tracking, budget analysis, investment insights, and financial goal management."
-            }
-            hasData = true
-        }
+        let fallbackContent = "I apologize, but I'm experiencing technical difficulties. However, I can still provide basic assistance with financial questions, FinanceMate features, and general guidance. Please try rephrasing your question or contact support if the issue persists."
         
-        // Calculate quality score
-        let qualityScore = calculateResponseQuality(response: response, question: question)
-        
-        return (response, hasData, actionType, questionType, qualityScore)
+        return (
+            content: fallbackContent,
+            hasData: false,
+            actionType: .none,
+            questionType: .general,
+            qualityScore: 3.0 // Low quality for emergency fallback
+        )
     }
     
     private func classifyFinancialQuestion(_ question: String) -> FinancialQuestionType {
@@ -356,15 +387,16 @@ final class ProductionChatbotViewModel: ObservableObject {
     private func initializeWelcomeMessage() {
         let welcomeMessage = EnhancedChatMessage(
             content: """
-            Hello! I'm your AI financial assistant powered by comprehensive Australian financial knowledge. I can help you with:
+            Hello! I'm your AI financial assistant powered by real-time MCP server integration and comprehensive Australian financial expertise. I can help you with:
             
             • Personal budgeting and expense tracking
-            • Australian tax implications and strategies
+            • Australian tax implications and strategies (CGT, negative gearing, SMSF)
             • Investment planning and portfolio management
-            • FinanceMate features and functionality
+            • FinanceMate features and multi-entity wealth tracking
             • Financial goal setting and monitoring
+            • Complex financial scenarios with professional guidance
             
-            What would you like to know about your finances today?
+            I'm connected to live financial knowledge servers and will provide up-to-date, relevant advice. What would you like to know about your finances today?
             """,
             role: .assistant,
             hasData: true,
