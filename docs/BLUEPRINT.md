@@ -6,6 +6,8 @@
 **Current Phase:** Core Financial Management ✅
 **Next Phase:** Secure Data Aggregation, Multi-Entity & Line Item Splitting Foundations 🎯
 
+> Validation Snapshot (2025-08-10): Build green; headless unit tests passing (126/126). MCP endpoint currently returns 404 to POST; application uses local fallback responses until server responds 2xx.
+
 ---
 
 ## 🎯 EXECUTIVE SUMMARY
