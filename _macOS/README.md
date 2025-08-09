@@ -199,10 +199,10 @@ The AI assistant includes comprehensive Q&A scenarios tested for Australian fina
 ## 📚 DOCUMENTATION
 
 ### **Technical Documentation**
-- **[TASKS.md](docs/TASKS.md)**: Current project status and task tracking
-- **[CLAUDE.md](CLAUDE.md)**: Comprehensive AI development guide
-- **[ARCHITECTURE.md](docs/ARCHITECTURE.md)**: System architecture and design patterns
-- **[BUILDING.md](docs/BUILDING.md)**: Build instructions and deployment guide
+- **[TASKS.md](../docs/TASKS.md)**: Current project status and task tracking
+- **[CLAUDE.md](../CLAUDE.md)**: Comprehensive AI development guide
+- **[ARCHITECTURE.md](../docs/ARCHITECTURE.md)**: System architecture and design patterns
+- **[BUILDING.md](../docs/BUILDING.md)**: Build instructions and deployment guide
 
 ### **User Documentation**
 - **Financial Assistant**: Comprehensive Q&A scenarios with Australian context
