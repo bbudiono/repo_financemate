@@ -1,0 +1,26 @@
+{
+  "timestamp": "2025-08-09T00:20:45Z",
+  "commit_hash": "edc606ce58e32c43bd6e323aca3549418f6ea47a",
+  "security_scans": {
+    "semgrep": {
+      "status": "pending"
+    },
+    "secret_detection": {
+      "status": "pending"
+    },
+    "dependency_scan": {
+      "status": "PASSED"
+    },
+    "hardcoded_credentials": {
+      "status": "PASSED"
+    },
+    "agent_validation": {
+      "status": "REQUIRES_AGENT_REVIEW",
+      "message": "Manual security-analyzer and code-reviewer validation required"
+    }
+  },
+  "validation_result": "FAILED",
+  "issues_found": [],
+  "recommendations": [],
+  "summary": "Security validation failed - commit blocked"
+}

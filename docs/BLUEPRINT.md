@@ -1,4 +1,5 @@
 # FinanceMate - Wealth Management Platform Specification
+
 **Version:** 4.0.0
 **Last Updated:** 2025-07-06
 **Status:** Inception & Design (Refined) - Line Item Splitting Core Feature
@@ -10,17 +11,44 @@
 ## 🎯 EXECUTIVE SUMMARY
 
 ### Project Vision
+
 To be the central command center for personal and family wealth, empowering users to aggregate all their financial data automatically, gain deep insights from line-item level details, **proportionally allocate expenses across multiple tax categories**, manage complex financial entities, and make informed investment and life decisions. The platform will be collaborative, allowing for secure, permission-based access for family members and financial professionals. Multi-currency support with tax rules and financial rules specific to region.
 
-### **Requirements (MANDATORY) - DO NOT DELETE**
-> **Verify builds and ensure SSO is functional**
+## **Requirements (MANDATORY) - DO NOT DELETE or EDIT THIS SECTION / CUSTOMER REQUIREMENTS / SPECIFIC USER REQUIREMENTS**
+
+- TDD, atomic processes are required **MANDATORY**
+- Headless, uninterrupted testing required **MANDATORY**
+- EVERYTHING SHOULD BE DONE PROGRAMMATICALLY / ALL CODING TASKS DO NOT REQUIRE MANUAL INPUT FROM THE USER - THIS IS A MUST **MANDATORY**
+- ENSURE SSO IS WORKING AS A MATTER OF HIGHEST PRIORITY - REFER TO EXISTING WORKING XCODE EXAMPLE**MANDATORY**
+- ENSURE SUPPORT FOR THE FOLLOWING APIs:
+  - ANZ BANK
+  - NAB BANK
+- OBFUSCATE KEYS, SECRETS, ETC, WHEN PUSHING TO GITHUB, LEAVE THEM IN LOCALLY - BUT FUCKING REMOVE THEM FROM GITHUB REPOS **MANDATORY**
+- DEVELOP A STAR SCHEMA RELATIONAL MODEL THAT UNDERSTANDS HOW ALL THE TABLES LINK ALL THE DATA TABLES **MANDATORY**
+- TEST EVERYTHING 3-5 TIMES MINIMUM! TEST EVERYTHING! **MANDATORY**
+- ENSURE THAT THE CHATBOT IS TESTED WITH COMPLEX QUERIES AND ENSURE THAT IT RESPONDS IN NATURAL LANGUAGE AS A 'COORDINATOR' OR 'LEAD AGENT' **MANDATORY**
+- No Mock Data: Only functional, real data sources allowed **MANDATORY**
+- ENSURE ALL PRE-REQUISITES/REQUIREMEMTS/DEPENDENCIES ARE DOCUMENTED **MANDATORY**
+- Fully Functional Frontier Model Capable: Claude Sonnet 4, Gemini 2.5 Pro, GPT-4.1, O3, O3-Pro, O1 **MANDATORY**
+- Context Aware Chatbot: Access dashboard data, use APIS AND MCP Servers for data manipulation **MANDATORY**
+
+**Verify builds and ensure SSO is functional**
+
+- Ensure you build navigation options in the UI/UX e.g. Sign out, etc **MANDATORY**
+
 1) Financial
    - Personal Finance Tracker
    - Review Income & Expenses
    - Link to Bank/Credit Card Providers
-   - Pull expenses, invoices, receipts, line items from gmail, outlook, etc. (HIGHEST PRIORITY).
-     - Every Line item within a receipt, invoice, docket, etc, should be captured as a single entry in expense table with `tax categories`
+   - Pull expenses, invoices, receipts, line items from gmail, outlook, etc. (HIGHEST PRIORITY). **MANDATORY**
+     - Every Line item within a receipt, invoice, docket, etc, should be captured as a single entry in expense table with `tax categories` **MANDATORY**
+     - Use `bernhardbudiono@gmail.com` as the test account / Ensure this profile is setup for testing **MANDATORY**
+     - Ensure you can bring in transactions, invoices, receipts and dockets for `bernhardbudiono@gmail.com` and ensure they are validated and double checked with as much information as possible retrieved **MANDATORY**
 2) Investments
+   1) Property
+   2) Shares
+   3) Superannuation
+   4) Crypto
 3) Reporting
 4) Tax / Auditing
 5) AI Powered Co-Pilot / MLACS
@@ -28,9 +56,13 @@ To be the central command center for personal and family wealth, empowering user
    - Example queries:
      - "Please provide a summary expense report for last financial year"
      - "Can you provide the same report if we exclude costs/expenses that are related to our property investmnets?"
+6) - **SSO REQUIRED**: Functional Apple and Google SSO **THIS IS FUCKING MANDATORY**
+     - REFER TO THIS TO UNDERSTAND THE PATTERNS FOR A SUCCESSFUL SSO IMPLEMENTATION '/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/_ExampleCode/XcodeFiles/Example SSO Application'
 
 ### Current Status: ✅ PHASE 1 COMPLETE
+
 FinanceMate has achieved **Production Release Candidate 1.0.0** status for Phase 1 (Core Financial Management) with:
+
 - ✅ **Complete Financial Management**: Dashboard, transactions, settings
 - ✅ **MVVM Architecture**: Professional-grade with 100% test coverage
 - ✅ **Liquid Glass / Glassmorphism UI**: Modern Apple-style design with accessibility / Liquid Glass UI from Apple WWDC 2025
@@ -38,12 +70,14 @@ FinanceMate has achieved **Production Release Candidate 1.0.0** status for Phase
 - ✅ **Comprehensive Testing**: 75+ test cases
 
 ### Core User Journeys (Enhanced Vision)
+
 1. **Aggregation:** User securely links all bank accounts, credit cards, investment portfolios (Shares, Crypto), and loans
 2. **Categorization & Splitting:** The platform automatically ingests transactions. The user (or a collaborator) reviews and categorizes expenses. For any transaction, they can drill down to its line items and **split the cost of each item by percentage across multiple tax categories (e.g., 70% Business, 30% Personal)**
 3. **Analysis & Planning:** The user reviews dashboards covering spending, net wealth, and progress towards financial goals, with accurate tax category allocations
 4. **Reporting & Export:** The user (or their accountant) generates highly accurate reports for tax purposes, net wealth statements, or expense summaries, built from the precise allocated splits
 
 ### Development Phases
+
 - ✅ **Phase 1**: Core Financial Management (COMPLETE)
 - 🎯 **Phase 2**: Secure Data Aggregation, Transaction Management, Multi-Entity & **Line Item Splitting Foundations**
 - 📊 **Phase 3**: Advanced OCR, Investment Tracking (Shares/Crypto) & Collaborative Workspaces
@@ -57,6 +91,7 @@ FinanceMate has achieved **Production Release Candidate 1.0.0** status for Phase
 This section captures the core feature set with tracking for implementation status.
 
 ### Phase 1 Requirements (✅ COMPLETE)
+
 - **Requirement ID:** `UR-001`
   - **Requirement:** Create native macOS application with modern SwiftUI interface
   - **Status:** `Complete`
@@ -78,6 +113,7 @@ This section captures the core feature set with tracking for implementation stat
   - **Evidence:** Multi-currency support with en_AU/AUD compliance
 
 ### Phase 2 Requirements (🎯 NEXT - Multi-Entity Architecture)
+
 - **Requirement ID:** `UR-109` **[CRITICAL FEATURE - COMPLETE]**
   - **Requirement:** For any transaction line item, allow the user to split its cost by percentage across multiple user-defined tax categories (e.g., "Work Use", "Personal Use")
   - **Status:** `✅ IMPLEMENTED`
@@ -159,9 +195,10 @@ This section captures the core feature set with tracking for implementation stat
     - Role hierarchy with numeric permission levels
 
 ### Phase 3 Requirements ✅ P4 FEATURES IMPLEMENTED (COMPLETE)
+
 - **Requirement ID:** `UR-104`
   - **Requirement:** Scan receipts/invoices and extract line-item details (item description, quantity, price), associating them with a parent transaction
-  - **Status:** `✅ IMPLEMENTED` 
+  - **Status:** `✅ IMPLEMENTED`
   - **Implementation Date:** 2025-07-08
   - **Components Delivered:**
     - **VisionOCREngine.swift**: Apple Vision Framework integration (400+ LoC, 94% complexity)
@@ -200,7 +237,7 @@ This section captures the core feature set with tracking for implementation stat
 
 - **Requirement ID:** `UR-105`
   - **Requirement:** Track investment portfolios, including shares (ASX/NASDAQ) and cryptocurrencies, by integrating with broker/exchange APIs (e.g., Stake, CommSec, Binance)
-  - **Status:** `✅ IMPLEMENTED` 
+  - **Status:** `✅ IMPLEMENTED`
   - **Implementation Date:** 2025-07-08
   - **Components Delivered:**
     - **PortfolioManager.swift**: Investment portfolio tracking engine (552+ LoC, 90% complexity)
@@ -268,6 +305,7 @@ This section captures the core feature set with tracking for implementation stat
        - Professional advisor integration
 
 ### Phase 4 Requirements
+
 - **Requirement ID:** `UR-106`
   - **Requirement:** Generate a "Net Wealth" report by consolidating all linked assets and liabilities
   - **Status:** `Phase 1 Complete - Core Data Extension` ✅
@@ -281,6 +319,7 @@ This section captures the core feature set with tracking for implementation stat
   - **Dependencies:** CoreLogic partnership, property data model
 
 ### Phase 5 Requirements
+
 - **Requirement ID:** `UR-108`
   - **Requirement:** Create tax-specific categories and generate summary reports groupable by financial entity
   - **Status:** `Pending`
@@ -291,16 +330,19 @@ This section captures the core feature set with tracking for implementation stat
 ## 1. PROJECT OVERVIEW
 
 ### 1.1. Project Name
+
 **FinanceMate** - Wealth Management Platform with Advanced Tax Allocation
 
 ### 1.2. Target Audience & Personas
 
 #### Current Users (Phase 1) ✅
+
 - **Individual Finance Tracker**
   - **Goals:** Track personal expenses, monitor spending, maintain budgets
   - **Key Needs:** Simple transaction management, clear financial overview
 
 #### Enhanced Future Personas (Phase 2+)
+
 - **Persona 1: The Household CEO (Primary User)**
   - **Goals:** Single source of truth for all family finances, wants to **flawlessly allocate shared expenses for tax optimization**, plan for large purchases (real estate), and track investment performance
   - **Key Needs:** Automated data aggregation, **line-item splitting with percentage allocation**, multi-entity support, net wealth tracking. Database should include source data, urls, attachments, links, etc.
@@ -321,7 +363,9 @@ This section captures the core feature set with tracking for implementation stat
 ## 2. TECHNICAL ARCHITECTURE
 
 ### 2.1. Current Architecture (Phase 1) ✅
+
 **Local-First macOS Application**
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                    FinanceMate macOS App                     │
@@ -345,7 +389,9 @@ This section captures the core feature set with tracking for implementation stat
 ```
 
 ### 2.2. Target Architecture (Phase 2+): Client-Server Model
+
 **Multi-Platform with Secure Cloud Backend and Line Item Processing**
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                         CLIENTS                              │
@@ -377,6 +423,7 @@ This section captures the core feature set with tracking for implementation stat
 ### 2.3. Technology Stack Evolution
 
 #### Current Stack (Phase 1) ✅
+
 - **Platform**: Native macOS application
 - **UI Framework**: SwiftUI with glassmorphism design
 - **Architecture**: MVVM (Model-View-ViewModel)
@@ -385,15 +432,16 @@ This section captures the core feature set with tracking for implementation stat
 - **Build System**: Xcode 15.0+
 
 #### Target Stack (Phase 2+)
-- **Frontend Clients**: 
+
+- **Frontend Clients**:
   - Native macOS (SwiftUI) - Enhanced with splitting UI
   - Native iOS (SwiftUI) - New with touch-optimized splitting
   - Web (React/Vue) - Future with responsive splitting interface
-- **Backend**: 
+- **Backend**:
   - Go/Python for high-performance financial processing
   - GraphQL API for flexible split queries
   - Specialized splitting calculation engine
-- **Database**: 
+- **Database**:
   - PostgreSQL (primary - optimized for split calculations)
   - Redis (caching split templates and frequent queries)
   - S3 (document storage with OCR metadata)
@@ -418,6 +466,7 @@ This section captures the core feature set with tracking for implementation stat
 | **documents** | `id`, `type`, `s3_url`, `transaction_id` | → transactions | Receipts, invoices |
 
 #### Key Data Integrity Rules
+
 - **line_item_splits.percentage**: Must sum to 100.00 for each line_item_id
 - **tax_categories**: Unique within entity scope
 - **split_templates**: Reusable across transactions within entity
@@ -430,6 +479,7 @@ This section captures the core feature set with tracking for implementation stat
 ### 3.1. Phase 1: Core Financial Management ✅ COMPLETE
 
 #### Implemented Features
+
 - **Dashboard Analytics**
   - Real-time balance tracking
   - Income/expense summaries
@@ -452,12 +502,14 @@ This section captures the core feature set with tracking for implementation stat
 ### 3.2. Phase 2: Data Aggregation, Multi-Entity & **Line Item Splitting** 🎯 NEXT
 
 #### Secure User Onboarding
+
 - Enhanced authentication with MFA
 - Terms of service and privacy policy
 - Guided setup wizard
 - Entity creation flow with default tax categories
 
 #### Data Aggregation
+
 - **Bank Connection Flow**
   - Institution selection UI
   - OAuth consent process
@@ -472,6 +524,7 @@ This section captures the core feature set with tracking for implementation stat
   - Split transaction support
 
 #### **Line Item Splitting System [CORE FEATURE]**
+
 - **Tax Category Management**
   - Entity-specific category creation
   - Color-coded categorization
@@ -492,6 +545,7 @@ This section captures the core feature set with tracking for implementation stat
   - **Template Sharing**: Share templates within entity (family/business)
 
 #### Entity Management
+
 - **Entity Types**
   - Personal (default with Personal/Business categories)
   - Business (with detailed tax categories)
@@ -508,6 +562,7 @@ This section captures the core feature set with tracking for implementation stat
 ### 3.3. Phase 3: Advanced OCR & Investment Tracking
 
 #### Document Processing with AI Split Suggestions
+
 - **Receipt/Invoice OCR**
   - Drag-and-drop upload
   - Mobile app scanning
@@ -523,6 +578,7 @@ This section captures the core feature set with tracking for implementation stat
   - **One-Click Apply**: Accept AI suggestions with single tap
 
 #### Investment Portfolio
+
 - **Broker Integrations**
   - CommSec (ASX)
   - Stake (US Markets)
@@ -536,6 +592,7 @@ This section captures the core feature set with tracking for implementation stat
   - Tax reporting with split-based calculations
 
 #### Collaborative Workspaces
+
 - **Access Management**
   - Email-based invitations
   - Role assignment with split permissions
@@ -545,6 +602,7 @@ This section captures the core feature set with tracking for implementation stat
 ### 3.4. Phase 4: Wealth Management & Advanced Reporting
 
 #### Net Wealth Dashboard
+
 - **Comprehensive View with Split Analytics**
   - Total assets vs liabilities by entity
   - Historical wealth progression
@@ -552,6 +610,7 @@ This section captures the core feature set with tracking for implementation stat
   - Currency consolidation
 
 #### Enhanced Reporting Engine **[BUILT ON SPLITS]**
+
 - **Tax-Optimized Reports**
   - **Split-Based Tax Summary**: Aggregate all splits by tax category
   - **Entity Profit/Loss**: Accurate P&L based on precise allocations
@@ -565,6 +624,7 @@ This section captures the core feature set with tracking for implementation stat
   - **Real-Time Updates**: Reports update as splits are modified
 
 #### Financial Goals with Split Awareness
+
 - **Goal Types**
   - Property purchase (with entity allocation)
   - Retirement planning (with tax efficiency)
@@ -574,12 +634,14 @@ This section captures the core feature set with tracking for implementation stat
 ### 3.5. Phase 5: Advanced Analytics & Predictive Intelligence
 
 #### Predictive Analytics with Split Intelligence
+
 - **Split Pattern Analysis**: Identify inconsistent allocations
 - **Tax Optimization Recommendations**: Suggest better split strategies
 - **Cash Flow Forecasting**: Entity-specific projections
 - **Investment Allocation Advice**: Optimal entity placement for assets
 
 #### Automated Insights
+
 - **Split Anomaly Detection**: Flag unusual allocation patterns
 - **Compliance Monitoring**: Alert for potential tax issues
 - **Budget Recommendations**: Entity-specific budget suggestions
@@ -590,9 +652,11 @@ This section captures the core feature set with tracking for implementation stat
 ## 4. DEVELOPMENT ROADMAP
 
 ### 4.1. Phase 1: Core Platform ✅ COMPLETE
+
 **Timeline**: Completed
 **Status**: Production Ready (1.0.0-RC1)
 **Deliverables**:
+
 - ✅ macOS application
 - ✅ Transaction management
 - ✅ Dashboard analytics
@@ -600,9 +664,11 @@ This section captures the core feature set with tracking for implementation stat
 - ✅ Production pipeline
 
 ### 4.2. Phase 2: Data Aggregation, Multi-Entity & Line Item Splitting (4-5 months)
+
 **Timeline**: Q3-Q4 2025
 **Priority**: **CRITICAL - Core Differentiator**
 **Epics**:
+
 - [ ] **Split Engine Development** (Month 1-2)
   - Database schema implementation
   - Split calculation engine
@@ -620,6 +686,7 @@ This section captures the core feature set with tracking for implementation stat
 - [ ] Enhanced macOS client (Month 4-5)
 
 **Key Milestones**:
+
 - Month 1: Split engine core development
 - Month 2: UI prototype and testing
 - Month 3: Bank integration and entity system
@@ -627,8 +694,10 @@ This section captures the core feature set with tracking for implementation stat
 - Month 5: Production deployment and user onboarding
 
 ### 4.3. Phase 3: OCR & Investments (3-4 months)
+
 **Timeline**: Q1 2026
 **Epics**:
+
 - [ ] OCR service with AI split suggestions
 - [ ] Document storage system
 - [ ] Investment API integrations with entity allocation
@@ -637,8 +706,10 @@ This section captures the core feature set with tracking for implementation stat
 - [ ] Collaboration features
 
 ### 4.4. Phase 4: Wealth & Advanced Reporting (2-3 months)
+
 **Timeline**: Q2 2026
 **Epics**:
+
 - [ ] Split-based reporting engine
 - [ ] Advanced tax optimization tools
 - [ ] CoreLogic integration
@@ -646,8 +717,10 @@ This section captures the core feature set with tracking for implementation stat
 - [ ] Web app MVP
 
 ### 4.5. Phase 5: AI & Predictive Analytics (Ongoing)
+
 **Timeline**: Q3 2026+
 **Epics**:
+
 - [ ] ML-powered split optimization
 - [ ] Predictive tax planning
 - [ ] Automated compliance monitoring
@@ -658,6 +731,7 @@ This section captures the core feature set with tracking for implementation stat
 ## 5. TESTING & QUALITY ASSURANCE
 
 ### 5.1. Current Test Coverage (Phase 1) ✅
+
 - **Unit Tests**: 45+ test cases (>90% coverage)
 - **UI Tests**: 30+ test cases
 - **Integration Tests**: Core Data validation
@@ -667,6 +741,7 @@ This section captures the core feature set with tracking for implementation stat
 ### 5.2. Enhanced Testing Strategy (Phase 2+ with Splitting)
 
 #### Split-Specific Test Categories
+
 - **Split Calculation Tests**: Percentage validation, rounding precision
 - **Template Tests**: Creation, application, modification workflows
 - **Bulk Operation Tests**: Mass template application, split updates
@@ -674,12 +749,14 @@ This section captures the core feature set with tracking for implementation stat
 - **Data Integrity Tests**: Database constraints, audit trail verification
 
 #### Performance Testing for Splits
+
 - **Split Query Performance**: <50ms for split calculations
 - **Template Application**: <100ms for bulk template application
 - **Report Generation**: <2s for complex split-based reports
 - **UI Responsiveness**: 60fps during split interface interactions
 
 ### 5.3. Quality Metrics (Enhanced)
+
 - Code coverage: >95% (including split engine)
 - Split calculation accuracy: 100% (to 2 decimal places)
 - API response time: <200ms (p95)
@@ -692,6 +769,7 @@ This section captures the core feature set with tracking for implementation stat
 ## 6. SECURITY & COMPLIANCE
 
 ### 6.1. Authentication & Authorization (Enhanced for Splits)
+
 - **Multi-Factor Authentication**: Mandatory for all accounts
 - **OAuth 2.0**: Industry standard for third-party integrations
 - **JWT Tokens**: Short-lived access tokens with refresh
@@ -699,6 +777,7 @@ This section captures the core feature set with tracking for implementation stat
 - **Split Permissions**: Fine-grained control over who can modify allocations
 
 ### 6.2. Data Protection (Split-Aware)
+
 - **Encryption**:
   - At rest: AES-256 (including split data)
   - In transit: TLS 1.3+
@@ -710,6 +789,7 @@ This section captures the core feature set with tracking for implementation stat
   - Tamper detection for split modifications
 
 ### 6.3. Compliance Framework (Tax-Focused)
+
 - **Australian Standards**:
   - Privacy Act 1988
   - Australian Privacy Principles (APP)
@@ -731,6 +811,7 @@ This section captures the core feature set with tracking for implementation stat
 ### 7.1. Financial Data Aggregation (Enhanced)
 
 #### Basiq API (Australian Focus)
+
 - **Purpose**: Connect to AU financial institutions
 - **Authentication**: OAuth 2.0
 - **Key Endpoints**:
@@ -742,6 +823,7 @@ This section captures the core feature set with tracking for implementation stat
 - **Split Integration**: Automatic line item detection for common merchants
 
 #### Plaid API (International)
+
 - **Purpose**: Global institution coverage
 - **Products**: Transactions, Assets, Investments
 - **Enhanced Features**:
@@ -753,6 +835,7 @@ This section captures the core feature set with tracking for implementation stat
 ### 7.2. Split-Specific APIs **[NEW SECTION]**
 
 #### Split Calculation Engine
+
 - **Purpose**: Core allocation processing
 - **Key Operations**:
   - `POST /splits/calculate` - Process percentage allocations
@@ -761,6 +844,7 @@ This section captures the core feature set with tracking for implementation stat
   - `GET /splits/suggestions` - AI-powered recommendations
 
 #### Reporting API
+
 - **Purpose**: Split-based report generation
 - **Key Endpoints**:
   - `GET /reports/tax-summary` - Aggregate split data
@@ -771,6 +855,7 @@ This section captures the core feature set with tracking for implementation stat
 ### 7.3. Intelligence & Analytics (Split-Enhanced)
 
 #### LLM Integration for Split Suggestions
+
 - **Providers**:
   - OpenAI GPT-4 (for split pattern analysis)
   - Anthropic Claude (for tax optimization suggestions)
@@ -790,6 +875,7 @@ This section captures the core feature set with tracking for implementation stat
 ## 8. USER INTERFACE EVOLUTION (Split-Focused)
 
 ### 8.1. Current UI (Phase 1) ✅
+
 - **Design System**: Glassmorphism
 - **Navigation**: Tab-based
 - **Platform**: macOS only
@@ -798,6 +884,7 @@ This section captures the core feature set with tracking for implementation stat
 ### 8.2. Enhanced UI with Split Interface (Phase 2+)
 
 #### Split Designer Interface
+
 - **Visual Split Allocator**:
   - Pie chart visualization of splits
   - Percentage sliders with real-time feedback
@@ -817,6 +904,7 @@ This section captures the core feature set with tracking for implementation stat
   - Undo/redo functionality
 
 #### New Components for Splitting
+
 - **Split Progress Indicators**: Show completion status
 - **Entity Switchers**: Quick context switching
 - **Category Color Coding**: Consistent visual identity
@@ -826,18 +914,21 @@ This section captures the core feature set with tracking for implementation stat
 ### 8.3. Platform-Specific Split Considerations
 
 #### macOS (Enhanced with Splits)
+
 - **Advanced Split Interface**: Full-featured split designer
 - **Keyboard Shortcuts**: Quick percentage entry
 - **Multi-window Support**: Compare splits across transactions
 - **Menu Bar Integration**: Quick split status
 
 #### iOS (New with Touch-Optimized Splits)
+
 - **Touch-First Split UI**: Gesture-based percentage adjustment
 - **Simplified Templates**: Mobile-optimized template selection
 - **Quick Split Actions**: Swipe gestures for common splits
 - **Haptic Feedback**: Tactile confirmation of split changes
 
 #### Web (Future with Responsive Splits)
+
 - **Responsive Split Designer**: Adaptive to screen size
 - **Collaborative Editing**: Real-time split collaboration
 - **Advanced Reporting**: Web-optimized report builder
@@ -848,6 +939,7 @@ This section captures the core feature set with tracking for implementation stat
 ## 9. BUSINESS MODEL EVOLUTION (Split-Enhanced)
 
 ### 9.1. Current Model (Phase 1)
+
 - One-time purchase
 - Direct distribution
 - Individual licenses
@@ -855,6 +947,7 @@ This section captures the core feature set with tracking for implementation stat
 ### 9.2. Future Model with Split Premium Features (Phase 2+)
 
 #### Pricing Tiers (Split-Aware)
+
 - **Basic** (Free):
   - 1 entity
   - Manual transactions
@@ -886,6 +979,7 @@ This section captures the core feature set with tracking for implementation stat
   - Dedicated support
 
 ### 9.3. Revenue Streams (Split-Enhanced)
+
 - **Subscription revenue** (primary - split features drive upgrades)
 - **Professional services** (split setup and optimization consulting)
 - **Partner commissions** (accounting software integrations)
@@ -897,6 +991,7 @@ This section captures the core feature set with tracking for implementation stat
 ## 10. SUCCESS METRICS (Split-Focused)
 
 ### 10.1. Technical KPIs (Split-Enhanced)
+
 - System uptime: >99.9%
 - **Split calculation accuracy: 100% (to 2 decimal places)**
 - **Split UI responsiveness: <100ms for real-time validation**
@@ -905,6 +1000,7 @@ This section captures the core feature set with tracking for implementation stat
 - Test coverage: >95%
 
 ### 10.2. Business KPIs (Split-Driven)
+
 - **Split feature adoption rate: >80% of active users**
 - **Template usage: Average 5+ templates per user**
 - **Professional tier conversion: 15% driven by split features**
@@ -915,6 +1011,7 @@ This section captures the core feature set with tracking for implementation stat
 - Churn rate: <5%
 
 ### 10.3. User Satisfaction (Split-Specific)
+
 - **Split accuracy satisfaction: >95%**
 - **Template utility rating: >4.5/5**
 - **Tax preparation time savings: >60%**
@@ -945,6 +1042,7 @@ This section captures the core feature set with tracking for implementation stat
 | **Competition copying split features** | Low | High | Patent consideration, superior UX, AI integration |
 
 ### 11.3. Mitigation Strategies (Split-Focused)
+
 - **Tax professional advisory board** for compliance guidance
 - **Extensive split validation testing** before any release
 - **User education program** for proper split usage

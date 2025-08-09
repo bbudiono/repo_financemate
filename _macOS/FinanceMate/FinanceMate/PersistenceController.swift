@@ -397,6 +397,105 @@ struct PersistenceController {
             makeAttribute("lastUpdated", .dateAttributeType)
         ]
         
+        // MARK: - Investment Entity (Phase 5 Investment Portfolio)
+        let investmentEntity = makeEntity("Investment", "Investment")
+        let investmentProps: [NSPropertyDescription] = [
+            makeAttribute("id", .UUIDAttributeType, optional: true),
+            makeAttribute("symbol", .stringAttributeType, optional: true),
+            makeAttribute("name", .stringAttributeType, optional: true),
+            makeAttribute("investmentType", .integer16AttributeType),
+            makeAttribute("quantity", .decimalAttributeType),
+            makeAttribute("averageCostBasis", .doubleAttributeType),
+            makeAttribute("totalCostBasis", .doubleAttributeType),
+            makeAttribute("currentPrice", .doubleAttributeType),
+            makeAttribute("previousDayPrice", .doubleAttributeType),
+            makeAttribute("currency", .stringAttributeType, optional: true),
+            makeAttribute("exchangeRate", .doubleAttributeType),
+            makeAttribute("totalDividendsReceived", .doubleAttributeType),
+            makeAttribute("createdAt", .dateAttributeType, optional: true),
+            makeAttribute("updatedAt", .dateAttributeType, optional: true),
+            makeAttribute("isActive", .booleanAttributeType),
+            makeAttribute("notes", .stringAttributeType, optional: true)
+        ]
+        
+        // MARK: - Portfolio Entity (Phase 5 Investment Portfolio)
+        let portfolioEntity = makeEntity("Portfolio", "Portfolio")
+        let portfolioProps: [NSPropertyDescription] = [
+            makeAttribute("id", .UUIDAttributeType, optional: true),
+            makeAttribute("name", .stringAttributeType, optional: true),
+            makeAttribute("portfolioType", .integer16AttributeType),
+            makeAttribute("investmentStrategy", .integer16AttributeType),
+            makeAttribute("currency", .stringAttributeType, optional: true),
+            makeAttribute("isActive", .booleanAttributeType),
+            makeAttribute("createdAt", .dateAttributeType, optional: true),
+            makeAttribute("updatedAt", .dateAttributeType, optional: true),
+            makeAttribute("notes", .stringAttributeType, optional: true),
+            makeAttribute("targetReturn", .doubleAttributeType),
+            makeAttribute("riskTolerance", .integer16AttributeType)
+        ]
+        
+        // MARK: - Dividend Entity (Phase 5 Investment Portfolio)
+        let dividendEntity = makeEntity("Dividend", "Dividend")
+        let dividendProps: [NSPropertyDescription] = [
+            makeAttribute("id", .UUIDAttributeType, optional: true),
+            makeAttribute("amount", .doubleAttributeType),
+            makeAttribute("paymentDate", .dateAttributeType, optional: true),
+            makeAttribute("currency", .stringAttributeType, optional: true),
+            makeAttribute("dividendType", .integer16AttributeType),
+            makeAttribute("frankingPercentage", .doubleAttributeType),
+            makeAttribute("taxWithholdingRate", .doubleAttributeType),
+            makeAttribute("paymentFrequency", .integer16AttributeType),
+            makeAttribute("isReinvested", .booleanAttributeType),
+            makeAttribute("reinvestmentShares", .decimalAttributeType),
+            makeAttribute("reinvestmentPrice", .doubleAttributeType),
+            makeAttribute("createdAt", .dateAttributeType, optional: true),
+            makeAttribute("updatedAt", .dateAttributeType, optional: true),
+            makeAttribute("notes", .stringAttributeType, optional: true)
+        ]
+        
+        // MARK: - InvestmentTransaction Entity (Phase 5 Investment Portfolio)
+        let investmentTransactionEntity = makeEntity("InvestmentTransaction", "InvestmentTransaction")
+        let investmentTransactionProps: [NSPropertyDescription] = [
+            makeAttribute("id", .UUIDAttributeType, optional: true),
+            makeAttribute("transactionType", .integer16AttributeType),
+            makeAttribute("quantity", .decimalAttributeType),
+            makeAttribute("pricePerShare", .doubleAttributeType),
+            makeAttribute("fees", .doubleAttributeType),
+            makeAttribute("transactionDate", .dateAttributeType, optional: true),
+            makeAttribute("currency", .stringAttributeType, optional: true),
+            makeAttribute("exchangeRate", .doubleAttributeType),
+            makeAttribute("costBasisAtDisposal", .doubleAttributeType),
+            makeAttribute("createdAt", .dateAttributeType, optional: true),
+            makeAttribute("updatedAt", .dateAttributeType, optional: true),
+            makeAttribute("notes", .stringAttributeType, optional: true),
+            makeAttribute("brokerReference", .stringAttributeType, optional: true)
+        ]
+        
+        // MARK: - PerformanceMetrics Entity (Phase 5 Investment Portfolio)
+        let performanceMetricsEntity = makeEntity("PerformanceMetrics", "PerformanceMetrics")
+        let performanceMetricsProps: [NSPropertyDescription] = [
+            makeAttribute("id", .UUIDAttributeType, optional: true),
+            makeAttribute("metricsType", .integer16AttributeType),
+            makeAttribute("periodStartDate", .dateAttributeType, optional: true),
+            makeAttribute("periodEndDate", .dateAttributeType, optional: true),
+            makeAttribute("calculationDate", .dateAttributeType, optional: true),
+            makeAttribute("startingValue", .doubleAttributeType),
+            makeAttribute("endingValue", .doubleAttributeType),
+            makeAttribute("totalReturn", .doubleAttributeType),
+            makeAttribute("dividendsReceived", .doubleAttributeType),
+            makeAttribute("capitalGains", .doubleAttributeType),
+            makeAttribute("volatility", .doubleAttributeType),
+            makeAttribute("maxDrawdown", .doubleAttributeType),
+            makeAttribute("benchmarkReturn", .doubleAttributeType),
+            makeAttribute("excessReturn", .doubleAttributeType),
+            makeAttribute("trackingError", .doubleAttributeType),
+            makeAttribute("beta", .doubleAttributeType),
+            makeAttribute("currency", .stringAttributeType, optional: true),
+            makeAttribute("createdAt", .dateAttributeType, optional: true),
+            makeAttribute("updatedAt", .dateAttributeType, optional: true),
+            makeAttribute("notes", .stringAttributeType, optional: true)
+        ]
+        
         // MARK: - Create relationships
         
         // Transaction to LineItems relationship
@@ -574,7 +673,147 @@ struct PersistenceController {
         assetValuationPropsWithRelationship.append(valuationToAsset)
         assetValuationEntity.properties = assetValuationPropsWithRelationship
         
-        // MARK: - Add all entities to model
+        // MARK: - Investment Portfolio Relationships (Phase 5)
+        
+        // Portfolio to Investments relationship
+        let portfolioToInvestments = NSRelationshipDescription()
+        portfolioToInvestments.name = "investments"
+        portfolioToInvestments.destinationEntity = investmentEntity
+        portfolioToInvestments.maxCount = 0 // to-many
+        portfolioToInvestments.deleteRule = .cascadeDeleteRule
+        
+        // Investment to Portfolio relationship
+        let investmentToPortfolio = NSRelationshipDescription()
+        investmentToPortfolio.name = "portfolio"
+        investmentToPortfolio.destinationEntity = portfolioEntity
+        investmentToPortfolio.minCount = 0
+        investmentToPortfolio.maxCount = 1 // to-one (optional)
+        investmentToPortfolio.deleteRule = .nullifyDeleteRule
+        
+        portfolioToInvestments.inverseRelationship = investmentToPortfolio
+        investmentToPortfolio.inverseRelationship = portfolioToInvestments
+        
+        // Investment to Dividends relationship
+        let investmentToDividends = NSRelationshipDescription()
+        investmentToDividends.name = "dividends"
+        investmentToDividends.destinationEntity = dividendEntity
+        investmentToDividends.maxCount = 0 // to-many
+        investmentToDividends.deleteRule = .cascadeDeleteRule
+        
+        // Dividend to Investment relationship
+        let dividendToInvestment = NSRelationshipDescription()
+        dividendToInvestment.name = "investment"
+        dividendToInvestment.destinationEntity = investmentEntity
+        dividendToInvestment.minCount = 0
+        dividendToInvestment.maxCount = 1 // to-one (optional)
+        dividendToInvestment.deleteRule = .nullifyDeleteRule
+        
+        investmentToDividends.inverseRelationship = dividendToInvestment
+        dividendToInvestment.inverseRelationship = investmentToDividends
+        
+        // Investment to InvestmentTransactions relationship
+        let investmentToTransactions = NSRelationshipDescription()
+        investmentToTransactions.name = "transactions"
+        investmentToTransactions.destinationEntity = investmentTransactionEntity
+        investmentToTransactions.maxCount = 0 // to-many
+        investmentToTransactions.deleteRule = .cascadeDeleteRule
+        
+        // InvestmentTransaction to Investment relationship
+        let investmentTransactionToInvestment = NSRelationshipDescription()
+        investmentTransactionToInvestment.name = "investment"
+        investmentTransactionToInvestment.destinationEntity = investmentEntity
+        investmentTransactionToInvestment.minCount = 0
+        investmentTransactionToInvestment.maxCount = 1 // to-one (optional)
+        investmentTransactionToInvestment.deleteRule = .nullifyDeleteRule
+        
+        investmentToTransactions.inverseRelationship = investmentTransactionToInvestment
+        investmentTransactionToInvestment.inverseRelationship = investmentToTransactions
+        
+        // Portfolio to PerformanceMetrics relationship
+        let portfolioToMetrics = NSRelationshipDescription()
+        portfolioToMetrics.name = "performanceMetrics"
+        portfolioToMetrics.destinationEntity = performanceMetricsEntity
+        portfolioToMetrics.maxCount = 0 // to-many
+        portfolioToMetrics.deleteRule = .cascadeDeleteRule
+        
+        // PerformanceMetrics to Portfolio relationship
+        let metricsToPortfolio = NSRelationshipDescription()
+        metricsToPortfolio.name = "portfolio"
+        metricsToPortfolio.destinationEntity = portfolioEntity
+        metricsToPortfolio.minCount = 0
+        metricsToPortfolio.maxCount = 1 // to-one (optional)
+        metricsToPortfolio.deleteRule = .nullifyDeleteRule
+        
+        portfolioToMetrics.inverseRelationship = metricsToPortfolio
+        metricsToPortfolio.inverseRelationship = portfolioToMetrics
+        
+        // PerformanceMetrics to Investment relationship (for individual investment performance)
+        let metricsToInvestment = NSRelationshipDescription()
+        metricsToInvestment.name = "investment"
+        metricsToInvestment.destinationEntity = investmentEntity
+        metricsToInvestment.minCount = 0
+        metricsToInvestment.maxCount = 1 // to-one (optional)
+        metricsToInvestment.deleteRule = .nullifyDeleteRule
+        
+        // Portfolio to FinancialEntity relationship
+        let portfolioToEntity = NSRelationshipDescription()
+        portfolioToEntity.name = "entity"
+        portfolioToEntity.destinationEntity = financialEntity
+        portfolioToEntity.minCount = 0
+        portfolioToEntity.maxCount = 1 // to-one (optional)
+        portfolioToEntity.deleteRule = .nullifyDeleteRule
+        
+        // FinancialEntity to Portfolio relationship
+        let entityToPortfolios = NSRelationshipDescription()
+        entityToPortfolios.name = "portfolios"
+        entityToPortfolios.destinationEntity = portfolioEntity
+        entityToPortfolios.maxCount = 0 // to-many
+        entityToPortfolios.deleteRule = .cascadeDeleteRule
+        
+        portfolioToEntity.inverseRelationship = entityToPortfolios
+        entityToPortfolios.inverseRelationship = portfolioToEntity
+        
+        // MARK: - Assign Investment Entity Properties
+        
+        // Portfolio entity properties
+        var portfolioAllProps = portfolioProps
+        portfolioAllProps.append(contentsOf: [portfolioToInvestments, portfolioToMetrics, portfolioToEntity])
+        portfolioEntity.properties = portfolioAllProps
+        
+        // Investment entity properties
+        var investmentAllProps = investmentProps
+        investmentAllProps.append(contentsOf: [investmentToPortfolio, investmentToDividends, investmentToTransactions])
+        investmentEntity.properties = investmentAllProps
+        
+        // Dividend entity properties
+        var dividendAllProps = dividendProps
+        dividendAllProps.append(dividendToInvestment)
+        dividendEntity.properties = dividendAllProps
+        
+        // InvestmentTransaction entity properties
+        var investmentTransactionAllProps = investmentTransactionProps
+        investmentTransactionAllProps.append(investmentTransactionToInvestment)
+        investmentTransactionEntity.properties = investmentTransactionAllProps
+        
+        // PerformanceMetrics entity properties
+        var performanceMetricsAllProps = performanceMetricsProps
+        performanceMetricsAllProps.append(contentsOf: [metricsToPortfolio, metricsToInvestment])
+        performanceMetricsEntity.properties = performanceMetricsAllProps
+        
+        // Update FinancialEntity to include portfolio relationship
+        var updatedFinancialEntityProps = financialEntityProps
+        updatedFinancialEntityProps.append(contentsOf: [
+            entityToParent, 
+            entityToChildren, 
+            entityToTransactions, 
+            entityToAssets, 
+            entityToLiabilities, 
+            entityToSnapshots,
+            entityToPortfolios
+        ])
+        financialEntity.properties = updatedFinancialEntityProps
+        
+        // MARK: - Add all entities to model (including investment entities)
         model.entities = [
             transactionEntity,
             financialEntity,
@@ -583,7 +822,13 @@ struct PersistenceController {
             netWealthEntity,
             assetEntity,
             liabilityEntity,
-            assetValuationEntity
+            assetValuationEntity,
+            // Phase 5: Investment Portfolio Entities
+            portfolioEntity,
+            investmentEntity,
+            dividendEntity,
+            investmentTransactionEntity,
+            performanceMetricsEntity
         ]
         
         print("✅ CRITICAL FIX: Robust programmatic model created with \(model.entities.count) entities including FinancialEntity")
