@@ -123,7 +123,7 @@ struct SuggestedSplit {
 
 // MARK: - Main Pattern Analyzer Class
 
-@MainActor
+// EMERGENCY FIX: Removed @MainActor to eliminate Swift Concurrency crashes
 class PatternAnalyzer: ObservableObject {
     
     // MARK: - Properties
@@ -174,7 +174,7 @@ class PatternAnalyzer: ObservableObject {
         
         for (category, transactions) in groupedTransactions {
             do {
-                if let pattern = try await analyzePatternForCategory(category, transactions: transactions) {
+                if let pattern = try analyzePatternForCategory(category, transactions: transactions) {
                     recognizedPatterns.append(pattern)
                     validProcessed += transactions.count
                 }
@@ -259,7 +259,7 @@ class PatternAnalyzer: ObservableObject {
     
     // MARK: - Specific Pattern Recognition Methods
     
-    func identifyBusinessPatterns(_ transactions: [Transaction]) async -> (businessPattern: BusinessPattern?) {
+    func identifyBusinessPatterns() -> (businessPattern: BusinessPattern?) {
         logger.info("Identifying business expense patterns from \(transactions.count) transactions")
         
         let businessTransactions = transactions.filter { transaction in
@@ -285,7 +285,7 @@ class PatternAnalyzer: ObservableObject {
         return (businessPattern: pattern)
     }
     
-    func identifyHomeOfficePatterns(_ transactions: [Transaction]) async -> (homeOfficePattern: HomeOfficePattern?) {
+    func identifyHomeOfficePatterns() -> (homeOfficePattern: HomeOfficePattern?) {
         logger.info("Identifying home office patterns from \(transactions.count) transactions")
         
         let homeOfficeTransactions = transactions.filter { transaction in
@@ -307,13 +307,13 @@ class PatternAnalyzer: ObservableObject {
         return (homeOfficePattern: pattern)
     }
     
-    func identifyAllPatterns(_ transactions: [Transaction]) async -> AllPatternsResult {
+    func identifyAllPatterns() -> AllPatternsResult {
         logger.info("Identifying all patterns from \(transactions.count) transactions")
         
         var recognizedPatterns: [RecognizedPattern] = []
         
         // Business patterns
-        let businessResult = await identifyBusinessPatterns(transactions)
+        let businessResult = identifyBusinessPatterns(transactions)
         if let businessPattern = businessResult.businessPattern {
             recognizedPatterns.append(RecognizedPattern(
                 id: UUID(),
@@ -327,7 +327,7 @@ class PatternAnalyzer: ObservableObject {
         }
         
         // Home office patterns
-        let homeOfficeResult = await identifyHomeOfficePatterns(transactions)
+        let homeOfficeResult = identifyHomeOfficePatterns(transactions)
         if let homeOfficePattern = homeOfficeResult.homeOfficePattern {
             recognizedPatterns.append(RecognizedPattern(
                 id: UUID(),
@@ -373,7 +373,7 @@ class PatternAnalyzer: ObservableObject {
         isLearning = true
         defer { isLearning = false }
         
-        let analysisResult = await analyzeTransactionPatterns(transactionSplits)
+        let analysisResult = analyzeTransactionPatterns(transactionSplits)
         
         // Update learned patterns
         for newPattern in analysisResult.patterns {
@@ -403,7 +403,7 @@ class PatternAnalyzer: ObservableObject {
         logger.info("Pattern learning completed, now tracking \(learnedPatterns.count) patterns")
     }
     
-    func getCurrentLearntPatterns() async -> AllPatternsResult {
+    func getCurrentLearntPatterns() -> AllPatternsResult {
         return AllPatternsResult(
             recognizedPatterns: learnedPatterns,
             hasBusinessPattern: learnedPatterns.contains { $0.patternType == .businessExpense },
@@ -413,7 +413,7 @@ class PatternAnalyzer: ObservableObject {
         )
     }
     
-    func clearLearntPatterns() async {
+    func clearLearntPatterns() {
         logger.info("Clearing all learned patterns")
         learnedPatterns.removeAll()
         lastAnalysisDate = nil
@@ -427,7 +427,7 @@ class PatternAnalyzer: ObservableObject {
         var detectedAnomalies: [DetectedAnomaly] = []
         
         for (transaction, splits) in transactionSplits {
-            if let anomaly = await detectAnomalyInTransaction(transaction, splits: splits) {
+            if let anomaly = detectAnomalyInTransaction(transaction, splits: splits) {
                 detectedAnomalies.append(anomaly)
             }
         }
@@ -475,7 +475,7 @@ class PatternAnalyzer: ObservableObject {
     func categorizeAnomalies(_ transactionSplits: [(Transaction, [SplitAllocation])]) async -> CategorizedAnomalies {
         logger.info("Categorizing anomalies by type")
         
-        let allAnomalies = await detectAnomalies(in: transactionSplits)
+        let allAnomalies = detectAnomalies(in: transactionSplits)
         var anomaliesByType: [AnomalyType: [DetectedAnomaly]] = [:]
         
         for anomaly in allAnomalies.detectedAnomalies {
@@ -493,7 +493,7 @@ class PatternAnalyzer: ObservableObject {
         )
     }
     
-    private func detectAnomalyInTransaction(_ transaction: Transaction, splits: [SplitAllocation]) async -> DetectedAnomaly? {
+    private func detectAnomalyInTransaction() -> DetectedAnomaly? {
         // Check for unusual split percentages
         let totalPercentage = splits.reduce(0) { $0 + $1.percentage }
         if abs(totalPercentage - 100.0) > 1.0 {
@@ -533,7 +533,7 @@ class PatternAnalyzer: ObservableObject {
     
     // MARK: - Pattern Suggestions
     
-    func suggestSplitPattern(for transaction: Transaction) async -> SplitPatternSuggestion? {
+    func suggestSplitPattern() -> SplitPatternSuggestion? {
         logger.info("Generating split pattern suggestion for transaction: \(transaction.category ?? "unknown")")
         
         guard let category = transaction.category else {

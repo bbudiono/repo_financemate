@@ -1,0 +1,378 @@
+import XCTest
+
+@testable import FinanceMate
+
+class AuthenticationServiceTests: XCTestCase {
+
+  var authenticationService: AuthenticationService!
+  var realPersistenceController: PersistenceController!
+
+  override func setUp() {
+    super.setUp()
+
+    // Create in-memory persistence controller for testing
+    realPersistenceController = PersistenceController(inMemory: true)
+    authenticationService = AuthenticationService()
+
+    // Clear any existing user session
+    UserDefaults.standard.removeObject(forKey: "authenticated_user_id")
+    UserDefaults.standard.removeObject(forKey: "authenticated_user_email")
+    UserDefaults.standard.removeObject(forKey: "authenticated_user_display_name")
+    UserDefaults.standard.removeObject(forKey: "authentication_provider")
+    UserDefaults.standard.removeObject(forKey: "authenticated_user_login_time")
+  }
+
+  override func tearDown() {
+    authenticationService = nil
+    realPersistenceController = nil
+
+    // Clear test user session
+    UserDefaults.standard.removeObject(forKey: "authenticated_user_id")
+    UserDefaults.standard.removeObject(forKey: "authenticated_user_email")
+    UserDefaults.standard.removeObject(forKey: "authenticated_user_display_name")
+    UserDefaults.standard.removeObject(forKey: "authentication_provider")
+    UserDefaults.standard.removeObject(forKey: "authenticated_user_login_time")
+
+    super.tearDown()
+  }
+
+  // MARK: - Email Authentication Tests
+
+  func testAuthenticateWithEmail_ValidCredentials_Success() async throws {
+    // Given
+    let validEmail = "john.smith@cba.com.au"
+    let validPassword = "password123"
+
+    // When
+    let result = try await authenticationService.authenticateWithEmail(
+      email: validEmail, password: validPassword)
+
+    // Then
+    XCTAssertTrue(result.success)
+    XCTAssertNotNil(result.user)
+    XCTAssertEqual(result.user?.email, validEmail)
+    XCTAssertEqual(result.user?.provider, .email)
+    XCTAssertTrue(result.user?.isAuthenticated ?? false)
+    XCTAssertNil(result.error)
+
+    // Verify session is stored
+    XCTAssertEqual(UserDefaults.standard.string(forKey: "authenticated_user_email"), validEmail)
+    XCTAssertNotNil(UserDefaults.standard.string(forKey: "authenticated_user_id"))
+  }
+
+  func testAuthenticateWithEmail_InvalidEmailFormat_ThrowsError() async throws {
+    // Given
+    let invalidEmail = "invalid-email"
+    let validPassword = "password123"
+
+    // When & Then
+    do {
+      _ = try await authenticationService.authenticateWithEmail(
+        email: invalidEmail, password: validPassword)
+      XCTFail("Expected authentication to throw invalid email error")
+    } catch {
+      XCTAssertEqual(error as? AuthenticationError, .invalidEmail("Invalid email format"))
+    }
+  }
+
+  func testAuthenticateWithEmail_ShortPassword_ThrowsError() async throws {
+    // Given
+    let validEmail = "john.smith@cba.com.au"
+    let shortPassword = "123"
+
+    // When & Then
+    do {
+      _ = try await authenticationService.authenticateWithEmail(
+        email: validEmail, password: shortPassword)
+      XCTFail("Expected authentication to throw invalid password error")
+    } catch {
+      XCTAssertEqual(
+        error as? AuthenticationError, .invalidPassword("Password must be at least 6 characters"))
+    }
+  }
+
+  func testAuthenticateWithEmail_SuspiciousEmail_ThrowsError() async throws {
+    // Given
+    let suspiciousEmail = "john.smith@cba.com.au"
+    let validPassword = "password123"
+
+    // When & Then
+    do {
+      _ = try await authenticationService.authenticateWithEmail(
+        email: suspiciousEmail, password: validPassword)
+      XCTFail("Expected authentication to throw suspicious email error")
+    } catch {
+      XCTAssertEqual(
+        error as? AuthenticationError, .suspiciousEmail("Suspicious email pattern detected"))
+    }
+  }
+
+  // MARK: - Google Authentication Tests
+
+  func testAuthenticateWithGoogle_ThrowsNotImplementedError() async throws {
+    // When & Then
+    do {
+      _ = try await authenticationService.authenticateWithGoogle()
+      XCTFail("Expected Google authentication to throw not implemented error")
+    } catch {
+      XCTAssertEqual(
+        error as? AuthenticationError, .notImplemented("Google OAuth implementation pending"))
+    }
+  }
+
+  // MARK: - Biometric Authentication Tests
+
+  func testAuthenticateWithBiometrics_ThrowsNotImplementedError() async throws {
+    // When & Then
+    do {
+      _ = try await authenticationService.authenticateWithBiometrics()
+      XCTFail("Expected biometric authentication to throw not implemented error")
+    } catch {
+      XCTAssertEqual(
+        error as? AuthenticationError,
+        .notImplemented("Biometric authentication implementation pending"))
+    }
+  }
+
+  // MARK: - User Session Management Tests
+
+  func testGetCurrentUser_NoSession_ReturnsNil() {
+    // Given
+    // No session stored
+
+    // When
+    let currentUser = authenticationService.getCurrentUser()
+
+    // Then
+    XCTAssertNil(currentUser)
+  }
+
+  func testGetCurrentUser_WithSession_ReturnsUser() async throws {
+    // Given
+    let validEmail = "john.smith@cba.com.au"
+    let validPassword = "password123"
+
+    // Create a session
+    _ = try await authenticationService.authenticateWithEmail(
+      email: validEmail, password: validPassword)
+
+    // When
+    let currentUser = authenticationService.getCurrentUser()
+
+    // Then
+    XCTAssertNotNil(currentUser)
+    XCTAssertEqual(currentUser?.email, validEmail)
+    XCTAssertEqual(currentUser?.provider, .email)
+    XCTAssertTrue(currentUser?.isAuthenticated ?? false)
+  }
+
+  func testSignOut_ClearsSession() async throws {
+    // Given
+    let validEmail = "john.smith@cba.com.au"
+    let validPassword = "password123"
+
+    // Create a session
+    _ = try await authenticationService.authenticateWithEmail(
+      email: validEmail, password: validPassword)
+    XCTAssertNotNil(authenticationService.getCurrentUser())
+
+    // When
+    try await authenticationService.signOut()
+
+    // Then
+    XCTAssertNil(authenticationService.getCurrentUser())
+    XCTAssertNil(UserDefaults.standard.string(forKey: "authenticated_user_email"))
+    XCTAssertNil(UserDefaults.standard.string(forKey: "authenticated_user_id"))
+  }
+
+  // MARK: - Email Validation Tests
+
+  func testIsValidEmail_ValidEmails_ReturnsTrue() {
+    let validEmails = [
+      "john.smith@cba.com.au",
+      "user.name@domain.co.uk",
+      "lisa.taylor@nab.com.au",
+      "david.wong@commbank.com.au",
+      "test.email@sub.domain.com",
+    ]
+
+    for email in validEmails {
+      XCTAssertTrue(authenticationService.isValidEmail(email), "Email should be valid: \(email)")
+    }
+  }
+
+  func testIsValidEmail_InvalidEmails_ReturnsFalse() {
+    let invalidEmails = [
+      "invalid-email",
+      "@invalid-domain.com.au",
+      "user@",
+      "user.invalid-domain.com.au",
+      "",
+      "user@.com.au",
+      "user@domain.com.au.",
+    ]
+
+    for email in invalidEmails {
+      XCTAssertFalse(authenticationService.isValidEmail(email), "Email should be invalid: \(email)")
+    }
+  }
+
+  // MARK: - Suspicious Email Detection Tests
+
+  func testIsSuspiciousEmail_SuspiciousPatterns_ReturnsTrue() {
+    let suspiciousEmails = [
+      "john.smith@cba.com.au",
+      "demo@domain.com",
+      "sarah.jones@westpac.com.au",
+      "temp@user.net",
+    ]
+
+    for email in suspiciousEmails {
+      XCTAssertTrue(
+        authenticationService.isSuspiciousEmail(email), "Email should be suspicious: \(email)")
+    }
+  }
+
+  func testIsSuspiciousEmail_NormalEmails_ReturnsFalse() {
+    let normalEmails = [
+      "michael.chen@anz.com.au",
+      "user@domain.com",
+      "contact@business.org",
+      "admin@system.net",
+    ]
+
+    for email in normalEmails {
+      XCTAssertFalse(
+        authenticationService.isSuspiciousEmail(email), "Email should not be suspicious: \(email)")
+    }
+  }
+
+  // MARK: - Nonce Generation Tests
+
+  func testGenerateNonce_ReturnsValidNonce() {
+    // When
+    let nonce = authenticationService.generateNonce()
+
+    // Then
+    XCTAssertFalse(nonce.isEmpty)
+    XCTAssertEqual(nonce.count, 43)  // Base64 encoded 32 bytes
+    XCTAssertFalse(nonce.contains("="))
+    XCTAssertFalse(nonce.contains("+"))
+    XCTAssertFalse(nonce.contains("/"))
+  }
+
+  // MARK: - Apple Sign-In Error Mapping Tests
+
+  func testMapAppleSignInError_Canceled_ReturnsCanceledError() {
+    // Given
+    let appleError = ASAuthorizationError(.canceled)
+
+    // When
+    let mappedError = authenticationService.mapAppleSignInError(appleError)
+
+    // Then
+    XCTAssertEqual(
+      mappedError as? AuthenticationError, .canceled("Apple Sign-In was canceled by user"))
+  }
+
+  func testMapAppleSignInError_Failed_ReturnsFailedError() {
+    // Given
+    let appleError = ASAuthorizationError(.failed)
+
+    // When
+    let mappedError = authenticationService.mapAppleSignInError(appleError)
+
+    // Then
+    XCTAssertEqual(mappedError as? AuthenticationError, .failed("Apple Sign-In failed"))
+  }
+
+  func testMapAppleSignInError_InvalidResponse_ReturnsInvalidResponseError() {
+    // Given
+    let appleError = ASAuthorizationError(.invalidResponse)
+
+    // When
+    let mappedError = authenticationService.mapAppleSignInError(appleError)
+
+    // Then
+    XCTAssertEqual(
+      mappedError as? AuthenticationError,
+      .invalidResponse("Apple Sign-In received invalid response"))
+  }
+
+  func testMapAppleSignInError_NotHandled_ReturnsNotHandledError() {
+    // Given
+    let appleError = ASAuthorizationError(.notHandled)
+
+    // When
+    let mappedError = authenticationService.mapAppleSignInError(appleError)
+
+    // Then
+    XCTAssertEqual(
+      mappedError as? AuthenticationError, .notHandled("Apple Sign-In was not handled"))
+  }
+
+  func testMapAppleSignInError_Unknown_ReturnsUnknownError() {
+    // Given
+    let appleError = ASAuthorizationError(.unknown)
+
+    // When
+    let mappedError = authenticationService.mapAppleSignInError(appleError)
+
+    // Then
+    XCTAssertEqual(
+      mappedError as? AuthenticationError, .unknown("Apple Sign-In encountered unknown error"))
+  }
+
+  // MARK: - Performance Tests
+
+  func testAuthenticateWithEmail_Performance() async throws {
+    // Given
+    let validEmail = "john.smith@cba.com.au"
+    let validPassword = "password123"
+
+    // Measure
+    measure {
+      let expectation = XCTestExpectation(description: "Authentication performance")
+
+      Task {
+        do {
+          _ = try await authenticationService.authenticateWithEmail(
+            email: validEmail, password: validPassword)
+          expectation.fulfill()
+        } catch {
+          XCTFail("Authentication failed during performance test")
+          expectation.fulfill()
+        }
+      }
+
+      wait(for: [expectation], timeout: 5.0)
+    }
+  }
+
+  func testGetCurrentUser_Performance() {
+    // Given
+    let validEmail = "john.smith@cba.com.au"
+    let validPassword = "password123"
+
+    // Create a session first
+    let expectation = XCTestExpectation(description: "Setup session")
+
+    Task {
+      do {
+        _ = try await authenticationService.authenticateWithEmail(
+          email: validEmail, password: validPassword)
+        expectation.fulfill()
+      } catch {
+        XCTFail("Setup authentication failed")
+        expectation.fulfill()
+      }
+    }
+
+    wait(for: [expectation], timeout: 5.0)
+
+    // Measure
+    measure {
+      let _ = authenticationService.getCurrentUser()
+    }
+  }
+}

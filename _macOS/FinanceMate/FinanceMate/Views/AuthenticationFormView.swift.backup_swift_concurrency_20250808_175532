@@ -1,0 +1,358 @@
+import SwiftUI
+
+/**
+ * AuthenticationFormView.swift
+ * 
+ * Purpose: Authentication forms with email/password input, validation, and tab switching
+ * Issues & Complexity Summary: Form handling with validation and dual login/register modes
+ * Key Complexity Drivers:
+ *   - Logic Scope (Est. LoC): ~180
+ *   - Core Algorithm Complexity: Medium (Form validation, State management)
+ *   - Dependencies: 2 (SwiftUI, AuthenticationViewModel)
+ *   - State Management Complexity: Medium (Form state, Validation state)
+ *   - Novelty/Uncertainty Factor: Low (Standard form patterns)
+ * AI Pre-Task Self-Assessment: 85%
+ * Problem Estimate: 80%
+ * Initial Code Complexity Estimate: 60%
+ * Final Code Complexity: 65%
+ * Overall Result Score: 88%
+ * Key Variances/Learnings: Extracted form logic maintains validation and glassmorphism styling
+ * Last Updated: 2025-08-06
+ */
+
+@MainActor
+public struct AuthenticationFormView: View {
+    
+    // MARK: - Properties
+    
+    @ObservedObject var authViewModel: AuthenticationViewModel
+    @Binding var selectedTab: Int // 0: Login, 1: Register
+    @Binding var showingForgotPassword: Bool
+    
+    // Login form state
+    @Binding var email: String
+    @Binding var password: String
+    @Binding var isPasswordVisible: Bool
+    
+    // Registration form state
+    @Binding var registerName: String
+    @Binding var registerEmail: String
+    @Binding var registerPassword: String
+    @Binding var confirmPassword: String
+    
+    // Focus states
+    @FocusState private var emailFocused: Bool
+    @FocusState private var passwordFocused: Bool
+    
+    public init(
+        authViewModel: AuthenticationViewModel,
+        selectedTab: Binding<Int>,
+        showingForgotPassword: Binding<Bool>,
+        email: Binding<String>,
+        password: Binding<String>,
+        isPasswordVisible: Binding<Bool>,
+        registerName: Binding<String>,
+        registerEmail: Binding<String>,
+        registerPassword: Binding<String>,
+        confirmPassword: Binding<String>
+    ) {
+        self.authViewModel = authViewModel
+        self._selectedTab = selectedTab
+        self._showingForgotPassword = showingForgotPassword
+        self._email = email
+        self._password = password
+        self._isPasswordVisible = isPasswordVisible
+        self._registerName = registerName
+        self._registerEmail = registerEmail
+        self._registerPassword = registerPassword
+        self._confirmPassword = confirmPassword
+    }
+    
+    public var body: some View {
+        VStack(spacing: 32) {
+            // Tab selection
+            tabSelector
+            
+            // Form content based on selected tab
+            if selectedTab == 0 {
+                loginFormFields
+            } else {
+                registrationFormFields
+            }
+        }
+    }
+    
+    // MARK: - Tab Selector
+    
+    private var tabSelector: some View {
+        HStack(spacing: 0) {
+            Button(action: { selectedTab = 0 }) {
+                Text("Sign In")
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundColor(selectedTab == 0 ? .white : .secondary)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 44)
+                    .background(
+                        selectedTab == 0 ? Color.accentColor : Color.clear
+                    )
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+            }
+            .buttonStyle(PlainButtonStyle())
+            
+            Button(action: { selectedTab = 1 }) {
+                Text("Register")
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundColor(selectedTab == 1 ? .white : .secondary)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 44)
+                    .background(
+                        selectedTab == 1 ? Color.accentColor : Color.clear
+                    )
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+            }
+            .buttonStyle(PlainButtonStyle())
+        }
+        .background(Color.secondary.opacity(0.1))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .accessibility(identifier: "AuthenticationTabs")
+    }
+    
+    // MARK: - Login Form Fields
+    
+    private var loginFormFields: some View {
+        VStack(spacing: 24) {
+            // Email field
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Email")
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundColor(.secondary)
+                
+                TextField("Enter your email", text: $email)
+                    .textFieldStyle(CustomTextFieldStyle())
+                    .focused($emailFocused)
+                    .onSubmit {
+                        passwordFocused = true
+                    }
+                    .disableAutocorrection(true)
+                    .accessibility(identifier: "EmailField")
+            }
+            
+            // Password field
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Password")
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundColor(.secondary)
+                
+                HStack {
+                    Group {
+                        if isPasswordVisible {
+                            TextField("Enter your password", text: $password)
+                        } else {
+                            SecureField("Enter your password", text: $password)
+                        }
+                    }
+                    .focused($passwordFocused)
+                    .onSubmit {
+                        Task {
+                            await authViewModel.authenticate(email: email, password: password)
+                        }
+                    }
+                    
+                    Button(action: { isPasswordVisible.toggle() }) {
+                        Image(systemName: isPasswordVisible ? "eye.slash" : "eye")
+                            .foregroundColor(.secondary)
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                }
+                .textFieldStyle(CustomTextFieldStyle())
+                .accessibility(identifier: "PasswordField")
+            }
+            
+            // Forgot password link
+            HStack {
+                Spacer()
+                Button("Forgot Password?") {
+                    showingForgotPassword = true
+                }
+                .font(.system(size: 14, weight: .medium))
+                .foregroundColor(.accentColor)
+            }
+            
+            // Sign in button
+            Button(action: {
+                Task {
+                    await authViewModel.authenticate(email: email, password: password)
+                }
+            }) {
+                HStack {
+                    if authViewModel.isLoading {
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                            .scaleEffect(0.8)
+                    }
+                    
+                    Text("Sign In")
+                        .font(.system(size: 16, weight: .semibold))
+                }
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity)
+                .frame(height: 50)
+                .background(Color.accentColor)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+            }
+            .disabled(authViewModel.isLoading || email.isEmpty || password.isEmpty)
+            .buttonStyle(PlainButtonStyle())
+            .accessibility(identifier: "SignInButton")
+        }
+    }
+    
+    // MARK: - Registration Form Fields
+    
+    private var registrationFormFields: some View {
+        VStack(spacing: 24) {
+            // Name field
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Full Name")
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundColor(.secondary)
+                
+                TextField("Enter your full name", text: $registerName)
+                    .textFieldStyle(CustomTextFieldStyle())
+                    .accessibility(identifier: "NameField")
+            }
+            
+            // Email field
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Email")
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundColor(.secondary)
+                
+                TextField("Enter your email", text: $registerEmail)
+                    .textFieldStyle(CustomTextFieldStyle())
+                    .disableAutocorrection(true)
+                    .accessibility(identifier: "RegisterEmailField")
+            }
+            
+            // Password field
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Password")
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundColor(.secondary)
+                
+                SecureField("Create a password", text: $registerPassword)
+                    .textFieldStyle(CustomTextFieldStyle())
+                    .accessibility(identifier: "RegisterPasswordField")
+            }
+            
+            // Confirm password field
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Confirm Password")
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundColor(.secondary)
+                
+                SecureField("Confirm your password", text: $confirmPassword)
+                    .textFieldStyle(CustomTextFieldStyle())
+                    .accessibility(identifier: "ConfirmPasswordField")
+            }
+            
+            // Password requirements
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Password Requirements:")
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundColor(.secondary)
+                
+                HStack {
+                    Image(systemName: registerPassword.count >= 8 ? "checkmark.circle.fill" : "circle")
+                        .foregroundColor(registerPassword.count >= 8 ? .green : .secondary)
+                        .font(.system(size: 12))
+                    
+                    Text("At least 8 characters")
+                        .font(.system(size: 12))
+                        .foregroundColor(.secondary)
+                    
+                    Spacer()
+                }
+                
+                HStack {
+                    Image(systemName: registerPassword == confirmPassword && !confirmPassword.isEmpty ? "checkmark.circle.fill" : "circle")
+                        .foregroundColor(registerPassword == confirmPassword && !confirmPassword.isEmpty ? .green : .secondary)
+                        .font(.system(size: 12))
+                    
+                    Text("Passwords match")
+                        .font(.system(size: 12))
+                        .foregroundColor(.secondary)
+                    
+                    Spacer()
+                }
+            }
+            .padding(.top, 8)
+            
+            // Register button
+            Button(action: {
+                Task {
+                    await authViewModel.createAccount(
+                        name: registerName,
+                        email: registerEmail,
+                        password: registerPassword
+                    )
+                }
+            }) {
+                HStack {
+                    if authViewModel.isLoading {
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                            .scaleEffect(0.8)
+                    }
+                    
+                    Text("Create Account")
+                        .font(.system(size: 16, weight: .semibold))
+                }
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity)
+                .frame(height: 50)
+                .background(Color.accentColor)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+            }
+            .disabled(authViewModel.isLoading || !isRegistrationValid)
+            .buttonStyle(PlainButtonStyle())
+            .accessibility(identifier: "RegisterButton")
+        }
+    }
+    
+    // MARK: - Validation
+    
+    private var isRegistrationValid: Bool {
+        return !registerName.isEmpty &&
+               !registerEmail.isEmpty &&
+               registerPassword.count >= 8 &&
+               registerPassword == confirmPassword
+    }
+}
+
+// MARK: - Preview
+
+struct AuthenticationFormView_Previews: PreviewProvider {
+    static var previews: some View {
+        AuthenticationFormView(
+            authViewModel: AuthenticationViewModel(
+                context: PersistenceController.preview.container.viewContext
+            ),
+            selectedTab: .constant(0),
+            showingForgotPassword: .constant(false),
+            email: .constant(""),
+            password: .constant(""),
+            isPasswordVisible: .constant(false),
+            registerName: .constant(""),
+            registerEmail: .constant(""),
+            registerPassword: .constant(""),
+            confirmPassword: .constant("")
+        )
+        .padding(32)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(.ultraThinMaterial)
+        )
+        .frame(width: 500)
+        .previewDisplayName("Authentication Form")
+    }
+}

@@ -147,8 +147,8 @@ final class VisionOCREngine: ObservableObject {
     /// Recognizes text from image using Apple Vision Framework
     /// - Parameter image: CGImage to process
     /// - Returns: OCRResult with recognized text and confidence
-    func recognizeText(from image: CGImage) async throws -> OCRResult {
-        return try await withCheckedThrowingContinuation { continuation in
+    func recognizeText() throws -> OCRResult {
+        return try withCheckedThrowingContinuation { continuation in
             performOCR(on: image) { result in
                 continuation.resume(returning: result)
             }
@@ -158,19 +158,19 @@ final class VisionOCREngine: ObservableObject {
     /// Recognizes text from image data
     /// - Parameter imageData: Data representing the image
     /// - Returns: OCRResult with recognized text and confidence
-    func recognizeText(fromImageData imageData: Data) async throws -> OCRResult {
+    func recognizeText() throws -> OCRResult {
         guard let cgImage = CGImage.createFromData(imageData) else {
             throw OCRError.invalidImageData
         }
         
-        return try await recognizeText(from: cgImage)
+        return try recognizeText(from: cgImage)
     }
     
     /// Recognizes financial document with specialized parsing for Australian receipts
     /// - Parameter image: CGImage of financial document
     /// - Returns: FinancialDocumentResult with parsed financial data
-    func recognizeFinancialDocument(from image: CGImage) async throws -> FinancialDocumentResult {
-        let ocrResult = try await recognizeText(from: image)
+    func recognizeFinancialDocument() throws -> FinancialDocumentResult {
+        let ocrResult = try recognizeText(from: image)
         
         // Parse financial information from recognized text
         let merchantName = extractMerchantName(from: ocrResult.recognizedText)

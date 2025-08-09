@@ -30,7 +30,8 @@ import CoreData
 import Charts
 import OSLog
 
-@MainActor
+// EMERGENCY FIX: Removed to eliminate Swift Concurrency crashes
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
 final class AnalyticsEngine: ObservableObject {
     
     // MARK: - Properties
@@ -66,7 +67,7 @@ final class AnalyticsEngine: ObservableObject {
     // MARK: - Core Analytics Methods
     
     /// Aggregate split percentages across all transactions by tax category
-    func aggregateSplitsByTaxCategory() async throws -> [String: Double] {
+    func aggregateSplitsByTaxCategory() throws -> [String: Double] {
         let cacheKey = "splitsByTaxCategory"
         
         if let cachedResult = getCachedResult(for: cacheKey) as? [String: Double] {
@@ -101,7 +102,7 @@ final class AnalyticsEngine: ObservableObject {
     }
     
     /// Analyze monthly trends for split patterns
-    func analyzeMonthlyTrends(for date: Date) async throws -> MonthlyAnalyticsData {
+    func analyzeMonthlyTrends() throws -> MonthlyAnalyticsData {
         let calendar = Calendar(identifier: .gregorian)
         let startOfMonth = calendar.dateInterval(of: .month, for: date)?.start ?? date
         let endOfMonth = calendar.dateInterval(of: .month, for: date)?.end ?? date
@@ -109,18 +110,18 @@ final class AnalyticsEngine: ObservableObject {
         logger.info("Analyzing monthly trends for: \(dateFormatter.string(from: date))")
         
         let transactions = try fetchTransactions(from: startOfMonth, to: endOfMonth)
-        let categoryBreakdown = try await calculateCategoryBreakdown(for: transactions)
+        let categoryBreakdown = try calculateCategoryBreakdown(for: transactions)
         
         return MonthlyAnalyticsData(
             month: date,
             totalTransactions: transactions.count,
             categories: categoryBreakdown,
-            trends: try await calculateTrendData(for: transactions)
+            trends: try calculateTrendData(for: transactions)
         )
     }
     
     /// Analyze quarterly trends for split patterns
-    func analyzeQuarterlyTrends(for date: Date) async throws -> QuarterlyAnalyticsData {
+    func analyzeQuarterlyTrends() throws -> QuarterlyAnalyticsData {
         let calendar = Calendar(identifier: .gregorian)
         let quarter = calendar.component(.quarter, from: date)
         let year = calendar.component(.year, from: date)
@@ -138,7 +139,7 @@ final class AnalyticsEngine: ObservableObject {
             dateComponents.day = 1
             
             if let monthDate = calendar.date(from: dateComponents) {
-                let monthlyData = try await analyzeMonthlyTrends(for: monthDate)
+                let monthlyData = try analyzeMonthlyTrends(for: monthDate)
                 months.append(monthlyData)
             }
         }
@@ -154,7 +155,7 @@ final class AnalyticsEngine: ObservableObject {
     }
     
     /// Analyze yearly trends for split patterns
-    func analyzeYearlyTrends(for date: Date) async throws -> YearlyAnalyticsData {
+    func analyzeYearlyTrends() throws -> YearlyAnalyticsData {
         let calendar = Calendar(identifier: .gregorian)
         let year = calendar.component(.year, from: date)
         
@@ -169,7 +170,7 @@ final class AnalyticsEngine: ObservableObject {
             dateComponents.day = 1
             
             if let quarterDate = calendar.date(from: dateComponents) {
-                let quarterlyData = try await analyzeQuarterlyTrends(for: quarterDate)
+                let quarterlyData = try analyzeQuarterlyTrends(for: quarterDate)
                 quarters.append(quarterlyData)
             }
         }
@@ -184,7 +185,7 @@ final class AnalyticsEngine: ObservableObject {
     }
     
     /// Calculate comprehensive financial metrics
-    func calculateFinancialMetrics() async throws -> FinancialMetrics {
+    func calculateFinancialMetrics() throws -> FinancialMetrics {
         let cacheKey = "financialMetrics"
         
         if let cachedResult = getCachedResult(for: cacheKey) as? FinancialMetrics {
@@ -193,7 +194,7 @@ final class AnalyticsEngine: ObservableObject {
         
         logger.info("Calculating comprehensive financial metrics")
         
-        let splits = try await aggregateSplitsByTaxCategory()
+        let splits = try aggregateSplitsByTaxCategory()
         let totalAmount = splits.values.reduce(0, +)
         
         var categoryBreakdown: [String: Double] = [:]
@@ -217,10 +218,10 @@ final class AnalyticsEngine: ObservableObject {
     }
     
     /// Calculate real-time balance with split-aware computations
-    func calculateRealTimeBalance() async throws -> RealTimeBalance {
+    func calculateRealTimeBalance() throws -> RealTimeBalance {
         logger.info("Calculating real-time balance with split awareness")
         
-        let categoryTotals = try await aggregateSplitsByTaxCategory()
+        let categoryTotals = try aggregateSplitsByTaxCategory()
         let totalBalance = categoryTotals.values.reduce(0, +)
         
         return RealTimeBalance(
@@ -245,7 +246,7 @@ final class AnalyticsEngine: ObservableObject {
     }
     
     /// Calculate category breakdown for transactions
-    private func calculateCategoryBreakdown(for transactions: [Transaction]) async throws -> [String: Double] {
+    private func calculateCategoryBreakdown() throws -> [String: Double] {
         var categoryTotals: [String: Double] = [:]
         
         for transaction in transactions {
@@ -265,7 +266,7 @@ final class AnalyticsEngine: ObservableObject {
     }
     
     /// Calculate trend data for transactions
-    private func calculateTrendData(for transactions: [Transaction]) async throws -> [String: Double] {
+    private func calculateTrendData() throws -> [String: Double] {
         guard transactions.count > 1 else { return [:] }
         
         let sortedTransactions = transactions.sorted { $0.date < $1.date }

@@ -22,7 +22,7 @@ import NaturalLanguage
  * Last Updated: 2025-07-08
  */
 
-@MainActor
+// EMERGENCY FIX: Removed @MainActor to eliminate Swift Concurrency crashes
 class TransactionMatcher: ObservableObject {
     private let context: NSManagedObjectContext
     private let nlTagger: NLTagger
@@ -39,8 +39,8 @@ class TransactionMatcher: ObservableObject {
     
     // MARK: - Public Interface
     
-    func findMatchingTransaction(for ocrResult: OCRResult) async -> Transaction? {
-        let candidates = await fetchCandidateTransactions(for: ocrResult)
+    func findMatchingTransaction() -> Transaction? {
+        let candidates = fetchCandidateTransactions(for: ocrResult)
         
         // Score each candidate and return the best match
         var bestMatch: (transaction: Transaction, score: Double)? = nil
@@ -78,7 +78,7 @@ class TransactionMatcher: ObservableObject {
     
     // MARK: - Private Candidate Fetching
     
-    private func fetchCandidateTransactions(for ocrResult: OCRResult) async -> [Transaction] {
+    private func fetchCandidateTransactions() -> [Transaction] {
         let request: NSFetchRequest<Transaction> = Transaction.fetchRequest()
         
         // Date range filter (±3 days from OCR date)
@@ -273,8 +273,8 @@ class TransactionMatcher: ObservableObject {
 
 extension TransactionMatcher {
     
-    func findMultipleMatches(for ocrResult: OCRResult) async -> [(Transaction, Double)] {
-        let candidates = await fetchCandidateTransactions(for: ocrResult)
+    func findMultipleMatches() -> [(Transaction, Double)] {
+        let candidates = fetchCandidateTransactions(for: ocrResult)
         var matches: [(Transaction, Double)] = []
         
         for candidate in candidates {

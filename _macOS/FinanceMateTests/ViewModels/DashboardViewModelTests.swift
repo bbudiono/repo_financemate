@@ -24,7 +24,8 @@ import CoreData
 import Combine
 @testable import FinanceMate
 
-@MainActor
+// EMERGENCY FIX: Removed to eliminate Swift Concurrency crashes
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
 class DashboardViewModelTests: XCTestCase {
     
     var viewModel: DashboardViewModel!
@@ -118,7 +119,7 @@ class DashboardViewModelTests: XCTestCase {
     
     // MARK: - Business Logic Tests
     
-    func testTotalBalanceCalculation() async {
+    func testTotalBalanceCalculation() {
         // Given: Mixed positive and negative transactions
         let transaction1 = Transaction.create(in: context, amount: 100.0, category: "Income", note: "Salary")
         let transaction2 = Transaction.create(in: context, amount: -30.0, category: "Food", note: "Groceries")
@@ -127,10 +128,7 @@ class DashboardViewModelTests: XCTestCase {
         try! context.save()
         
         // When: Calculating total balance
-        viewModel.fetchDashboardData()
-        
-        // Wait for async operation to complete
-        let expectation = XCTestExpectation(description: "Dashboard data loaded")
+        let expectation = XCTestExpectation(description: "Balance calculation completed")
         
         viewModel.$isLoading
             .dropFirst() // Skip initial value
@@ -141,20 +139,19 @@ class DashboardViewModelTests: XCTestCase {
             }
             .store(in: &cancellables)
         
-        await fulfillment(of: [expectation], timeout: 5.0)
+        viewModel.fetchDashboardData()
+        
+        wait(for: [expectation], timeout: 5.0)
         
         // Then: Balance should be correctly calculated
         XCTAssertEqual(viewModel.totalBalance, 50.0, "Total balance should be 100 - 30 - 20 = 50")
     }
     
-    func testTransactionCountAccuracy() async {
+    func testTransactionCountAccuracy() {
         // Given: Multiple transactions
         createTestTransactions()
         
         // When: Fetching dashboard data
-        viewModel.fetchDashboardData()
-        
-        // Wait for async operation to complete
         let expectation = XCTestExpectation(description: "Dashboard data loaded")
         
         viewModel.$isLoading
@@ -166,7 +163,9 @@ class DashboardViewModelTests: XCTestCase {
             }
             .store(in: &cancellables)
         
-        await fulfillment(of: [expectation], timeout: 5.0)
+        viewModel.fetchDashboardData()
+        
+        wait(for: [expectation], timeout: 5.0)
         
         // Then: Count should be accurate
         XCTAssertEqual(viewModel.transactionCount, 3, "Should accurately count all transactions")
@@ -235,7 +234,7 @@ class DashboardViewModelTests: XCTestCase {
     
     // MARK: - Publisher Tests
     
-    func testPublishedPropertiesUpdating() async {
+    func testPublishedPropertiesUpdating() {
         // Given: Observers for published properties
         var balanceUpdates: [Double] = []
         var countUpdates: [Int] = []
@@ -269,7 +268,7 @@ class DashboardViewModelTests: XCTestCase {
         
         viewModel.fetchDashboardData()
         
-        await fulfillment(of: [expectation], timeout: 2.0)
+        wait(for: [expectation], timeout: 2.0)
         
         // Then: Published properties should update
         XCTAssertTrue(balanceUpdates.count > 1, "Balance should update multiple times")

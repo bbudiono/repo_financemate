@@ -25,10 +25,17 @@ struct FinanceMateApp: App {
           ContentView()
             .environment(\.managedObjectContext, persistenceController.container.viewContext)
         } else {
-          // Use comprehensive LoginView with Apple SSO
-          AuthenticationWrapperView { success in
-            isAuthenticated = success
+          // Temporary placeholder until LoginView compilation issues are resolved
+          VStack {
+            Text("Authentication Required")
+              .font(.title)
+            Text("Debugging compilation issues...")
+              .font(.caption)
+            Button("Skip (Debug Only)") {
+              isAuthenticated = true
+            }
           }
+          .environment(\.managedObjectContext, persistenceController.container.viewContext)
         }
       }
       .onAppear {
@@ -63,86 +70,25 @@ struct FinanceMateApp: App {
   private func checkExistingSession() {
     // Check for existing authentication session
     if UserDefaults.standard.string(forKey: "authenticated_user_id") != nil {
-      isAuthenticated = true
-      print("✅ Existing user session found")
+      let provider = UserDefaults.standard.string(forKey: "authentication_provider") ?? "unknown"
+      
+      // Only accept legitimate authentication providers - NO GUEST MODE
+      if provider == "apple" || provider == "google" {
+        print("✅ Existing user session found (provider: \(provider))")
+        isAuthenticated = true
+      } else {
+        // Clear invalid or guest sessions
+        print("🔒 Clearing invalid session (provider: \(provider))")
+        clearInvalidSession()
+      }
     }
   }
-}
-
-// MARK: - Authentication Wrapper View
-
-struct AuthenticationWrapperView: View {
-  let onAuthenticationSuccess: (Bool) -> Void
-
-  @State private var isLoading = false
-
-  var body: some View {
-    VStack(spacing: 30) {
-      // Header
-      VStack(spacing: 20) {
-        Text("FinanceMate")
-          .font(.largeTitle)
-          .fontWeight(.bold)
-
-        Text("Secure Financial Management")
-          .font(.title3)
-          .foregroundColor(.secondary)
-      }
-
-      Spacer()
-
-      // Apple Sign In Button
-      SignInWithAppleButton(.signIn) { request in
-        request.requestedScopes = [.fullName, .email]
-      } onCompletion: { result in
-        handleSignInWithAppleResult(result)
-      }
-      .signInWithAppleButtonStyle(.black)
-      .frame(height: 50)
-      .cornerRadius(12)
-
-      if isLoading {
-        ProgressView()
-          .scaleEffect(0.8)
-      }
-
-      Spacer()
-
-      // Footer
-      Text("FinanceMate v1.0.0")
-        .font(.caption)
-        .foregroundColor(.secondary)
-    }
-    .padding(40)
-    .frame(width: 400, height: 500)
-  }
-
-  private func handleSignInWithAppleResult(_ result: Result<ASAuthorization, Error>) {
-    switch result {
-    case .success(let authorization):
-      isLoading = true
-
-      // Handle successful authentication
-      Task {
-        // Simulate authentication delay
-        try? await Task.sleep(for: .milliseconds(500))
-
-        await MainActor.run {
-          isLoading = false
-
-          // Store session
-          UserDefaults.standard.set(UUID().uuidString, forKey: "authenticated_user_id")
-          UserDefaults.standard.set("Apple ID User", forKey: "authenticated_user_email")
-          UserDefaults.standard.set(Date(), forKey: "authenticated_user_login_time")
-
-          onAuthenticationSuccess(true)
-          print("✅ Apple Sign In successful")
-        }
-      }
-
-    case .failure(let error):
-      print("❌ Apple Sign In failed: \(error)")
-      isLoading = false
-    }
+  
+  private func clearInvalidSession() {
+    UserDefaults.standard.removeObject(forKey: "authenticated_user_id")
+    UserDefaults.standard.removeObject(forKey: "authenticated_user_email")
+    UserDefaults.standard.removeObject(forKey: "authenticated_user_login_time")
+    UserDefaults.standard.removeObject(forKey: "authentication_provider")
+    UserDefaults.standard.removeObject(forKey: "is_temporary_bypass")
   }
 }

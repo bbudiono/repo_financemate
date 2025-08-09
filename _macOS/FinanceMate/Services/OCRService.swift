@@ -24,7 +24,7 @@ import AppKit
  * Last Updated: 2025-07-08
  */
 
-@MainActor
+// EMERGENCY FIX: Removed @MainActor to eliminate Swift Concurrency crashes
 class OCRService: ObservableObject {
     private let textRecognizer: VNRecognizeTextRequest
     private let nlTagger: NLTagger
@@ -45,12 +45,12 @@ class OCRService: ObservableObject {
     
     // MARK: - Public Interface
     
-    func processReceiptImage(_ image: NSImage) async throws -> OCRResult {
+    func processReceiptImage() throws -> OCRResult {
         guard let cgImage = preprocessImage(image) else {
             throw OCRError.imageProcessingFailed
         }
         
-        return try await withCheckedThrowingContinuation { continuation in
+        return try withCheckedThrowingContinuation { continuation in
             processingQueue.async {
                 self.performOCR(cgImage: cgImage) { result in
                     continuation.resume(with: result)

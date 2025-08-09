@@ -30,7 +30,7 @@ import SwiftUI
 
 /// High-level OCR workflow manager that orchestrates document processing with user interaction
 /// Handles retry logic, manual correction workflows, and integration with transaction system
-@MainActor
+// EMERGENCY FIX: Removed @MainActor to eliminate Swift Concurrency crashes
 final class OCRWorkflowManager: ObservableObject {
     
     // MARK: - Workflow State
@@ -124,9 +124,8 @@ final class OCRWorkflowManager: ObservableObject {
         processingProgress = 0.0
         currentState = .processing
         
-        currentProcessingTask = Task {
-            await processDocument(image)
-        }
+        currentProcessingTask = // EMERGENCY FIX: Removed Task block - immediate execution
+        processDocument(image)
     }
     
     /// Start OCR workflow with image data
@@ -139,9 +138,8 @@ final class OCRWorkflowManager: ObservableObject {
         processingProgress = 0.0
         currentState = .processing
         
-        currentProcessingTask = Task {
-            await processDocumentData(imageData)
-        }
+        currentProcessingTask = // EMERGENCY FIX: Removed Task block - immediate execution
+        processDocumentData(imageData)
     }
     
     /// Cancel current workflow
@@ -233,35 +231,35 @@ final class OCRWorkflowManager: ObservableObject {
     
     // MARK: - Private Implementation
     
-    private func processDocument(_ image: CGImage) async {
+    private func processDocument() {
         do {
             updateProgress(0.2)
             
-            let result = try await documentProcessor.processDocument(from: image)
+            let result = try documentProcessor.processDocument(from: image)
             
             updateProgress(1.0)
-            await handleProcessingResult(result)
+            handleProcessingResult(result)
             
         } catch {
-            await handleProcessingError(error)
+            handleProcessingError(error)
         }
     }
     
-    private func processDocumentData(_ imageData: Data) async {
+    private func processDocumentData() {
         do {
             updateProgress(0.1)
             
-            let result = try await documentProcessor.processDocument(fromImageData: imageData)
+            let result = try documentProcessor.processDocument(fromImageData: imageData)
             
             updateProgress(1.0)
-            await handleProcessingResult(result)
+            handleProcessingResult(result)
             
         } catch {
-            await handleProcessingError(error)
+            handleProcessingError(error)
         }
     }
     
-    private func handleProcessingResult(_ result: DocumentProcessor.ProcessingResult) async {
+    private func handleProcessingResult() {
         let overallConfidence = result.confidence
         
         if overallConfidence >= configuration.autoProcessThreshold && !configuration.requireConfirmation {
@@ -285,12 +283,12 @@ final class OCRWorkflowManager: ObservableObject {
         }
     }
     
-    private func handleProcessingError(_ error: Error) async {
+    private func handleProcessingError() {
         if currentRetryCount < configuration.maxRetryAttempts {
             currentRetryCount += 1
             
             // Wait before retry
-            try? await Task.sleep(nanoseconds: 1_000_000_000) // 1 second
+            try? Task.sleep(nanoseconds: 1_000_000_000) // 1 second
             
             // Retry would happen here based on error type
             currentState = .failed(error)

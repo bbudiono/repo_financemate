@@ -28,7 +28,21 @@ public class Transaction: NSManagedObject, Identifiable {
     @NSManaged public var category: String
     @NSManaged public var note: String?
     @NSManaged public var createdAt: Date
+    @NSManaged public var type: String
+    @NSManaged public var externalId: String?
     @NSManaged public var lineItems: Set<LineItem>
+    
+    // MARK: - Core Data Lifecycle
+    
+    public override func awakeFromInsert() {
+        super.awakeFromInsert()
+        
+        // Initialize required properties with defaults
+        self.id = UUID()
+        self.createdAt = Date()
+        self.date = Date()
+        self.type = "expense"
+    }
 }
 
 // MARK: - Phase 2: Line Item Splitting Models (Core Data implementation)
@@ -61,6 +75,11 @@ public class LineItem: NSManagedObject, Identifiable {
     @NSManaged public var amount: Double
     @NSManaged public var transaction: Transaction
     @NSManaged public var splitAllocations: Set<SplitAllocation>
+    
+    public override func awakeFromInsert() {
+        super.awakeFromInsert()
+        self.id = UUID()
+    }
 }
 
 /// Represents a split allocation for a line item (e.g., 70% Business, 30% Personal).
@@ -89,6 +108,13 @@ public class SplitAllocation: NSManagedObject, Identifiable {
     @NSManaged public var percentage: Double
     @NSManaged public var taxCategory: String
     @NSManaged public var lineItem: LineItem
+    
+    public override func awakeFromInsert() {
+        super.awakeFromInsert()
+        self.id = UUID()
+        self.percentage = 0.0
+        self.taxCategory = "general"
+    }
 }
 
 // MARK: - Convenience Methods

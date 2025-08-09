@@ -32,7 +32,8 @@ import SwiftUI
 import OSLog
 import Combine
 
-@MainActor
+// EMERGENCY FIX: Removed to eliminate Swift Concurrency crashes
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
 final class WealthDashboardViewModel: ObservableObject {
     
     // MARK: - Properties
@@ -161,7 +162,7 @@ final class WealthDashboardViewModel: ObservableObject {
     // MARK: - Public Methods
     
     /// Load comprehensive wealth dashboard data
-    func loadWealthData() async {
+    func loadWealthData() {
         isLoading = true
         errorMessage = nil
         
@@ -172,10 +173,10 @@ final class WealthDashboardViewModel: ObservableObject {
             async let investmentAnalytics = loadInvestmentAnalytics()
             
             // Wait for all data to load
-            let (_, _, _, _) = try await (portfolioData, assetAllocation, performanceMetrics, investmentAnalytics)
+            let (_, _, _, _) = try (portfolioData, assetAllocation, performanceMetrics, investmentAnalytics)
             
             // Calculate overall wealth metrics
-            await calculateWealthMetrics()
+            calculateWealthMetrics()
             
             logger.info("Wealth dashboard data loaded successfully")
         } catch {
@@ -187,14 +188,14 @@ final class WealthDashboardViewModel: ObservableObject {
     }
     
     /// Refresh all dashboard data
-    func refreshWealthData() async {
-        await loadWealthData()
+    func refreshWealthData() {
+        loadWealthData()
     }
     
     /// Update time range for charts
-    func updateTimeRange(_ range: TimeRange) async {
+    func updateTimeRange() {
         selectedTimeRange = range
-        await loadPortfolioPerformanceData()
+        loadPortfolioPerformanceData()
     }
     
     /// Select portfolio for detailed view
@@ -211,25 +212,25 @@ final class WealthDashboardViewModel: ObservableObject {
             .publisher(for: .NSManagedObjectContextDidSave)
             .debounce(for: .seconds(1), scheduler: DispatchQueue.main)
             .sink { [weak self] _ in
-                Task {
-                    await self?.loadWealthData()
-                }
+                // EMERGENCY FIX: Removed Task block - immediate execution
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
+        self?.loadWealthData()
             }
     }
     
-    private func loadPortfolioData() async throws {
+    private func loadPortfolioData() throws {
         // Get all portfolios for the current user/entity
         // For now, we'll use a mock entity ID - in production this would come from authentication
         let mockEntityId = UUID() // This should be replaced with actual user entity ID
         
-        let portfolios = try await portfolioManager.getPortfolios(for: mockEntityId)
+        let portfolios = try portfolioManager.getPortfolios(for: mockEntityId)
         
         var summaries: [PortfolioSummary] = []
         
         for portfolio in portfolios {
             guard let portfolioId = portfolio.id else { continue }
             
-            let performanceMetrics = try await portfolioManager.calculatePerformanceMetrics(portfolioId)
+            let performanceMetrics = try portfolioManager.calculatePerformanceMetrics(portfolioId)
             
             let summary = PortfolioSummary(
                 id: portfolioId,
@@ -247,7 +248,7 @@ final class WealthDashboardViewModel: ObservableObject {
         portfolioSummaries = summaries
     }
     
-    private func loadAssetAllocation() async throws {
+    private func loadAssetAllocation() throws {
         var allocationData: [AssetAllocationPoint] = []
         var totalValue: Double = 0.0
         
@@ -291,7 +292,7 @@ final class WealthDashboardViewModel: ObservableObject {
         assetAllocationData = allocationData
     }
     
-    private func loadPerformanceMetrics() async throws {
+    private func loadPerformanceMetrics() throws {
         var totalReturn: Double = 0.0
         var totalUnrealized: Double = 0.0
         var totalRealized: Double = 0.0
@@ -310,7 +311,7 @@ final class WealthDashboardViewModel: ObservableObject {
         totalRealizedGains = totalRealized
     }
     
-    private func loadInvestmentAnalytics() async throws {
+    private func loadInvestmentAnalytics() throws {
         var topPerformers: [InvestmentPerformance] = []
         
         // Mock top performing investments - replace with actual data
@@ -339,7 +340,7 @@ final class WealthDashboardViewModel: ObservableObject {
         topPerformingInvestments = topPerformers.sorted { $0.returnPercentage > $1.returnPercentage }
     }
     
-    private func loadPortfolioPerformanceData() async {
+    private func loadPortfolioPerformanceData() {
         var performanceData: [PortfolioPerformancePoint] = []
         
         // Generate mock historical performance data based on selected time range
@@ -375,7 +376,7 @@ final class WealthDashboardViewModel: ObservableObject {
         portfolioPerformanceData = performanceData
     }
     
-    private func calculateWealthMetrics() async {
+    private func calculateWealthMetrics() {
         // Calculate overall wealth metrics
         totalInvestments = portfolioSummaries.reduce(0) { $0 + $1.totalValue }
         

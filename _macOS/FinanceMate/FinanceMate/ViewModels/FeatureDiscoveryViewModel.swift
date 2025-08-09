@@ -29,7 +29,8 @@ import Foundation
 import SwiftUI
 import OSLog
 
-@MainActor
+// EMERGENCY FIX: Removed to eliminate Swift Concurrency crashes
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
 final class FeatureDiscoveryViewModel: ObservableObject {
     
     // MARK: - Properties
@@ -165,38 +166,38 @@ final class FeatureDiscoveryViewModel: ObservableObject {
         )
     ]
     
-    private let helpTopics: [HelpTopic] = [
-        HelpTopic(
+    private let helpTopics: [DiscoveryHelpTopic] = [
+        DiscoveryHelpTopic(
             title: "Getting Started with Transactions",
             content: "Learn how to add, edit, and categorize your financial transactions in FinanceMate.",
             category: .transactions,
             keywords: ["transaction", "add", "edit", "category", "amount"]
         ),
-        HelpTopic(
+        DiscoveryHelpTopic(
             title: "Understanding Line Item Splitting",
             content: "Master the art of splitting transactions across multiple tax categories for precise financial tracking.",
             category: .lineItems,
             keywords: ["split", "line item", "allocate", "percentage", "tax category"]
         ),
-        HelpTopic(
+        DiscoveryHelpTopic(
             title: "Australian Tax Categories Explained",
             content: "Comprehensive guide to Business, Personal, Investment, and other tax categories for ATO compliance.",
             category: .taxCategories,
             keywords: ["tax", "category", "business", "personal", "investment", "ATO", "deduction"]
         ),
-        HelpTopic(
+        DiscoveryHelpTopic(
             title: "Analytics and Reporting Features",
             content: "Explore powerful analytics tools to understand your spending patterns and generate compliance reports.",
             category: .analytics,
             keywords: ["analytics", "report", "chart", "trend", "pattern", "export"]
         ),
-        HelpTopic(
+        DiscoveryHelpTopic(
             title: "Export and Compliance Options",
             content: "Generate ATO-compliant reports in various formats for tax submission and record keeping.",
             category: .compliance,
             keywords: ["export", "compliance", "ATO", "CSV", "PDF", "tax submission"]
         ),
-        HelpTopic(
+        DiscoveryHelpTopic(
             title: "Dashboard Navigation Guide",
             content: "Navigate the FinanceMate dashboard efficiently to access all features and view your financial overview.",
             category: .navigation,
@@ -260,25 +261,25 @@ final class FeatureDiscoveryViewModel: ObservableObject {
         return availableTooltips
     }
     
-    func enableTooltipSystem() async {
+    func enableTooltipSystem() {
         isTooltipSystemEnabled = true
         userDefaults.set(true, forKey: "tooltipSystemEnabled")
         logger.info("Tooltip system enabled")
     }
     
-    func disableTooltipSystem() async {
+    func disableTooltipSystem() {
         isTooltipSystemEnabled = false
         userDefaults.set(false, forKey: "tooltipSystemEnabled")
-        await dismissCurrentTooltip()
+        dismissCurrentTooltip()
         logger.info("Tooltip system disabled")
     }
     
-    func presentTooltip(_ tooltip: Tooltip) async {
+    func presentTooltip() {
         guard isTooltipSystemEnabled else { return }
         guard !tooltip.isShown else { return }
         
         // Dismiss current tooltip if any
-        await dismissCurrentTooltip()
+        dismissCurrentTooltip()
         
         currentTooltip = tooltip
         isTooltipVisible = true
@@ -286,17 +287,17 @@ final class FeatureDiscoveryViewModel: ObservableObject {
         // Set up auto-dismiss timer if specified
         if let autoDismissAfter = tooltip.autoDismissAfter {
             tooltipDismissTimer = Timer.scheduledTimer(withTimeInterval: autoDismissAfter, repeats: false) { [weak self] _ in
-                Task { @MainActor in
-                    await self?.dismissCurrentTooltip()
-                }
+                // EMERGENCY FIX: Removed Task block - immediate execution
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
+        self?.dismissCurrentTooltip()
             }
         }
         
-        await trackTooltipInteraction(tooltip.type, action: .viewed)
+        trackTooltipInteraction(tooltip.type, action: .viewed)
         logger.info("Tooltip presented: \(tooltip.type.rawValue)")
     }
     
-    func dismissCurrentTooltip() async {
+    func dismissCurrentTooltip() {
         guard let tooltip = currentTooltip else { return }
         
         tooltipDismissTimer?.invalidate()
@@ -305,7 +306,7 @@ final class FeatureDiscoveryViewModel: ObservableObject {
         currentTooltip = nil
         isTooltipVisible = false
         
-        await trackTooltipInteraction(tooltip.type, action: .dismissed)
+        trackTooltipInteraction(tooltip.type, action: .dismissed)
         logger.info("Tooltip dismissed: \(tooltip.type.rawValue)")
     }
     
@@ -314,7 +315,9 @@ final class FeatureDiscoveryViewModel: ObservableObject {
         
         return [
             AccessibilityAction(name: "Dismiss", action: {
-                Task { await self.dismissCurrentTooltip() }
+                // EMERGENCY FIX: Removed Task block - immediate execution
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
+        self.dismissCurrentTooltip()
             }),
             AccessibilityAction(name: "More Info", action: {
                 // Could present detailed help for the tooltip topic
@@ -332,7 +335,7 @@ final class FeatureDiscoveryViewModel: ObservableObject {
         return unlockedFeatures.contains(feature)
     }
     
-    func unlockFeature(_ feature: FeatureType) async {
+    func unlockFeature() {
         unlockedFeatures.insert(feature)
         saveUnlockedFeatures()
         
@@ -343,7 +346,7 @@ final class FeatureDiscoveryViewModel: ObservableObject {
             featureType: feature,
             isRead: false
         )
-        await addFeatureAnnouncement(announcement)
+        addFeatureAnnouncement(announcement)
         
         logger.info("Feature unlocked: \(feature.rawValue)")
     }
@@ -358,22 +361,22 @@ final class FeatureDiscoveryViewModel: ObservableObject {
         return availableEducationalOverlays.filter { completedEducationalOverlays.contains($0.type) }
     }
     
-    func presentEducationalOverlay(_ overlay: EducationalOverlay) async {
+    func presentEducationalOverlay() {
         currentEducationalOverlay = overlay
         isEducationalOverlayVisible = true
         
-        await trackEducationalOverlayInteraction(overlay.type, action: .viewed)
+        trackEducationalOverlayInteraction(overlay.type, action: .viewed)
         logger.info("Educational overlay presented: \(overlay.type.rawValue)")
     }
     
-    func completeEducationalOverlay(_ overlay: EducationalOverlay) async {
+    func completeEducationalOverlay() {
         completedEducationalOverlays.insert(overlay.type)
         saveCompletedEducationalOverlays()
         
         currentEducationalOverlay = nil
         isEducationalOverlayVisible = false
         
-        await trackEducationalOverlayInteraction(overlay.type, action: .completed)
+        trackEducationalOverlayInteraction(overlay.type, action: .completed)
         logger.info("Educational overlay completed: \(overlay.type.rawValue)")
     }
     
@@ -383,11 +386,11 @@ final class FeatureDiscoveryViewModel: ObservableObject {
     
     // MARK: - Interactive Help System
     
-    func getAvailableHelpTopics() -> [HelpTopic] {
+    func getAvailableHelpTopics() -> [DiscoveryHelpTopic] {
         return helpTopics
     }
     
-    func searchHelpTopics(query: String) -> [HelpTopic] {
+    func searchHelpTopics(query: String) -> [DiscoveryHelpTopic] {
         guard !query.isEmpty else { return helpTopics }
         
         let lowercaseQuery = query.lowercased()
@@ -408,13 +411,13 @@ final class FeatureDiscoveryViewModel: ObservableObject {
         return readAnnouncements
     }
     
-    func addFeatureAnnouncement(_ announcement: FeatureAnnouncement) async {
+    func addFeatureAnnouncement() {
         pendingAnnouncements.append(announcement)
         saveAnnouncements()
         logger.info("Feature announcement added: \(announcement.title)")
     }
     
-    func markAnnouncementAsRead(_ announcement: FeatureAnnouncement) async {
+    func markAnnouncementAsRead() {
         if let index = pendingAnnouncements.firstIndex(where: { $0.id == announcement.id }) {
             var readAnnouncement = pendingAnnouncements[index]
             readAnnouncement.isRead = true
@@ -431,13 +434,13 @@ final class FeatureDiscoveryViewModel: ObservableObject {
         return engagementData
     }
     
-    func trackTooltipInteraction(_ type: TooltipType, action: InteractionAction) async {
+    func trackTooltipInteraction() {
         let interaction = TooltipInteraction(type: type, action: action, timestamp: Date())
         engagementData.tooltipInteractions.append(interaction)
         saveEngagementData()
     }
     
-    func trackEducationalOverlayInteraction(_ type: EducationalOverlayType, action: InteractionAction) async {
+    func trackEducationalOverlayInteraction() {
         let interaction = EducationalOverlayInteraction(type: type, action: action, timestamp: Date())
         engagementData.overlayInteractions.append(interaction)
         saveEngagementData()
@@ -625,7 +628,7 @@ enum FeatureType: String, CaseIterable {
     }
 }
 
-struct HelpTopic {
+struct DiscoveryHelpTopic {
     let title: String
     let content: String
     let category: HelpCategory

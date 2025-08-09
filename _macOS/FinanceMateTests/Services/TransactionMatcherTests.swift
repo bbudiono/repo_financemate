@@ -23,7 +23,6 @@ import NaturalLanguage
  * Last Updated: 2025-07-08
  */
 
-@MainActor
 final class TransactionMatcherTests: XCTestCase {
     var transactionMatcher: TransactionMatcher!
     var testContext: NSManagedObjectContext!
@@ -45,7 +44,7 @@ final class TransactionMatcherTests: XCTestCase {
     
     // MARK: - Exact Matching Tests
     
-    func testExactAmountMatching() async throws {
+    func testExactAmountMatching() throws {
         // Given: A transaction with exact amount match
         let targetAmount = 45.67
         let targetDate = Date()
@@ -65,7 +64,7 @@ final class TransactionMatcherTests: XCTestCase {
         )
         
         // When: Finding matching transaction
-        let matchedTransaction = await transactionMatcher.findMatchingTransaction(for: ocrResult)
+        let matchedTransaction = transactionMatcher.findMatchingTransaction(for: ocrResult)
         
         // Then: Should find exact match
         XCTAssertNotNil(matchedTransaction, "Should find exact matching transaction")
@@ -73,7 +72,7 @@ final class TransactionMatcherTests: XCTestCase {
         XCTAssertEqual(matchedTransaction?.amount, targetAmount, "Amount should match exactly")
     }
     
-    func testToleranceBasedMatching() async throws {
+    func testToleranceBasedMatching() throws {
         // Given: A transaction with slight amount difference (within 5% tolerance)
         let originalAmount = 100.00
         let ocrAmount = 102.50 // 2.5% difference, within 5% tolerance
@@ -94,14 +93,14 @@ final class TransactionMatcherTests: XCTestCase {
         )
         
         // When: Finding matching transaction
-        let matchedTransaction = await transactionMatcher.findMatchingTransaction(for: ocrResult)
+        let matchedTransaction = transactionMatcher.findMatchingTransaction(for: ocrResult)
         
         // Then: Should find match within tolerance
         XCTAssertNotNil(matchedTransaction, "Should find transaction within tolerance")
         XCTAssertEqual(matchedTransaction?.id, existingTransaction.id, "Should match correct transaction")
     }
     
-    func testAmountOutsideTolerance() async throws {
+    func testAmountOutsideTolerance() throws {
         // Given: A transaction with amount difference exceeding 5% tolerance
         let originalAmount = 100.00
         let ocrAmount = 110.00 // 10% difference, outside 5% tolerance
@@ -122,7 +121,7 @@ final class TransactionMatcherTests: XCTestCase {
         )
         
         // When: Finding matching transaction
-        let matchedTransaction = await transactionMatcher.findMatchingTransaction(for: ocrResult)
+        let matchedTransaction = transactionMatcher.findMatchingTransaction(for: ocrResult)
         
         // Then: Should not find match outside tolerance
         XCTAssertNil(matchedTransaction, "Should not match transaction outside tolerance")
@@ -130,7 +129,7 @@ final class TransactionMatcherTests: XCTestCase {
     
     // MARK: - Date Range Matching Tests
     
-    func testDateRangeMatching() async throws {
+    func testDateRangeMatching() throws {
         // Given: A transaction 2 days before OCR date (within 3-day tolerance)
         let transactionDate = Calendar.current.date(byAdding: .day, value: -2, to: Date()) ?? Date()
         let ocrDate = Date()
@@ -151,14 +150,14 @@ final class TransactionMatcherTests: XCTestCase {
         )
         
         // When: Finding matching transaction
-        let matchedTransaction = await transactionMatcher.findMatchingTransaction(for: ocrResult)
+        let matchedTransaction = transactionMatcher.findMatchingTransaction(for: ocrResult)
         
         // Then: Should find match within date range
         XCTAssertNotNil(matchedTransaction, "Should find transaction within date range")
         XCTAssertEqual(matchedTransaction?.id, existingTransaction.id, "Should match correct transaction")
     }
     
-    func testDateOutsideRange() async throws {
+    func testDateOutsideRange() throws {
         // Given: A transaction 5 days before OCR date (outside 3-day tolerance)
         let transactionDate = Calendar.current.date(byAdding: .day, value: -5, to: Date()) ?? Date()
         let ocrDate = Date()
@@ -179,7 +178,7 @@ final class TransactionMatcherTests: XCTestCase {
         )
         
         // When: Finding matching transaction
-        let matchedTransaction = await transactionMatcher.findMatchingTransaction(for: ocrResult)
+        let matchedTransaction = transactionMatcher.findMatchingTransaction(for: ocrResult)
         
         // Then: Should not find match outside date range
         XCTAssertNil(matchedTransaction, "Should not match transaction outside date range")
@@ -187,7 +186,7 @@ final class TransactionMatcherTests: XCTestCase {
     
     // MARK: - Fuzzy Text Matching Tests
     
-    func testFuzzyTextMatching() async throws {
+    func testFuzzyTextMatching() throws {
         // Given: Transactions with similar but not identical merchant names
         let amount = 15.50
         let date = Date()
@@ -206,7 +205,7 @@ final class TransactionMatcherTests: XCTestCase {
         )
         
         // When: Finding matching transaction
-        let matchedTransaction = await transactionMatcher.findMatchingTransaction(for: ocrResult)
+        let matchedTransaction = transactionMatcher.findMatchingTransaction(for: ocrResult)
         
         // Then: Should find fuzzy match
         XCTAssertNotNil(matchedTransaction, "Should find fuzzy text match")
@@ -233,7 +232,7 @@ final class TransactionMatcherTests: XCTestCase {
         }
     }
     
-    func testCaseInsensitiveFuzzyMatching() async throws {
+    func testCaseInsensitiveFuzzyMatching() throws {
         // Given: Transactions with different casing
         let amount = 8.75
         let date = Date()
@@ -252,7 +251,7 @@ final class TransactionMatcherTests: XCTestCase {
         )
         
         // When: Finding matching transaction
-        let matchedTransaction = await transactionMatcher.findMatchingTransaction(for: ocrResult)
+        let matchedTransaction = transactionMatcher.findMatchingTransaction(for: ocrResult)
         
         // Then: Should find case-insensitive match
         XCTAssertNotNil(matchedTransaction, "Should find case-insensitive match")
@@ -261,7 +260,7 @@ final class TransactionMatcherTests: XCTestCase {
     
     // MARK: - No Match Scenarios Tests
     
-    func testNoMatchScenarios() async throws {
+    func testNoMatchScenarios() throws {
         // Given: Transactions that shouldn't match
         let existingTransaction = createTestTransaction(
             amount: 50.00,
@@ -280,14 +279,14 @@ final class TransactionMatcherTests: XCTestCase {
         
         for ocrResult in noMatchScenarios {
             // When: Finding matching transaction
-            let matchedTransaction = await transactionMatcher.findMatchingTransaction(for: ocrResult)
+            let matchedTransaction = transactionMatcher.findMatchingTransaction(for: ocrResult)
             
             // Then: Should not find match
             XCTAssertNil(matchedTransaction, "Should not match for scenario: \(ocrResult.merchantName)")
         }
     }
     
-    func testMultipleMatchesPriority() async throws {
+    func testMultipleMatchesPriority() throws {
         // Given: Multiple transactions that could match
         let amount = 30.00
         let date = Date()
@@ -314,7 +313,7 @@ final class TransactionMatcherTests: XCTestCase {
         )
         
         // When: Finding matching transaction
-        let matchedTransaction = await transactionMatcher.findMatchingTransaction(for: ocrResult)
+        let matchedTransaction = transactionMatcher.findMatchingTransaction(for: ocrResult)
         
         // Then: Should match the more recent transaction
         XCTAssertNotNil(matchedTransaction, "Should find a matching transaction")
@@ -323,7 +322,7 @@ final class TransactionMatcherTests: XCTestCase {
     
     // MARK: - Already Processed Transactions Tests
     
-    func testExcludeAlreadyProcessedTransactions() async throws {
+    func testExcludeAlreadyProcessedTransactions() throws {
         // Given: A transaction that already has OCR data
         let amount = 12.50
         let date = Date()
@@ -347,7 +346,7 @@ final class TransactionMatcherTests: XCTestCase {
         )
         
         // When: Finding matching transaction
-        let matchedTransaction = await transactionMatcher.findMatchingTransaction(for: ocrResult)
+        let matchedTransaction = transactionMatcher.findMatchingTransaction(for: ocrResult)
         
         // Then: Should not match already processed transaction
         XCTAssertNil(matchedTransaction, "Should not match already processed transaction")
@@ -355,7 +354,7 @@ final class TransactionMatcherTests: XCTestCase {
     
     // MARK: - Australian-Specific Tests
     
-    func testAustralianMerchantPatterns() async throws {
+    func testAustralianMerchantPatterns() throws {
         // Given: Common Australian merchant patterns
         let australianMerchants = [
             ("Woolworths", "WOOLWORTHS 1234"),
@@ -383,7 +382,7 @@ final class TransactionMatcherTests: XCTestCase {
             )
             
             // When: Finding matching transaction
-            let matchedTransaction = await transactionMatcher.findMatchingTransaction(for: ocrResult)
+            let matchedTransaction = transactionMatcher.findMatchingTransaction(for: ocrResult)
             
             // Then: Should match Australian merchant patterns
             XCTAssertNotNil(matchedTransaction, "Should match Australian merchant: \(shortName)")
@@ -424,9 +423,9 @@ final class TransactionMatcherTests: XCTestCase {
         
         // When: Measuring matching performance
         measure {
-            Task {
-                let _ = await transactionMatcher.findMatchingTransaction(for: ocrResult)
-            }
+            // Synchronous execution
+let _ = transactionMatcher.findMatchingTransaction(for: ocrResult)
+            
         }
     }
     

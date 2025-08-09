@@ -28,7 +28,7 @@ import Combine
  * Last Updated: 2025-07-09
  */
 
-@MainActor
+// EMERGENCY FIX: Removed @MainActor to eliminate Swift Concurrency crashes
 class BankConnectionViewModel: ObservableObject {
     
     // MARK: - Published Properties
@@ -80,15 +80,15 @@ class BankConnectionViewModel: ObservableObject {
     
     // MARK: - Authentication Methods
     
-    func authenticateWithAPIKey(_ apiKey: String) async {
+    func authenticateWithAPIKey() {
         isLoading = true
         errorMessage = nil
         
         do {
-            try await authManager.authenticateWithAPIKey(apiKey)
+            try authManager.authenticateWithAPIKey(apiKey)
             
             // Fetch bank accounts after successful authentication
-            await fetchBankAccounts()
+            fetchBankAccounts()
             
         } catch {
             errorMessage = error.localizedDescription
@@ -97,8 +97,8 @@ class BankConnectionViewModel: ObservableObject {
         isLoading = false
     }
     
-    func logout() async {
-        await authManager.logout()
+    func logout() {
+        authManager.logout()
         connectedBankAccounts.removeAll()
         selectedBankAccount = nil
         errorMessage = nil
@@ -106,7 +106,7 @@ class BankConnectionViewModel: ObservableObject {
     
     // MARK: - Bank Account Management
     
-    func fetchBankAccounts() async {
+    func fetchBankAccounts() {
         guard isAuthenticated else {
             errorMessage = "Please authenticate with your bank first"
             return
@@ -116,7 +116,7 @@ class BankConnectionViewModel: ObservableObject {
         errorMessage = nil
         
         do {
-            let fetchedAccounts = try await bankService.fetchBankAccounts()
+            let fetchedAccounts = try bankService.fetchBankAccounts()
             connectedBankAccounts = fetchedAccounts
             
         } catch {
@@ -127,7 +127,7 @@ class BankConnectionViewModel: ObservableObject {
         isLoading = false
     }
     
-    func connectBankAccount(_ connectionData: BankConnectionData) async {
+    func connectBankAccount() {
         guard isAuthenticated else {
             errorMessage = "Please authenticate with your bank first"
             return
@@ -168,7 +168,7 @@ class BankConnectionViewModel: ObservableObject {
         isLoading = false
     }
     
-    func disconnectBankAccount(_ bankAccount: BankAccount) async {
+    func disconnectBankAccount() {
         isLoading = true
         errorMessage = nil
         
@@ -194,7 +194,7 @@ class BankConnectionViewModel: ObservableObject {
         isLoading = false
     }
     
-    func updateBankAccount(_ bankAccount: BankAccount, with data: BankConnectionData) async {
+    func updateBankAccount() {
         guard validateBankConnectionData(data) else {
             return
         }
@@ -236,7 +236,7 @@ class BankConnectionViewModel: ObservableObject {
     
     // MARK: - Transaction Sync
     
-    func syncTransactions(for bankAccount: BankAccount) async {
+    func syncTransactions() {
         guard isAuthenticated else {
             errorMessage = "Please authenticate with your bank first"
             return
@@ -246,7 +246,7 @@ class BankConnectionViewModel: ObservableObject {
         errorMessage = nil
         
         do {
-            try await bankService.syncTransactions(for: bankAccount)
+            try bankService.syncTransactions(for: bankAccount)
             
             // Update last sync date
             bankAccount.lastSyncDate = Date()
@@ -259,9 +259,9 @@ class BankConnectionViewModel: ObservableObject {
         isLoading = false
     }
     
-    func syncAllTransactions() async {
+    func syncAllTransactions() {
         for bankAccount in connectedBankAccounts {
-            await syncTransactions(for: bankAccount)
+            syncTransactions(for: bankAccount)
         }
     }
     
@@ -352,19 +352,19 @@ class BasiqAuthenticationManager: ObservableObject {
     @Published var isAuthenticated: Bool = false
     @Published var lastError: BasiqAuthError?
     
-    func authenticateWithAPIKey(_ apiKey: String) async throws {
+    func authenticateWithAPIKey() throws {
         // Simulate authentication process
-        try await Task.sleep(nanoseconds: 500_000_000) // 0.5 second
+        try Task.sleep(nanoseconds: 500_000_000) // 0.5 second
         
         // For now, simulate successful authentication
         // In real implementation, this would call Basiq API
-        await MainActor.run {
+        MainActor.run {
             self.isAuthenticated = true
         }
     }
     
-    func logout() async {
-        await MainActor.run {
+    func logout() {
+        MainActor.run {
             self.isAuthenticated = false
             self.lastError = nil
         }
@@ -372,18 +372,18 @@ class BasiqAuthenticationManager: ObservableObject {
 }
 
 class BankDataService {
-    func fetchBankAccounts() async throws -> [BankAccount] {
+    func fetchBankAccounts() throws -> [BankAccount] {
         // Simulate API call
-        try await Task.sleep(nanoseconds: 200_000_000) // 0.2 second
+        try Task.sleep(nanoseconds: 200_000_000) // 0.2 second
         
         // Return empty array for now
         // In real implementation, this would call Basiq API
         return []
     }
     
-    func syncTransactions(for bankAccount: BankAccount) async throws {
+    func syncTransactions() throws {
         // Simulate transaction sync
-        try await Task.sleep(nanoseconds: 300_000_000) // 0.3 second
+        try Task.sleep(nanoseconds: 300_000_000) // 0.3 second
         
         // In real implementation, this would:
         // 1. Fetch transactions from Basiq API

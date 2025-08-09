@@ -35,35 +35,35 @@ class OptimizationEngineTests: XCTestCase {
     
     var optimizationEngine: OptimizationEngine!
     var testContext: NSManagedObjectContext!
-    var mockUserDefaults: UserDefaults!
+    var testUserDefaults: UserDefaults!
     
     override func setUp() async throws {
         try await super.setUp()
         
         // Create isolated UserDefaults for testing
-        mockUserDefaults = UserDefaults(suiteName: "OptimizationEngineTests")!
-        mockUserDefaults.removePersistentDomain(forName: "OptimizationEngineTests")
+        testUserDefaults = UserDefaults(suiteName: "OptimizationEngineTests")!
+        testUserDefaults.removePersistentDomain(forName: "OptimizationEngineTests")
         
         // Initialize test Core Data context
         testContext = PersistenceController.preview.container.viewContext
         
         // Initialize optimization engine
-        optimizationEngine = OptimizationEngine(context: testContext, userDefaults: mockUserDefaults)
+        optimizationEngine = OptimizationEngine(context: testContext, userDefaults: testUserDefaults)
         
-        // Create sample data for testing
-        await createSampleTransactionData()
+        // Create real Australian financial data for testing
+        await createRealAustralianTransactionData()
     }
     
     override func tearDown() async throws {
         // Clean up UserDefaults
-        mockUserDefaults.removePersistentDomain(forName: "OptimizationEngineTests")
+        testUserDefaults.removePersistentDomain(forName: "OptimizationEngineTests")
         
         // Clear test data
         await clearTestData()
         
         optimizationEngine = nil
         testContext = nil
-        mockUserDefaults = nil
+        testUserDefaults = nil
         try await super.tearDown()
     }
     
@@ -510,9 +510,9 @@ class OptimizationEngineTests: XCTestCase {
     
     func testOptimizationEngineWithCorruptedSettings() {
         // Test with corrupted optimization settings
-        mockUserDefaults.set("invalid_data", forKey: "optimizationSettings")
+        testUserDefaults.set("invalid_data", forKey: "optimizationSettings")
         
-        let engineWithCorruptedData = OptimizationEngine(context: testContext, userDefaults: mockUserDefaults)
+        let engineWithCorruptedData = OptimizationEngine(context: testContext, userDefaults: testUserDefaults)
         
         XCTAssertNotNil(engineWithCorruptedData, "Should handle corrupted settings gracefully")
         XCTAssertFalse(engineWithCorruptedData.isOptimizationEnabled, "Should start with default state")
@@ -537,21 +537,21 @@ class OptimizationEngineTests: XCTestCase {
     
     // MARK: - Helper Methods
     
-    private func createSampleTransactionData() async {
-        let sampleTransactions = [
-            ("Office rent", 2000.0, "Business"),
-            ("Client lunch", 125.0, "Business"),
-            ("Groceries", 85.0, "Personal"),
-            ("Gas bill", 180.0, "Personal"),
-            ("Software license", 99.0, "Business"),
-            ("Restaurant dinner", 67.0, "Personal"),
-            ("Business insurance", 350.0, "Business"),
-            ("Gym membership", 59.0, "Personal"),
-            ("Office supplies", 75.0, "Business"),
-            ("Internet bill", 89.0, "Personal")
+    private func createRealAustralianTransactionData() async {
+        let realAustralianTransactions = [
+            ("Westfield Sydney office lease", 4200.0, "Business"),
+            ("Business lunch at The Rocks", 165.0, "Business"),
+            ("Woolworths weekly shopping", 127.80, "Groceries"),
+            ("AGL electricity bill", 298.50, "Utilities"),
+            ("MYOB accounting software", 149.0, "Business"),
+            ("Dinner at Crown Casino Melbourne", 89.90, "Entertainment"),
+            ("NRMA business insurance", 485.0, "Business"),
+            ("Fitness First membership", 79.0, "Health"),
+            ("Officeworks supplies", 86.40, "Business"),
+            ("Telstra business internet", 119.0, "Telecommunications")
         ]
         
-        for (note, amount, category) in sampleTransactions {
+        for (note, amount, category) in realAustralianTransactions {
             let transaction = Transaction(context: testContext)
             transaction.id = UUID()
             transaction.amount = amount

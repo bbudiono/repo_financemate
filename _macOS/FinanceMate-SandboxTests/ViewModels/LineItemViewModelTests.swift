@@ -22,7 +22,8 @@ import CoreData
  * Last Updated: 2025-07-07
  */
 
-@MainActor
+// EMERGENCY FIX: Removed to eliminate Swift Concurrency crashes
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
 final class LineItemViewModelTests: XCTestCase {
     var viewModel: LineItemViewModel!
     var persistenceController: PersistenceController!
@@ -81,16 +82,16 @@ final class LineItemViewModelTests: XCTestCase {
     
     // MARK: - CRUD Operation Tests
     
-    func testAddLineItemSuccess() async {
+    func testAddLineItemSuccess() {
         // Given: Valid line item data
         viewModel.newLineItem.itemDescription = "Office Chair"
         viewModel.newLineItem.amount = 299.99
         
         // When: Adding a line item
-        await viewModel.addLineItem(to: testTransaction)
+        viewModel.addLineItem(to: testTransaction)
         
         // Then: Line item should be created successfully
-        await viewModel.fetchLineItems(for: testTransaction)
+        viewModel.fetchLineItems(for: testTransaction)
         XCTAssertEqual(viewModel.lineItems.count, 1, "Should have one line item")
         XCTAssertEqual(viewModel.lineItems.first?.itemDescription, "Office Chair", "Description should match")
         XCTAssertEqual(viewModel.lineItems.first?.amount ?? 0, 299.99, accuracy: 0.01, "Amount should match")
@@ -98,69 +99,69 @@ final class LineItemViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.errorMessage, "Should have no error")
     }
     
-    func testAddLineItemValidationFailure() async {
+    func testAddLineItemValidationFailure() {
         // Given: Invalid line item data (empty description)
         viewModel.newLineItem.itemDescription = ""
         viewModel.newLineItem.amount = 100.0
         
         // When: Adding a line item
-        await viewModel.addLineItem(to: testTransaction)
+        viewModel.addLineItem(to: testTransaction)
         
         // Then: Should fail validation
         XCTAssertNotNil(viewModel.errorMessage, "Should have validation error")
         XCTAssertTrue(viewModel.errorMessage?.contains("description") == true, "Error should mention description")
-        await viewModel.fetchLineItems(for: testTransaction)
+        viewModel.fetchLineItems(for: testTransaction)
         XCTAssertEqual(viewModel.lineItems.count, 0, "Should have no line items")
     }
     
-    func testAddLineItemNegativeAmountValidation() async {
+    func testAddLineItemNegativeAmountValidation() {
         // Given: Invalid line item data (negative amount)
         viewModel.newLineItem.itemDescription = "Test Item"
         viewModel.newLineItem.amount = -50.0
         
         // When: Adding a line item
-        await viewModel.addLineItem(to: testTransaction)
+        viewModel.addLineItem(to: testTransaction)
         
         // Then: Should fail validation
         XCTAssertNotNil(viewModel.errorMessage, "Should have validation error")
         XCTAssertTrue(viewModel.errorMessage?.contains("amount") == true, "Error should mention amount")
-        await viewModel.fetchLineItems(for: testTransaction)
+        viewModel.fetchLineItems(for: testTransaction)
         XCTAssertEqual(viewModel.lineItems.count, 0, "Should have no line items")
     }
     
-    func testUpdateLineItemSuccess() async {
+    func testUpdateLineItemSuccess() {
         // Given: An existing line item
         let lineItem = createTestLineItem(description: "Original Description", amount: 100.0)
-        await viewModel.fetchLineItems(for: testTransaction)
+        viewModel.fetchLineItems(for: testTransaction)
         
         // When: Updating the line item
         lineItem.itemDescription = "Updated Description"
         lineItem.amount = 150.0
-        await viewModel.updateLineItem(lineItem)
+        viewModel.updateLineItem(lineItem)
         
         // Then: Line item should be updated
-        await viewModel.fetchLineItems(for: testTransaction)
+        viewModel.fetchLineItems(for: testTransaction)
         XCTAssertEqual(viewModel.lineItems.first?.itemDescription, "Updated Description", "Description should be updated")
         XCTAssertEqual(viewModel.lineItems.first?.amount ?? 0, 150.0, accuracy: 0.01, "Amount should be updated")
         XCTAssertNil(viewModel.errorMessage, "Should have no error")
     }
     
-    func testDeleteLineItemSuccess() async {
+    func testDeleteLineItemSuccess() {
         // Given: An existing line item
         let lineItem = createTestLineItem(description: "To Delete", amount: 75.0)
-        await viewModel.fetchLineItems(for: testTransaction)
+        viewModel.fetchLineItems(for: testTransaction)
         XCTAssertEqual(viewModel.lineItems.count, 1, "Should have one line item")
         
         // When: Deleting the line item
-        await viewModel.deleteLineItem(lineItem)
+        viewModel.deleteLineItem(lineItem)
         
         // Then: Line item should be deleted
-        await viewModel.fetchLineItems(for: testTransaction)
+        viewModel.fetchLineItems(for: testTransaction)
         XCTAssertEqual(viewModel.lineItems.count, 0, "Should have no line items")
         XCTAssertNil(viewModel.errorMessage, "Should have no error")
     }
     
-    func testFetchLineItemsForTransaction() async {
+    func testFetchLineItemsForTransaction() {
         // Given: Multiple line items for different transactions
         let otherTransaction = Transaction.create(in: context, amount: 200.0, category: "Other", note: "Other transaction")
         try! context.save()
@@ -170,7 +171,7 @@ final class LineItemViewModelTests: XCTestCase {
         _ = createTestLineItem(description: "Other Item", amount: 30.0, transaction: otherTransaction)
         
         // When: Fetching line items for test transaction
-        await viewModel.fetchLineItems(for: testTransaction)
+        viewModel.fetchLineItems(for: testTransaction)
         
         // Then: Should only get line items for test transaction
         XCTAssertEqual(viewModel.lineItems.count, 2, "Should have two line items for test transaction")
@@ -255,25 +256,25 @@ final class LineItemViewModelTests: XCTestCase {
     
     // MARK: - Loading State Tests
     
-    func testLoadingStatesDuringAdd() async {
+    func testLoadingStatesDuringAdd() {
         // Given: Valid line item data
         viewModel.newLineItem.itemDescription = "Test Item"
         viewModel.newLineItem.amount = 50.0
         
         // When: Adding line item (check loading state changes)
-        let addTask = Task {
-            await viewModel.addLineItem(to: testTransaction)
-        }
+        let addTask = // EMERGENCY FIX: Removed Task block - immediate execution
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
+        viewModel.addLineItem(to: testTransaction)
         
         // Then: Loading state should be managed properly
         // Note: In a real scenario, we might need to add delays or use expectations to test loading states
-        await addTask.value
+        addTask.value
         XCTAssertFalse(viewModel.isLoading, "Loading should be false after completion")
     }
     
     // MARK: - Error Handling Tests
     
-    func testErrorHandlingInvalidTransaction() async {
+    func testErrorHandlingInvalidTransaction() {
         // Given: Invalid transaction (nil context)
         let invalidTransaction = Transaction(context: context)
         // Don't save to make it invalid
@@ -282,7 +283,7 @@ final class LineItemViewModelTests: XCTestCase {
         viewModel.newLineItem.amount = 50.0
         
         // When: Adding line item to invalid transaction
-        await viewModel.addLineItem(to: invalidTransaction)
+        viewModel.addLineItem(to: invalidTransaction)
         
         // Then: Should handle error gracefully
         XCTAssertNotNil(viewModel.errorMessage, "Should have error message")
@@ -306,14 +307,14 @@ final class LineItemViewModelTests: XCTestCase {
     
     // MARK: - Split Allocation Integration Tests
     
-    func testLineItemWithSplitAllocations() async {
+    func testLineItemWithSplitAllocations() {
         // Given: A line item with split allocations
         let lineItem = createTestLineItem(description: "Mixed Item", amount: 100.0)
         _ = createTestSplitAllocation(percentage: 60.0, taxCategory: "Business", lineItem: lineItem)
         _ = createTestSplitAllocation(percentage: 40.0, taxCategory: "Personal", lineItem: lineItem)
         
         // When: Fetching line items
-        await viewModel.fetchLineItems(for: testTransaction)
+        viewModel.fetchLineItems(for: testTransaction)
         
         // Then: Line item should have split allocations
         XCTAssertEqual(viewModel.lineItems.count, 1, "Should have one line item")
@@ -326,7 +327,7 @@ final class LineItemViewModelTests: XCTestCase {
     
     // MARK: - Performance Tests
     
-    func testFetchPerformanceWithLargeDataset() async {
+    func testFetchPerformanceWithLargeDataset() {
         // Given: Large number of line items
         for i in 0..<100 {
             _ = createTestLineItem(description: "Item \(i)", amount: Double(i) * 10.0)
@@ -334,7 +335,7 @@ final class LineItemViewModelTests: XCTestCase {
         
         // When: Fetching line items (measure time)
         let startTime = CFAbsoluteTimeGetCurrent()
-        await viewModel.fetchLineItems(for: testTransaction)
+        viewModel.fetchLineItems(for: testTransaction)
         let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
         
         // Then: Should complete within reasonable time

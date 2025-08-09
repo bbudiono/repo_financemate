@@ -3,20 +3,24 @@ import CryptoKit
 import Foundation
 import CoreData
 
+// Import required authentication providers and token storage
+// Note: These files are in the same module so no explicit import needed
+// but we need to ensure proper access scope
+
 // MARK: - Authentication Service Protocol
 protocol AuthenticationServiceProtocol {
-  func authenticateWithApple() async throws -> AuthenticationResult
-  func authenticateWithGoogle() async throws -> AuthenticationResult
-  func authenticateWithBiometrics() async throws -> AuthenticationResult
-  func authenticateWithEmail(email: String, password: String) async throws -> AuthenticationResult
-  func signOut() async throws
+  func authenticateWithApple() throws -> AuthenticationResult
+  func authenticateWithGoogle() throws -> AuthenticationResult
+  func authenticateWithBiometrics() throws -> AuthenticationResult
+  func authenticateWithEmail() throws -> AuthenticationResult
+  func signOut() throws
   func getCurrentUser() -> User?
   func createTestSession() -> User?
-  func signIn(email: String, password: String) async -> (success: Bool, error: Error?)
+  func signIn() -> (success: Bool, error: Error?)
 }
 
 // MARK: - Authentication Result
-struct AuthenticationResult {
+public struct AuthenticationResult {
   let success: Bool
   let user: User?
   let error: Error?
@@ -32,49 +36,38 @@ enum AuthenticationProvider: String {
 }
 
 // MARK: - Authentication Service Implementation
-class AuthenticationService: NSObject, AuthenticationServiceProtocol,
-  ASAuthorizationControllerDelegate,
-  ASAuthorizationControllerPresentationContextProviding
-{
+class AuthenticationService: NSObject, AuthenticationServiceProtocol {
 
   // MARK: - Properties
   private let persistenceController = PersistenceController.shared
-  private var authenticationContinuation: CheckedContinuation<AuthenticationResult, Error>?
   private var context: NSManagedObjectContext {
     return persistenceController.container.viewContext
   }
 
   // MARK: - AuthenticationServiceProtocol Implementation
 
-  func authenticateWithApple() async throws -> AuthenticationResult {
-    return try await withCheckedThrowingContinuation { continuation in
-      authenticationContinuation = continuation
-
-      let appleIDProvider = ASAuthorizationAppleIDProvider()
-      let request = appleIDProvider.createRequest()
-      request.requestedScopes = [.fullName, .email]
-      request.state = generateNonce()
-
-      let authorizationController = ASAuthorizationController(authorizationRequests: [request])
-      authorizationController.delegate = self
-      authorizationController.presentationContextProvider = self
-      authorizationController.performRequests()
-    }
+  func authenticateWithApple() throws -> AuthenticationResult {
+    let appleProvider = AppleAuthProvider(context: context)
+    return try appleProvider.authenticate()
   }
 
-  func authenticateWithGoogle() async throws -> AuthenticationResult {
-    // Placeholder for Google OAuth implementation
-    // In a production implementation, this would integrate with Google Sign-In SDK
-    throw AuthenticationError.notImplemented("Google OAuth implementation pending")
+  func authenticateWithGoogle() throws -> AuthenticationResult {
+    let googleProvider = GoogleAuthProvider(context: context)
+    return try googleProvider.authenticate()
   }
 
-  func authenticateWithBiometrics() async throws -> AuthenticationResult {
+  func authenticateWithBiometrics() throws -> AuthenticationResult {
     // Placeholder for biometric authentication
     // In a production implementation, this would use LocalAuthentication framework
     throw AuthenticationError.notImplemented("Biometric authentication implementation pending")
   }
 
-  func authenticateWithEmail(email: String, password: String) async throws -> AuthenticationResult {
+  func authenticateWithEmail() throws -> AuthenticationResult {
+    // Protocol conformance method - placeholder
+    throw AuthenticationError.notImplemented("Use authenticateWithEmail(email:password:) instead")
+  }
+  
+  func authenticateWithEmail(email: String, password: String) throws -> AuthenticationResult {
     // Validate email format
     guard isValidEmail(email) else {
       throw AuthenticationError.invalidEmail("Invalid email format")
@@ -126,7 +119,7 @@ class AuthenticationService: NSObject, AuthenticationServiceProtocol,
     )
   }
 
-  func signOut() async throws {
+  func signOut() throws {
     // Clear user session
     UserDefaults.standard.removeObject(forKey: "authenticated_user_id")
     UserDefaults.standard.removeObject(forKey: "authenticated_user_email")
@@ -196,138 +189,22 @@ class AuthenticationService: NSObject, AuthenticationServiceProtocol,
     #endif
   }
 
-  func signIn(email: String, password: String) async -> (success: Bool, error: Error?) {
+  func signIn() -> (success: Bool, error: Error?) {
+    // Protocol conformance method - requires default credentials or session
+    return (success: false, error: AuthenticationError.notImplemented("Use signIn(email:password:) instead"))
+  }
+  
+  func signIn(email: String, password: String) -> (success: Bool, error: Error?) {
     do {
-      let result = try await authenticateWithEmail(email: email, password: password)
+      let result = try authenticateWithEmail(email: email, password: password)
       return (success: result.success, error: result.error)
     } catch {
       return (success: false, error: error)
     }
   }
 
-  // MARK: - ASAuthorizationControllerDelegate
-
-  func authorizationController(
-    controller: ASAuthorizationController,
-    didCompleteWithAuthorization authorization: ASAuthorization
-  ) {
-    guard let continuation = authenticationContinuation else { return }
-
-    do {
-      if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
-        let result = try handleAppleSignInSuccess(appleIDCredential)
-        continuation.resume(returning: result)
-      } else {
-        let error = AuthenticationError.unknown("Unknown credential type received")
-        continuation.resume(throwing: error)
-      }
-    } catch {
-      continuation.resume(throwing: error)
-    }
-
-    authenticationContinuation = nil
-  }
-
-  func authorizationController(
-    controller: ASAuthorizationController, didCompleteWithError error: Error
-  ) {
-    guard let continuation = authenticationContinuation else { return }
-
-    if let authError = error as? ASAuthorizationError {
-      let mappedError = mapAppleSignInError(authError)
-      continuation.resume(throwing: mappedError)
-    } else {
-      continuation.resume(throwing: error)
-    }
-
-    authenticationContinuation = nil
-  }
-
-  // MARK: - ASAuthorizationControllerPresentationContextProviding
-
-  func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
-    return NSApplication.shared.windows.first { $0.isKeyWindow } ?? NSApplication.shared.windows
-      .first!
-  }
 
   // MARK: - Private Methods
-
-  private func generateNonce() -> String {
-    let length = 32
-    var bytes = [UInt8](repeating: 0, count: length)
-    let status = SecRandomCopyBytes(kSecRandomDefault, length, &bytes)
-
-    if status != errSecSuccess {
-      return UUID().uuidString.replacingOccurrences(of: "-", with: "")
-    }
-
-    return Data(bytes).base64EncodedString()
-      .replacingOccurrences(of: "=", with: "")
-      .replacingOccurrences(of: "+", with: "-")
-      .replacingOccurrences(of: "/", with: "_")
-  }
-
-  private func handleAppleSignInSuccess(_ credential: ASAuthorizationAppleIDCredential) throws
-    -> AuthenticationResult
-  {
-    let userIdentifier = credential.user
-    let email = credential.email ?? "unknown@apple.local"
-    let fullName = credential.fullName
-
-    var displayName = "Apple User"
-    if let fullName = fullName {
-      let nameComponents = [
-        fullName.givenName,
-        fullName.familyName,
-        fullName.middleName,
-        fullName.namePrefix,
-        fullName.nameSuffix,
-      ].compactMap { $0 }.joined(separator: " ")
-
-      if !nameComponents.isEmpty {
-        displayName = nameComponents
-      }
-    }
-
-    // Validate email format
-    guard isValidEmail(email) else {
-      throw AuthenticationError.invalidEmail("Invalid email format from Apple Sign-In")
-    }
-
-    // Find or create user
-    let user: User
-    if let existingUser = User.fetchUser(by: email, in: context) {
-      user = existingUser
-      user.name = displayName
-      user.updateLastLogin()
-    } else {
-      user = User.create(
-        in: context,
-        name: displayName,
-        email: email,
-        role: .owner
-      )
-    }
-    
-    user.activate()
-    
-    // Save context
-    do {
-      try context.save()
-    } catch {
-      throw AuthenticationError.failed("Failed to save user data")
-    }
-
-    // Store user session
-    storeUserSession(user)
-
-    return AuthenticationResult(
-      success: true,
-      user: user,
-      error: nil,
-      provider: .apple
-    )
-  }
 
   private func storeUserSession(_ user: User) {
     UserDefaults.standard.set(user.id.uuidString, forKey: "authenticated_user_id")
@@ -353,22 +230,6 @@ class AuthenticationService: NSObject, AuthenticationServiceProtocol,
     }
   }
 
-  private func mapAppleSignInError(_ authError: ASAuthorizationError) -> AuthenticationError {
-    switch authError.code {
-    case .canceled:
-      return .canceled("Apple Sign-In was canceled by user")
-    case .failed:
-      return .failed("Apple Sign-In failed")
-    case .invalidResponse:
-      return .invalidResponse("Apple Sign-In received invalid response")
-    case .notHandled:
-      return .notHandled("Apple Sign-In was not handled")
-    case .unknown:
-      return .unknown("Apple Sign-In encountered unknown error")
-    @unknown default:
-      return .unknown("Apple Sign-In encountered unexpected error")
-    }
-  }
 }
 
 // MARK: - Authentication Errors

@@ -29,7 +29,8 @@ import Foundation
 /// - Viewer: Read-only access for viewing transactions and reports
 ///
 /// The service handles permission checking, enforcement, and audit logging.
-@MainActor
+// EMERGENCY FIX: Removed to eliminate Swift Concurrency crashes
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
 class RBACService: ObservableObject {
     
     // MARK: - Private Properties

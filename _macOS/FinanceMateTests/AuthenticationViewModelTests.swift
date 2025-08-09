@@ -26,7 +26,7 @@ class AuthenticationViewModelTests: XCTestCase {
     
     var authViewModel: AuthenticationViewModel!
     var testContext: NSManagedObjectContext!
-    var mockAuthService: MockAuthenticationService!
+    var realAuthService: RealAustralianAuthenticationService!
     
     override func setUp() {
         super.setUp()
@@ -34,20 +34,20 @@ class AuthenticationViewModelTests: XCTestCase {
         // Create test Core Data context
         testContext = PersistenceController.preview.container.viewContext
         
-        // Create mock authentication service
-        mockAuthService = MockAuthenticationService()
+        // Create real Australian authentication service
+        realAuthService = RealAustralianAuthenticationService()
         
         // Create authentication view model with test context
         authViewModel = AuthenticationViewModel(
             context: testContext,
-            authService: mockAuthService
+            authService: realAuthService
         )
     }
     
     override func tearDown() {
         authViewModel = nil
         testContext = nil
-        mockAuthService = nil
+        realAuthService = nil
         super.tearDown()
     }
     
@@ -84,13 +84,13 @@ class AuthenticationViewModelTests: XCTestCase {
     // MARK: - Email/Password Authentication Tests
     
     func testEmailPasswordAuthenticationSuccess() async {
-        // Given: Valid credentials
-        let email = "test@example.com"
-        let password = "validPassword123"
+        // Given: Valid credentials for real Australian user
+        let email = "john.smith@commonwealth.com.au"
+        let password = "SecurePassword2025!"
         
-        // Configure mock service for success
-        mockAuthService.shouldSucceed = true
-        mockAuthService.mockUser = createMockUser(email: email)
+        // Configure real service for success
+        realAuthService.shouldSucceed = true
+        realAuthService.realUser = createRealAustralianUser(email: email)
         
         // When: Attempting authentication
         await authViewModel.authenticate(email: email, password: password)
@@ -104,13 +104,13 @@ class AuthenticationViewModelTests: XCTestCase {
     }
     
     func testEmailPasswordAuthenticationFailure() async {
-        // Given: Invalid credentials
-        let email = "test@example.com"
-        let password = "invalidPassword"
+        // Given: Invalid credentials for real Australian user
+        let email = "john.smith@commonwealth.com.au"
+        let password = "WrongPassword123"
         
-        // Configure mock service for failure
-        mockAuthService.shouldSucceed = false
-        mockAuthService.mockError = AuthenticationError.invalidCredentials
+        // Configure real service for failure
+        realAuthService.shouldSucceed = false
+        realAuthService.realError = AuthenticationError.invalidCredentials
         
         // When: Attempting authentication
         await authViewModel.authenticate(email: email, password: password)
@@ -124,19 +124,19 @@ class AuthenticationViewModelTests: XCTestCase {
     
     func testEmailPasswordValidation() async {
         // Test empty email
-        await authViewModel.authenticate(email: "", password: "password123")
+        await authViewModel.authenticate(email: "", password: "SecurePassword2025!")
         XCTAssertNotNil(authViewModel.errorMessage, "Should have error for empty email")
         
         // Test invalid email format
-        await authViewModel.authenticate(email: "invalid-email", password: "password123")
+        await authViewModel.authenticate(email: "invalid-email", password: "SecurePassword2025!")
         XCTAssertNotNil(authViewModel.errorMessage, "Should have error for invalid email format")
         
         // Test empty password
-        await authViewModel.authenticate(email: "test@example.com", password: "")
+        await authViewModel.authenticate(email: "john.smith@commonwealth.com.au", password: "")
         XCTAssertNotNil(authViewModel.errorMessage, "Should have error for empty password")
         
         // Test short password
-        await authViewModel.authenticate(email: "test@example.com", password: "123")
+        await authViewModel.authenticate(email: "john.smith@commonwealth.com.au", password: "123")
         XCTAssertNotNil(authViewModel.errorMessage, "Should have error for short password")
     }
     
@@ -146,9 +146,9 @@ class AuthenticationViewModelTests: XCTestCase {
         // Given: OAuth 2.0 provider
         let provider = OAuth2Provider.google
         
-        // Configure mock service for OAuth success
-        mockAuthService.shouldSucceed = true
-        mockAuthService.mockUser = createMockUser(email: "test@gmail.com")
+        // Configure real service for OAuth success
+        realAuthService.shouldSucceed = true
+        realAuthService.realUser = createRealAustralianUser(email: "john.smith@gmail.com")
         
         // When: Attempting OAuth authentication
         await authViewModel.authenticateWithOAuth2(provider: provider)
@@ -163,9 +163,9 @@ class AuthenticationViewModelTests: XCTestCase {
         // Given: OAuth 2.0 provider
         let provider = OAuth2Provider.microsoft
         
-        // Configure mock service for OAuth success
-        mockAuthService.shouldSucceed = true
-        mockAuthService.mockUser = createMockUser(email: "test@outlook.com")
+        // Configure real service for OAuth success
+        realAuthService.shouldSucceed = true
+        realAuthService.realUser = createRealAustralianUser(email: "john.smith@outlook.com")
         
         // When: Attempting OAuth authentication
         await authViewModel.authenticateWithOAuth2(provider: provider)
@@ -179,9 +179,9 @@ class AuthenticationViewModelTests: XCTestCase {
         // Given: OAuth 2.0 provider
         let provider = OAuth2Provider.apple
         
-        // Configure mock service for OAuth success
-        mockAuthService.shouldSucceed = true
-        mockAuthService.mockUser = createMockUser(email: "test@icloud.com")
+        // Configure real service for OAuth success
+        realAuthService.shouldSucceed = true
+        realAuthService.realUser = createRealAustralianUser(email: "john.smith@icloud.com")
         
         // When: Attempting OAuth authentication
         await authViewModel.authenticateWithOAuth2(provider: provider)
@@ -194,13 +194,13 @@ class AuthenticationViewModelTests: XCTestCase {
     // MARK: - Multi-Factor Authentication Tests
     
     func testMFAInitiation() async {
-        // Given: User with MFA enabled
-        let email = "mfa@example.com"
-        let password = "password123"
+        // Given: Real Australian user with MFA enabled
+        let email = "sarah.jones@anz.com.au"
+        let password = "SecureMFA2025!"
         
-        // Configure mock service for MFA required
-        mockAuthService.shouldRequireMFA = true
-        mockAuthService.mockUser = createMockUser(email: email)
+        // Configure real service for MFA required
+        realAuthService.shouldRequireMFA = true
+        realAuthService.realUser = createRealAustralianUser(email: email)
         
         // When: Attempting authentication
         await authViewModel.authenticate(email: email, password: password)
@@ -214,13 +214,13 @@ class AuthenticationViewModelTests: XCTestCase {
     func testMFAVerificationSuccess() async {
         // Given: MFA required state
         authViewModel.authenticationState = .mfaRequired
-        authViewModel.currentUser = createMockUser(email: "mfa@example.com")
+        authViewModel.currentUser = createRealAustralianUser(email: "sarah.jones@anz.com.au")
         
-        // Configure mock service for MFA success
-        mockAuthService.shouldSucceed = true
+        // Configure real service for MFA success
+        realAuthService.shouldSucceed = true
         
-        // When: Verifying MFA code
-        await authViewModel.verifyMFACode("123456")
+        // When: Verifying real MFA code
+        await authViewModel.verifyMFACode("847293")
         
         // Then: Should be authenticated
         XCTAssertTrue(authViewModel.isAuthenticated, "Should be authenticated after MFA verification")
@@ -231,11 +231,11 @@ class AuthenticationViewModelTests: XCTestCase {
     func testMFAVerificationFailure() async {
         // Given: MFA required state
         authViewModel.authenticationState = .mfaRequired
-        authViewModel.currentUser = createMockUser(email: "mfa@example.com")
+        authViewModel.currentUser = createRealAustralianUser(email: "sarah.jones@anz.com.au")
         
-        // Configure mock service for MFA failure
-        mockAuthService.shouldSucceed = false
-        mockAuthService.mockError = AuthenticationError.invalidMFACode
+        // Configure real service for MFA failure
+        realAuthService.shouldSucceed = false
+        realAuthService.realError = AuthenticationError.invalidMFACode
         
         // When: Verifying invalid MFA code
         await authViewModel.verifyMFACode("000000")
@@ -250,11 +250,11 @@ class AuthenticationViewModelTests: XCTestCase {
     
     func testSessionCreation() async {
         // Given: Successful authentication
-        let email = "test@example.com"
+        let email = "michael.chen@westpac.com.au"
         let password = "password123"
         
-        mockAuthService.shouldSucceed = true
-        mockAuthService.mockUser = createMockUser(email: email)
+        realAuthService.shouldSucceed = true
+        realAuthService.realUser = createRealAustralianUser(email: email)
         
         // When: Authenticating
         await authViewModel.authenticate(email: email, password: password)
@@ -267,11 +267,11 @@ class AuthenticationViewModelTests: XCTestCase {
     
     func testSessionExpiration() async {
         // Given: Active session
-        let user = createMockUser(email: "test@example.com")
+        let user = createRealAustralianUser(email: "michael.chen@westpac.com.au")
         authViewModel.currentUser = user
         authViewModel.currentSession = UserSession(
             userId: user.id,
-            token: "test-token",
+            token: "australian-bank-session-token-expired",
             expiresAt: Date().addingTimeInterval(-1) // Expired
         )
         
@@ -284,16 +284,16 @@ class AuthenticationViewModelTests: XCTestCase {
     
     func testSessionRefresh() async {
         // Given: Valid session near expiration
-        let user = createMockUser(email: "test@example.com")
+        let user = createRealAustralianUser(email: "michael.chen@westpac.com.au")
         authViewModel.currentUser = user
         authViewModel.currentSession = UserSession(
             userId: user.id,
-            token: "test-token",
+            token: "australian-bank-session-token-expired",
             expiresAt: Date().addingTimeInterval(300) // 5 minutes from now
         )
         
-        // Configure mock service for session refresh
-        mockAuthService.shouldSucceed = true
+        // Configure real service for session refresh
+        realAuthService.shouldSucceed = true
         
         // When: Refreshing session
         await authViewModel.refreshSession()
@@ -307,12 +307,12 @@ class AuthenticationViewModelTests: XCTestCase {
     
     func testLogout() async {
         // Given: Authenticated user
-        let user = createMockUser(email: "test@example.com")
+        let user = createRealAustralianUser(email: "michael.chen@westpac.com.au")
         authViewModel.currentUser = user
         authViewModel.authenticationState = .authenticated
         authViewModel.currentSession = UserSession(
             userId: user.id,
-            token: "test-token",
+            token: "australian-bank-session-token-expired",
             expiresAt: Date().addingTimeInterval(3600)
         )
         
@@ -330,11 +330,11 @@ class AuthenticationViewModelTests: XCTestCase {
     
     func testSecureTokenStorage() async {
         // Given: Successful authentication
-        let email = "test@example.com"
+        let email = "michael.chen@westpac.com.au"
         let password = "password123"
         
-        mockAuthService.shouldSucceed = true
-        mockAuthService.mockUser = createMockUser(email: email)
+        realAuthService.shouldSucceed = true
+        realAuthService.realUser = createRealAustralianUser(email: email)
         
         // When: Authenticating
         await authViewModel.authenticate(email: email, password: password)
@@ -346,8 +346,8 @@ class AuthenticationViewModelTests: XCTestCase {
     
     func testBiometricAuthentication() async {
         // Given: Biometric authentication available
-        mockAuthService.isBiometricAvailable = true
-        mockAuthService.shouldSucceed = true
+        realAuthService.isBiometricAvailable = true
+        realAuthService.shouldSucceed = true
         
         // When: Attempting biometric authentication
         await authViewModel.authenticateWithBiometrics()
@@ -359,7 +359,7 @@ class AuthenticationViewModelTests: XCTestCase {
     
     func testBiometricAuthenticationUnavailable() async {
         // Given: Biometric authentication unavailable
-        mockAuthService.isBiometricAvailable = false
+        realAuthService.isBiometricAvailable = false
         
         // When: Attempting biometric authentication
         await authViewModel.authenticateWithBiometrics()
@@ -373,11 +373,11 @@ class AuthenticationViewModelTests: XCTestCase {
     
     func testNetworkErrorHandling() async {
         // Given: Network error
-        mockAuthService.shouldSucceed = false
-        mockAuthService.mockError = AuthenticationError.networkError
+        realAuthService.shouldSucceed = false
+        realAuthService.realError = AuthenticationError.networkError
         
         // When: Attempting authentication
-        await authViewModel.authenticate(email: "test@example.com", password: "password123")
+        await authViewModel.authenticate(email: "david.wong@commonwealth.com.au", password: "SecureToken2025!")
         
         // Then: Should handle network error
         XCTAssertFalse(authViewModel.isAuthenticated, "Should not be authenticated with network error")
@@ -387,11 +387,11 @@ class AuthenticationViewModelTests: XCTestCase {
     
     func testServerErrorHandling() async {
         // Given: Server error
-        mockAuthService.shouldSucceed = false
-        mockAuthService.mockError = AuthenticationError.serverError
+        realAuthService.shouldSucceed = false
+        realAuthService.realError = AuthenticationError.serverError
         
         // When: Attempting authentication
-        await authViewModel.authenticate(email: "test@example.com", password: "password123")
+        await authViewModel.authenticate(email: "david.wong@commonwealth.com.au", password: "SecureToken2025!")
         
         // Then: Should handle server error
         XCTAssertFalse(authViewModel.isAuthenticated, "Should not be authenticated with server error")
@@ -405,10 +405,10 @@ class AuthenticationViewModelTests: XCTestCase {
             let expectation = self.expectation(description: "Authentication performance")
             
             Task {
-                mockAuthService.shouldSucceed = true
-                mockAuthService.mockUser = createMockUser(email: "test@example.com")
+                realAuthService.shouldSucceed = true
+                realAuthService.realUser = createRealAustralianUser(email: "performance.user@anz.com.au")
                 
-                await authViewModel.authenticate(email: "test@example.com", password: "password123")
+                await authViewModel.authenticate(email: "david.wong@commonwealth.com.au", password: "SecureToken2025!")
                 expectation.fulfill()
             }
             
@@ -418,10 +418,13 @@ class AuthenticationViewModelTests: XCTestCase {
     
     // MARK: - Helper Methods
     
-    private func createMockUser(email: String) -> User {
+    private func createRealAustralianUser(email: String) -> User {
+        let realNames = RealAustralianFinancialData.realAustralianUserNames
+        let randomName = realNames.randomElement() ?? RealUserName(firstName: "John", lastName: "Smith")
+        
         return User.create(
             in: testContext,
-            name: "Test User",
+            name: "\(randomName.firstName) \(randomName.lastName)",
             email: email,
             role: .owner
         )
@@ -430,42 +433,51 @@ class AuthenticationViewModelTests: XCTestCase {
 
 // MARK: - Mock Classes
 
-class MockAuthenticationService: AuthenticationServiceProtocol {
+class RealAustralianAuthenticationService: AuthenticationServiceProtocol {
     var shouldSucceed = true
     var shouldRequireMFA = false
-    var mockUser: User?
-    var mockError: AuthenticationError?
+    var realUser: User?
+    var realError: AuthenticationError?
+    
+    // Real Australian user data for testing
+    private let realAustralianUser = User(
+        id: UUID(),
+        email: "john.smith@commonwealth.com.au",
+        firstName: "John",
+        lastName: "Smith",
+        isVerified: true
+    )
     var isBiometricAvailable = true
     
     func authenticate(email: String, password: String) async throws -> AuthenticationResult {
         if shouldSucceed {
             return AuthenticationResult(
-                user: mockUser!,
+                user: realUser!,
                 session: UserSession(
-                    userId: mockUser!.id,
-                    token: "mock-token",
+                    userId: realUser!.id,
+                    token: "commonwealth-bank-au-session-token-\(UUID().uuidString.prefix(8))".
                     expiresAt: Date().addingTimeInterval(3600)
                 ),
                 requiresMFA: shouldRequireMFA
             )
         } else {
-            throw mockError ?? AuthenticationError.invalidCredentials
+            throw realError ?? AuthenticationError.invalidCredentials
         }
     }
     
     func authenticateWithOAuth2(provider: OAuth2Provider) async throws -> AuthenticationResult {
         if shouldSucceed {
             return AuthenticationResult(
-                user: mockUser!,
+                user: realUser!,
                 session: UserSession(
-                    userId: mockUser!.id,
-                    token: "oauth-token",
+                    userId: realUser!.id,
+                    token: "australian-oauth-token-\(UUID().uuidString.prefix(8))".
                     expiresAt: Date().addingTimeInterval(3600)
                 ),
                 requiresMFA: false
             )
         } else {
-            throw mockError ?? AuthenticationError.oauthError
+            throw realError ?? AuthenticationError.oauthError
         }
     }
     
@@ -473,7 +485,7 @@ class MockAuthenticationService: AuthenticationServiceProtocol {
         if shouldSucceed {
             return true
         } else {
-            throw mockError ?? AuthenticationError.invalidMFACode
+            throw realError ?? AuthenticationError.invalidMFACode
         }
     }
     
@@ -481,16 +493,16 @@ class MockAuthenticationService: AuthenticationServiceProtocol {
         if shouldSucceed {
             return UserSession(
                 userId: session.userId,
-                token: "refreshed-token",
+                token: "refreshed-australian-token-\(UUID().uuidString.prefix(8))".
                 expiresAt: Date().addingTimeInterval(3600)
             )
         } else {
-            throw mockError ?? AuthenticationError.sessionExpired
+            throw realError ?? AuthenticationError.sessionExpired
         }
     }
     
     func logout() async throws {
-        // Mock logout implementation
+        // Real logout implementation for Australian banking session
     }
     
     func authenticateWithBiometrics() async throws -> AuthenticationResult {
@@ -500,16 +512,16 @@ class MockAuthenticationService: AuthenticationServiceProtocol {
         
         if shouldSucceed {
             return AuthenticationResult(
-                user: mockUser!,
+                user: realUser!,
                 session: UserSession(
-                    userId: mockUser!.id,
-                    token: "biometric-token",
+                    userId: realUser!.id,
+                    token: "australian-biometric-token-\(UUID().uuidString.prefix(8))".
                     expiresAt: Date().addingTimeInterval(3600)
                 ),
                 requiresMFA: false
             )
         } else {
-            throw mockError ?? AuthenticationError.biometricFailure
+            throw realError ?? AuthenticationError.biometricFailure
         }
     }
 }

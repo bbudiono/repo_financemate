@@ -1,0 +1,529 @@
+import XCTest
+import CoreData
+@testable import FinanceMate
+
+/**
+ * FinancialGoalViewModelTests.swift
+ * 
+ * Purpose: Comprehensive test suite for FinancialGoalViewModel with MVVM business logic validation
+ * Issues & Complexity Summary: Complex testing with Core Data, SMART validation, and async operations
+ * Key Complexity Drivers:
+ *   - Logic Scope (Est. LoC): ~400+
+ *   - Core Algorithm Complexity: High
+ *   - Dependencies: 4 (XCTest, CoreData, Combine, Foundation)
+ *   - State Management Complexity: High
+ *   - Novelty/Uncertainty Factor: Medium
+ * AI Pre-Task Self-Assessment: 93%
+ * Problem Estimate: 95%
+ * Initial Code Complexity Estimate: 94%
+ * Final Code Complexity: 96%
+ * Overall Result Score: 95%
+ * Key Variances/Learnings: Comprehensive MVVM testing with async operations and Core Data integration
+ * Last Updated: 2025-07-11
+ */
+
+@MainActor
+class FinancialGoalViewModelTests: XCTestCase {
+    
+    var viewModel: FinancialGoalViewModel!
+    var testContext: NSManagedObjectContext!
+    var persistenceController: PersistenceController!
+    
+    override func setUp() async throws {
+        try await super.setUp()
+        
+        // Create in-memory Core Data stack for testing
+        persistenceController = PersistenceController(inMemory: true)
+        testContext = persistenceController.container.viewContext
+        viewModel = FinancialGoalViewModel(context: testContext)
+    }
+    
+    override func tearDown() async throws {
+        viewModel = nil
+        testContext = nil
+        persistenceController = nil
+        try await super.tearDown()
+    }
+    
+    // MARK: - Initialization Tests
+    
+    func testViewModelInitialization() {
+        XCTAssertNotNil(viewModel, "ViewModel should be initialized")
+        XCTAssertEqual(viewModel.goals.count, 0, "Goals should be empty initially")
+        XCTAssertFalse(viewModel.isLoading, "Should not be loading initially")
+        XCTAssertNil(viewModel.errorMessage, "Error message should be nil initially")
+        XCTAssertFalse(viewModel.showingCreateGoal, "Should not show create goal initially")
+        XCTAssertEqual(viewModel.goalTitle, "", "Goal title should be empty initially")
+        XCTAssertEqual(viewModel.goalAmount, 0.0, "Goal amount should be zero initially")
+        XCTAssertEqual(viewModel.selectedCategory, .savings, "Default category should be savings")
+        XCTAssertEqual(viewModel.selectedPriority, .medium, "Default priority should be medium")
+    }
+    
+    func testCurrencyFormatterConfiguration() {
+        let formatter = viewModel.formatCurrency(1000.0)
+        XCTAssertTrue(formatter.contains("A$") || formatter.contains("$"), "Should format as Australian currency")
+        XCTAssertTrue(formatter.contains("1,000") || formatter.contains("1000"), "Should format number correctly")
+    }
+    
+    // MARK: - Goal Creation Tests
+    
+    func testCreateValidGoal() async {
+        // Given: Valid goal data
+        viewModel.goalTitle = "Emergency Fund"
+        viewModel.goalDescription = "Save for 6 months of expenses"
+        viewModel.goalAmount = 25000.0
+        viewModel.targetDate = Calendar.current.date(byAdding: .month, value: 12, to: Date()) ?? Date()
+        viewModel.selectedCategory = .emergencyFund
+        viewModel.selectedPriority = .high
+        
+        // When: Creating the goal
+        viewModel.createGoal()
+        
+        // Wait for async operation
+        try? await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
+        
+        // Then: Goal should be created successfully
+        XCTAssertEqual(viewModel.goals.count, 1, "Should have one goal")
+        XCTAssertNil(viewModel.errorMessage, "Should not have error message")
+        XCTAssertFalse(viewModel.showingCreateGoal, "Should hide create goal view")
+        
+        let createdGoal = viewModel.goals.first
+        XCTAssertNotNil(createdGoal, "Goal should exist")
+        XCTAssertEqual(createdGoal?.title, "Emergency Fund", "Title should match")
+        XCTAssertEqual(createdGoal?.targetAmount, 25000.0, "Amount should match")
+        XCTAssertEqual(createdGoal?.category, GoalCategory.emergencyFund.rawValue, "Category should match")
+        XCTAssertEqual(createdGoal?.status, GoalStatus.active.rawValue, "Status should be active")
+        XCTAssertEqual(createdGoal?.currencyCode, "AUD", "Currency should be AUD")
+        XCTAssertEqual(createdGoal?.locale, "en_AU", "Locale should be Australian")
+    }
+    
+    func testCreateGoalWithInvalidData() {
+        // Given: Invalid goal data (empty title)
+        viewModel.goalTitle = ""
+        viewModel.goalDescription = "Test description"
+        viewModel.goalAmount = 1000.0
+        
+        // When: Attempting to create goal
+        viewModel.createGoal()
+        
+        // Then: Should show error and not create goal
+        XCTAssertNotNil(viewModel.errorMessage, "Should have error message")
+        XCTAssertEqual(viewModel.goals.count, 0, "Should not create goal")
+    }
+    
+    func testCreateGoalWithZeroAmount() {
+        // Given: Goal with zero amount
+        viewModel.goalTitle = "Test Goal"
+        viewModel.goalDescription = "Test description"
+        viewModel.goalAmount = 0.0
+        
+        // When: Attempting to create goal
+        viewModel.createGoal()
+        
+        // Then: Should show error
+        XCTAssertNotNil(viewModel.errorMessage, "Should have error message for zero amount")
+    }
+    
+    // MARK: - SMART Validation Tests
+    
+    func testSMARTValidationSpecific() {
+        // Given: Goal with specific title and description
+        viewModel.goalTitle = "Emergency Fund"
+        viewModel.goalDescription = "Save 6 months of living expenses"
+        viewModel.goalAmount = 25000.0
+        viewModel.targetDate = Calendar.current.date(byAdding: .year, value: 1, to: Date()) ?? Date()
+        
+        // When: Validation occurs (triggered by bindings)
+        // Force validation by accessing isGoalValid
+        let isValid = viewModel.isGoalValid
+        
+        // Then: Should be specific
+        XCTAssertTrue(viewModel.smartValidation.isSpecific, "Goal should be specific")
+        XCTAssertTrue(viewModel.smartValidation.isMeasurable, "Goal should be measurable")
+        XCTAssertTrue(viewModel.smartValidation.isTimeBound, "Goal should be time-bound")
+    }
+    
+    func testSMARTValidationNotSpecific() {
+        // Given: Goal with empty title
+        viewModel.goalTitle = ""
+        viewModel.goalDescription = ""
+        viewModel.goalAmount = 1000.0
+        viewModel.targetDate = Calendar.current.date(byAdding: .month, value: 6, to: Date()) ?? Date()
+        
+        // When: Validation occurs
+        let isValid = viewModel.isGoalValid
+        
+        // Then: Should not be specific
+        XCTAssertFalse(viewModel.smartValidation.isSpecific, "Goal should not be specific with empty title")
+        XCTAssertFalse(isValid, "Goal should not be valid")
+    }
+    
+    func testSMARTValidationAchievable() {
+        // Given: Reasonable goal
+        viewModel.goalTitle = "Vacation Fund"
+        viewModel.goalDescription = "Save for European vacation"
+        viewModel.goalAmount = 5000.0
+        viewModel.targetDate = Calendar.current.date(byAdding: .month, value: 12, to: Date()) ?? Date()
+        
+        // When: Validation occurs
+        let isValid = viewModel.isGoalValid
+        
+        // Then: Should be achievable
+        XCTAssertTrue(viewModel.smartValidation.isAchievable, "Reasonable goal should be achievable")
+    }
+    
+    func testSMARTValidationNotAchievable() {
+        // Given: Unrealistic goal (very high amount, short timeframe)
+        viewModel.goalTitle = "Mansion Fund"
+        viewModel.goalDescription = "Buy a mansion"
+        viewModel.goalAmount = 1000000.0
+        viewModel.targetDate = Calendar.current.date(byAdding: .day, value: 30, to: Date()) ?? Date()
+        
+        // When: Validation occurs
+        let isValid = viewModel.isGoalValid
+        
+        // Then: Should not be achievable
+        XCTAssertFalse(viewModel.smartValidation.isAchievable, "Unrealistic goal should not be achievable")
+    }
+    
+    func testSMARTValidationTimeBound() {
+        // Given: Goal with future date
+        viewModel.goalTitle = "Test Goal"
+        viewModel.goalDescription = "Test description"
+        viewModel.goalAmount = 1000.0
+        viewModel.targetDate = Calendar.current.date(byAdding: .month, value: 6, to: Date()) ?? Date()
+        
+        // When: Validation occurs
+        let isValid = viewModel.isGoalValid
+        
+        // Then: Should be time-bound
+        XCTAssertTrue(viewModel.smartValidation.isTimeBound, "Future date should make goal time-bound")
+    }
+    
+    func testSMARTValidationNotTimeBound() {
+        // Given: Goal with past date
+        viewModel.goalTitle = "Test Goal"
+        viewModel.goalDescription = "Test description"
+        viewModel.goalAmount = 1000.0
+        viewModel.targetDate = Calendar.current.date(byAdding: .day, value: -1, to: Date()) ?? Date()
+        
+        // When: Validation occurs
+        let isValid = viewModel.isGoalValid
+        
+        // Then: Should not be time-bound
+        XCTAssertFalse(viewModel.smartValidation.isTimeBound, "Past date should make goal not time-bound")
+    }
+    
+    func testSMARTValidationScore() {
+        // Given: Partially valid goal
+        viewModel.goalTitle = "Test Goal"
+        viewModel.goalDescription = "" // Missing description
+        viewModel.goalAmount = 1000.0
+        viewModel.targetDate = Calendar.current.date(byAdding: .month, value: 6, to: Date()) ?? Date()
+        
+        // When: Validation occurs
+        let isValid = viewModel.isGoalValid
+        
+        // Then: Score should be between 0 and 1
+        let score = viewModel.smartValidation.validationScore
+        XCTAssertGreaterThanOrEqual(score, 0.0, "Validation score should be at least 0")
+        XCTAssertLessThanOrEqual(score, 1.0, "Validation score should be at most 1")
+        XCTAssertLessThan(score, 1.0, "Incomplete goal should have score less than 1")
+    }
+    
+    // MARK: - Goal Management Tests
+    
+    func testFetchGoals() async {
+        // Given: Create a test goal directly in Core Data
+        let testGoal = FinancialGoal(context: testContext)
+        testGoal.id = UUID()
+        testGoal.title = "Test Goal"
+        testGoal.targetAmount = 1000.0
+        testGoal.currentAmount = 250.0
+        testGoal.targetDate = Date()
+        testGoal.createdDate = Date()
+        testGoal.category = GoalCategory.savings.rawValue
+        testGoal.status = GoalStatus.active.rawValue
+        
+        try! testContext.save()
+        
+        // When: Fetching goals
+        viewModel.fetchGoals()
+        
+        // Wait for async operation
+        try? await Task.sleep(nanoseconds: 100_000_000)
+        
+        // Then: Should fetch the goal
+        XCTAssertEqual(viewModel.goals.count, 1, "Should fetch one goal")
+        XCTAssertEqual(viewModel.goals.first?.title, "Test Goal", "Should fetch correct goal")
+    }
+    
+    func testUpdateGoalProgress() async {
+        // Given: Create and fetch a test goal
+        let testGoal = FinancialGoal(context: testContext)
+        testGoal.id = UUID()
+        testGoal.title = "Test Goal"
+        testGoal.targetAmount = 1000.0
+        testGoal.currentAmount = 0.0
+        testGoal.targetDate = Date()
+        testGoal.createdDate = Date()
+        testGoal.category = GoalCategory.savings.rawValue
+        testGoal.status = GoalStatus.active.rawValue
+        
+        try! testContext.save()
+        viewModel.fetchGoals()
+        try? await Task.sleep(nanoseconds: 50_000_000)
+        
+        let goal = viewModel.goals.first!
+        
+        // When: Updating progress
+        viewModel.updateGoalProgress(goal, newAmount: 500.0)
+        
+        // Wait for async operation
+        try? await Task.sleep(nanoseconds: 100_000_000)
+        
+        // Then: Progress should be updated
+        XCTAssertEqual(goal.currentAmount, 500.0, "Current amount should be updated")
+        XCTAssertEqual(goal.progressPercentage, 50.0, "Progress percentage should be 50%")
+        XCTAssertEqual(goal.status, GoalStatus.active.rawValue, "Status should remain active")
+    }
+    
+    func testUpdateGoalProgressToCompletion() async {
+        // Given: Create a test goal
+        let testGoal = FinancialGoal(context: testContext)
+        testGoal.id = UUID()
+        testGoal.title = "Test Goal"
+        testGoal.targetAmount = 1000.0
+        testGoal.currentAmount = 0.0
+        testGoal.targetDate = Date()
+        testGoal.createdDate = Date()
+        testGoal.category = GoalCategory.savings.rawValue
+        testGoal.status = GoalStatus.active.rawValue
+        
+        try! testContext.save()
+        viewModel.fetchGoals()
+        try? await Task.sleep(nanoseconds: 50_000_000)
+        
+        let goal = viewModel.goals.first!
+        
+        // When: Completing the goal
+        viewModel.updateGoalProgress(goal, newAmount: 1000.0)
+        
+        // Wait for async operation
+        try? await Task.sleep(nanoseconds: 100_000_000)
+        
+        // Then: Goal should be completed
+        XCTAssertEqual(goal.currentAmount, 1000.0, "Current amount should equal target")
+        XCTAssertEqual(goal.progressPercentage, 100.0, "Progress should be 100%")
+        XCTAssertEqual(goal.status, GoalStatus.completed.rawValue, "Status should be completed")
+        XCTAssertNotNil(goal.completedDate, "Completed date should be set")
+    }
+    
+    func testUpdateGoalProgressOverTarget() async {
+        // Given: Create a test goal
+        let testGoal = FinancialGoal(context: testContext)
+        testGoal.id = UUID()
+        testGoal.title = "Test Goal"
+        testGoal.targetAmount = 1000.0
+        testGoal.currentAmount = 0.0
+        testGoal.targetDate = Date()
+        testGoal.createdDate = Date()
+        testGoal.category = GoalCategory.savings.rawValue
+        testGoal.status = GoalStatus.active.rawValue
+        
+        try! testContext.save()
+        viewModel.fetchGoals()
+        try? await Task.sleep(nanoseconds: 50_000_000)
+        
+        let goal = viewModel.goals.first!
+        
+        // When: Updating progress over target
+        viewModel.updateGoalProgress(goal, newAmount: 1500.0)
+        
+        // Wait for async operation
+        try? await Task.sleep(nanoseconds: 100_000_000)
+        
+        // Then: Amount should be capped at target
+        XCTAssertEqual(goal.currentAmount, 1000.0, "Current amount should not exceed target")
+        XCTAssertEqual(goal.progressPercentage, 100.0, "Progress should be capped at 100%")
+    }
+    
+    func testDeleteGoal() async {
+        // Given: Create a test goal
+        let testGoal = FinancialGoal(context: testContext)
+        testGoal.id = UUID()
+        testGoal.title = "Test Goal"
+        testGoal.targetAmount = 1000.0
+        testGoal.currentAmount = 0.0
+        testGoal.targetDate = Date()
+        testGoal.createdDate = Date()
+        testGoal.category = GoalCategory.savings.rawValue
+        testGoal.status = GoalStatus.active.rawValue
+        
+        try! testContext.save()
+        viewModel.fetchGoals()
+        try? await Task.sleep(nanoseconds: 50_000_000)
+        
+        let goal = viewModel.goals.first!
+        
+        // When: Deleting the goal
+        viewModel.deleteGoal(goal)
+        
+        // Wait for async operation
+        try? await Task.sleep(nanoseconds: 100_000_000)
+        
+        // Then: Goal should be deleted
+        XCTAssertEqual(viewModel.goals.count, 0, "Goal should be deleted")
+    }
+    
+    // MARK: - Progress Tracking Tests
+    
+    func testTotalProgressCalculation() async {
+        // Given: Multiple goals with different progress
+        let goal1 = createTestGoal(title: "Goal 1", target: 1000.0, current: 500.0) // 50%
+        let goal2 = createTestGoal(title: "Goal 2", target: 2000.0, current: 1000.0) // 50%
+        let goal3 = createTestGoal(title: "Goal 3", target: 1000.0, current: 750.0) // 75%
+        
+        try! testContext.save()
+        
+        // When: Fetching goals
+        viewModel.fetchGoals()
+        try? await Task.sleep(nanoseconds: 100_000_000)
+        
+        // Then: Total progress should be average (58.33%)
+        let expectedProgress = (50.0 + 50.0 + 75.0) / 3.0
+        XCTAssertEqual(viewModel.totalProgress, expectedProgress, accuracy: 0.1, "Total progress should be average")
+    }
+    
+    func testActiveAndCompletedGoalCounts() async {
+        // Given: Mix of active and completed goals
+        let activeGoal1 = createTestGoal(title: "Active 1", target: 1000.0, current: 500.0)
+        activeGoal1.status = GoalStatus.active.rawValue
+        
+        let activeGoal2 = createTestGoal(title: "Active 2", target: 1000.0, current: 750.0)
+        activeGoal2.status = GoalStatus.active.rawValue
+        
+        let completedGoal = createTestGoal(title: "Completed", target: 1000.0, current: 1000.0)
+        completedGoal.status = GoalStatus.completed.rawValue
+        
+        try! testContext.save()
+        
+        // When: Fetching goals
+        viewModel.fetchGoals()
+        try? await Task.sleep(nanoseconds: 100_000_000)
+        
+        // Then: Counts should be correct
+        XCTAssertEqual(viewModel.activeGoals, 2, "Should have 2 active goals")
+        XCTAssertEqual(viewModel.completedGoals, 1, "Should have 1 completed goal")
+    }
+    
+    // MARK: - Category and Filtering Tests
+    
+    func testGoalsForCategory() async {
+        // Given: Goals in different categories
+        let savingsGoal = createTestGoal(title: "Savings Goal", target: 1000.0, current: 0.0)
+        savingsGoal.category = GoalCategory.savings.rawValue
+        
+        let investmentGoal = createTestGoal(title: "Investment Goal", target: 2000.0, current: 0.0)
+        investmentGoal.category = GoalCategory.investment.rawValue
+        
+        try! testContext.save()
+        viewModel.fetchGoals()
+        try? await Task.sleep(nanoseconds: 100_000_000)
+        
+        // When: Filtering by category
+        let savingsGoals = viewModel.goalsForCategory(.savings)
+        let investmentGoals = viewModel.goalsForCategory(.investment)
+        
+        // Then: Should return correct goals
+        XCTAssertEqual(savingsGoals.count, 1, "Should have 1 savings goal")
+        XCTAssertEqual(investmentGoals.count, 1, "Should have 1 investment goal")
+        XCTAssertEqual(savingsGoals.first?.title, "Savings Goal", "Should return correct savings goal")
+        XCTAssertEqual(investmentGoals.first?.title, "Investment Goal", "Should return correct investment goal")
+    }
+    
+    // MARK: - Time Description Tests
+    
+    func testTimeRemainingDescription() {
+        // Given: Goal with future target date
+        let futureDate = Calendar.current.date(byAdding: .day, value: 30, to: Date()) ?? Date()
+        let goal = createTestGoal(title: "Test Goal", target: 1000.0, current: 0.0)
+        goal.targetDate = futureDate
+        
+        // When: Getting time description
+        let description = viewModel.timeRemainingDescription(for: goal)
+        
+        // Then: Should show days remaining
+        XCTAssertTrue(description.contains("days remaining") || description.contains("month"), "Should show time remaining")
+    }
+    
+    func testTimeRemainingDescriptionOverdue() {
+        // Given: Goal with past target date
+        let pastDate = Calendar.current.date(byAdding: .day, value: -1, to: Date()) ?? Date()
+        let goal = createTestGoal(title: "Test Goal", target: 1000.0, current: 0.0)
+        goal.targetDate = pastDate
+        
+        // When: Getting time description
+        let description = viewModel.timeRemainingDescription(for: goal)
+        
+        // Then: Should show overdue
+        XCTAssertEqual(description, "Overdue", "Should show overdue for past dates")
+    }
+    
+    // MARK: - Currency Formatting Tests
+    
+    func testCurrencyFormatting() {
+        // Test various amounts
+        let amounts: [Double] = [0.0, 100.0, 1000.0, 10000.0, 100000.0]
+        
+        for amount in amounts {
+            let formatted = viewModel.formatCurrency(amount)
+            XCTAssertTrue(formatted.contains("$"), "Should contain currency symbol for amount \(amount)")
+            XCTAssertFalse(formatted.isEmpty, "Formatted currency should not be empty for amount \(amount)")
+        }
+    }
+    
+    // MARK: - Form Reset Tests
+    
+    func testFormResetAfterGoalCreation() async {
+        // Given: Form with data
+        viewModel.goalTitle = "Test Goal"
+        viewModel.goalDescription = "Test description"
+        viewModel.goalAmount = 1000.0
+        viewModel.selectedCategory = .investment
+        viewModel.selectedPriority = .high
+        
+        // When: Creating goal successfully
+        viewModel.createGoal()
+        try? await Task.sleep(nanoseconds: 100_000_000)
+        
+        // Then: Form should be reset (assuming no error)
+        if viewModel.errorMessage == nil {
+            XCTAssertEqual(viewModel.goalTitle, "", "Title should be reset")
+            XCTAssertEqual(viewModel.goalDescription, "", "Description should be reset")
+            XCTAssertEqual(viewModel.goalAmount, 0.0, "Amount should be reset")
+            XCTAssertEqual(viewModel.selectedCategory, .savings, "Category should be reset to default")
+            XCTAssertEqual(viewModel.selectedPriority, .medium, "Priority should be reset to default")
+        }
+    }
+    
+    // MARK: - Helper Methods
+    
+    private func createTestGoal(title: String, target: Double, current: Double) -> FinancialGoal {
+        let goal = FinancialGoal(context: testContext)
+        goal.id = UUID()
+        goal.title = title
+        goal.targetAmount = target
+        goal.currentAmount = current
+        goal.progressPercentage = (current / target) * 100.0
+        goal.targetDate = Calendar.current.date(byAdding: .month, value: 6, to: Date()) ?? Date()
+        goal.createdDate = Date()
+        goal.lastUpdated = Date()
+        goal.category = GoalCategory.savings.rawValue
+        goal.status = GoalStatus.active.rawValue
+        goal.currencyCode = "AUD"
+        goal.locale = "en_AU"
+        
+        return goal
+    }
+}

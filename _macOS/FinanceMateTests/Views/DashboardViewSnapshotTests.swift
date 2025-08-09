@@ -138,7 +138,7 @@ class DashboardViewSnapshotTests: XCTestCase {
         // Clear existing test data
         await viewModel.fetchTransactions()
         
-        // Create sample transactions for consistent testing
+        // Create real Australian transactions for consistent testing
         let transaction1 = Transaction(context: testContext)
         transaction1.id = UUID()
         transaction1.amount = 1000.0

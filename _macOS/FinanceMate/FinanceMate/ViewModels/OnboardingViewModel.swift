@@ -30,7 +30,8 @@ import CoreData
 import SwiftUI
 import OSLog
 
-@MainActor
+// EMERGENCY FIX: Removed to eliminate Swift Concurrency crashes
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
 final class OnboardingViewModel: ObservableObject {
     
     // MARK: - Properties
@@ -149,56 +150,56 @@ final class OnboardingViewModel: ObservableObject {
     
     // MARK: - Step Navigation
     
-    func nextStep() async {
+    func nextStep() {
         guard currentStep < onboardingSteps.count - 1 else {
-            await completeOnboarding()
+            completeOnboarding()
             return
         }
         
         currentStep += 1
         updateProgress()
-        await saveProgress()
-        await recordInteraction(.stepCompleted)
+        saveProgress()
+        recordInteraction(.stepCompleted)
         
         logger.info("Advanced to onboarding step \(currentStep)")
     }
     
-    func previousStep() async {
+    func previousStep() {
         guard currentStep > 0 else { return }
         
         currentStep -= 1
         updateProgress()
-        await saveProgress()
+        saveProgress()
         
         logger.info("Moved back to onboarding step \(currentStep)")
     }
     
-    func skipStep() async {
+    func skipStep() {
         guard currentStepData?.isSkippable == true else {
-            await nextStep()
+            nextStep()
             return
         }
         
         skippedSteps.insert(currentStep)
-        await nextStep()
-        await recordInteraction(.stepSkipped)
+        nextStep()
+        recordInteraction(.stepSkipped)
         
         logger.info("Skipped onboarding step \(currentStep - 1)")
     }
     
-    func jumpToStep(_ step: Int) async {
+    func jumpToStep() {
         guard step >= 0 && step < onboardingSteps.count else { return }
         
         currentStep = step
         updateProgress()
-        await saveProgress()
+        saveProgress()
         
         logger.info("Jumped to onboarding step \(step)")
     }
     
     // MARK: - Onboarding Completion
     
-    func completeOnboarding() async {
+    func completeOnboarding() {
         hasCompletedOnboarding = true
         currentStep = onboardingSteps.count - 1
         progress = 1.0
@@ -206,19 +207,19 @@ final class OnboardingViewModel: ObservableObject {
         UserDefaults.standard.set(true, forKey: "hasCompletedOnboarding")
         UserDefaults.standard.set(Date(), forKey: "onboardingCompletionDate")
         
-        await recordInteraction(.onboardingCompleted)
+        recordInteraction(.onboardingCompleted)
         
         logger.info("Onboarding completed successfully")
     }
     
-    func skipOnboarding() async {
-        await completeOnboarding()
-        await recordInteraction(.onboardingSkipped)
+    func skipOnboarding() {
+        completeOnboarding()
+        recordInteraction(.onboardingSkipped)
         
         logger.info("Onboarding skipped by user")
     }
     
-    func resumeOnboarding() async {
+    func resumeOnboarding() {
         hasCompletedOnboarding = false
         UserDefaults.standard.removeObject(forKey: "hasCompletedOnboarding")
         
@@ -228,14 +229,14 @@ final class OnboardingViewModel: ObservableObject {
         }
         
         updateProgress()
-        await recordInteraction(.onboardingResumed)
+        recordInteraction(.onboardingResumed)
         
         logger.info("Onboarding resumed from step \(currentStep)")
     }
     
     // MARK: - Sample Data Management
     
-    func generateSampleData() async {
+    func generateSampleData() {
         isLoading = true
         errorMessage = nil
         
@@ -297,7 +298,7 @@ final class OnboardingViewModel: ObservableObject {
             }
             
             try context.save()
-            await recordInteraction(.sampleDataGenerated)
+            recordInteraction(.sampleDataGenerated)
             
             logger.info("Sample data generated successfully")
             
@@ -309,7 +310,7 @@ final class OnboardingViewModel: ObservableObject {
         isLoading = false
     }
     
-    func clearSampleData() async {
+    func clearSampleData() {
         isLoading = true
         
         do {
@@ -323,7 +324,7 @@ final class OnboardingViewModel: ObservableObject {
             }
             
             try context.save()
-            await recordInteraction(.sampleDataCleared)
+            recordInteraction(.sampleDataCleared)
             
             logger.info("Sample data cleared successfully")
             
@@ -337,21 +338,21 @@ final class OnboardingViewModel: ObservableObject {
     
     // MARK: - Interactive Demo
     
-    func startInteractiveDemo() async {
+    func startInteractiveDemo() {
         isDemoMode = true
-        await recordInteraction(.demoStarted)
+        recordInteraction(.demoStarted)
         
         logger.info("Interactive demo started")
     }
     
-    func endInteractiveDemo() async {
+    func endInteractiveDemo() {
         isDemoMode = false
-        await recordInteraction(.demoCompleted)
+        recordInteraction(.demoCompleted)
         
         logger.info("Interactive demo ended")
     }
     
-    func createDemoTransaction() async {
+    func createDemoTransaction() {
         guard isDemoMode else { return }
         
         do {
@@ -382,7 +383,7 @@ final class OnboardingViewModel: ObservableObject {
             personalSplit.lineItem = lineItem
             
             try context.save()
-            await recordInteraction(.demoTransactionCreated)
+            recordInteraction(.demoTransactionCreated)
             
             logger.info("Demo transaction created successfully")
             
@@ -445,7 +446,7 @@ final class OnboardingViewModel: ObservableObject {
         return getAvailableTutorials().filter { $0.isCompleted }
     }
     
-    func completeTutorial(_ tutorial: Tutorial) async {
+    func completeTutorial() {
         completedTutorials.insert(tutorial.type)
         updateTutorialProgress()
         
@@ -453,14 +454,14 @@ final class OnboardingViewModel: ObservableObject {
         let completedTypes = completedTutorials.map { $0.rawValue }
         UserDefaults.standard.set(completedTypes, forKey: "completedTutorials")
         
-        await recordInteraction(.tutorialCompleted)
+        recordInteraction(.tutorialCompleted)
         
         logger.info("Tutorial completed: \(tutorial.type.rawValue)")
     }
     
     // MARK: - Engagement Tracking
     
-    func recordInteraction(_ interaction: EngagementInteraction) async {
+    func recordInteraction() {
         engagementInteractions.append(interaction)
         updateEngagementScore()
         checkMilestones()
@@ -474,7 +475,7 @@ final class OnboardingViewModel: ObservableObject {
     
     // MARK: - Progress Management
     
-    func saveProgress() async {
+    func saveProgress() {
         UserDefaults.standard.set(currentStep, forKey: "currentOnboardingStep")
         UserDefaults.standard.set(progress, forKey: "onboardingProgress")
         UserDefaults.standard.set(Array(skippedSteps), forKey: "skippedSteps")

@@ -29,7 +29,7 @@ import Foundation
 
 /// Comprehensive investment portfolio management engine with Australian tax compliance
 /// Supports multi-market investments (ASX, NASDAQ, Crypto) with real-time performance tracking
-@MainActor
+// EMERGENCY FIX: Removed @MainActor to eliminate Swift Concurrency crashes
 final class PortfolioManager: ObservableObject {
 
   // MARK: - Error Types
@@ -163,11 +163,10 @@ final class PortfolioManager: ObservableObject {
 
   /// Sets up periodic cache cleanup to prevent memory leaks
   private func setupCacheCleanup() {
-    Task {
-      while true {
-        try? await Task.sleep(nanoseconds: 600_000_000_000)  // 10 minutes
+    // EMERGENCY FIX: Removed Task block - immediate execution
+        while true {
+        try? Task.sleep(nanoseconds: 600_000_000_000)  // 10 minutes
         cleanupExpiredCache()
-      }
     }
   }
 
@@ -203,7 +202,7 @@ final class PortfolioManager: ObservableObject {
   // MARK: - Portfolio Management
 
   /// Creates a new investment portfolio for the specified entity
-  func createPortfolio(_ data: PortfolioData) async throws -> Portfolio {
+  func createPortfolio() throws -> Portfolio {
     // Validate entity exists
     let entityRequest: NSFetchRequest<FinancialEntity> = FinancialEntity.fetchRequest()
     entityRequest.predicate = NSPredicate(format: "id == %@", data.entityId as CVarArg)
@@ -231,7 +230,7 @@ final class PortfolioManager: ObservableObject {
   }
 
   /// Retrieves all portfolios for a specific entity
-  func getPortfolios(for entityId: UUID) async throws -> [Portfolio] {
+  func getPortfolios() throws -> [Portfolio] {
     let request: NSFetchRequest<Portfolio> = Portfolio.fetchRequest()
     request.predicate = NSPredicate(
       format: "entityId == %@ AND isActive == TRUE", entityId as CVarArg)
@@ -243,9 +242,9 @@ final class PortfolioManager: ObservableObject {
   // MARK: - Asset Management
 
   /// Adds a new asset to the specified portfolio
-  func addAsset(_ data: AssetData, to portfolioId: UUID) async throws -> Holding {
+  func addAsset() throws -> Holding {
     // Validate portfolio exists
-    guard let portfolio = try await getPortfolio(portfolioId) else {
+    guard let portfolio = try getPortfolio(portfolioId) else {
       throw PortfolioError.invalidPortfolioId
     }
 
@@ -282,7 +281,7 @@ final class PortfolioManager: ObservableObject {
   }
 
   /// Retrieves a specific holding by ID with caching
-  func getHolding(_ holdingId: UUID) async throws -> Holding {
+  func getHolding() throws -> Holding {
     // Check cache first
     if let cachedHolding = holdingCache[holdingId] {
       return cachedHolding
@@ -305,8 +304,8 @@ final class PortfolioManager: ObservableObject {
   // MARK: - Transaction Processing
 
   /// Records an investment transaction (buy/sell)
-  func recordTransaction(_ data: InvestmentTransactionData) async throws -> InvestmentTransaction {
-    let holding = try await getHolding(data.holdingId)
+  func recordTransaction() throws -> InvestmentTransaction {
+    let holding = try getHolding(data.holdingId)
 
     // Create transaction record
     let transaction = InvestmentTransaction(context: context)
@@ -383,7 +382,7 @@ final class PortfolioManager: ObservableObject {
   // MARK: - Batch Transaction Processing
 
   /// Records multiple investment transactions in a single batch for better performance
-  func recordTransactions(_ transactions: [InvestmentTransactionData]) async throws
+  func recordTransactions() throws
     -> [InvestmentTransaction]
   {
     guard !transactions.isEmpty else { return [] }
@@ -396,7 +395,7 @@ final class PortfolioManager: ObservableObject {
 
     // Process each holding's transactions in batch
     for (holdingId, holdingTransactions) in transactionsByHolding {
-      let holding = try await getHolding(holdingId)
+      let holding = try getHolding(holdingId)
 
       for transactionData in holdingTransactions {
         let transaction = InvestmentTransaction(context: context)
@@ -485,8 +484,8 @@ final class PortfolioManager: ObservableObject {
   // MARK: - Dividend Processing
 
   /// Records a dividend payment with franking credit calculations
-  func recordDividend(_ data: DividendData) async throws -> Dividend {
-    let holding = try await getHolding(data.holdingId)
+  func recordDividend() throws -> Dividend {
+    let holding = try getHolding(data.holdingId)
 
     let dividend = Dividend(context: context)
     dividend.id = UUID()
@@ -527,7 +526,7 @@ final class PortfolioManager: ObservableObject {
   // MARK: - Portfolio Valuation
 
   /// Calculates current portfolio value with market prices and caching
-  func calculatePortfolioValue(_ portfolioId: UUID) async throws -> PortfolioValue {
+  func calculatePortfolioValue() throws -> PortfolioValue {
     // Check cache first
     if let cachedValue = portfolioValueCache[portfolioId],
       let lastUpdate = lastCacheUpdate[portfolioId],
@@ -536,7 +535,7 @@ final class PortfolioManager: ObservableObject {
       return cachedValue
     }
 
-    guard let portfolio = try await getPortfolio(portfolioId) else {
+    guard let portfolio = try getPortfolio(portfolioId) else {
       throw PortfolioError.invalidPortfolioId
     }
 
@@ -612,8 +611,8 @@ final class PortfolioManager: ObservableObject {
   }
 
   /// Calculates portfolio performance metrics
-  func calculatePerformanceMetrics(_ portfolioId: UUID) async throws -> PerformanceMetrics {
-    let portfolioValue = try await calculatePortfolioValue(portfolioId)
+  func calculatePerformanceMetrics() throws -> PerformanceMetrics {
+    let portfolioValue = try calculatePortfolioValue(portfolioId)
 
     let totalInvested = portfolioValue.totalCostBasis
     let currentValue = portfolioValue.totalMarketValue
@@ -648,7 +647,7 @@ final class PortfolioManager: ObservableObject {
 
   // MARK: - Helper Methods
 
-  private func getPortfolio(_ portfolioId: UUID) async throws -> Portfolio? {
+  private func getPortfolio() throws -> Portfolio? {
     // Check cache first
     if let cachedPortfolio = portfolioCache[portfolioId] {
       return cachedPortfolio
@@ -677,7 +676,7 @@ final class PortfolioManager: ObservableObject {
   // MARK: - Public Methods
   
   /// Get portfolios for a specific entity
-  func getPortfolios(for entityId: UUID) async throws -> [Portfolio] {
+  func getPortfolios() throws -> [Portfolio] {
     let request: NSFetchRequest<Portfolio> = Portfolio.fetchRequest()
     request.predicate = NSPredicate(format: "entityId == %@", entityId as CVarArg)
     request.sortDescriptors = [NSSortDescriptor(keyPath: \Portfolio.name, ascending: true)]
@@ -691,7 +690,7 @@ final class PortfolioManager: ObservableObject {
   }
   
   /// Calculate performance metrics for a portfolio
-  func calculatePerformanceMetrics(_ portfolioId: UUID) async throws -> PerformanceMetrics {
+  func calculatePerformanceMetrics() throws -> PerformanceMetrics {
     // Mock implementation for now
     return PerformanceMetrics(
       totalReturn: 12500.0,

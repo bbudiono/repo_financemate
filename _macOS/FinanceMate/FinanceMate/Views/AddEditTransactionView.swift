@@ -144,9 +144,8 @@ struct AddEditTransactionView: View {
             .onChange(of: showingLineItems) { oldValue, newValue in
                 if !newValue && oldValue {
                     // Returning from line items view - refresh data
-                    Task {
-                        await refreshLineItems()
-                    }
+                    // EMERGENCY FIX: Removed Task block - immediate execution
+        refreshLineItems()
                 }
             }
             .sheet(isPresented: $showingSplitAllocation) {
@@ -753,9 +752,9 @@ struct AddEditTransactionView: View {
         return false
     }
 
-    private func refreshLineItems() async {
+    private func refreshLineItems() {
         guard let transaction = currentTransaction else { return }
-        await lineItemViewModel.fetchLineItems(for: transaction)
+        lineItemViewModel.fetchLineItems(for: transaction)
     }
 }
 

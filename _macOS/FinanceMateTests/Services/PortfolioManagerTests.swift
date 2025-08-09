@@ -69,7 +69,7 @@ final class PortfolioManagerTests: XCTestCase {
     XCTAssertNotNil(manager, "PortfolioManager should initialize successfully")
   }
 
-  func testCreatePortfolioWithValidData() async throws {
+  func testCreatePortfolioWithValidData() throws {
     // Given: Valid portfolio data
     let portfolioData = PortfolioData(
       name: "Test Investment Portfolio",
@@ -80,7 +80,7 @@ final class PortfolioManagerTests: XCTestCase {
     )
 
     // When: Creating portfolio
-    let portfolio = try await portfolioManager.createPortfolio(portfolioData)
+    let portfolio = try portfolioManager.createPortfolio(portfolioData)
 
     // Then: Should create portfolio successfully
     XCTAssertNotNil(portfolio, "Should create portfolio successfully")
@@ -90,7 +90,7 @@ final class PortfolioManagerTests: XCTestCase {
     XCTAssertEqual(portfolio.totalValue, 0.0, "New portfolio should have zero initial value")
   }
 
-  func testCreatePortfolioWithInvalidEntityId() async throws {
+  func testCreatePortfolioWithInvalidEntityId() throws {
     // Given: Invalid entity ID
     let portfolioData = PortfolioData(
       name: "Invalid Portfolio",
@@ -102,7 +102,7 @@ final class PortfolioManagerTests: XCTestCase {
 
     // When/Then: Should throw error for invalid entity
     do {
-      _ = try await portfolioManager.createPortfolio(portfolioData)
+      _ = try portfolioManager.createPortfolio(portfolioData)
       XCTFail("Should throw error for invalid entity ID")
     } catch PortfolioManager.PortfolioError.invalidEntity {
       // Expected error
@@ -111,7 +111,7 @@ final class PortfolioManagerTests: XCTestCase {
     }
   }
 
-  func testCreateMultiplePortfoliosForSameEntity() async throws {
+  func testCreateMultiplePortfoliosForSameEntity() throws {
     // Given: Multiple portfolio data for same entity
     let portfolio1Data = PortfolioData(
       name: "Conservative Portfolio",
@@ -130,8 +130,8 @@ final class PortfolioManagerTests: XCTestCase {
     )
 
     // When: Creating multiple portfolios
-    let portfolio1 = try await portfolioManager.createPortfolio(portfolio1Data)
-    let portfolio2 = try await portfolioManager.createPortfolio(portfolio2Data)
+    let portfolio1 = try portfolioManager.createPortfolio(portfolio1Data)
+    let portfolio2 = try portfolioManager.createPortfolio(portfolio2Data)
 
     // Then: Should create both portfolios successfully
     XCTAssertNotEqual(portfolio1.id, portfolio2.id, "Should have different portfolio IDs")
@@ -141,9 +141,9 @@ final class PortfolioManagerTests: XCTestCase {
 
   // MARK: - Asset Management Tests
 
-  func testAddAssetToPortfolio() async throws {
+  func testAddAssetToPortfolio() throws {
     // Given: Portfolio and asset data
-    let portfolio = try await createTestPortfolio()
+    let portfolio = try createTestPortfolio()
     let assetData = AssetData(
       symbol: "CBA.AX",
       market: .asx,
@@ -153,7 +153,7 @@ final class PortfolioManagerTests: XCTestCase {
     )
 
     // When: Adding asset to portfolio
-    let holding = try await portfolioManager.addAsset(assetData, to: portfolio.id!)
+    let holding = try portfolioManager.addAsset(assetData, to: portfolio.id!)
 
     // Then: Should add asset successfully
     XCTAssertNotNil(holding, "Should create holding successfully")
@@ -163,9 +163,9 @@ final class PortfolioManagerTests: XCTestCase {
     XCTAssertEqual(holding.averageCostBasis, 0.0, "New holding should have zero cost basis")
   }
 
-  func testAddDuplicateAssetToPortfolio() async throws {
+  func testAddDuplicateAssetToPortfolio() throws {
     // Given: Portfolio with existing asset
-    let portfolio = try await createTestPortfolio()
+    let portfolio = try createTestPortfolio()
     let assetData = AssetData(
       symbol: "AAPL",
       market: .nasdaq,
@@ -175,10 +175,10 @@ final class PortfolioManagerTests: XCTestCase {
     )
 
     // When: Adding same asset twice
-    let holding1 = try await portfolioManager.addAsset(assetData, to: portfolio.id!)
+    let holding1 = try portfolioManager.addAsset(assetData, to: portfolio.id!)
 
     do {
-      _ = try await portfolioManager.addAsset(assetData, to: portfolio.id!)
+      _ = try portfolioManager.addAsset(assetData, to: portfolio.id!)
       XCTFail("Should not allow duplicate assets in same portfolio")
     } catch PortfolioManager.PortfolioError.duplicateAsset {
       // Expected behavior
@@ -191,9 +191,9 @@ final class PortfolioManagerTests: XCTestCase {
     XCTAssertEqual(holding1.symbol, "AAPL", "Should preserve original holding data")
   }
 
-  func testAddCryptocurrencyAsset() async throws {
+  func testAddCryptocurrencyAsset() throws {
     // Given: Portfolio and cryptocurrency data
-    let portfolio = try await createTestPortfolio()
+    let portfolio = try createTestPortfolio()
     let cryptoData = AssetData(
       symbol: "BTC-USD",
       market: .crypto,
@@ -203,7 +203,7 @@ final class PortfolioManagerTests: XCTestCase {
     )
 
     // When: Adding cryptocurrency
-    let holding = try await portfolioManager.addAsset(cryptoData, to: portfolio.id!)
+    let holding = try portfolioManager.addAsset(cryptoData, to: portfolio.id!)
 
     // Then: Should handle crypto asset correctly
     XCTAssertEqual(holding.symbol, "BTC-USD", "Should set crypto symbol")
@@ -214,10 +214,10 @@ final class PortfolioManagerTests: XCTestCase {
 
   // MARK: - Transaction Processing Tests
 
-  func testRecordBuyTransaction() async throws {
+  func testRecordBuyTransaction() throws {
     // Given: Portfolio with asset
-    let portfolio = try await createTestPortfolio()
-    let holding = try await createTestHolding(in: portfolio, symbol: "CBA.AX")
+    let portfolio = try createTestPortfolio()
+    let holding = try createTestHolding(in: portfolio, symbol: "CBA.AX")
 
     let transactionData = InvestmentTransactionData(
       holdingId: holding.id!,
@@ -229,10 +229,10 @@ final class PortfolioManagerTests: XCTestCase {
     )
 
     // When: Recording buy transaction
-    let transaction = try await portfolioManager.recordTransaction(transactionData)
+    let transaction = try portfolioManager.recordTransaction(transactionData)
 
     // Then: Should update holding correctly
-    let updatedHolding = try await portfolioManager.getHolding(holding.id!)
+    let updatedHolding = try portfolioManager.getHolding(holding.id!)
     XCTAssertEqual(updatedHolding.quantity, 100.0, "Should update quantity")
     XCTAssertEqual(
       updatedHolding.averageCostBasis, 105.6995, accuracy: 0.0001,
@@ -242,10 +242,10 @@ final class PortfolioManagerTests: XCTestCase {
     XCTAssertNotNil(transaction, "Should create transaction record")
   }
 
-  func testRecordSellTransaction() async throws {
+  func testRecordSellTransaction() throws {
     // Given: Portfolio with existing holding
-    let portfolio = try await createTestPortfolio()
-    let holding = try await createTestHolding(in: portfolio, symbol: "CBA.AX")
+    let portfolio = try createTestPortfolio()
+    let holding = try createTestHolding(in: portfolio, symbol: "CBA.AX")
 
     // First add shares
     let buyData = InvestmentTransactionData(
@@ -256,7 +256,7 @@ final class PortfolioManagerTests: XCTestCase {
       transactionFee: 19.95,
       transactionDate: Date().addingTimeInterval(-86400)  // Yesterday
     )
-    _ = try await portfolioManager.recordTransaction(buyData)
+    _ = try portfolioManager.recordTransaction(buyData)
 
     // When: Recording sell transaction
     let sellData = InvestmentTransactionData(
@@ -267,19 +267,19 @@ final class PortfolioManagerTests: XCTestCase {
       transactionFee: 19.95,
       transactionDate: Date()
     )
-    let sellTransaction = try await portfolioManager.recordTransaction(sellData)
+    let sellTransaction = try portfolioManager.recordTransaction(sellData)
 
     // Then: Should update holding and calculate gain/loss
-    let updatedHolding = try await portfolioManager.getHolding(holding.id!)
+    let updatedHolding = try portfolioManager.getHolding(holding.id!)
     XCTAssertEqual(updatedHolding.quantity, 150.0, "Should reduce quantity")
     XCTAssertNotNil(sellTransaction, "Should create sell transaction")
     XCTAssertNotNil(sellTransaction.realizedGainLoss, "Should calculate realized gain/loss")
   }
 
-  func testRecordSellTransactionInsufficientShares() async throws {
+  func testRecordSellTransactionInsufficientShares() throws {
     // Given: Portfolio with insufficient shares
-    let portfolio = try await createTestPortfolio()
-    let holding = try await createTestHolding(in: portfolio, symbol: "CBA.AX")
+    let portfolio = try createTestPortfolio()
+    let holding = try createTestHolding(in: portfolio, symbol: "CBA.AX")
 
     let sellData = InvestmentTransactionData(
       holdingId: holding.id!,
@@ -292,7 +292,7 @@ final class PortfolioManagerTests: XCTestCase {
 
     // When/Then: Should throw insufficient shares error
     do {
-      _ = try await portfolioManager.recordTransaction(sellData)
+      _ = try portfolioManager.recordTransaction(sellData)
       XCTFail("Should throw error for insufficient shares")
     } catch PortfolioManager.PortfolioError.insufficientShares {
       // Expected error
@@ -303,11 +303,11 @@ final class PortfolioManagerTests: XCTestCase {
 
   // MARK: - Portfolio Performance Tests
 
-  func testCalculatePortfolioValue() async throws {
+  func testCalculatePortfolioValue() throws {
     // Given: Portfolio with multiple holdings
-    let portfolio = try await createTestPortfolio()
-    let holding1 = try await createTestHolding(in: portfolio, symbol: "CBA.AX")
-    let holding2 = try await createTestHolding(in: portfolio, symbol: "AAPL")
+    let portfolio = try createTestPortfolio()
+    let holding1 = try createTestHolding(in: portfolio, symbol: "CBA.AX")
+    let holding2 = try createTestHolding(in: portfolio, symbol: "AAPL")
 
     // Add transactions
     let buyData1 = InvestmentTransactionData(
@@ -328,15 +328,15 @@ final class PortfolioManagerTests: XCTestCase {
       transactionDate: Date()
     )
 
-    _ = try await portfolioManager.recordTransaction(buyData1)
-    _ = try await portfolioManager.recordTransaction(buyData2)
+    _ = try portfolioManager.recordTransaction(buyData1)
+    _ = try portfolioManager.recordTransaction(buyData2)
 
     // Mock current prices
     portfolioManager.setMockPrice("CBA.AX", price: 110.0)
     portfolioManager.setMockPrice("AAPL", price: 160.0)
 
     // When: Calculating portfolio value
-    let portfolioValue = try await portfolioManager.calculatePortfolioValue(portfolio.id!)
+    let portfolioValue = try portfolioManager.calculatePortfolioValue(portfolio.id!)
 
     // Then: Should calculate total market value correctly
     let expectedValue = (100.0 * 110.0) + (50.0 * 160.0)  // $11,000 + $8,000 = $19,000
@@ -345,10 +345,10 @@ final class PortfolioManagerTests: XCTestCase {
     XCTAssertGreaterThan(portfolioValue.totalUnrealizedGainLoss, 0, "Should have unrealized gains")
   }
 
-  func testCalculatePortfolioPerformance() async throws {
+  func testCalculatePortfolioPerformance() throws {
     // Given: Portfolio with historical data
-    let portfolio = try await createTestPortfolio()
-    let holding = try await createTestHolding(in: portfolio, symbol: "CBA.AX")
+    let portfolio = try createTestPortfolio()
+    let holding = try createTestHolding(in: portfolio, symbol: "CBA.AX")
 
     // Add historical transaction
     let buyData = InvestmentTransactionData(
@@ -359,13 +359,13 @@ final class PortfolioManagerTests: XCTestCase {
       transactionFee: 19.95,
       transactionDate: Date().addingTimeInterval(-86400 * 30)  // 30 days ago
     )
-    _ = try await portfolioManager.recordTransaction(buyData)
+    _ = try portfolioManager.recordTransaction(buyData)
 
     // Mock current price with gain
     portfolioManager.setMockPrice("CBA.AX", price: 120.0)
 
     // When: Calculating performance metrics
-    let performance = try await portfolioManager.calculatePerformanceMetrics(portfolio.id!)
+    let performance = try portfolioManager.calculatePerformanceMetrics(portfolio.id!)
 
     // Then: Should calculate performance correctly
     XCTAssertGreaterThan(performance.totalReturn, 0, "Should have positive total return")
@@ -375,10 +375,10 @@ final class PortfolioManagerTests: XCTestCase {
 
   // MARK: - Australian Tax Compliance Tests
 
-  func testCGTCalculationForSale() async throws {
+  func testCGTCalculationForSale() throws {
     // Given: Holding with >12 months ownership for CGT discount
-    let portfolio = try await createTestPortfolio()
-    let holding = try await createTestHolding(in: portfolio, symbol: "CBA.AX")
+    let portfolio = try createTestPortfolio()
+    let holding = try createTestHolding(in: portfolio, symbol: "CBA.AX")
 
     let buyDate = Date().addingTimeInterval(-86400 * 400)  // >12 months ago
     let buyData = InvestmentTransactionData(
@@ -389,7 +389,7 @@ final class PortfolioManagerTests: XCTestCase {
       transactionFee: 19.95,
       transactionDate: buyDate
     )
-    _ = try await portfolioManager.recordTransaction(buyData)
+    _ = try portfolioManager.recordTransaction(buyData)
 
     // When: Selling after >12 months
     let sellData = InvestmentTransactionData(
@@ -400,7 +400,7 @@ final class PortfolioManagerTests: XCTestCase {
       transactionFee: 19.95,
       transactionDate: Date()
     )
-    let sellTransaction = try await portfolioManager.recordTransaction(sellData)
+    let sellTransaction = try portfolioManager.recordTransaction(sellData)
 
     // Then: Should apply 50% CGT discount
     XCTAssertNotNil(sellTransaction.capitalGainLoss, "Should calculate capital gain/loss")
@@ -413,10 +413,10 @@ final class PortfolioManagerTests: XCTestCase {
       "Should apply 50% CGT discount")
   }
 
-  func testFrankingCreditCalculation() async throws {
+  func testFrankingCreditCalculation() throws {
     // Given: Portfolio with ASX dividend-paying stock
-    let portfolio = try await createTestPortfolio()
-    let holding = try await createTestHolding(in: portfolio, symbol: "CBA.AX")
+    let portfolio = try createTestPortfolio()
+    let holding = try createTestHolding(in: portfolio, symbol: "CBA.AX")
 
     let buyData = InvestmentTransactionData(
       holdingId: holding.id!,
@@ -426,7 +426,7 @@ final class PortfolioManagerTests: XCTestCase {
       transactionFee: 19.95,
       transactionDate: Date().addingTimeInterval(-86400 * 100)
     )
-    _ = try await portfolioManager.recordTransaction(buyData)
+    _ = try portfolioManager.recordTransaction(buyData)
 
     // When: Recording dividend with franking credits
     let dividendData = DividendData(
@@ -437,7 +437,7 @@ final class PortfolioManagerTests: XCTestCase {
       exDividendDate: Date().addingTimeInterval(-86400 * 7),
       isDRP: false
     )
-    let dividend = try await portfolioManager.recordDividend(dividendData)
+    let dividend = try portfolioManager.recordDividend(dividendData)
 
     // Then: Should calculate franking credits correctly
     let expectedGrossDividend = 100.0 * 2.50  // $250
@@ -454,7 +454,7 @@ final class PortfolioManagerTests: XCTestCase {
 
   // MARK: - Multi-Entity Support Tests
 
-  func testPortfolioIsolationBetweenEntities() async throws {
+  func testPortfolioIsolationBetweenEntities() throws {
     // Given: Two different entities
     let entity2 = FinancialEntity(context: testContext)
     entity2.id = UUID()
@@ -480,12 +480,12 @@ final class PortfolioManagerTests: XCTestCase {
       riskProfile: .high
     )
 
-    let portfolio1 = try await portfolioManager.createPortfolio(portfolio1Data)
-    let portfolio2 = try await portfolioManager.createPortfolio(portfolio2Data)
+    let portfolio1 = try portfolioManager.createPortfolio(portfolio1Data)
+    let portfolio2 = try portfolioManager.createPortfolio(portfolio2Data)
 
     // When: Fetching portfolios for each entity
-    let entity1Portfolios = try await portfolioManager.getPortfolios(for: testEntity.id!)
-    let entity2Portfolios = try await portfolioManager.getPortfolios(for: entity2.id!)
+    let entity1Portfolios = try portfolioManager.getPortfolios(for: testEntity.id!)
+    let entity2Portfolios = try portfolioManager.getPortfolios(for: entity2.id!)
 
     // Then: Should return only portfolios for each entity
     XCTAssertEqual(entity1Portfolios.count, 1, "Entity 1 should have 1 portfolio")
@@ -498,9 +498,9 @@ final class PortfolioManagerTests: XCTestCase {
 
   // MARK: - Performance Tests
 
-  func testLargePortfolioPerformance() async throws {
+  func testLargePortfolioPerformance() throws {
     // Given: Portfolio with many holdings
-    let portfolio = try await createTestPortfolio()
+    let portfolio = try createTestPortfolio()
 
     // Add 100 different holdings
     for i in 1...100 {
@@ -511,7 +511,7 @@ final class PortfolioManagerTests: XCTestCase {
         assetType: .equity,
         currency: "AUD"
       )
-      let holding = try await portfolioManager.addAsset(assetData, to: portfolio.id!)
+      let holding = try portfolioManager.addAsset(assetData, to: portfolio.id!)
 
       // Add transaction for each holding
       let buyData = InvestmentTransactionData(
@@ -522,7 +522,7 @@ final class PortfolioManagerTests: XCTestCase {
         transactionFee: 19.95,
         transactionDate: Date()
       )
-      _ = try await portfolioManager.recordTransaction(buyData)
+      _ = try portfolioManager.recordTransaction(buyData)
 
       // Mock price
       portfolioManager.setMockPrice("TEST\(i).AX", price: Double(105 + i))
@@ -530,7 +530,7 @@ final class PortfolioManagerTests: XCTestCase {
 
     // When: Calculating portfolio value (performance test)
     let startTime = CFAbsoluteTimeGetCurrent()
-    let portfolioValue = try await portfolioManager.calculatePortfolioValue(portfolio.id!)
+    let portfolioValue = try portfolioManager.calculatePortfolioValue(portfolio.id!)
     let processingTime = CFAbsoluteTimeGetCurrent() - startTime
 
     // Then: Should complete within performance target
@@ -542,7 +542,7 @@ final class PortfolioManagerTests: XCTestCase {
 
   // MARK: - Helper Methods
 
-  private func createTestPortfolio() async throws -> Portfolio {
+  private func createTestPortfolio() throws -> Portfolio {
     let portfolioData = PortfolioData(
       name: "Test Portfolio",
       entityId: testEntity.id!,
@@ -550,10 +550,10 @@ final class PortfolioManagerTests: XCTestCase {
       strategy: .balanced,
       riskProfile: .moderate
     )
-    return try await portfolioManager.createPortfolio(portfolioData)
+    return try portfolioManager.createPortfolio(portfolioData)
   }
 
-  private func createTestHolding(in portfolio: Portfolio, symbol: String) async throws -> Holding {
+  private func createTestHolding() throws -> Holding {
     let assetData = AssetData(
       symbol: symbol,
       market: symbol.contains("AX") ? .asx : .nasdaq,
@@ -561,18 +561,18 @@ final class PortfolioManagerTests: XCTestCase {
       assetType: .equity,
       currency: symbol.contains("AX") ? "AUD" : "USD"
     )
-    return try await portfolioManager.addAsset(assetData, to: portfolio.id!)
+    return try portfolioManager.addAsset(assetData, to: portfolio.id!)
   }
 
   // MARK: - Caching Tests
 
-  func testPortfolioCaching() async throws {
+  func testPortfolioCaching() throws {
     // Given: A portfolio
-    let portfolio = try await createTestPortfolio()
+    let portfolio = try createTestPortfolio()
 
     // When: Fetching the portfolio multiple times
-    let firstFetch = try await portfolioManager.getPortfolio(portfolio.id!)
-    let secondFetch = try await portfolioManager.getPortfolio(portfolio.id!)
+    let firstFetch = try portfolioManager.getPortfolio(portfolio.id!)
+    let secondFetch = try portfolioManager.getPortfolio(portfolio.id!)
 
     // Then: Should return the same cached instance
     XCTAssertNotNil(firstFetch, "First fetch should return portfolio")
@@ -580,14 +580,14 @@ final class PortfolioManagerTests: XCTestCase {
     XCTAssertEqual(firstFetch?.id, secondFetch?.id, "Should return same portfolio from cache")
   }
 
-  func testHoldingCaching() async throws {
+  func testHoldingCaching() throws {
     // Given: A portfolio with holding
-    let portfolio = try await createTestPortfolio()
-    let holding = try await createTestHolding(in: portfolio, symbol: "CBA.AX")
+    let portfolio = try createTestPortfolio()
+    let holding = try createTestHolding(in: portfolio, symbol: "CBA.AX")
 
     // When: Fetching the holding multiple times
-    let firstFetch = try await portfolioManager.getHolding(holding.id!)
-    let secondFetch = try await portfolioManager.getHolding(holding.id!)
+    let firstFetch = try portfolioManager.getHolding(holding.id!)
+    let secondFetch = try portfolioManager.getHolding(holding.id!)
 
     // Then: Should return the same cached instance
     XCTAssertNotNil(firstFetch, "First fetch should return holding")
@@ -595,10 +595,10 @@ final class PortfolioManagerTests: XCTestCase {
     XCTAssertEqual(firstFetch.id, secondFetch.id, "Should return same holding from cache")
   }
 
-  func testPortfolioValueCaching() async throws {
+  func testPortfolioValueCaching() throws {
     // Given: A portfolio with holdings and transactions
-    let portfolio = try await createTestPortfolio()
-    let holding = try await createTestHolding(in: portfolio, symbol: "CBA.AX")
+    let portfolio = try createTestPortfolio()
+    let holding = try createTestHolding(in: portfolio, symbol: "CBA.AX")
 
     let buyData = InvestmentTransactionData(
       holdingId: holding.id!,
@@ -608,14 +608,14 @@ final class PortfolioManagerTests: XCTestCase {
       transactionFee: 19.95,
       transactionDate: Date()
     )
-    _ = try await portfolioManager.recordTransaction(buyData)
+    _ = try portfolioManager.recordTransaction(buyData)
 
     // Mock current price
     portfolioManager.setMockPrice("CBA.AX", price: 110.0)
 
     // When: Calculating portfolio value multiple times
-    let firstCalculation = try await portfolioManager.calculatePortfolioValue(portfolio.id!)
-    let secondCalculation = try await portfolioManager.calculatePortfolioValue(portfolio.id!)
+    let firstCalculation = try portfolioManager.calculatePortfolioValue(portfolio.id!)
+    let secondCalculation = try portfolioManager.calculatePortfolioValue(portfolio.id!)
 
     // Then: Should return cached value for second call
     XCTAssertEqual(
@@ -626,10 +626,10 @@ final class PortfolioManagerTests: XCTestCase {
       "Cached calculation should return same value")
   }
 
-  func testCacheInvalidationAfterTransaction() async throws {
+  func testCacheInvalidationAfterTransaction() throws {
     // Given: A portfolio with cached value
-    let portfolio = try await createTestPortfolio()
-    let holding = try await createTestHolding(in: portfolio, symbol: "CBA.AX")
+    let portfolio = try createTestPortfolio()
+    let holding = try createTestHolding(in: portfolio, symbol: "CBA.AX")
 
     let buyData = InvestmentTransactionData(
       holdingId: holding.id!,
@@ -639,10 +639,10 @@ final class PortfolioManagerTests: XCTestCase {
       transactionFee: 19.95,
       transactionDate: Date()
     )
-    _ = try await portfolioManager.recordTransaction(buyData)
+    _ = try portfolioManager.recordTransaction(buyData)
 
     portfolioManager.setMockPrice("CBA.AX", price: 110.0)
-    let initialValue = try await portfolioManager.calculatePortfolioValue(portfolio.id!)
+    let initialValue = try portfolioManager.calculatePortfolioValue(portfolio.id!)
 
     // When: Adding a new transaction (should invalidate cache)
     let additionalBuyData = InvestmentTransactionData(
@@ -653,10 +653,10 @@ final class PortfolioManagerTests: XCTestCase {
       transactionFee: 19.95,
       transactionDate: Date()
     )
-    _ = try await portfolioManager.recordTransaction(additionalBuyData)
+    _ = try portfolioManager.recordTransaction(additionalBuyData)
 
     // Then: Should recalculate with new data
-    let newValue = try await portfolioManager.calculatePortfolioValue(portfolio.id!)
+    let newValue = try portfolioManager.calculatePortfolioValue(portfolio.id!)
     XCTAssertGreaterThan(
       newValue.totalMarketValue, initialValue.totalMarketValue,
       "New value should be higher after additional purchase")
@@ -667,11 +667,11 @@ final class PortfolioManagerTests: XCTestCase {
 
   // MARK: - Batch Processing Tests
 
-  func testBatchTransactionProcessing() async throws {
+  func testBatchTransactionProcessing() throws {
     // Given: A portfolio with multiple holdings
-    let portfolio = try await createTestPortfolio()
-    let holding1 = try await createTestHolding(in: portfolio, symbol: "CBA.AX")
-    let holding2 = try await createTestHolding(in: portfolio, symbol: "AAPL")
+    let portfolio = try createTestPortfolio()
+    let holding1 = try createTestHolding(in: portfolio, symbol: "CBA.AX")
+    let holding2 = try createTestHolding(in: portfolio, symbol: "AAPL")
 
     // Create multiple transactions for batch processing
     let transactions = [
@@ -702,14 +702,14 @@ final class PortfolioManagerTests: XCTestCase {
     ]
 
     // When: Processing transactions in batch
-    let processedTransactions = try await portfolioManager.recordTransactions(transactions)
+    let processedTransactions = try portfolioManager.recordTransactions(transactions)
 
     // Then: Should process all transactions correctly
     XCTAssertEqual(processedTransactions.count, 3, "Should process all 3 transactions")
 
     // Verify holdings are updated correctly
-    let updatedHolding1 = try await portfolioManager.getHolding(holding1.id!)
-    let updatedHolding2 = try await portfolioManager.getHolding(holding2.id!)
+    let updatedHolding1 = try portfolioManager.getHolding(holding1.id!)
+    let updatedHolding2 = try portfolioManager.getHolding(holding2.id!)
 
     XCTAssertEqual(
       updatedHolding1.quantity, 125.0, accuracy: 0.01, "Holding 1 should have 125 shares")
@@ -728,10 +728,10 @@ final class PortfolioManagerTests: XCTestCase {
       "Holding 2 cost basis should be correct")
   }
 
-  func testBatchTransactionWithMixedTypes() async throws {
+  func testBatchTransactionWithMixedTypes() throws {
     // Given: A portfolio with holdings
-    let portfolio = try await createTestPortfolio()
-    let holding = try await createTestHolding(in: portfolio, symbol: "CBA.AX")
+    let portfolio = try createTestPortfolio()
+    let holding = try createTestHolding(in: portfolio, symbol: "CBA.AX")
 
     // First add some shares
     let initialBuy = InvestmentTransactionData(
@@ -742,7 +742,7 @@ final class PortfolioManagerTests: XCTestCase {
       transactionFee: 19.95,
       transactionDate: Date().addingTimeInterval(-86400)  // Yesterday
     )
-    _ = try await portfolioManager.recordTransaction(initialBuy)
+    _ = try portfolioManager.recordTransaction(initialBuy)
 
     // Create mixed buy/sell transactions
     let mixedTransactions = [
@@ -765,12 +765,12 @@ final class PortfolioManagerTests: XCTestCase {
     ]
 
     // When: Processing mixed transactions in batch
-    let processedTransactions = try await portfolioManager.recordTransactions(mixedTransactions)
+    let processedTransactions = try portfolioManager.recordTransactions(mixedTransactions)
 
     // Then: Should handle both buy and sell correctly
     XCTAssertEqual(processedTransactions.count, 2, "Should process both transactions")
 
-    let updatedHolding = try await portfolioManager.getHolding(holding.id!)
+    let updatedHolding = try portfolioManager.getHolding(holding.id!)
     XCTAssertEqual(
       updatedHolding.quantity, 220.0, accuracy: 0.01, "Should have 220 shares (200 + 50 - 30)")
 
@@ -781,21 +781,21 @@ final class PortfolioManagerTests: XCTestCase {
     XCTAssertGreaterThan(sellTransaction?.realizedGainLoss ?? 0, 0, "Should have gain on sale")
   }
 
-  func testBatchTransactionEmptyArray() async throws {
+  func testBatchTransactionEmptyArray() throws {
     // Given: Empty transaction array
     let emptyTransactions: [InvestmentTransactionData] = []
 
     // When: Processing empty batch
-    let result = try await portfolioManager.recordTransactions(emptyTransactions)
+    let result = try portfolioManager.recordTransactions(emptyTransactions)
 
     // Then: Should return empty array without error
     XCTAssertEqual(result.count, 0, "Should return empty array for empty input")
   }
 
-  func testBatchTransactionPerformance() async throws {
+  func testBatchTransactionPerformance() throws {
     // Given: Large number of transactions
-    let portfolio = try await createTestPortfolio()
-    let holding = try await createTestHolding(in: portfolio, symbol: "TEST.AX")
+    let portfolio = try createTestPortfolio()
+    let holding = try createTestHolding(in: portfolio, symbol: "TEST.AX")
 
     var transactions: [InvestmentTransactionData] = []
     for i in 0..<100 {
@@ -812,7 +812,7 @@ final class PortfolioManagerTests: XCTestCase {
 
     // When: Processing large batch (measure performance)
     let startTime = CFAbsoluteTimeGetCurrent()
-    let processedTransactions = try await portfolioManager.recordTransactions(transactions)
+    let processedTransactions = try portfolioManager.recordTransactions(transactions)
     let processingTime = CFAbsoluteTimeGetCurrent() - startTime
 
     // Then: Should complete within performance target
@@ -820,7 +820,7 @@ final class PortfolioManagerTests: XCTestCase {
     XCTAssertLessThan(processingTime, 3.0, "Batch processing should complete within 3 seconds")
 
     // Verify final state is consistent
-    let finalHolding = try await portfolioManager.getHolding(holding.id!)
+    let finalHolding = try portfolioManager.getHolding(holding.id!)
     XCTAssertGreaterThan(finalHolding.quantity, 0, "Final quantity should be positive")
   }
 

@@ -30,7 +30,8 @@ import SwiftUI
 import CoreData
 import OSLog
 
-@MainActor
+// EMERGENCY FIX: Removed to eliminate Swift Concurrency crashes
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
 final class OptimizationEngine: ObservableObject {
     
     // MARK: - Properties
@@ -100,34 +101,34 @@ final class OptimizationEngine: ObservableObject {
         return availableCapabilities
     }
     
-    func enableOptimization() async {
+    func enableOptimization() {
         isOptimizationEnabled = true
-        await saveOptimizationState()
+        saveOptimizationState()
         logger.info("Optimization engine enabled")
     }
     
-    func enableDynamicOptimization() async {
+    func enableDynamicOptimization() {
         isDynamicOptimizationEnabled = true
-        await saveOptimizationState()
+        saveOptimizationState()
         logger.info("Dynamic optimization enabled")
     }
     
-    func updateOptimizationProgress(_ progress: Double) async {
+    func updateOptimizationProgress() {
         optimizationProgress = max(0.0, min(1.0, progress))
-        await saveOptimizationState()
+        saveOptimizationState()
     }
     
     // MARK: - Expense Optimization
     
-    func analyzeExpenseOptimizations() async -> [OptimizationRecommendation] {
+    func analyzeExpenseOptimizations() -> [OptimizationRecommendation] {
         let startTime = CFAbsoluteTimeGetCurrent()
         
         if let cached = optimizationCache.getCachedExpenseOptimizations() {
             return cached
         }
         
-        let transactions = await fetchAllTransactions()
-        let optimizations = await expenseOptimizer.analyzeOptimizations(transactions: transactions)
+        let transactions = fetchAllTransactions()
+        let optimizations = expenseOptimizer.analyzeOptimizations(transactions: transactions)
         
         optimizationCache.cacheExpenseOptimizations(optimizations)
         
@@ -137,126 +138,126 @@ final class OptimizationEngine: ObservableObject {
         return optimizations
     }
     
-    func optimizeCategory(_ category: String) async -> [OptimizationRecommendation]? {
-        let transactions = await fetchTransactionsByCategory(category)
+    func optimizeCategory() -> [OptimizationRecommendation]? {
+        let transactions = fetchTransactionsByCategory(category)
         guard !transactions.isEmpty else { return nil }
         
-        return await expenseOptimizer.optimizeCategory(category: category, transactions: transactions)
+        return expenseOptimizer.optimizeCategory(category: category, transactions: transactions)
     }
     
-    func optimizeRecurringExpenses() async -> [RecurringExpenseOptimization] {
-        let transactions = await fetchAllTransactions()
-        return await expenseOptimizer.optimizeRecurringExpenses(transactions: transactions)
+    func optimizeRecurringExpenses() -> [RecurringExpenseOptimization] {
+        let transactions = fetchAllTransactions()
+        return expenseOptimizer.optimizeRecurringExpenses(transactions: transactions)
     }
     
-    func optimizeSubscriptions() async -> SubscriptionOptimizationAnalysis? {
-        let transactions = await fetchAllTransactions()
-        return await expenseOptimizer.optimizeSubscriptions(transactions: transactions)
+    func optimizeSubscriptions() -> SubscriptionOptimizationAnalysis? {
+        let transactions = fetchAllTransactions()
+        return expenseOptimizer.optimizeSubscriptions(transactions: transactions)
     }
     
     // MARK: - Tax Optimization
     
-    func optimizeAustralianTaxes() async -> [AustralianTaxOptimization] {
+    func optimizeAustralianTaxes() -> [AustralianTaxOptimization] {
         guard isOptimizationEnabled else { return [] }
         
-        let transactions = await fetchAllTransactions()
-        return await taxOptimizer.optimizeAustralianTaxes(transactions: transactions)
+        let transactions = fetchAllTransactions()
+        return taxOptimizer.optimizeAustralianTaxes(transactions: transactions)
     }
     
-    func optimizeBusinessDeductions() async -> [BusinessDeductionOptimization] {
-        let businessTransactions = await fetchTransactionsByCategory("Business")
-        return await taxOptimizer.optimizeBusinessDeductions(transactions: businessTransactions)
+    func optimizeBusinessDeductions() -> [BusinessDeductionOptimization] {
+        let businessTransactions = fetchTransactionsByCategory("Business")
+        return taxOptimizer.optimizeBusinessDeductions(transactions: businessTransactions)
     }
     
-    func optimizeTaxCategories() async -> TaxCategoryOptimization? {
-        let transactions = await fetchAllTransactions()
-        return await taxOptimizer.optimizeTaxCategories(transactions: transactions)
+    func optimizeTaxCategories() -> TaxCategoryOptimization? {
+        let transactions = fetchAllTransactions()
+        return taxOptimizer.optimizeTaxCategories(transactions: transactions)
     }
     
-    func generateQuarterlyTaxPlan() async -> QuarterlyTaxPlan? {
-        let transactions = await fetchAllTransactions()
-        return await taxOptimizer.generateQuarterlyPlan(transactions: transactions)
+    func generateQuarterlyTaxPlan() -> QuarterlyTaxPlan? {
+        let transactions = fetchAllTransactions()
+        return taxOptimizer.generateQuarterlyPlan(transactions: transactions)
     }
     
     // MARK: - Budget Optimization
     
-    func optimizeBudgetAllocations() async -> [BudgetAllocationOptimization] {
+    func optimizeBudgetAllocations() -> [BudgetAllocationOptimization] {
         guard isOptimizationEnabled else { return [] }
         
-        let transactions = await fetchAllTransactions()
-        return await budgetOptimizer.optimizeAllocations(transactions: transactions)
+        let transactions = fetchAllTransactions()
+        return budgetOptimizer.optimizeAllocations(transactions: transactions)
     }
     
-    func optimizeSavingsGoals() async -> SavingsOptimization? {
-        let transactions = await fetchAllTransactions()
-        return await budgetOptimizer.optimizeSavingsGoals(transactions: transactions)
+    func optimizeSavingsGoals() -> SavingsOptimization? {
+        let transactions = fetchAllTransactions()
+        return budgetOptimizer.optimizeSavingsGoals(transactions: transactions)
     }
     
-    func optimizeEmergencyFund() async -> EmergencyFundOptimization? {
-        let transactions = await fetchAllTransactions()
-        return await budgetOptimizer.optimizeEmergencyFund(transactions: transactions)
+    func optimizeEmergencyFund() -> EmergencyFundOptimization? {
+        let transactions = fetchAllTransactions()
+        return budgetOptimizer.optimizeEmergencyFund(transactions: transactions)
     }
     
-    func optimizeDebtPayment() async -> DebtOptimization? {
-        let transactions = await fetchAllTransactions()
-        return await budgetOptimizer.optimizeDebtPayment(transactions: transactions)
+    func optimizeDebtPayment() -> DebtOptimization? {
+        let transactions = fetchAllTransactions()
+        return budgetOptimizer.optimizeDebtPayment(transactions: transactions)
     }
     
     // MARK: - Cash Flow Optimization
     
-    func optimizeCashFlow() async -> [CashFlowOptimization] {
+    func optimizeCashFlow() -> [CashFlowOptimization] {
         guard isOptimizationEnabled else { return [] }
         
-        let transactions = await fetchAllTransactions()
-        return await cashFlowOptimizer.optimizeCashFlow(transactions: transactions)
+        let transactions = fetchAllTransactions()
+        return cashFlowOptimizer.optimizeCashFlow(transactions: transactions)
     }
     
-    func optimizeIncome() async -> IncomeOptimization? {
-        let transactions = await fetchAllTransactions()
-        return await cashFlowOptimizer.optimizeIncome(transactions: transactions)
+    func optimizeIncome() -> IncomeOptimization? {
+        let transactions = fetchAllTransactions()
+        return cashFlowOptimizer.optimizeIncome(transactions: transactions)
     }
     
-    func optimizePaymentTiming() async -> [PaymentTimingOptimization] {
-        let transactions = await fetchAllTransactions()
-        return await cashFlowOptimizer.optimizePaymentTiming(transactions: transactions)
+    func optimizePaymentTiming() -> [PaymentTimingOptimization] {
+        let transactions = fetchAllTransactions()
+        return cashFlowOptimizer.optimizePaymentTiming(transactions: transactions)
     }
     
-    func optimizeCashFlowForecast() async -> CashFlowForecastOptimization? {
-        let transactions = await fetchAllTransactions()
-        return await cashFlowOptimizer.optimizeForecast(transactions: transactions)
+    func optimizeCashFlowForecast() -> CashFlowForecastOptimization? {
+        let transactions = fetchAllTransactions()
+        return cashFlowOptimizer.optimizeForecast(transactions: transactions)
     }
     
     // MARK: - Performance Optimization
     
-    func optimizeApplicationPerformance() async -> [ApplicationPerformanceOptimization] {
+    func optimizeApplicationPerformance() -> [ApplicationPerformanceOptimization] {
         guard isOptimizationEnabled else { return [] }
         
-        return await performanceOptimizer.optimizeApplicationPerformance()
+        return performanceOptimizer.optimizeApplicationPerformance()
     }
     
-    func optimizeDatabasePerformance() async -> DatabaseOptimization? {
-        return await performanceOptimizer.optimizeDatabasePerformance(context: context)
+    func optimizeDatabasePerformance() -> DatabaseOptimization? {
+        return performanceOptimizer.optimizeDatabasePerformance(context: context)
     }
     
-    func optimizeMemoryUsage() async -> [MemoryOptimization] {
-        return await performanceOptimizer.optimizeMemoryUsage()
+    func optimizeMemoryUsage() -> [MemoryOptimization] {
+        return performanceOptimizer.optimizeMemoryUsage()
     }
     
-    func optimizeUIPerformance() async -> UIPerformanceOptimization? {
-        return await performanceOptimizer.optimizeUIPerformance()
+    func optimizeUIPerformance() -> UIPerformanceOptimization? {
+        return performanceOptimizer.optimizeUIPerformance()
     }
     
     // MARK: - Optimization Tracking
     
-    func trackOptimizationImplementation(_ optimizationId: String, impact: Double) async {
+    func trackOptimizationImplementation() {
         let tracking = OptimizationTracking(
             id: optimizationId,
             impact: impact,
             implementedAt: Date()
         )
         trackingData.append(tracking)
-        await optimizationTracker.trackImplementation(tracking)
-        await saveTrackingData()
+        optimizationTracker.trackImplementation(tracking)
+        saveTrackingData()
         
         logger.info("Tracked optimization implementation: \(optimizationId) with impact: \(impact)")
     }
@@ -265,18 +266,18 @@ final class OptimizationEngine: ObservableObject {
         return trackingData
     }
     
-    func calculateOptimizationROI() async -> OptimizationROI? {
-        return await optimizationTracker.calculateROI(trackingData: trackingData)
+    func calculateOptimizationROI() -> OptimizationROI? {
+        return optimizationTracker.calculateROI(trackingData: trackingData)
     }
     
-    func analyzeOptimizationEffectiveness() async -> OptimizationEffectiveness? {
-        return await optimizationTracker.analyzeEffectiveness(trackingData: trackingData)
+    func analyzeOptimizationEffectiveness() -> OptimizationEffectiveness? {
+        return optimizationTracker.analyzeEffectiveness(trackingData: trackingData)
     }
     
     // MARK: - Advanced Optimization
     
-    func performMultiObjectiveOptimization(objectives: [OptimizationObjective]) async -> MultiObjectiveOptimization? {
-        let transactions = await fetchAllTransactions()
+    func performMultiObjectiveOptimization() -> MultiObjectiveOptimization? {
+        let transactions = fetchAllTransactions()
         
         var paretoSolutions: [ParetoOptimalSolution] = []
         
@@ -297,10 +298,10 @@ final class OptimizationEngine: ObservableObject {
         )
     }
     
-    func performDynamicOptimization() async -> [DynamicOptimization] {
+    func performDynamicOptimization() -> [DynamicOptimization] {
         guard isDynamicOptimizationEnabled else { return [] }
         
-        let transactions = await fetchAllTransactions()
+        let transactions = fetchAllTransactions()
         var dynamicOptimizations: [DynamicOptimization] = []
         
         // Generate dynamic optimizations based on changing conditions
@@ -314,14 +315,14 @@ final class OptimizationEngine: ObservableObject {
         return dynamicOptimizations
     }
     
-    func optimizeWithConstraints(_ constraints: OptimizationConstraints) async -> [ConstrainedOptimization] {
+    func optimizeWithConstraints() -> [ConstrainedOptimization] {
         optimizationConstraints = constraints
         
-        let transactions = await fetchAllTransactions()
+        let transactions = fetchAllTransactions()
         var constrainedOptimizations: [ConstrainedOptimization] = []
         
         // Apply constraints to optimization recommendations
-        let baseOptimizations = await analyzeExpenseOptimizations()
+        let baseOptimizations = analyzeExpenseOptimizations()
         
         for optimization in baseOptimizations {
             if optimization.potentialSavings / getTotalExpenses(transactions) <= constraints.maxBudgetChange {
@@ -337,23 +338,23 @@ final class OptimizationEngine: ObservableObject {
         return constrainedOptimizations
     }
     
-    func setOptimizationProfile(_ profile: OptimizationProfile) async {
+    func setOptimizationProfile() {
         optimizationProfile = profile
-        await saveOptimizationProfile(profile)
+        saveOptimizationProfile(profile)
         logger.info("Optimization profile updated")
     }
     
-    func generatePersonalizedOptimizations() async -> [PersonalizedOptimization] {
+    func generatePersonalizedOptimizations() -> [PersonalizedOptimization] {
         guard let profile = optimizationProfile else {
             return []
         }
         
-        let transactions = await fetchAllTransactions()
+        let transactions = fetchAllTransactions()
         var personalizedOptimizations: [PersonalizedOptimization] = []
         
         // Generate optimizations based on user profile
         if profile.primaryGoals.contains(.taxEfficiency) {
-            let taxOptimizations = await optimizeAustralianTaxes()
+            let taxOptimizations = optimizeAustralianTaxes()
             for taxOpt in taxOptimizations {
                 personalizedOptimizations.append(PersonalizedOptimization(
                     id: "tax_\(taxOpt.id)",
@@ -366,7 +367,7 @@ final class OptimizationEngine: ObservableObject {
         }
         
         if profile.primaryGoals.contains(.wealthAccumulation) {
-            if let savingsOpt = await optimizeSavingsGoals() {
+            if let savingsOpt = optimizeSavingsGoals() {
                 personalizedOptimizations.append(PersonalizedOptimization(
                     id: "savings_accumulation",
                     isPersonalized: true,
@@ -382,7 +383,7 @@ final class OptimizationEngine: ObservableObject {
     
     // MARK: - Data Access
     
-    private func fetchAllTransactions() async -> [Transaction] {
+    private func fetchAllTransactions() -> [Transaction] {
         let request: NSFetchRequest<Transaction> = Transaction.fetchRequest()
         request.sortDescriptors = [NSSortDescriptor(keyPath: \Transaction.date, ascending: false)]
         
@@ -394,7 +395,7 @@ final class OptimizationEngine: ObservableObject {
         }
     }
     
-    private func fetchTransactionsByCategory(_ category: String) async -> [Transaction] {
+    private func fetchTransactionsByCategory() -> [Transaction] {
         let request: NSFetchRequest<Transaction> = Transaction.fetchRequest()
         request.predicate = NSPredicate(format: "category == %@", category)
         request.sortDescriptors = [NSSortDescriptor(keyPath: \Transaction.date, ascending: false)]
@@ -463,19 +464,19 @@ final class OptimizationEngine: ObservableObject {
         logger.info("Optimization engine state loaded from persistence")
     }
     
-    private func saveOptimizationState() async {
+    private func saveOptimizationState() {
         userDefaults.set(isOptimizationEnabled, forKey: "optimizationEnabled")
         userDefaults.set(isDynamicOptimizationEnabled, forKey: "dynamicOptimizationEnabled")
         userDefaults.set(optimizationProgress, forKey: "optimizationProgress")
     }
     
-    private func saveOptimizationProfile(_ profile: OptimizationProfile) async {
+    private func saveOptimizationProfile() {
         if let encoded = try? JSONEncoder().encode(profile) {
             userDefaults.set(encoded, forKey: "optimizationProfile")
         }
     }
     
-    private func saveTrackingData() async {
+    private func saveTrackingData() {
         if let encoded = try? JSONEncoder().encode(trackingData) {
             userDefaults.set(encoded, forKey: "optimizationTrackingData")
         }
@@ -486,7 +487,7 @@ final class OptimizationEngine: ObservableObject {
 
 private class ExpenseOptimizer {
     
-    func analyzeOptimizations(transactions: [Transaction]) async -> [OptimizationRecommendation] {
+    func analyzeOptimizations() -> [OptimizationRecommendation] {
         var optimizations: [OptimizationRecommendation] = []
         
         // Analyze spending by category
@@ -517,7 +518,7 @@ private class ExpenseOptimizer {
         return optimizations.sorted { $0.potentialSavings > $1.potentialSavings }
     }
     
-    func optimizeCategory(category: String, transactions: [Transaction]) async -> [OptimizationRecommendation] {
+    func optimizeCategory() -> [OptimizationRecommendation] {
         let totalSpent = transactions.reduce(0) { $0 + $1.amount }
         
         if totalSpent == 0 { return [] }
@@ -535,7 +536,7 @@ private class ExpenseOptimizer {
         ]
     }
     
-    func optimizeRecurringExpenses(transactions: [Transaction]) async -> [RecurringExpenseOptimization] {
+    func optimizeRecurringExpenses() -> [RecurringExpenseOptimization] {
         // Identify potential recurring expenses by amount and frequency
         let amountGroups = Dictionary(grouping: transactions) { Int($0.amount) }
         var recurringOptimizations: [RecurringExpenseOptimization] = []
@@ -556,7 +557,7 @@ private class ExpenseOptimizer {
         return recurringOptimizations
     }
     
-    func optimizeSubscriptions(transactions: [Transaction]) async -> SubscriptionOptimizationAnalysis {
+    func optimizeSubscriptions() -> SubscriptionOptimizationAnalysis {
         let subscriptionKeywords = ["subscription", "monthly", "premium", "pro", "plus"]
         
         let potentialSubscriptions = transactions.filter { transaction in
@@ -587,7 +588,7 @@ private class ExpenseOptimizer {
 
 private class TaxOptimizer {
     
-    func optimizeAustralianTaxes(transactions: [Transaction]) async -> [AustralianTaxOptimization] {
+    func optimizeAustralianTaxes() -> [AustralianTaxOptimization] {
         var optimizations: [AustralianTaxOptimization] = []
         
         let businessTransactions = transactions.filter { $0.category == "Business" }
@@ -608,7 +609,7 @@ private class TaxOptimizer {
         return optimizations
     }
     
-    func optimizeBusinessDeductions(transactions: [Transaction]) async -> [BusinessDeductionOptimization] {
+    func optimizeBusinessDeductions() -> [BusinessDeductionOptimization] {
         var deductions: [BusinessDeductionOptimization] = []
         
         let businessExpenses = Dictionary(grouping: transactions) { transaction -> String in
@@ -641,7 +642,7 @@ private class TaxOptimizer {
         return deductions
     }
     
-    func optimizeTaxCategories(transactions: [Transaction]) async -> TaxCategoryOptimization {
+    func optimizeTaxCategories() -> TaxCategoryOptimization {
         var suggestions: [TaxCategorySuggestion] = []
         
         // Analyze transactions that might be better categorized
@@ -667,7 +668,7 @@ private class TaxOptimizer {
         )
     }
     
-    func generateQuarterlyPlan(transactions: [Transaction]) async -> QuarterlyTaxPlan {
+    func generateQuarterlyPlan() -> QuarterlyTaxPlan {
         var quarters: [QuarterlyTaxQuarter] = []
         
         for quarter in 1...4 {
@@ -693,7 +694,7 @@ private class TaxOptimizer {
 
 private class BudgetOptimizer {
     
-    func optimizeAllocations(transactions: [Transaction]) async -> [BudgetAllocationOptimization] {
+    func optimizeAllocations() -> [BudgetAllocationOptimization] {
         let categoryGroups = Dictionary(grouping: transactions) { $0.category ?? "Unknown" }
         var optimizations: [BudgetAllocationOptimization] = []
         
@@ -728,7 +729,7 @@ private class BudgetOptimizer {
         return optimizations
     }
     
-    func optimizeSavingsGoals(transactions: [Transaction]) async -> SavingsOptimization {
+    func optimizeSavingsGoals() -> SavingsOptimization {
         let totalExpenses = transactions.filter { $0.amount > 0 }.reduce(0) { $0 + $1.amount }
         let estimatedIncome = totalExpenses * 1.3 // Assume income is 30% higher than tracked expenses
         
@@ -747,7 +748,7 @@ private class BudgetOptimizer {
         )
     }
     
-    func optimizeEmergencyFund(transactions: [Transaction]) async -> EmergencyFundOptimization {
+    func optimizeEmergencyFund() -> EmergencyFundOptimization {
         let monthlyExpenses = transactions.filter { $0.amount > 0 }.reduce(0) { $0 + $1.amount }
         let recommendedMonths: Double = 6.0
         let recommendedAmount = monthlyExpenses * recommendedMonths
@@ -763,7 +764,7 @@ private class BudgetOptimizer {
         )
     }
     
-    func optimizeDebtPayment(transactions: [Transaction]) async -> DebtOptimization {
+    func optimizeDebtPayment() -> DebtOptimization {
         // Simulate debt optimization strategies
         let strategies = [
             DebtPaymentStrategy(
@@ -786,7 +787,7 @@ private class BudgetOptimizer {
 
 private class CashFlowOptimizer {
     
-    func optimizeCashFlow(transactions: [Transaction]) async -> [CashFlowOptimization] {
+    func optimizeCashFlow() -> [CashFlowOptimization] {
         var optimizations: [CashFlowOptimization] = []
         
         // Analyze cash flow patterns
@@ -807,7 +808,7 @@ private class CashFlowOptimizer {
         return optimizations
     }
     
-    func optimizeIncome(transactions: [Transaction]) async -> IncomeOptimization {
+    func optimizeIncome() -> IncomeOptimization {
         // Analyze income optimization opportunities
         let recommendations = [
             IncomeRecommendation(
@@ -830,7 +831,7 @@ private class CashFlowOptimizer {
         return IncomeOptimization(recommendations: recommendations)
     }
     
-    func optimizePaymentTiming(transactions: [Transaction]) async -> [PaymentTimingOptimization] {
+    func optimizePaymentTiming() -> [PaymentTimingOptimization] {
         var timingOptimizations: [PaymentTimingOptimization] = []
         
         // Identify large transactions that could benefit from timing optimization
@@ -849,7 +850,7 @@ private class CashFlowOptimizer {
         return timingOptimizations
     }
     
-    func optimizeForecast(transactions: [Transaction]) async -> CashFlowForecastOptimization {
+    func optimizeForecast() -> CashFlowForecastOptimization {
         let optimizedProjections = [
             "Month 1: Improved accuracy through pattern recognition",
             "Month 2: Enhanced forecasting with seasonal adjustments",
@@ -865,7 +866,7 @@ private class CashFlowOptimizer {
 
 private class PerformanceOptimizer {
     
-    func optimizeApplicationPerformance() async -> [ApplicationPerformanceOptimization] {
+    func optimizeApplicationPerformance() -> [ApplicationPerformanceOptimization] {
         return [
             ApplicationPerformanceOptimization(
                 area: "Core Data Operations",
@@ -882,7 +883,7 @@ private class PerformanceOptimizer {
         ]
     }
     
-    func optimizeDatabasePerformance(context: NSManagedObjectContext) async -> DatabaseOptimization {
+    func optimizeDatabasePerformance() -> DatabaseOptimization {
         let recommendations = [
             DatabaseRecommendation(
                 operation: "Transaction Fetching",
@@ -901,7 +902,7 @@ private class PerformanceOptimizer {
         return DatabaseOptimization(recommendations: recommendations)
     }
     
-    func optimizeMemoryUsage() async -> [MemoryOptimization] {
+    func optimizeMemoryUsage() -> [MemoryOptimization] {
         return [
             MemoryOptimization(
                 component: "Transaction Cache",
@@ -920,7 +921,7 @@ private class PerformanceOptimizer {
         ]
     }
     
-    func optimizeUIPerformance() async -> UIPerformanceOptimization {
+    func optimizeUIPerformance() -> UIPerformanceOptimization {
         let optimizations = [
             UIComponentOptimization(
                 component: "Transaction List",
@@ -942,11 +943,11 @@ private class PerformanceOptimizer {
 
 private class OptimizationTracker {
     
-    func trackImplementation(_ tracking: OptimizationTracking) async {
+    func trackImplementation() {
         // Track implementation in analytics system
     }
     
-    func calculateROI(trackingData: [OptimizationTracking]) async -> OptimizationROI {
+    func calculateROI() -> OptimizationROI {
         let totalSavings = trackingData.reduce(0) { $0 + $1.impact }
         let implementationCost = 1000.0 // Estimated cost
         let roi = totalSavings / implementationCost
@@ -959,7 +960,7 @@ private class OptimizationTracker {
         )
     }
     
-    func analyzeEffectiveness(trackingData: [OptimizationTracking]) async -> OptimizationEffectiveness {
+    func analyzeEffectiveness() -> OptimizationEffectiveness {
         let successfulOptimizations = trackingData.filter { $0.impact > 0 }
         let successRate = Double(successfulOptimizations.count) / Double(trackingData.count)
         let averageImpact = trackingData.reduce(0) { $0 + $1.impact } / Double(trackingData.count)

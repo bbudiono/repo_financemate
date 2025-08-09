@@ -21,7 +21,8 @@ import CoreData
 import Foundation
 import Combine
 
-@MainActor
+// EMERGENCY FIX: Removed to eliminate Swift Concurrency crashes
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
 class FinancialGoalViewModel: ObservableObject {
     
     // MARK: - Published Properties
@@ -60,8 +61,9 @@ class FinancialGoalViewModel: ObservableObject {
         isLoading = true
         errorMessage = nil
         
-        Task {
-            do {
+        // EMERGENCY FIX: Removed Task block - immediate execution
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
+        do {
                 let fetchRequest: NSFetchRequest<FinancialGoal> = FinancialGoal.fetchRequest()
                 fetchRequest.sortDescriptors = [
                     NSSortDescriptor(keyPath: \FinancialGoal.priority, ascending: false),
@@ -70,16 +72,13 @@ class FinancialGoalViewModel: ObservableObject {
                 
                 let fetchedGoals = try context.fetch(fetchRequest)
                 
-                await MainActor.run {
-                    self.goals = fetchedGoals
+                self.goals = fetchedGoals
                     self.categorizeGoals()
                     self.isLoading = false
-                }
-            } catch {
-                await MainActor.run {
-                    self.errorMessage = "Failed to fetch goals: \(error.localizedDescription)"
+             catch {
+                self.errorMessage = "Failed to fetch goals: \(error.localizedDescription)"
                     self.isLoading = false
-                }
+                
             }
         }
     }

@@ -1,0 +1,559 @@
+import SwiftUI
+import Charts
+
+/**
+ * Purpose: Advanced multi-entity comparison chart with interactive drill-down capabilities
+ * Issues & Complexity Summary: Complex Charts framework integration with real multi-entity data
+ * Key Complexity Drivers:
+ *   - Logic Scope (Est. LoC): ~250
+ *   - Core Algorithm Complexity: High (multi-entity data visualization, interactive selection)
+ *   - Dependencies: 4 (SwiftUI, Charts, MultiEntityWealthService, NetWealthDashboardViewModel)
+ *   - State Management Complexity: High (entity selection, drill-down states, animations)
+ *   - Novelty/Uncertainty Factor: Medium (advanced chart interactions)
+ * AI Pre-Task Self-Assessment: 90%
+ * Problem Estimate: 88%
+ * Initial Code Complexity Estimate: 92%
+ * Target Coverage: ≥95%
+ * Last Updated: 2025-08-08
+ */
+
+/// Multi-entity comparison chart with interactive drill-down capabilities
+struct MultiEntityComparisonChartView: View {
+    @ObservedObject var viewModel: NetWealthDashboardViewModel
+    @ObservedObject var multiEntityService: MultiEntityWealthService
+    @Binding var selectedEntity: FinancialEntity?
+    @Binding var showingEntityDetails: Bool
+    
+    @State private var selectedMetric: ComparisonMetric = .netWealth
+    @State private var animateChart = false
+    @State private var chartHoverData: EntityHoverData?
+    
+    private let chartColors: [Color] = [
+        .blue, .green, .orange, .purple, .pink, .teal, .indigo, .mint
+    ]
+    
+    var body: some View {
+        VStack(spacing: 16) {
+            chartHeader
+            
+            if let multiEntityBreakdown = multiEntityService.multiEntityBreakdown {
+                mainChart(multiEntityBreakdown: multiEntityBreakdown)
+                
+                if let selectedEntity = selectedEntity {
+                    entityDetailSection(
+                        entity: selectedEntity,
+                        breakdown: multiEntityBreakdown.entityBreakdowns.first { $0.entity == selectedEntity }
+                    )
+                    .transition(.asymmetric(
+                        insertion: .opacity.combined(with: .move(edge: .top)),
+                        removal: .opacity.combined(with: .move(edge: .top))
+                    ))
+                }
+                
+                insightsSection(multiEntityBreakdown: multiEntityBreakdown)
+                
+            } else if multiEntityService.isLoading {
+                loadingView
+            } else if let errorMessage = multiEntityService.errorMessage {
+                errorView(message: errorMessage)
+            } else {
+                emptyStateView
+            }
+        }
+        .animation(.easeInOut(duration: 0.3), value: selectedEntity)
+        .animation(.easeInOut(duration: 0.5), value: animateChart)
+        .onAppear {
+            animateChart = true
+        }
+    }
+    
+    // MARK: - Chart Header
+    
+    private var chartHeader: some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Multi-Entity Comparison")
+                    .font(.title2)
+                    .fontWeight(.bold)
+                    .accessibilityAddTraits(.isHeader)
+                
+                Text("Compare wealth across financial entities")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+            
+            Spacer()
+            
+            metricSelector
+        }
+    }
+    
+    private var metricSelector: some View {
+        Menu {
+            ForEach(ComparisonMetric.allCases, id: \.self) { metric in
+                Button(action: {
+                    selectedMetric = metric
+                }) {
+                    HStack {
+                        Text(metric.displayName)
+                        if selectedMetric == metric {
+                            Image(systemName: "checkmark")
+                        }
+                    }
+                }
+            }
+        } label: {
+            HStack(spacing: 4) {
+                Text(selectedMetric.displayName)
+                    .font(.caption)
+                    .fontWeight(.medium)
+                Image(systemName: "chevron.down")
+                    .font(.caption2)
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .background(Color.accentColor.opacity(0.1))
+            .foregroundColor(.accentColor)
+            .cornerRadius(8)
+        }
+        .accessibilityIdentifier("MetricSelector")
+    }
+    
+    // MARK: - Main Chart
+    
+    private func mainChart(multiEntityBreakdown: MultiEntityWealthBreakdown) -> some View {
+        Chart {
+            ForEach(Array(multiEntityBreakdown.entityBreakdowns.enumerated()), id: \.element.entity.objectID) { index, entityBreakdown in
+                BarMark(
+                    x: .value("Entity", entityBreakdown.entity.name ?? "Unknown"),
+                    y: .value(selectedMetric.displayName, getMetricValue(for: entityBreakdown, metric: selectedMetric))
+                )
+                .foregroundStyle(chartColors[index % chartColors.count])
+                .opacity(selectedEntity == nil || selectedEntity == entityBreakdown.entity ? 1.0 : 0.4)
+                .animation(.easeInOut(duration: 0.3), value: selectedEntity)
+                
+                if let hoverData = chartHoverData,
+                   hoverData.entity == entityBreakdown.entity {
+                    RectangleMark(
+                        x: .value("Entity", entityBreakdown.entity.name ?? "Unknown"),
+                        y: .value(selectedMetric.displayName, getMetricValue(for: entityBreakdown, metric: selectedMetric))
+                    )
+                    .foregroundStyle(.clear)
+                    .overlay(
+                        VStack(spacing: 4) {
+                            Text(entityBreakdown.entity.name ?? "Unknown")
+                                .font(.caption)
+                                .fontWeight(.semibold)
+                            
+                            Text(formatMetricValue(
+                                getMetricValue(for: entityBreakdown, metric: selectedMetric),
+                                metric: selectedMetric
+                            ))
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                        }
+                        .padding(8)
+                        .background(Color(NSColor.controlBackgroundColor))
+                        .cornerRadius(8)
+                        .shadow(radius: 4)
+                    )
+                }
+            }
+        }
+        .frame(height: 220)
+        .chartYAxis {
+            AxisMarks(position: .leading) { value in
+                if let doubleValue = value.as(Double.self) {
+                    AxisValueLabel {
+                        Text(formatAxisValue(doubleValue, metric: selectedMetric))
+                            .font(.caption2)
+                    }
+                }
+            }
+        }
+        .chartXAxis {
+            AxisMarks { value in
+                if let stringValue = value.as(String.self) {
+                    AxisValueLabel {
+                        Text(stringValue)
+                            .font(.caption2)
+                            .lineLimit(1)
+                    }
+                }
+            }
+        }
+        .onTapGesture { location in
+            handleChartTap(location: location, multiEntityBreakdown: multiEntityBreakdown)
+        }
+        .gesture(
+            DragGesture(minimumDistance: 0)
+                .onChanged { gesture in
+                    handleChartHover(location: gesture.location, multiEntityBreakdown: multiEntityBreakdown)
+                }
+                .onEnded { _ in
+                    chartHoverData = nil
+                }
+        )
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("MultiEntityComparisonChart")
+    }
+    
+    // MARK: - Entity Detail Section
+    
+    private func entityDetailSection(entity: FinancialEntity, breakdown: EntityWealthBreakdown?) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(entity.name ?? "Unknown Entity")
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                    
+                    Text(entity.entityType?.displayName ?? "Unknown Type")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                
+                Spacer()
+                
+                Button(action: {
+                    selectedEntity = nil
+                }) {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundColor(.secondary)
+                }
+                .buttonStyle(.plain)
+            }
+            
+            if let breakdown = breakdown {
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 2), spacing: 12) {
+                    metricCard(
+                        title: "Net Wealth",
+                        value: breakdown.netWealthResult.netWealth,
+                        format: .currency,
+                        icon: "dollarsign.circle"
+                    )
+                    
+                    metricCard(
+                        title: "Performance Score",
+                        value: breakdown.performanceScore,
+                        format: .percentage,
+                        icon: "chart.line.uptrend.xyaxis"
+                    )
+                    
+                    metricCard(
+                        title: "Risk Score",
+                        value: breakdown.riskMetrics.volatilityScore,
+                        format: .percentage,
+                        icon: "exclamationmark.triangle"
+                    )
+                    
+                    metricCard(
+                        title: "Leverage Ratio",
+                        value: breakdown.riskMetrics.leverageRatio,
+                        format: .percentage,
+                        icon: "arrow.up.arrow.down.circle"
+                    )
+                }
+            }
+        }
+        .padding()
+        .glassmorphism(.secondary)
+    }
+    
+    private func metricCard(title: String, value: Double, format: ValueFormat, icon: String) -> some View {
+        VStack(spacing: 8) {
+            Image(systemName: icon)
+                .font(.title2)
+                .foregroundColor(.accentColor)
+            
+            Text(title)
+                .font(.caption)
+                .fontWeight(.medium)
+                .multilineTextAlignment(.center)
+            
+            Text(formatValue(value, format: format))
+                .font(.title3)
+                .fontWeight(.bold)
+                .foregroundColor(.primary)
+        }
+        .frame(maxWidth: .infinity)
+        .padding()
+        .background(Color(NSColor.controlBackgroundColor).opacity(0.5))
+        .cornerRadius(12)
+    }
+    
+    // MARK: - Insights Section
+    
+    private func insightsSection(multiEntityBreakdown: MultiEntityWealthBreakdown) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Key Insights")
+                .font(.headline)
+                .fontWeight(.semibold)
+            
+            if !multiEntityBreakdown.crossEntityAnalysis.optimizationOpportunities.isEmpty {
+                LazyVStack(spacing: 8) {
+                    ForEach(Array(multiEntityBreakdown.crossEntityAnalysis.optimizationOpportunities.prefix(3).enumerated()), id: \.element.title) { index, recommendation in
+                        insightRow(recommendation: recommendation, index: index)
+                    }
+                }
+            }
+            
+            HStack {
+                insightMetric(
+                    title: "Diversification Score",
+                    value: multiEntityBreakdown.crossEntityAnalysis.diversificationScore,
+                    format: .score
+                )
+                
+                Spacer()
+                
+                insightMetric(
+                    title: "Total Entities",
+                    value: Double(multiEntityBreakdown.entityBreakdowns.count),
+                    format: .integer
+                )
+            }
+        }
+        .padding()
+        .glassmorphism(.accent)
+    }
+    
+    private func insightRow(recommendation: OptimizationRecommendation, index: Int) -> some View {
+        HStack(spacing: 12) {
+            Circle()
+                .fill(priorityColor(recommendation.priority))
+                .frame(width: 8, height: 8)
+            
+            VStack(alignment: .leading, spacing: 2) {
+                Text(recommendation.title)
+                    .font(.caption)
+                    .fontWeight(.medium)
+                
+                Text(recommendation.description)
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+                    .lineLimit(2)
+            }
+            
+            Spacer()
+            
+            Text(String(format: "%.1f%%", recommendation.potentialImpact))
+                .font(.caption)
+                .fontWeight(.medium)
+                .foregroundColor(.accentColor)
+        }
+        .padding(.vertical, 4)
+    }
+    
+    private func insightMetric(title: String, value: Double, format: ValueFormat) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(title)
+                .font(.caption)
+                .foregroundColor(.secondary)
+            
+            Text(formatValue(value, format: format))
+                .font(.title3)
+                .fontWeight(.bold)
+        }
+    }
+    
+    // MARK: - Loading and Error States
+    
+    private var loadingView: some View {
+        VStack(spacing: 16) {
+            ProgressView()
+                .progressViewStyle(CircularProgressViewStyle())
+                .scaleEffect(1.2)
+            
+            Text("Loading multi-entity analysis...")
+                .font(.caption)
+                .foregroundColor(.secondary)
+        }
+        .frame(height: 200)
+        .frame(maxWidth: .infinity)
+    }
+    
+    private func errorView(message: String) -> some View {
+        VStack(spacing: 16) {
+            Image(systemName: "exclamationmark.triangle")
+                .font(.largeTitle)
+                .foregroundColor(.red)
+            
+            Text("Analysis Error")
+                .font(.headline)
+                .fontWeight(.semibold)
+            
+            Text(message)
+                .font(.caption)
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+            
+            Button("Retry Analysis") {
+                Task {
+                    await multiEntityService.calculateMultiEntityWealth()
+                }
+            }
+            .buttonStyle(.borderedProminent)
+        }
+        .frame(height: 200)
+        .frame(maxWidth: .infinity)
+        .padding()
+    }
+    
+    private var emptyStateView: some View {
+        VStack(spacing: 16) {
+            Image(systemName: "chart.bar.xaxis")
+                .font(.largeTitle)
+                .foregroundColor(.secondary)
+            
+            Text("No Entity Data")
+                .font(.headline)
+                .fontWeight(.semibold)
+            
+            Text("Create financial entities to see multi-entity comparison.")
+                .font(.caption)
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+        }
+        .frame(height: 200)
+        .frame(maxWidth: .infinity)
+    }
+    
+    // MARK: - Helper Methods
+    
+    private func handleChartTap(location: CGPoint, multiEntityBreakdown: MultiEntityWealthBreakdown) {
+        // Simplified tap detection - would need more sophisticated hit testing in real implementation
+        let entityIndex = Int(location.x / 100) % multiEntityBreakdown.entityBreakdowns.count
+        if entityIndex < multiEntityBreakdown.entityBreakdowns.count {
+            let tappedEntity = multiEntityBreakdown.entityBreakdowns[entityIndex].entity
+            
+            withAnimation(.easeInOut(duration: 0.3)) {
+                selectedEntity = selectedEntity == tappedEntity ? nil : tappedEntity
+            }
+        }
+    }
+    
+    private func handleChartHover(location: CGPoint, multiEntityBreakdown: MultiEntityWealthBreakdown) {
+        // Simplified hover detection
+        let entityIndex = Int(location.x / 100) % multiEntityBreakdown.entityBreakdowns.count
+        if entityIndex < multiEntityBreakdown.entityBreakdowns.count {
+            let hoveredBreakdown = multiEntityBreakdown.entityBreakdowns[entityIndex]
+            chartHoverData = EntityHoverData(
+                entity: hoveredBreakdown.entity,
+                location: location
+            )
+        }
+    }
+    
+    private func getMetricValue(for breakdown: EntityWealthBreakdown, metric: ComparisonMetric) -> Double {
+        switch metric {
+        case .netWealth:
+            return breakdown.netWealthResult.netWealth
+        case .totalAssets:
+            return breakdown.netWealthResult.totalAssets
+        case .totalLiabilities:
+            return breakdown.netWealthResult.totalLiabilities
+        case .performanceScore:
+            return breakdown.performanceScore
+        case .riskScore:
+            return breakdown.riskMetrics.volatilityScore
+        }
+    }
+    
+    private func formatMetricValue(_ value: Double, metric: ComparisonMetric) -> String {
+        switch metric {
+        case .netWealth, .totalAssets, .totalLiabilities:
+            return formatValue(value, format: .currency)
+        case .performanceScore, .riskScore:
+            return formatValue(value, format: .percentage)
+        }
+    }
+    
+    private func formatAxisValue(_ value: Double, metric: ComparisonMetric) -> String {
+        switch metric {
+        case .netWealth, .totalAssets, .totalLiabilities:
+            return formatValue(value, format: .currencyShort)
+        case .performanceScore, .riskScore:
+            return String(format: "%.0f%%", value)
+        }
+    }
+    
+    private func formatValue(_ value: Double, format: ValueFormat) -> String {
+        let formatter = NumberFormatter()
+        
+        switch format {
+        case .currency:
+            formatter.numberStyle = .currency
+            formatter.currencyCode = "AUD"
+            formatter.locale = Locale(identifier: "en_AU")
+            return formatter.string(from: NSNumber(value: value)) ?? "A$0.00"
+            
+        case .currencyShort:
+            if abs(value) >= 1_000_000 {
+                return String(format: "A$%.1fM", value / 1_000_000)
+            } else if abs(value) >= 1_000 {
+                return String(format: "A$%.0fK", value / 1_000)
+            } else {
+                return String(format: "A$%.0f", value)
+            }
+            
+        case .percentage:
+            return String(format: "%.1f%%", value)
+            
+        case .score:
+            return String(format: "%.1f", value)
+            
+        case .integer:
+            return String(format: "%.0f", value)
+        }
+    }
+    
+    private func priorityColor(_ priority: OptimizationRecommendation.Priority) -> Color {
+        switch priority {
+        case .high:
+            return .red
+        case .medium:
+            return .orange
+        case .low:
+            return .green
+        }
+    }
+}
+
+// MARK: - Supporting Types
+
+enum ComparisonMetric: CaseIterable {
+    case netWealth
+    case totalAssets
+    case totalLiabilities
+    case performanceScore
+    case riskScore
+    
+    var displayName: String {
+        switch self {
+        case .netWealth:
+            return "Net Wealth"
+        case .totalAssets:
+            return "Total Assets"
+        case .totalLiabilities:
+            return "Total Liabilities"
+        case .performanceScore:
+            return "Performance"
+        case .riskScore:
+            return "Risk Score"
+        }
+    }
+}
+
+enum ValueFormat {
+    case currency
+    case currencyShort
+    case percentage
+    case score
+    case integer
+}
+
+struct EntityHoverData {
+    let entity: FinancialEntity
+    let location: CGPoint
+}

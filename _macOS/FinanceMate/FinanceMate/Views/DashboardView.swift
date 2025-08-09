@@ -444,8 +444,8 @@ struct DashboardView: View {
 
 #Preview("Dashboard Empty State") {
     DashboardView()
-        .environmentObject(DashboardViewModel(context: PersistenceController(inMemory: true).container.viewContext))
-        .environment(\.managedObjectContext, PersistenceController(inMemory: true).container.viewContext)
+        .environmentObject(DashboardViewModel(context: PersistenceController.preview.container.viewContext))
+        .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
         .preferredColorScheme(.light)
 }
 

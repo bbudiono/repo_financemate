@@ -22,7 +22,8 @@ import CoreData
  * Last Updated: 2025-07-08
  */
 
-@MainActor
+// EMERGENCY FIX: Removed to eliminate Swift Concurrency crashes
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
 final class EntityManagerTests: XCTestCase {
     var entityManager: EntityManager!
     var persistenceController: PersistenceController!

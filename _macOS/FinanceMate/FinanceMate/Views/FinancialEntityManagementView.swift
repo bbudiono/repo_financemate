@@ -57,9 +57,8 @@ struct FinancialEntityManagementView: View {
         }
         .accessibilityIdentifier("EntityManagementView")
         .onAppear {
-            Task {
-                await viewModel.fetchEntities()
-            }
+            // EMERGENCY FIX: Removed Task block - immediate execution
+        viewModel.fetchEntities()
         }
         .sheet(isPresented: $showingCreateSheet) {
             CreateEntitySheet(viewModel: viewModel)
@@ -74,9 +73,8 @@ struct FinancialEntityManagementView: View {
         .alert("Confirm Delete", isPresented: $showingDeleteAlert) {
             Button("Delete", role: .destructive) {
                 if let entity = entityToDelete {
-                    Task {
-                        await viewModel.deleteEntity(entity)
-                    }
+                    // EMERGENCY FIX: Removed Task block - immediate execution
+        viewModel.deleteEntity(entity)
                 }
             }
             Button("Cancel", role: .cancel) { }
@@ -386,9 +384,8 @@ struct CreateEntitySheet: View {
                     .foregroundColor(.secondary)
                     
                     Button("Save") {
-                        Task {
-                            await createEntity()
-                        }
+                        // EMERGENCY FIX: Removed Task block - immediate execution
+        createEntity()
                     }
                     .buttonStyle(.borderedProminent)
                     .disabled(entityName.isEmpty || viewModel.isLoading)
@@ -401,7 +398,7 @@ struct CreateEntitySheet: View {
         .modifier(GlassmorphismModifier(.primary))
     }
     
-    private func createEntity() async {
+    private func createEntity() {
         let entityData = FinancialEntityData(
             name: entityName,
             type: selectedType.rawValue,
@@ -409,7 +406,7 @@ struct CreateEntitySheet: View {
             parentEntityId: selectedParent?.id
         )
         
-        await viewModel.createEntity(from: entityData)
+        viewModel.createEntity(from: entityData)
         
         if viewModel.errorMessage != nil {
             showingError = true
@@ -513,9 +510,8 @@ struct EditEntitySheet: View {
                     .foregroundColor(.secondary)
                     
                     Button("Save") {
-                        Task {
-                            await updateEntity()
-                        }
+                        // EMERGENCY FIX: Removed Task block - immediate execution
+        updateEntity()
                     }
                     .buttonStyle(.borderedProminent)
                     .disabled(entityName.isEmpty || viewModel.isLoading)
@@ -528,7 +524,7 @@ struct EditEntitySheet: View {
         .modifier(GlassmorphismModifier(.primary))
     }
     
-    private func updateEntity() async {
+    private func updateEntity() {
         let entityData = FinancialEntityData(
             name: entityName,
             type: selectedType.rawValue,
@@ -536,7 +532,7 @@ struct EditEntitySheet: View {
             parentEntityId: selectedParent?.id
         )
         
-        await viewModel.updateEntity(entity, with: entityData)
+        viewModel.updateEntity(entity, with: entityData)
         
         if viewModel.errorMessage != nil {
             showingError = true

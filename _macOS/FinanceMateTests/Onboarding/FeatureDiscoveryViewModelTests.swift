@@ -33,25 +33,25 @@ import SwiftUI
 class FeatureDiscoveryViewModelTests: XCTestCase {
     
     var featureDiscoveryViewModel: FeatureDiscoveryViewModel!
-    var mockUserDefaults: UserDefaults!
+    var realUserDefaults: UserDefaults!
     
     override func setUp() async throws {
         try await super.setUp()
         
         // Create isolated UserDefaults for testing
-        mockUserDefaults = UserDefaults(suiteName: "FeatureDiscoveryTests")!
-        mockUserDefaults.removePersistentDomain(forName: "FeatureDiscoveryTests")
+        realUserDefaults = UserDefaults(suiteName: "FeatureDiscoveryTests")!
+        realUserDefaults.removePersistentDomain(forName: "FeatureDiscoveryTests")
         
         // Initialize feature discovery view model
-        featureDiscoveryViewModel = FeatureDiscoveryViewModel(userDefaults: mockUserDefaults)
+        featureDiscoveryViewModel = FeatureDiscoveryViewModel(userDefaults: realUserDefaults)
     }
     
     override func tearDown() async throws {
         // Clean up UserDefaults
-        mockUserDefaults.removePersistentDomain(forName: "FeatureDiscoveryTests")
+        realUserDefaults.removePersistentDomain(forName: "FeatureDiscoveryTests")
         
         featureDiscoveryViewModel = nil
-        mockUserDefaults = nil
+        realUserDefaults = nil
         try await super.tearDown()
     }
     
@@ -87,7 +87,7 @@ class FeatureDiscoveryViewModelTests: XCTestCase {
         XCTAssertTrue(featureDiscoveryViewModel.isTooltipSystemEnabled, "Should be enabled after call")
         
         // Verify persistence
-        let savedState = mockUserDefaults.bool(forKey: "tooltipSystemEnabled")
+        let savedState = realUserDefaults.bool(forKey: "tooltipSystemEnabled")
         XCTAssertTrue(savedState, "Tooltip system state should be persisted")
     }
     
@@ -101,7 +101,7 @@ class FeatureDiscoveryViewModelTests: XCTestCase {
         XCTAssertFalse(featureDiscoveryViewModel.isTooltipSystemEnabled, "Should be disabled after call")
         
         // Verify persistence
-        let savedState = mockUserDefaults.bool(forKey: "tooltipSystemEnabled")
+        let savedState = realUserDefaults.bool(forKey: "tooltipSystemEnabled")
         XCTAssertFalse(savedState, "Disabled state should be persisted")
     }
     
@@ -176,7 +176,7 @@ class FeatureDiscoveryViewModelTests: XCTestCase {
         await featureDiscoveryViewModel.unlockFeature(.reportGeneration)
         
         // Create new view model to test persistence
-        let newViewModel = FeatureDiscoveryViewModel(userDefaults: mockUserDefaults)
+        let newViewModel = FeatureDiscoveryViewModel(userDefaults: realUserDefaults)
         let persistedFeatures = newViewModel.getUnlockedFeatures()
         
         XCTAssertEqual(persistedFeatures.count, 2, "Unlocked features should be persisted")
@@ -359,7 +359,7 @@ class FeatureDiscoveryViewModelTests: XCTestCase {
         await featureDiscoveryViewModel.trackEducationalOverlayInteraction(.splitAllocationBasics, action: .completed)
         
         // Create new view model to test persistence
-        let newViewModel = FeatureDiscoveryViewModel(userDefaults: mockUserDefaults)
+        let newViewModel = FeatureDiscoveryViewModel(userDefaults: realUserDefaults)
         let persistedData = newViewModel.getEngagementData()
         
         XCTAssertGreaterThan(persistedData.tooltipInteractions.count, 0, "Engagement data should be persisted")
@@ -411,9 +411,9 @@ class FeatureDiscoveryViewModelTests: XCTestCase {
     
     func testUserDefaultsFailureHandling() {
         // Test with corrupted UserDefaults
-        mockUserDefaults.set("invalid_data", forKey: "unlockedFeatures")
+        realUserDefaults.set("invalid_data", forKey: "unlockedFeatures")
         
-        let viewModel = FeatureDiscoveryViewModel(userDefaults: mockUserDefaults)
+        let viewModel = FeatureDiscoveryViewModel(userDefaults: realUserDefaults)
         let unlockedFeatures = viewModel.getUnlockedFeatures()
         
         XCTAssertEqual(unlockedFeatures.count, 0, "Should handle corrupted data gracefully")

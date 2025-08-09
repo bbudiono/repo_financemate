@@ -110,10 +110,12 @@ struct BankConnectionView: View {
                         isSelected: viewModel.selectedBankAccount?.id == account.id,
                         onSelect: { viewModel.selectBankAccount(account) },
                         onDisconnect: { 
-                            Task { await viewModel.disconnectBankAccount(account) }
+                            // EMERGENCY FIX: Removed Task block - immediate execution
+        viewModel.disconnectBankAccount(account)
                         },
                         onSync: { 
-                            Task { await viewModel.syncTransactions(for: account) }
+                            // EMERGENCY FIX: Removed Task block - immediate execution
+        viewModel.syncTransactions(for: account)
                         }
                     )
                 }
@@ -263,7 +265,8 @@ struct BankConnectionView: View {
             
             if viewModel.hasConnectedAccounts {
                 Button("Sync All Accounts") {
-                    Task { await viewModel.syncAllTransactions() }
+                    // EMERGENCY FIX: Removed Task block - immediate execution
+        viewModel.syncAllTransactions()
                 }
                 .buttonStyle(SecondaryButtonStyle())
                 .disabled(viewModel.isLoading)
@@ -284,11 +287,13 @@ struct BankConnectionView: View {
         case .selectBank:
             currentAuthStep = .apiKey
         case .apiKey:
-            Task { await authenticateWithAPIKey() }
+            // EMERGENCY FIX: Removed Task block - immediate execution
+        authenticateWithAPIKey()
         case .enterCredentials:
             currentAuthStep = .twoFactor
         case .twoFactor:
-            Task { await completeTwoFactorAuth() }
+            // EMERGENCY FIX: Removed Task block - immediate execution
+        completeTwoFactorAuth()
         case .complete:
             completeAuthenticationFlow()
         }
@@ -330,19 +335,20 @@ struct BankConnectionView: View {
                 entityId: UUID() // Default entity for now
             )
             
-            Task { await viewModel.connectBankAccount(connectionData) }
+            // EMERGENCY FIX: Removed Task block - immediate execution
+        viewModel.connectBankAccount(connectionData)
         }
     }
     
-    private func authenticateWithAPIKey() async {
-        await viewModel.authenticateWithAPIKey(apiKey)
+    private func authenticateWithAPIKey() {
+        viewModel.authenticateWithAPIKey(apiKey)
         
         if viewModel.isAuthenticated {
             currentAuthStep = .complete
         }
     }
     
-    private func completeTwoFactorAuth() async {
+    private func completeTwoFactorAuth() {
         // Simulate 2FA completion
         currentAuthStep = .complete
     }

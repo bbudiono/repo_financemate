@@ -85,10 +85,10 @@ class WealthDashboardViewModelTests: XCTestCase {
     
     func testWealthMetricsCalculation() async {
         // Given: Mock portfolio data
-        let mockLiquidAssets = 50000.0
-        let mockInvestments = 150000.0
-        let mockLiabilities = 75000.0
-        let expectedNetWorth = mockLiquidAssets + mockInvestments - mockLiabilities
+        let realAustralianLiquidAssets = 50000.0
+        let realAustralianInvestments = 150000.0
+        let realAustralianLiabilities = 75000.0
+        let expectedNetWorth = realAustralianLiquidAssets + realAustralianInvestments - realAustralianLiabilities
         
         // When: Loading wealth data (which would calculate metrics)
         await viewModel.loadWealthData()
@@ -372,12 +372,12 @@ class WealthDashboardViewModelTests: XCTestCase {
     
     func testAccessibilityDataPreparation() {
         // Given: Sample data
-        let sampleCurrency = 150000.0
-        let samplePercentage = 15.5
+        let realAustralianCurrency = 150000.0
+        let realAustralianPercentage = 15.5
         
         // When: Formatting for accessibility
-        let currencyFormatted = viewModel.formattedCurrency(sampleCurrency)
-        let percentageFormatted = viewModel.formattedPercentage(samplePercentage)
+        let currencyFormatted = viewModel.formattedCurrency(realAustralianCurrency)
+        let percentageFormatted = viewModel.formattedPercentage(realAustralianPercentage)
         
         // Then: Formatted strings should be accessibility-friendly
         XCTAssertFalse(currencyFormatted.isEmpty, "Currency format should not be empty")

@@ -23,7 +23,109 @@ import Foundation
 import Combine
 import CoreData
 
-@MainActor
+// MARK: - Temporary Type Definitions (until WealthDashboardModels.swift is added to build)
+
+struct WealthHistoryPoint {
+    let date: Date
+    let netWealth: Double
+    let totalAssets: Double
+    let totalLiabilities: Double
+}
+
+struct AssetCategoryData {
+    let category: String
+    let totalValue: Double
+    let assetCount: Int
+    let assets: [AssetItemData]
+    
+    var formattedTotal: String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.locale = Locale(identifier: "en_AU")
+        formatter.currencyCode = "AUD"
+        return formatter.string(from: NSNumber(value: totalValue)) ?? "A$0.00"
+    }
+}
+
+struct AssetItemData {
+    let id: UUID
+    let name: String
+    let description: String?
+    let value: Double
+    
+    var formattedValue: String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.locale = Locale(identifier: "en_AU")
+        formatter.currencyCode = "AUD"
+        return formatter.string(from: NSNumber(value: value)) ?? "A$0.00"
+    }
+}
+
+struct LiabilityTypeData {
+    let type: String
+    let totalBalance: Double
+    let liabilityCount: Int
+    let liabilities: [LiabilityItemData]
+    
+    var formattedTotal: String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.locale = Locale(identifier: "en_AU")
+        formatter.currencyCode = "AUD"
+        return formatter.string(from: NSNumber(value: totalBalance)) ?? "A$0.00"
+    }
+}
+
+struct LiabilityItemData {
+    let id: UUID
+    let name: String
+    let balance: Double
+    let interestRate: Double?
+    let nextPaymentAmount: String?
+    
+    var formattedBalance: String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.locale = Locale(identifier: "en_AU")
+        formatter.currencyCode = "AUD"
+        return formatter.string(from: NSNumber(value: balance)) ?? "A$0.00"
+    }
+}
+
+enum TimeRange: String, CaseIterable {
+    case oneMonth = "1M"
+    case threeMonths = "3M"
+    case sixMonths = "6M"
+    case oneYear = "1Y"
+    case twoYears = "2Y"
+    case fiveYears = "5Y"
+    
+    var title: String {
+        switch self {
+        case .oneMonth: return "1 Month"
+        case .threeMonths: return "3 Months"
+        case .sixMonths: return "6 Months"
+        case .oneYear: return "1 Year"
+        case .twoYears: return "2 Years"
+        case .fiveYears: return "5 Years"
+        }
+    }
+    
+    var dateInterval: TimeInterval {
+        switch self {
+        case .oneMonth: return -30 * 24 * 60 * 60
+        case .threeMonths: return -90 * 24 * 60 * 60
+        case .sixMonths: return -180 * 24 * 60 * 60
+        case .oneYear: return -365 * 24 * 60 * 60
+        case .twoYears: return -730 * 24 * 60 * 60
+        case .fiveYears: return -1825 * 24 * 60 * 60
+        }
+    }
+}
+
+// EMERGENCY FIX: Removed to eliminate Swift Concurrency crashes
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
 class NetWealthDashboardViewModel: ObservableObject {
     // MARK: - Published Properties
     
@@ -121,21 +223,21 @@ class NetWealthDashboardViewModel: ObservableObject {
     
     // MARK: - Public Methods
     
-    func loadDashboardData() async {
+    func loadDashboardData() {
         isLoading = true
         errorMessage = nil
         
         do {
             // Load main financial data using actual NetWealthService API
-            let netWealthResult = await netWealthService.calculateCurrentNetWealth()
-            let assetAllocation = await netWealthService.getAssetAllocation()
+            let netWealthResult = netWealthService.calculateCurrentNetWealth()
+            _ = netWealthService.getAssetAllocation()
             
             // Calculate changes using date ranges
             let thirtyDaysAgo = Calendar.current.date(byAdding: .day, value: -30, to: Date()) ?? Date()
             let oneMonthAgo = Calendar.current.date(byAdding: .month, value: -1, to: Date()) ?? Date()
             
-            let change = await calculateNetWealthChange(from: thirtyDaysAgo)
-            let monthly = await calculateNetWealthChange(from: oneMonthAgo)
+            let change = calculateNetWealthChange(from: thirtyDaysAgo)
+            let monthly = calculateNetWealthChange(from: oneMonthAgo)
             
             // Update main properties
             self.netWealth = netWealthResult.netWealth
@@ -145,25 +247,22 @@ class NetWealthDashboardViewModel: ObservableObject {
             self.monthlyChange = monthly
             
             // Load detailed data
-            await loadAssetDetails()
-            await loadLiabilityDetails()
-            await loadWealthHistory(for: .threeMonths)
+            loadAssetDetails()
+            loadLiabilityDetails()
+            loadWealthHistory(for: .threeMonths)
             
-        } catch {
-            self.errorMessage = "Failed to load dashboard data: \(error.localizedDescription)"
-            print("Dashboard loading error: \(error)")
         }
         
         isLoading = false
     }
     
-    func refreshData() async {
-        await loadDashboardData()
+    func refreshData() {
+        loadDashboardData()
     }
     
-    func loadAssetDetails() async {
+    func loadAssetDetails() {
         // Use the available AssetAllocation API
-        let assetAllocation = await netWealthService.getAssetAllocation()
+        let assetAllocation = netWealthService.getAssetAllocation()
         
         // Group assets by type for display
         var categoryMap: [String: [AssetItemData]] = [:]
@@ -191,7 +290,7 @@ class NetWealthDashboardViewModel: ObservableObject {
         }.sorted { $0.totalValue > $1.totalValue }
     }
     
-    func loadLiabilityDetails() async {
+    func loadLiabilityDetails() {
         // For now, create placeholder liability data since there's no direct API
         // This would need to be implemented with actual Core Data queries
         self.liabilityTypes = [
@@ -210,13 +309,12 @@ class NetWealthDashboardViewModel: ObservableObject {
         ]
     }
     
-    func loadWealthHistory(for timeRange: TimeRange) async {
+    func loadWealthHistory(for timeRange: TimeRange) {
         let startDate = calculateStartDate(for: timeRange)
         let endDate = Date()
         
         // Use the available getWealthTrend API
-        let dateRange = DateRange(start: startDate, end: endDate)
-        let trendData = await netWealthService.getWealthTrend(for: dateRange)
+        let trendData = netWealthService.getWealthTrend(from: startDate, to: endDate)
         
         self.wealthHistory = trendData.map { dataPoint in
             WealthHistoryPoint(
@@ -235,19 +333,19 @@ class NetWealthDashboardViewModel: ObservableObject {
         NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave)
             .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)
             .sink { [weak self] _ in
-                Task { @MainActor in
-                    await self?.refreshData()
-                }
+                // EMERGENCY FIX: Removed Task block - immediate execution
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
+        self?.refreshData()
             }
             .store(in: &cancellables)
     }
     
-    private func loadAssetCategory(_ categoryName: String) async -> AssetCategoryData? {
+    private func loadAssetCategory() -> AssetCategoryData? {
         // This method is no longer used - replaced by loadAssetDetails
         return nil
     }
     
-    private func loadLiabilityType(_ typeName: String) async -> LiabilityTypeData? {
+    private func loadLiabilityType() -> LiabilityTypeData? {
         // This method is no longer used - replaced by loadLiabilityDetails
         return nil
     }
@@ -265,8 +363,10 @@ class NetWealthDashboardViewModel: ObservableObject {
             return calendar.date(byAdding: .month, value: -6, to: now) ?? now
         case .oneYear:
             return calendar.date(byAdding: .year, value: -1, to: now) ?? now
-        case .all:
-            return calendar.date(byAdding: .year, value: -10, to: now) ?? now
+        case .fiveYears:
+            return calendar.date(byAdding: .year, value: -5, to: now) ?? now
+        case .twoYears:
+            return calendar.date(byAdding: .year, value: -2, to: now) ?? now
         }
     }
     
@@ -277,12 +377,12 @@ class NetWealthDashboardViewModel: ObservableObject {
     
     // MARK: - Calculate Net Wealth Change
     
-    private func calculateNetWealthChange(from startDate: Date) async -> Double {
+    private func calculateNetWealthChange(from startDate: Date) -> Double {
         let endDate = Date()
         
         // Use the available calculateWealthGrowthRate API
-        let growthRate = await netWealthService.calculateWealthGrowthRate(from: startDate, to: endDate)
-        let currentWealth = await netWealthService.calculateCurrentNetWealth()
+        let growthRate = netWealthService.calculateWealthGrowthRate(from: startDate, to: endDate)
+        let currentWealth = netWealthService.calculateCurrentNetWealth()
         
         // Convert growth rate to absolute change
         return currentWealth.netWealth * growthRate / 100.0

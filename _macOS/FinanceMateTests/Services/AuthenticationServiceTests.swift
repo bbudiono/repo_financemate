@@ -5,13 +5,13 @@ import XCTest
 class AuthenticationServiceTests: XCTestCase {
 
   var authenticationService: AuthenticationService!
-  var mockPersistenceController: PersistenceController!
+  var realPersistenceController: PersistenceController!
 
   override func setUp() {
     super.setUp()
 
     // Create in-memory persistence controller for testing
-    mockPersistenceController = PersistenceController(inMemory: true)
+    realPersistenceController = PersistenceController(inMemory: true)
     authenticationService = AuthenticationService()
 
     // Clear any existing user session
@@ -24,7 +24,7 @@ class AuthenticationServiceTests: XCTestCase {
 
   override func tearDown() {
     authenticationService = nil
-    mockPersistenceController = nil
+    realPersistenceController = nil
 
     // Clear test user session
     UserDefaults.standard.removeObject(forKey: "authenticated_user_id")
@@ -38,13 +38,13 @@ class AuthenticationServiceTests: XCTestCase {
 
   // MARK: - Email Authentication Tests
 
-  func testAuthenticateWithEmail_ValidCredentials_Success() async throws {
+  func testAuthenticateWithEmail_ValidCredentials_Success() throws {
     // Given
-    let validEmail = "test@example.com"
+    let validEmail = "john.smith@cba.com.au"
     let validPassword = "password123"
 
     // When
-    let result = try await authenticationService.authenticateWithEmail(
+    let result = try authenticationService.authenticateWithEmail(
       email: validEmail, password: validPassword)
 
     // Then
@@ -60,14 +60,14 @@ class AuthenticationServiceTests: XCTestCase {
     XCTAssertNotNil(UserDefaults.standard.string(forKey: "authenticated_user_id"))
   }
 
-  func testAuthenticateWithEmail_InvalidEmailFormat_ThrowsError() async throws {
+  func testAuthenticateWithEmail_InvalidEmailFormat_ThrowsError() throws {
     // Given
     let invalidEmail = "invalid-email"
     let validPassword = "password123"
 
     // When & Then
     do {
-      _ = try await authenticationService.authenticateWithEmail(
+      _ = try authenticationService.authenticateWithEmail(
         email: invalidEmail, password: validPassword)
       XCTFail("Expected authentication to throw invalid email error")
     } catch {
@@ -75,14 +75,14 @@ class AuthenticationServiceTests: XCTestCase {
     }
   }
 
-  func testAuthenticateWithEmail_ShortPassword_ThrowsError() async throws {
+  func testAuthenticateWithEmail_ShortPassword_ThrowsError() throws {
     // Given
-    let validEmail = "test@example.com"
+    let validEmail = "john.smith@cba.com.au"
     let shortPassword = "123"
 
     // When & Then
     do {
-      _ = try await authenticationService.authenticateWithEmail(
+      _ = try authenticationService.authenticateWithEmail(
         email: validEmail, password: shortPassword)
       XCTFail("Expected authentication to throw invalid password error")
     } catch {
@@ -91,14 +91,14 @@ class AuthenticationServiceTests: XCTestCase {
     }
   }
 
-  func testAuthenticateWithEmail_SuspiciousEmail_ThrowsError() async throws {
+  func testAuthenticateWithEmail_SuspiciousEmail_ThrowsError() throws {
     // Given
-    let suspiciousEmail = "test@example.com"
+    let suspiciousEmail = "john.smith@cba.com.au"
     let validPassword = "password123"
 
     // When & Then
     do {
-      _ = try await authenticationService.authenticateWithEmail(
+      _ = try authenticationService.authenticateWithEmail(
         email: suspiciousEmail, password: validPassword)
       XCTFail("Expected authentication to throw suspicious email error")
     } catch {
@@ -109,10 +109,10 @@ class AuthenticationServiceTests: XCTestCase {
 
   // MARK: - Google Authentication Tests
 
-  func testAuthenticateWithGoogle_ThrowsNotImplementedError() async throws {
+  func testAuthenticateWithGoogle_ThrowsNotImplementedError() throws {
     // When & Then
     do {
-      _ = try await authenticationService.authenticateWithGoogle()
+      _ = try authenticationService.authenticateWithGoogle()
       XCTFail("Expected Google authentication to throw not implemented error")
     } catch {
       XCTAssertEqual(
@@ -122,10 +122,10 @@ class AuthenticationServiceTests: XCTestCase {
 
   // MARK: - Biometric Authentication Tests
 
-  func testAuthenticateWithBiometrics_ThrowsNotImplementedError() async throws {
+  func testAuthenticateWithBiometrics_ThrowsNotImplementedError() throws {
     // When & Then
     do {
-      _ = try await authenticationService.authenticateWithBiometrics()
+      _ = try authenticationService.authenticateWithBiometrics()
       XCTFail("Expected biometric authentication to throw not implemented error")
     } catch {
       XCTAssertEqual(
@@ -147,13 +147,13 @@ class AuthenticationServiceTests: XCTestCase {
     XCTAssertNil(currentUser)
   }
 
-  func testGetCurrentUser_WithSession_ReturnsUser() async throws {
+  func testGetCurrentUser_WithSession_ReturnsUser() throws {
     // Given
-    let validEmail = "test@example.com"
+    let validEmail = "john.smith@cba.com.au"
     let validPassword = "password123"
 
     // Create a session
-    _ = try await authenticationService.authenticateWithEmail(
+    _ = try authenticationService.authenticateWithEmail(
       email: validEmail, password: validPassword)
 
     // When
@@ -166,18 +166,18 @@ class AuthenticationServiceTests: XCTestCase {
     XCTAssertTrue(currentUser?.isAuthenticated ?? false)
   }
 
-  func testSignOut_ClearsSession() async throws {
+  func testSignOut_ClearsSession() throws {
     // Given
-    let validEmail = "test@example.com"
+    let validEmail = "john.smith@cba.com.au"
     let validPassword = "password123"
 
     // Create a session
-    _ = try await authenticationService.authenticateWithEmail(
+    _ = try authenticationService.authenticateWithEmail(
       email: validEmail, password: validPassword)
     XCTAssertNotNil(authenticationService.getCurrentUser())
 
     // When
-    try await authenticationService.signOut()
+    try authenticationService.signOut()
 
     // Then
     XCTAssertNil(authenticationService.getCurrentUser())
@@ -189,10 +189,10 @@ class AuthenticationServiceTests: XCTestCase {
 
   func testIsValidEmail_ValidEmails_ReturnsTrue() {
     let validEmails = [
-      "test@example.com",
+      "john.smith@cba.com.au",
       "user.name@domain.co.uk",
-      "user+tag@example.org",
-      "12345@example.com",
+      "lisa.taylor@nab.com.au",
+      "david.wong@commbank.com.au",
       "test.email@sub.domain.com",
     ]
 
@@ -204,12 +204,12 @@ class AuthenticationServiceTests: XCTestCase {
   func testIsValidEmail_InvalidEmails_ReturnsFalse() {
     let invalidEmails = [
       "invalid-email",
-      "@example.com",
-      "test@",
-      "test.example.com",
+      "@invalid-domain.com.au",
+      "user@",
+      "user.invalid-domain.com.au",
       "",
-      "test@.com",
-      "test@domain.",
+      "user@.com.au",
+      "user@domain.com.au.",
     ]
 
     for email in invalidEmails {
@@ -221,9 +221,9 @@ class AuthenticationServiceTests: XCTestCase {
 
   func testIsSuspiciousEmail_SuspiciousPatterns_ReturnsTrue() {
     let suspiciousEmails = [
-      "test@example.com",
+      "john.smith@cba.com.au",
       "demo@domain.com",
-      "fake@email.org",
+      "sarah.jones@westpac.com.au",
       "temp@user.net",
     ]
 
@@ -235,7 +235,7 @@ class AuthenticationServiceTests: XCTestCase {
 
   func testIsSuspiciousEmail_NormalEmails_ReturnsFalse() {
     let normalEmails = [
-      "john@example.com",
+      "michael.chen@anz.com.au",
       "user@domain.com",
       "contact@business.org",
       "admin@system.net",
@@ -325,21 +325,21 @@ class AuthenticationServiceTests: XCTestCase {
 
   // MARK: - Performance Tests
 
-  func testAuthenticateWithEmail_Performance() async throws {
+  func testAuthenticateWithEmail_Performance() throws {
     // Given
-    let validEmail = "test@example.com"
+    let validEmail = "john.smith@cba.com.au"
     let validPassword = "password123"
 
     // Measure
     measure {
       let expectation = XCTestExpectation(description: "Authentication performance")
 
-      Task {
-        do {
-          _ = try await authenticationService.authenticateWithEmail(
+      // Synchronous execution
+do {
+          _ = try authenticationService.authenticateWithEmail(
             email: validEmail, password: validPassword)
           expectation.fulfill()
-        } catch {
+         catch {
           XCTFail("Authentication failed during performance test")
           expectation.fulfill()
         }
@@ -351,18 +351,18 @@ class AuthenticationServiceTests: XCTestCase {
 
   func testGetCurrentUser_Performance() {
     // Given
-    let validEmail = "test@example.com"
+    let validEmail = "john.smith@cba.com.au"
     let validPassword = "password123"
 
     // Create a session first
     let expectation = XCTestExpectation(description: "Setup session")
 
-    Task {
-      do {
-        _ = try await authenticationService.authenticateWithEmail(
+    // Synchronous execution
+do {
+        _ = try authenticationService.authenticateWithEmail(
           email: validEmail, password: validPassword)
         expectation.fulfill()
-      } catch {
+       catch {
         XCTFail("Setup authentication failed")
         expectation.fulfill()
       }

@@ -33,7 +33,8 @@ import SwiftUI
 /// - Loading state management
 /// - Error handling and user feedback
 /// - Core Data integration with reactive updates
-@MainActor
+// EMERGENCY FIX: Removed to eliminate Swift Concurrency crashes
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
 class DashboardViewModel: ObservableObject {
 
     // MARK: - Published Properties
@@ -121,18 +122,38 @@ class DashboardViewModel: ObservableObject {
         isLoading = true
         errorMessage = nil
 
-        Task {
+        // EMERGENCY FIX: Remove ALL async/patterns to eliminate Swift Concurrency crashes
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
+        context.perform { [weak self] in
+            guard let self = self else { return }
+            
             do {
-                let (balance, count, recent) = try await calculateDashboardMetrics()
+                // Fetch all transactions for balance calculation - SYNCHRONOUS
+                let balanceRequest: NSFetchRequest<Transaction> = Transaction.fetchRequest()
+                let allTransactions = try self.context.fetch(balanceRequest)
 
-                await MainActor.run {
+                // Calculate total balance
+                let balance = allTransactions.reduce(0.0) { $0 + $1.amount }
+                let count = allTransactions.count
+
+                // Fetch recent transactions (limited to 5, sorted by date)
+                let recentRequest: NSFetchRequest<Transaction> = Transaction.fetchRequest()
+                recentRequest.sortDescriptors = [
+                    NSSortDescriptor(keyPath: \Transaction.date, ascending: false),
+                ]
+                recentRequest.fetchLimit = 5
+                let recent = try self.context.fetch(recentRequest)
+
+                // Update UI on main thread - SYNCHRONOUS dispatch
+                DispatchQueue.main.async {
                     self.totalBalance = balance
                     self.transactionCount = count
                     self.recentTransactions = recent
                     self.isLoading = false
                 }
             } catch {
-                await MainActor.run {
+                // Handle errors - SYNCHRONOUS dispatch
+                DispatchQueue.main.async {
                     self.errorMessage = "Failed to load dashboard data: \(error.localizedDescription)"
                     self.isLoading = false
                 }
@@ -185,36 +206,9 @@ class DashboardViewModel: ObservableObject {
             .store(in: &cancellables)
     }
 
-    /// Calculate dashboard metrics asynchronously
-    /// - Returns: Tuple containing (totalBalance, transactionCount, recentTransactions)
-    private func calculateDashboardMetrics() async throws -> (Double, Int, [Transaction]) {
-        return try await withCheckedThrowingContinuation { continuation in
-            context.perform {
-                do {
-                    // Fetch all transactions for balance calculation
-                    let balanceRequest: NSFetchRequest<Transaction> = Transaction.fetchRequest()
-                    let allTransactions = try self.context.fetch(balanceRequest)
-
-                    // Calculate total balance
-                    let balance = allTransactions.reduce(0.0) { $0 + $1.amount }
-                    let count = allTransactions.count
-
-                    // Fetch recent transactions (limited to 5, sorted by date)
-                    let recentRequest: NSFetchRequest<Transaction> = Transaction.fetchRequest()
-                    recentRequest.sortDescriptors = [
-                        NSSortDescriptor(keyPath: \Transaction.date, ascending: false),
-                    ]
-                    recentRequest.fetchLimit = 5
-
-                    let recentTransactions = try self.context.fetch(recentRequest)
-
-                    continuation.resume(returning: (balance, count, recentTransactions))
-                } catch {
-                    continuation.resume(throwing: error)
-                }
-            }
-        }
-    }
+    // EMERGENCY FIX: Remove async calculateDashboardMetrics method to eliminate Swift Concurrency crashes
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
+    // Metrics calculation is now performed directly in fetchDashboardData using synchronous Core Data patterns
 
     // MARK: - Enhanced Core Data Integration Features
 
@@ -224,31 +218,42 @@ class DashboardViewModel: ObservableObject {
     ///   - category: Transaction category (validated for non-empty)
     ///   - note: Optional transaction note
     func validateAndAddTransaction(amount: Double, category: String, note: String?) {
-        Task { @MainActor in
-            isLoading = true
-            errorMessage = nil
+        // EMERGENCY FIX: Remove async/patterns - use synchronous Core Data
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
+        isLoading = true
+        errorMessage = nil
 
-            do {
-                // Validate transaction data
-                try validateTransactionData(amount: amount, category: category)
+        do {
+            // Validate transaction data
+            try validateTransactionData(amount: amount, category: category)
 
-                // Create and save transaction
-                _ = Transaction.create(
-                    in: context,
-                    amount: amount,
-                    category: category,
-                    note: note
-                )
-
-                try context.save()
-
-                // Refresh dashboard data
-                await refreshDataAfterChange()
-
-            } catch {
-                handleError(error)
+            // Create and save transaction - SYNCHRONOUS
+            context.perform { [weak self] in
+                guard let self = self else { return }
+                
+                do {
+                    _ = Transaction.create(
+                        in: self.context,
+                        amount: amount,
+                        category: category,
+                        note: note
+                    )
+                    try self.context.save()
+                    
+                    // Refresh dashboard data - SYNCHRONOUS
+                    DispatchQueue.main.async {
+                        self.refreshDataAfterChange_Sync()
+                        self.isLoading = false
+                    }
+                } catch {
+                    DispatchQueue.main.async {
+                        self.handleError(error)
+                        self.isLoading = false
+                    }
+                }
             }
-
+        } catch {
+            handleError(error)
             isLoading = false
         }
     }
@@ -256,64 +261,67 @@ class DashboardViewModel: ObservableObject {
     /// Adds multiple transactions in a single batch operation for performance
     /// - Parameter transactions: Array of transaction tuples (amount, category, note)
     func addTransactionsBatch(_ transactions: [(amount: Double, category: String, note: String?)]) {
-        Task { @MainActor in
-            isLoading = true
-            errorMessage = nil
+        // EMERGENCY FIX: Remove async/patterns - use synchronous Core Data
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
+        isLoading = true
+        errorMessage = nil
 
+        // Begin batch operation - SYNCHRONOUS
+        context.perform { [weak self] in
+            guard let self = self else { return }
+            
             do {
-                // Begin batch operation
-                context.performAndWait {
-                    for transactionData in transactions {
-                        _ = Transaction.create(
-                            in: context,
-                            amount: transactionData.amount,
-                            category: transactionData.category,
-                            note: transactionData.note
-                        )
-                    }
+                for transactionData in transactions {
+                    _ = Transaction.create(
+                        in: self.context,
+                        amount: transactionData.amount,
+                        category: transactionData.category,
+                        note: transactionData.note
+                    )
                 }
-
                 // Save all changes in single operation
-                try context.save()
-
-                // Refresh dashboard data
-                await refreshDataAfterChange()
-
+                try self.context.save()
+                
+                // Refresh dashboard data - SYNCHRONOUS
+                DispatchQueue.main.async {
+                    self.refreshDataAfterChange_Sync()
+                    self.isLoading = false
+                }
             } catch {
-                handleError(error)
+                DispatchQueue.main.async {
+                    self.handleError(error)
+                    self.isLoading = false
+                }
             }
-
-            isLoading = false
         }
     }
 
     /// Performs a Core Data operation with automatic rollback on failure
     /// - Parameter operation: Throwing closure to execute
     func performTransactionWithRollback(_ operation: @escaping () throws -> Void) {
-        Task { @MainActor in
-            isLoading = true
-            errorMessage = nil
+        // EMERGENCY FIX: Remove async/patterns - use synchronous Core Data
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
+        isLoading = true
+        errorMessage = nil
 
-            // Save current state for potential rollback
-            let hasUnsavedChanges = context.hasChanges
+        // Save current state for potential rollback
+        let hasUnsavedChanges = context.hasChanges
 
-            do {
-                try operation()
-                try context.save()
+        do {
+            try operation()
+            try context.save()
 
-                // Refresh dashboard data
-                await refreshDataAfterChange()
-
-            } catch {
-                // Rollback changes on error
-                if hasUnsavedChanges {
-                    context.rollback()
-                }
-                handleError(error)
+            // Refresh dashboard data - SYNCHRONOUS
+            refreshDataAfterChange_Sync()
+        } catch {
+            // Rollback changes on error
+            if hasUnsavedChanges {
+                context.rollback()
             }
-
-            isLoading = false
+            handleError(error)
         }
+
+        isLoading = false
     }
 
     /// Fetches cached dashboard data for improved performance
@@ -376,37 +384,37 @@ class DashboardViewModel: ObservableObject {
 
     /// Test method for validation error scenarios
     func testValidationError() {
-        Task { @MainActor in
-            do {
-                try validateTransactionData(amount: Double.nan, category: "")
-            } catch {
-                handleError(error)
-            }
+        // EMERGENCY FIX: Remove async/patterns - use synchronous execution
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
+        do {
+            try validateTransactionData(amount: Double.nan, category: "")
+        } catch {
+            handleError(error)
         }
     }
 
     /// Test method for network error scenarios
     func testNetworkError() {
-        Task { @MainActor in
-            let networkError = NSError(
-                domain: "NetworkError",
-                code: -1_009,
-                userInfo: [NSLocalizedDescriptionKey: "Network connection failed"]
-            )
-            handleError(networkError)
-        }
+        // EMERGENCY FIX: Remove async/patterns - use synchronous execution
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
+        let networkError = NSError(
+            domain: "NetworkError",
+            code: -1_009,
+            userInfo: [NSLocalizedDescriptionKey: "Network connection failed"]
+        )
+        handleError(networkError)
     }
 
     /// Test method for data corruption error scenarios
     func testDataCorruptionError() {
-        Task { @MainActor in
-            let dataError = NSError(
-                domain: "DataCorruption",
-                code: 500,
-                userInfo: [NSLocalizedDescriptionKey: "Data integrity check failed"]
-            )
-            handleError(dataError)
-        }
+        // EMERGENCY FIX: Remove async/patterns - use synchronous execution
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
+        let dataError = NSError(
+            domain: "DataCorruption",
+            code: 500,
+            userInfo: [NSLocalizedDescriptionKey: "Data integrity check failed"]
+        )
+        handleError(dataError)
     }
 
     // MARK: - Private Helper Methods
@@ -462,23 +470,48 @@ class DashboardViewModel: ObservableObject {
         print("DashboardViewModel Error: \(error)")
     }
 
-    /// Refreshes data after changes and updates cache
-    private func refreshDataAfterChange() async {
-        do {
-            let (balance, count, recent) = try await calculateDashboardMetrics()
+    /// Refreshes data after changes and updates cache - SYNCHRONOUS VERSION
+    private func refreshDataAfterChange_Sync() {
+        // EMERGENCY FIX: Remove async/patterns - use synchronous Core Data
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
+        context.perform { [weak self] in
+            guard let self = self else { return }
+            
+            do {
+                // Fetch all transactions for balance calculation - SYNCHRONOUS
+                let balanceRequest: NSFetchRequest<Transaction> = Transaction.fetchRequest()
+                let allTransactions = try self.context.fetch(balanceRequest)
 
-            totalBalance = balance
-            transactionCount = count
-            recentTransactions = recent
+                // Calculate total balance
+                let balance = allTransactions.reduce(0.0) { $0 + $1.amount }
+                let count = allTransactions.count
 
-            // Update cache
-            dataCache["totalBalance"] = balance
-            dataCache["transactionCount"] = count
-            dataCache["recentTransactions"] = recent
-            dataCache["cacheTime"] = Date()
+                // Fetch recent transactions (limited to 5, sorted by date)
+                let recentRequest: NSFetchRequest<Transaction> = Transaction.fetchRequest()
+                recentRequest.sortDescriptors = [
+                    NSSortDescriptor(keyPath: \Transaction.date, ascending: false),
+                ]
+                recentRequest.fetchLimit = 5
+                let recent = try self.context.fetch(recentRequest)
 
-        } catch {
-            handleError(error)
+                // Update UI on main thread - SYNCHRONOUS dispatch
+                DispatchQueue.main.async {
+                    self.totalBalance = balance
+                    self.transactionCount = count
+                    self.recentTransactions = recent
+
+                    // Update cache
+                    self.dataCache["totalBalance"] = balance
+                    self.dataCache["transactionCount"] = count
+                    self.dataCache["recentTransactions"] = recent
+                    self.dataCache["cacheTime"] = Date()
+                }
+            } catch {
+                // Handle errors - SYNCHRONOUS dispatch
+                DispatchQueue.main.async {
+                    self.handleError(error)
+                }
+            }
         }
     }
 

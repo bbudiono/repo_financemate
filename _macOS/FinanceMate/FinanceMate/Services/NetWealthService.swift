@@ -17,7 +17,8 @@ import CoreData
  * Last Updated: 2025-08-01
  */
 
-@MainActor
+// EMERGENCY FIX: Removed to eliminate Swift Concurrency crashes
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
 public class NetWealthService: ObservableObject {
     
     private let context: NSManagedObjectContext
@@ -36,7 +37,7 @@ public class NetWealthService: ObservableObject {
     // MARK: - Real-time Net Wealth Calculation
     
     /// Calculate current net wealth from all assets and liabilities
-    public func calculateCurrentNetWealth() async -> NetWealthResult {
+    public func calculateCurrentNetWealth() -> NetWealthResult {
         do {
             // Fetch all assets
             let assetRequest: NSFetchRequest<Asset> = Asset.fetchRequest()
@@ -75,13 +76,13 @@ public class NetWealthService: ObservableObject {
     // MARK: - Historical Trend Analysis
     
     /// Get wealth trend data for a given date range
-    public func getWealthTrend(for dateRange: DateRange) async -> [WealthTrendDataPoint] {
+    public func getWealthTrend(from startDate: Date, to endDate: Date) -> [WealthTrendDataPoint] {
         do {
             let request: NSFetchRequest<NetWealthSnapshot> = NetWealthSnapshot.fetchRequest()
             request.predicate = NSPredicate(
                 format: "snapshotDate >= %@ AND snapshotDate <= %@",
-                dateRange.start as NSDate,
-                dateRange.end as NSDate
+                startDate as NSDate,
+                endDate as NSDate
             )
             request.sortDescriptors = [NSSortDescriptor(keyPath: \NetWealthSnapshot.snapshotDate, ascending: true)]
             
@@ -103,7 +104,7 @@ public class NetWealthService: ObservableObject {
     }
     
     /// Calculate wealth growth rate between two dates
-    public func calculateWealthGrowthRate(from startDate: Date, to endDate: Date) async -> Double {
+    public func calculateWealthGrowthRate(from startDate: Date, to endDate: Date) -> Double {
         do {
             // Get snapshots closest to the requested dates
             let startRequest: NSFetchRequest<NetWealthSnapshot> = NetWealthSnapshot.fetchRequest()
@@ -134,7 +135,7 @@ public class NetWealthService: ObservableObject {
     // MARK: - Asset Allocation Analysis
     
     /// Get current asset allocation breakdown
-    public func getAssetAllocation() async -> AssetAllocationResult {
+    public func getAssetAllocation() -> AssetAllocationResult {
         do {
             let request: NSFetchRequest<Asset> = Asset.fetchRequest()
             let assets = try context.fetch(request)
@@ -175,8 +176,8 @@ public class NetWealthService: ObservableObject {
     // MARK: - Liability Analysis
     
     /// Calculate liability-to-asset ratio
-    public func calculateLiabilityToAssetRatio() async -> Double? {
-        let wealthResult = await calculateCurrentNetWealth()
+    public func calculateLiabilityToAssetRatio() -> Double? {
+        let wealthResult = calculateCurrentNetWealth()
         
         guard wealthResult.totalAssets > 0 else { return nil }
         
@@ -193,8 +194,8 @@ public class NetWealthService: ObservableObject {
     // MARK: - Snapshot Management
     
     /// Create and save a new wealth snapshot
-    public func createWealthSnapshot() async -> NetWealthSnapshot {
-        let wealthResult = await calculateCurrentNetWealth()
+    public func createWealthSnapshot() -> NetWealthSnapshot {
+        let wealthResult = calculateCurrentNetWealth()
         
         // Create snapshot - we'll need a default financial entity or create one
         let entityRequest: NSFetchRequest<FinancialEntity> = FinancialEntity.fetchRequest()
@@ -234,7 +235,7 @@ public class NetWealthService: ObservableObject {
     // MARK: - Performance Attribution
     
     /// Calculate performance attribution by asset type
-    public func calculatePerformanceAttribution(from startDate: Date, to endDate: Date) async -> PerformanceAttribution {
+    public func calculatePerformanceAttribution(from startDate: Date, to endDate: Date) -> PerformanceAttribution {
         do {
             // Get assets with historical valuations
             let assetRequest: NSFetchRequest<Asset> = Asset.fetchRequest()

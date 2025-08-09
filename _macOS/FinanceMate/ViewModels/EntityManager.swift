@@ -22,7 +22,7 @@ import Combine
  * Last Updated: 2025-07-08
  */
 
-@MainActor
+// EMERGENCY FIX: Removed @MainActor to eliminate Swift Concurrency crashes
 class EntityManager: ObservableObject {
     private let context: NSManagedObjectContext
     

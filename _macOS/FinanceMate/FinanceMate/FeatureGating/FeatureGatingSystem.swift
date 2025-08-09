@@ -218,7 +218,7 @@ enum UserPreference {
 
 // MARK: - Main FeatureGatingSystem Class
 
-@MainActor
+// EMERGENCY FIX: Removed @MainActor to eliminate Swift Concurrency crashes
 final class FeatureGatingSystem: ObservableObject {
     
     // MARK: - Published Properties

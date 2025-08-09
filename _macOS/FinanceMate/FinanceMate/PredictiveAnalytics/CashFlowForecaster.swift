@@ -100,7 +100,7 @@ struct TestCase {
 
 // MARK: - Main Cash Flow Forecaster
 
-@MainActor
+// EMERGENCY FIX: Removed @MainActor to eliminate Swift Concurrency crashes
 class CashFlowForecaster: ObservableObject {
     
     // MARK: - Properties
@@ -129,9 +129,7 @@ class CashFlowForecaster: ObservableObject {
     
     // MARK: - Core Forecasting Methods
     
-    func generateCashFlowForecast(horizonMonths: Int, 
-                                 confidenceLevel: Double,
-                                 includeSeasonalAdjustment: Bool = true) async -> CashFlowForecast? {
+    func generateCashFlowForecast() -> CashFlowForecast? {
         logger.info("Generating cash flow forecast for \(horizonMonths) months with \(confidenceLevel) confidence")
         
         // Generate base forecast periods
@@ -145,7 +143,7 @@ class CashFlowForecaster: ObservableObject {
             }
             
             let month = calendar.component(.month, from: forecastDate)
-            let basePrediction = await generateBasePrediction(for: monthOffset)
+            let basePrediction = generateBasePrediction(for: monthOffset)
             
             // Apply seasonal adjustment if enabled
             let seasonalMultiplier = includeSeasonalAdjustment ? (seasonalAdjustments[month] ?? 1.0) : 1.0
@@ -176,7 +174,7 @@ class CashFlowForecaster: ObservableObject {
         )
     }
     
-    func generateQuarterlyForecast(horizonQuarters: Int, confidenceLevel: Double) async -> QuarterlyForecast? {
+    func generateQuarterlyForecast() -> QuarterlyForecast? {
         logger.info("Generating quarterly forecast for \(horizonQuarters) quarters")
         
         var quarterlyPeriods: [ForecastPeriod] = []
@@ -189,7 +187,7 @@ class CashFlowForecaster: ObservableObject {
             }
             
             let quarter = (calendar.component(.month, from: quarterDate) - 1) / 3 + 1
-            let quarterlyPrediction = await generateQuarterlyPrediction(for: quarterOffset)
+            let quarterlyPrediction = generateQuarterlyPrediction(for: quarterOffset)
             
             let period = ForecastPeriod(
                 month: quarter * 3, // Representative month for quarter
@@ -210,7 +208,7 @@ class CashFlowForecaster: ObservableObject {
         )
     }
     
-    func generateYearlyForecast(horizonYears: Int, includeInflationAdjustment: Bool) async -> YearlyForecast? {
+    func generateYearlyForecast() -> YearlyForecast? {
         logger.info("Generating yearly forecast for \(horizonYears) years")
         
         var yearlyPeriods: [ForecastPeriod] = []
@@ -223,7 +221,7 @@ class CashFlowForecaster: ObservableObject {
             }
             
             let year = calendar.component(.year, from: yearDate)
-            var yearlyPrediction = await generateYearlyPrediction(for: yearOffset)
+            var yearlyPrediction = generateYearlyPrediction(for: yearOffset)
             
             // Apply inflation adjustment if enabled
             if includeInflationAdjustment {
@@ -252,7 +250,7 @@ class CashFlowForecaster: ObservableObject {
     
     // MARK: - Split-Aware and Entity-Specific Forecasting
     
-    func generateSplitAwareForecast(horizonMonths: Int, byTaxCategory: Bool) async -> SplitAwareForecast? {
+    func generateSplitAwareForecast() -> SplitAwareForecast? {
         logger.info("Generating split-aware forecast for \(horizonMonths) months")
         
         guard byTaxCategory else {
@@ -270,7 +268,7 @@ class CashFlowForecaster: ObservableObject {
             var categoryPeriods: [ForecastPeriod] = []
             
             for monthOffset in 0..<horizonMonths {
-                let prediction = await generateCategoryPrediction(category: category, monthOffset: monthOffset)
+                let prediction = generateCategoryPrediction(category: category, monthOffset: monthOffset)
                 let period = ForecastPeriod(
                     month: monthOffset + 1,
                     expectedValue: prediction,
@@ -288,14 +286,14 @@ class CashFlowForecaster: ObservableObject {
         )
     }
     
-    func generateEntitySpecificForecast(entity: Entity, horizonMonths: Int) async -> EntitySpecificForecast? {
+    func generateEntitySpecificForecast() -> EntitySpecificForecast? {
         logger.info("Generating entity-specific forecast for \(entity)")
         
-        let monthlyFlow = await generateEntityMonthlyFlow(entity: entity)
+        let monthlyFlow = generateEntityMonthlyFlow(entity: entity)
         
         switch entity {
         case .business:
-            let taxLiability = await generateBusinessTaxLiability()
+            let taxLiability = generateBusinessTaxLiability()
             return EntitySpecificForecast(
                 averageMonthlyFlow: monthlyFlow,
                 includesTaxOptimization: true,
@@ -319,23 +317,23 @@ class CashFlowForecaster: ObservableObject {
     
     // MARK: - Seasonal Pattern Methods
     
-    func detectSeasonalPatterns() async -> SeasonalPatterns? {
+    func detectSeasonalPatterns() -> SeasonalPatterns? {
         logger.info("Detecting seasonal patterns")
         
         // Get patterns from predictive analytics
-        return await predictiveAnalytics.identifySeasonalPatterns()
+        return predictiveAnalytics.identifySeasonalPatterns()
     }
     
     // MARK: - Australian Financial Context Methods
     
-    func generateFinancialYearForecast(startMonth: Int, includesTaxSeasonAdjustment: Bool) async -> FinancialYearForecast? {
+    func generateFinancialYearForecast() -> FinancialYearForecast? {
         logger.info("Generating Australian financial year forecast starting month \(startMonth)")
         
         var financialYearPeriods: [ForecastPeriod] = []
         
         for monthOffset in 0..<12 {
             let month = ((startMonth + monthOffset - 1) % 12) + 1
-            var prediction = await generateBasePrediction(for: monthOffset)
+            var prediction = generateBasePrediction(for: monthOffset)
             
             // Apply tax season adjustment for June-July
             if includesTaxSeasonAdjustment && (month == 6 || month == 7) {
@@ -357,7 +355,7 @@ class CashFlowForecaster: ObservableObject {
         )
     }
     
-    func generateGSTQuarterlyForecast(quarters: Int) async -> GSTQuarterlyForecast? {
+    func generateGSTQuarterlyForecast() -> GSTQuarterlyForecast? {
         logger.info("Generating GST quarterly forecast for \(quarters) quarters")
         
         var quarterlyPeriods: [GSTQuarterlyPeriod] = []
@@ -365,7 +363,7 @@ class CashFlowForecaster: ObservableObject {
         var gstRefunds: [Double] = []
         
         for quarter in 1...quarters {
-            let quarterlyRevenue = await generateQuarterlyRevenue(quarter: quarter)
+            let quarterlyRevenue = generateQuarterlyRevenue(quarter: quarter)
             let gstLiability = quarterlyRevenue * 0.1 // 10% GST
             
             let period = GSTQuarterlyPeriod(
@@ -388,11 +386,11 @@ class CashFlowForecaster: ObservableObject {
     
     // MARK: - Integration Methods
     
-    func generateForecastWithInsights(insights: AnalyticsInsights, horizonMonths: Int) async -> ForecastWithInsights? {
+    func generateForecastWithInsights() -> ForecastWithInsights? {
         logger.info("Generating forecast with analytics insights")
         
         // Generate base forecast
-        guard let baseForecast = await generateCashFlowForecast(
+        guard let baseForecast = generateCashFlowForecast(
             horizonMonths: horizonMonths,
             confidenceLevel: 0.90
         ) else {
@@ -417,11 +415,11 @@ class CashFlowForecaster: ObservableObject {
         )
     }
     
-    func generateSplitIntelligentForecast(horizonMonths: Int, includeTaxOptimization: Bool) async -> SplitIntelligentForecast? {
+    func generateSplitIntelligentForecast() -> SplitIntelligentForecast? {
         logger.info("Generating split-intelligent forecast")
         
         // Generate base forecast
-        guard let baseForecast = await generateCashFlowForecast(
+        guard let baseForecast = generateCashFlowForecast(
             horizonMonths: horizonMonths,
             confidenceLevel: 0.90
         ) else {
@@ -466,7 +464,7 @@ class CashFlowForecaster: ObservableObject {
         ]
     }
     
-    private func generateBasePrediction(for monthOffset: Int) async -> Double {
+    private func generateBasePrediction() -> Double {
         // Simple prediction model - in production this would use ML
         let baseAmount = 2000.0
         let growthFactor = 1.0 + (Double(monthOffset) * 0.01) // 1% monthly growth
@@ -475,7 +473,7 @@ class CashFlowForecaster: ObservableObject {
         return baseAmount * growthFactor * randomVariation
     }
     
-    private func generateQuarterlyPrediction(for quarterOffset: Int) async -> Double {
+    private func generateQuarterlyPrediction() -> Double {
         let baseQuarterlyAmount = 6000.0
         let growthFactor = 1.0 + (Double(quarterOffset) * 0.03) // 3% quarterly growth
         let seasonalFactor = [1.0, 1.1, 1.2, 0.9][quarterOffset % 4] // Seasonal pattern
@@ -483,7 +481,7 @@ class CashFlowForecaster: ObservableObject {
         return baseQuarterlyAmount * growthFactor * seasonalFactor
     }
     
-    private func generateYearlyPrediction(for yearOffset: Int) async -> Double {
+    private func generateYearlyPrediction() -> Double {
         let baseYearlyAmount = 24000.0
         let growthFactor = pow(1.05, Double(yearOffset)) // 5% annual growth
         let volatility = Double.random(in: 0.9...1.1)
@@ -491,7 +489,7 @@ class CashFlowForecaster: ObservableObject {
         return baseYearlyAmount * growthFactor * volatility
     }
     
-    private func generateCategoryPrediction(category: String, monthOffset: Int) async -> Double {
+    private func generateCategoryPrediction() -> Double {
         let basePredictions: [String: Double] = [
             "Business Expense": 1500.0,
             "Personal": 800.0,
@@ -505,7 +503,7 @@ class CashFlowForecaster: ObservableObject {
         return baseAmount * growthFactor
     }
     
-    private func generateEntityMonthlyFlow(entity: Entity) async -> Double {
+    private func generateEntityMonthlyFlow() -> Double {
         switch entity {
         case .business:
             return 5000.0 + Double.random(in: -500...1000)
@@ -514,11 +512,11 @@ class CashFlowForecaster: ObservableObject {
         }
     }
     
-    private func generateBusinessTaxLiability() async -> Double {
+    private func generateBusinessTaxLiability() -> Double {
         return 12000.0 + Double.random(in: -2000...3000)
     }
     
-    private func generateQuarterlyRevenue(quarter: Int) async -> Double {
+    private func generateQuarterlyRevenue() -> Double {
         let baseRevenue = 15000.0
         let seasonalFactor = [1.0, 1.1, 1.3, 0.9][quarter % 4]
         

@@ -34,15 +34,15 @@ import CoreData
 class FeatureGatingSystemTests: XCTestCase {
     
     var featureGatingSystem: FeatureGatingSystem!
-    var mockUserDefaults: UserDefaults!
+    var realUserDefaults: UserDefaults!
     var testContext: NSManagedObjectContext!
     
     override func setUp() async throws {
         try await super.setUp()
         
         // Create isolated UserDefaults for testing
-        mockUserDefaults = UserDefaults(suiteName: "FeatureGatingSystemTests")!
-        mockUserDefaults.removePersistentDomain(forName: "FeatureGatingSystemTests")
+        realUserDefaults = UserDefaults(suiteName: "FeatureGatingSystemTests")!
+        realUserDefaults.removePersistentDomain(forName: "FeatureGatingSystemTests")
         
         // Set up Core Data test context
         testContext = PersistenceController.preview.container.viewContext
@@ -50,16 +50,16 @@ class FeatureGatingSystemTests: XCTestCase {
         // Initialize feature gating system
         featureGatingSystem = FeatureGatingSystem(
             context: testContext,
-            userDefaults: mockUserDefaults
+            userDefaults: realUserDefaults
         )
     }
     
     override func tearDown() async throws {
         // Clean up UserDefaults
-        mockUserDefaults.removePersistentDomain(forName: "FeatureGatingSystemTests")
+        realUserDefaults.removePersistentDomain(forName: "FeatureGatingSystemTests")
         
         featureGatingSystem = nil
-        mockUserDefaults = nil
+        realUserDefaults = nil
         testContext = nil
         try await super.tearDown()
     }
@@ -372,7 +372,7 @@ class FeatureGatingSystemTests: XCTestCase {
         await featureGatingSystem.setRollbackPreference(.advancedAnalytics, enabled: true)
         
         // Restart system to test persistence
-        let newSystem = FeatureGatingSystem(context: testContext, userDefaults: mockUserDefaults)
+        let newSystem = FeatureGatingSystem(context: testContext, userDefaults: realUserDefaults)
         
         XCTAssertFalse(newSystem.isFeatureAvailable(.lineItemSplitting), "Rollback preferences should persist")
         XCTAssertTrue(newSystem.isFeatureAvailable(.advancedAnalytics), "Enabled preferences should persist")
@@ -432,9 +432,9 @@ class FeatureGatingSystemTests: XCTestCase {
     
     func testFeatureGatingErrorHandling() async throws {
         // Test with corrupted user data
-        mockUserDefaults.set("invalid_data", forKey: "userCompetencyLevels")
+        realUserDefaults.set("invalid_data", forKey: "userCompetencyLevels")
         
-        let systemWithCorruptedData = FeatureGatingSystem(context: testContext, userDefaults: mockUserDefaults)
+        let systemWithCorruptedData = FeatureGatingSystem(context: testContext, userDefaults: realUserDefaults)
         
         XCTAssertEqual(systemWithCorruptedData.currentUserLevel, .beginner, "Should handle corrupted data gracefully")
         XCTAssertTrue(systemWithCorruptedData.isFeatureAvailable(.basicTransactionEntry), "Basic features should still be available")

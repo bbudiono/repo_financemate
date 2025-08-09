@@ -77,12 +77,11 @@ struct WealthDashboardView: View {
         .background(dashboardBackground)
         .navigationTitle("Wealth Dashboard")
         .onAppear {
-            Task {
-                await viewModel.loadWealthData()
-            }
+            // EMERGENCY FIX: Removed Task block - immediate execution
+        viewModel.loadWealthData()
         }
         .refreshable {
-            await viewModel.refreshWealthData()
+            viewModel.refreshWealthData()
         }
         .overlay {
             if viewModel.isLoading {
@@ -91,9 +90,8 @@ struct WealthDashboardView: View {
         }
         .alert("Error", isPresented: .constant(viewModel.errorMessage != nil)) {
             Button("Retry") {
-                Task {
-                    await viewModel.loadWealthData()
-                }
+                // EMERGENCY FIX: Removed Task block - immediate execution
+        viewModel.loadWealthData()
             }
             Button("Cancel", role: .cancel) {
                 viewModel.errorMessage = nil
@@ -196,9 +194,8 @@ struct WealthDashboardView: View {
         }
         .padding(.horizontal, 16)
         .onChange(of: selectedTimeRange) { newRange in
-            Task {
-                await viewModel.updateTimeRange(newRange)
-            }
+            // EMERGENCY FIX: Removed Task block - immediate execution
+        viewModel.updateTimeRange(newRange)
         }
     }
     

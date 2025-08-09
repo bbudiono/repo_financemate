@@ -351,7 +351,7 @@ class ReportingEngineTests: XCTestCase {
             reportType: .categoryBreakdown,
             frequency: .weekly,
             dayOfMonth: nil,
-            recipients: ["test@example.com"],
+            recipients: ["john.smith@cba.com.au"],
             template: .businessOwnerTemplate()
         )
         

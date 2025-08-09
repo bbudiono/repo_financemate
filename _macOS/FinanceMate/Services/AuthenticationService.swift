@@ -4,14 +4,14 @@ import Foundation
 
 // MARK: - Authentication Service Protocol
 protocol AuthenticationServiceProtocol {
-  func authenticateWithApple() async throws -> AuthenticationResult
-  func authenticateWithGoogle() async throws -> AuthenticationResult
-  func authenticateWithBiometrics() async throws -> AuthenticationResult
-  func authenticateWithEmail(email: String, password: String) async throws -> AuthenticationResult
-  func signOut() async throws
+  func authenticateWithApple() throws -> AuthenticationResult
+  func authenticateWithGoogle() throws -> AuthenticationResult
+  func authenticateWithBiometrics() throws -> AuthenticationResult
+  func authenticateWithEmail() throws -> AuthenticationResult
+  func signOut() throws
   func getCurrentUser() -> User?
   func createTestSession() -> User?
-  func signIn(email: String, password: String) async -> (success: Bool, error: Error?)
+  func signIn() -> (success: Bool, error: Error?)
 }
 
 // MARK: - Authentication Result
@@ -51,8 +51,8 @@ class AuthenticationService: NSObject, AuthenticationServiceProtocol,
 
   // MARK: - AuthenticationServiceProtocol Implementation
 
-  func authenticateWithApple() async throws -> AuthenticationResult {
-    return try await withCheckedThrowingContinuation { continuation in
+  func authenticateWithApple() throws -> AuthenticationResult {
+    return try withCheckedThrowingContinuation { continuation in
       authenticationContinuation = continuation
 
       let appleIDProvider = ASAuthorizationAppleIDProvider()
@@ -67,19 +67,19 @@ class AuthenticationService: NSObject, AuthenticationServiceProtocol,
     }
   }
 
-  func authenticateWithGoogle() async throws -> AuthenticationResult {
+  func authenticateWithGoogle() throws -> AuthenticationResult {
     // Placeholder for Google OAuth implementation
     // In a production implementation, this would integrate with Google Sign-In SDK
     throw AuthenticationError.notImplemented("Google OAuth implementation pending")
   }
 
-  func authenticateWithBiometrics() async throws -> AuthenticationResult {
+  func authenticateWithBiometrics() throws -> AuthenticationResult {
     // Placeholder for biometric authentication
     // In a production implementation, this would use LocalAuthentication framework
     throw AuthenticationError.notImplemented("Biometric authentication implementation pending")
   }
 
-  func authenticateWithEmail(email: String, password: String) async throws -> AuthenticationResult {
+  func authenticateWithEmail() throws -> AuthenticationResult {
     // Validate email format
     guard isValidEmail(email) else {
       throw AuthenticationError.invalidEmail("Invalid email format")
@@ -115,7 +115,7 @@ class AuthenticationService: NSObject, AuthenticationServiceProtocol,
     )
   }
 
-  func signOut() async throws {
+  func signOut() throws {
     // Clear user session
     UserDefaults.standard.removeObject(forKey: "authenticated_user_id")
     UserDefaults.standard.removeObject(forKey: "authenticated_user_email")
@@ -177,9 +177,9 @@ class AuthenticationService: NSObject, AuthenticationServiceProtocol,
     #endif
   }
 
-  func signIn(email: String, password: String) async -> (success: Bool, error: Error?) {
+  func signIn() -> (success: Bool, error: Error?) {
     do {
-      let result = try await authenticateWithEmail(email: email, password: password)
+      let result = try authenticateWithEmail(email: email, password: password)
       return (success: result.success, error: result.error)
     } catch {
       return (success: false, error: error)

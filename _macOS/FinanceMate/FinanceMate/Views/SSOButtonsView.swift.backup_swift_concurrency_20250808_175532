@@ -1,0 +1,228 @@
+import SwiftUI
+import AuthenticationServices
+
+/**
+ * SSOButtonsView.swift
+ * 
+ * Purpose: SSO authentication buttons with uniform design (Apple, Google, Microsoft, Biometric)
+ * Issues & Complexity Summary: OAuth integration with uniform styling and error handling
+ * Key Complexity Drivers:
+ *   - Logic Scope (Est. LoC): ~150
+ *   - Core Algorithm Complexity: Medium (OAuth flows, Button actions)
+ *   - Dependencies: 3 (SwiftUI, AuthenticationServices, AuthenticationViewModel)
+ *   - State Management Complexity: Low (Loading states only)
+ *   - Novelty/Uncertainty Factor: Low (Standard OAuth patterns)
+ * AI Pre-Task Self-Assessment: 90%
+ * Problem Estimate: 85%
+ * Initial Code Complexity Estimate: 55%
+ * Final Code Complexity: 58%
+ * Overall Result Score: 92%
+ * Key Variances/Learnings: Extracted SSO maintains uniform button design and functionality
+ * Last Updated: 2025-08-06
+ */
+
+@MainActor
+public struct SSOButtonsView: View {
+    
+    // MARK: - Properties
+    
+    @ObservedObject var authViewModel: AuthenticationViewModel
+    
+    public init(authViewModel: AuthenticationViewModel) {
+        self.authViewModel = authViewModel
+    }
+    
+    public var body: some View {
+        VStack(spacing: 20) {
+            // OAuth divider
+            oauthDivider
+            
+            // UNIFORM SSO BUTTONS - ALL SAME SIZE AND STYLE
+            VStack(spacing: 12) {
+                // Apple Sign-In with uniform dimensions
+                appleSignInButton
+                
+                // Google Sign-In with uniform styling
+                googleSignInButton
+                
+                // Microsoft Sign-In with uniform styling
+                microsoftSignInButton
+                
+                // Biometric authentication with uniform styling
+                biometricSignInButton
+            }
+        }
+        .onAppear {
+            print("🔍 UNIFORM SSO SECTION: onAppear called - Uniform SSO buttons should be visible")
+        }
+    }
+    
+    // MARK: - OAuth Divider
+    
+    private var oauthDivider: some View {
+        HStack {
+            Rectangle()
+                .frame(height: 1)
+                .foregroundColor(.secondary.opacity(0.3))
+            
+            Text("or")
+                .font(.system(size: 14, weight: .medium))
+                .foregroundColor(.secondary)
+                .padding(.horizontal, 16)
+            
+            Rectangle()
+                .frame(height: 1)
+                .foregroundColor(.secondary.opacity(0.3))
+        }
+    }
+    
+    // MARK: - Apple Sign-In Button
+    
+    private var appleSignInButton: some View {
+        SignInWithAppleButton(
+            onRequest: { request in
+                request.requestedScopes = [.fullName, .email]
+                print("🍎 UNIFORM SSO: Apple Sign-In onRequest called - setting up authorization request")
+            },
+            onCompletion: { result in
+                print("🍎 UNIFORM SSO: Apple Sign-In onCompletion called with result: \(result)")
+                switch result {
+                case .success(let authorization):
+                    print("🍎 UNIFORM SSO: SUCCESS - Processing authorization")
+                    Task {
+                        await authViewModel.processAppleSignInCompletion(authorization)
+                    }
+                case .failure(let error):
+                    print("🍎 UNIFORM SSO: FAILURE - \(error)")
+                    authViewModel.errorMessage = "Apple Sign-In failed: \(error.localizedDescription)"
+                }
+            }
+        )
+        .frame(height: 50) // UNIFORM HEIGHT
+        .signInWithAppleButtonStyle(.black)
+        .clipShape(RoundedRectangle(cornerRadius: 12)) // UNIFORM CORNER RADIUS
+        .accessibility(identifier: "UniformAppleSSOButton")
+    }
+    
+    // MARK: - Google Sign-In Button
+    
+    private var googleSignInButton: some View {
+        Button(action: {
+            print("🔵 UNIFORM SSO: Google Sign-In tapped")
+            Task {
+                await authViewModel.authenticateWithOAuth2(provider: .google)
+            }
+        }) {
+            HStack(spacing: 12) {
+                if authViewModel.isLoading {
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                        .scaleEffect(0.8)
+                        .frame(width: 20, height: 20)
+                } else {
+                    Image(systemName: "g.circle.fill")
+                        .font(.system(size: 20, weight: .medium))
+                        .foregroundColor(.white)
+                        .frame(width: 20, height: 20)
+                }
+                
+                Text("Sign in with Google")
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundColor(.white)
+            }
+            .frame(maxWidth: .infinity)
+            .frame(height: 50) // UNIFORM HEIGHT
+            .background(Color(red: 0.26, green: 0.52, blue: 0.96)) // Google Blue
+            .clipShape(RoundedRectangle(cornerRadius: 12)) // UNIFORM CORNER RADIUS
+        }
+        .buttonStyle(PlainButtonStyle())
+        .disabled(authViewModel.isLoading)
+        .accessibility(identifier: "UniformGoogleSSOButton")
+    }
+    
+    // MARK: - Microsoft Sign-In Button
+    
+    private var microsoftSignInButton: some View {
+        Button(action: {
+            print("🔷 UNIFORM SSO: Microsoft Sign-In tapped")
+            Task {
+                await authViewModel.authenticateWithOAuth2(provider: .microsoft)
+            }
+        }) {
+            HStack(spacing: 12) {
+                if authViewModel.isLoading {
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                        .scaleEffect(0.8)
+                        .frame(width: 20, height: 20)
+                } else {
+                    Image(systemName: "m.circle.fill")
+                        .font(.system(size: 20, weight: .medium))
+                        .foregroundColor(.white)
+                        .frame(width: 20, height: 20)
+                }
+                
+                Text("Sign in with Microsoft")
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundColor(.white)
+            }
+            .frame(maxWidth: .infinity)
+            .frame(height: 50) // UNIFORM HEIGHT
+            .background(Color(red: 0.0, green: 0.46, blue: 0.74)) // Microsoft Blue
+            .clipShape(RoundedRectangle(cornerRadius: 12)) // UNIFORM CORNER RADIUS
+        }
+        .buttonStyle(PlainButtonStyle())
+        .disabled(authViewModel.isLoading)
+        .accessibility(identifier: "UniformMicrosoftSSOButton")
+    }
+    
+    // MARK: - Biometric Sign-In Button
+    
+    private var biometricSignInButton: some View {
+        Button(action: {
+            Task {
+                await authViewModel.authenticateWithBiometrics()
+            }
+        }) {
+            HStack(spacing: 12) {
+                Image(systemName: "faceid")
+                    .font(.system(size: 20, weight: .medium))
+                    .foregroundColor(.accentColor)
+                    .frame(width: 20, height: 20)
+                
+                Text("Sign in with Face ID")
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundColor(.accentColor)
+            }
+            .frame(maxWidth: .infinity)
+            .frame(height: 50) // UNIFORM HEIGHT
+            .background(Color.accentColor.opacity(0.1))
+            .clipShape(RoundedRectangle(cornerRadius: 12)) // UNIFORM CORNER RADIUS
+            .overlay(
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(Color.accentColor.opacity(0.3), lineWidth: 1)
+            )
+        }
+        .buttonStyle(PlainButtonStyle())
+        .accessibility(identifier: "UniformBiometricButton")
+    }
+}
+
+// MARK: - Preview
+
+struct SSOButtonsView_Previews: PreviewProvider {
+    static var previews: some View {
+        SSOButtonsView(
+            authViewModel: AuthenticationViewModel(
+                context: PersistenceController.preview.container.viewContext
+            )
+        )
+        .padding(32)
+        .frame(width: 400)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(.ultraThinMaterial)
+        )
+        .previewDisplayName("SSO Buttons")
+    }
+}

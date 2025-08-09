@@ -198,7 +198,7 @@ struct ErrorInfo {
 
 // MARK: - Main Split Intelligence Engine
 
-@MainActor
+// EMERGENCY FIX: Removed @MainActor to eliminate Swift Concurrency crashes
 class SplitIntelligenceEngine: ObservableObject {
     
     // MARK: - Properties
@@ -247,23 +247,22 @@ class SplitIntelligenceEngine: ObservableObject {
         
         logger.info("SplitIntelligenceEngine initialized with privacy-preserving ML capabilities")
         
-        Task {
-            await initializeEngine()
-        }
+        // EMERGENCY FIX: Removed Task block - immediate execution
+        initializeEngine()
     }
     
-    private func initializeEngine() async {
+    private func initializeEngine() {
         engineState = .initializing
         
         // Validate privacy compliance
-        let privacyCompliant = await validatePrivacyCompliance()
+        let privacyCompliant = validatePrivacyCompliance()
         guard privacyCompliant else {
             engineState = .error("Privacy compliance validation failed")
             return
         }
         
         // Initialize pattern analyzer
-        await patternAnalyzer.clearLearntPatterns()
+        patternAnalyzer.clearLearntPatterns()
         
         engineState = .ready
         logger.info("SplitIntelligenceEngine initialization completed successfully")
@@ -271,11 +270,11 @@ class SplitIntelligenceEngine: ObservableObject {
     
     // MARK: - Engine Status and Control
     
-    func isInitialized() async -> Bool {
+    func isInitialized() -> Bool {
         return engineState == .ready
     }
     
-    func getEngineStatus() async -> EngineStatus {
+    func getEngineStatus() -> EngineStatus {
         return EngineStatus(
             state: engineState,
             isPrivacyCompliant: isPrivacyModeEnabled,
@@ -288,7 +287,7 @@ class SplitIntelligenceEngine: ObservableObject {
     
     // MARK: - Core Intelligence Functions
     
-    func generateIntelligentSplitSuggestions(for transaction: Transaction) async -> IntelligentSplitSuggestion? {
+    func generateIntelligentSplitSuggestions() -> IntelligentSplitSuggestion? {
         let startTime = Date()
         
         guard engineState == .ready else {
@@ -308,19 +307,19 @@ class SplitIntelligenceEngine: ObservableObject {
         
         do {
             // Get pattern-based suggestions
-            let patternSuggestion = await patternAnalyzer.suggestSplitPattern(for: transaction)
+            let patternSuggestion = patternAnalyzer.suggestSplitPattern(for: transaction)
             
             // Enhance with contextual intelligence
-            let enhancedSuggestion = await enhanceWithContextualIntelligence(
+            let enhancedSuggestion = enhanceWithContextualIntelligence(
                 baseSuggestion: patternSuggestion, 
                 transaction: transaction
             )
             
             // Apply privacy compliance
-            let privacyCompliantSuggestion = await applyPrivacyCompliance(suggestion: enhancedSuggestion)
+            let privacyCompliantSuggestion = applyPrivacyCompliance(suggestion: enhancedSuggestion)
             
             // Apply Australian tax compliance
-            let taxCompliantSuggestion = await applyAustralianTaxCompliance(
+            let taxCompliantSuggestion = applyAustralianTaxCompliance(
                 suggestion: privacyCompliantSuggestion, 
                 transaction: transaction
             )
@@ -348,18 +347,18 @@ class SplitIntelligenceEngine: ObservableObject {
         }
     }
     
-    private func enhanceWithContextualIntelligence(baseSuggestion: SplitPatternSuggestion?, transaction: Transaction) async -> IntelligentSplitSuggestion? {
+    private func enhanceWithContextualIntelligence() -> IntelligentSplitSuggestion? {
         guard let baseSuggestion = baseSuggestion else { return nil }
         
         // Get user competency level from feature gating
-        let userLevel = await featureGatingSystem.getCurrentUserLevel()
+        let userLevel = featureGatingSystem.getCurrentUserLevel()
         let simplificationLevel = userLevel == .novice ? 3 : (userLevel == .intermediate ? 2 : 1)
         
         // Get user journey insights
-        let journeyInsights = await getUserJourneyInsights(for: transaction)
+        let journeyInsights = getUserJourneyInsights(for: transaction)
         
         // Get analytics insights if available
-        let analyticsInsights = await getAnalyticsInsights(for: transaction)
+        let analyticsInsights = getAnalyticsInsights(for: transaction)
         
         return IntelligentSplitSuggestion(
             id: UUID(),
@@ -392,10 +391,10 @@ class SplitIntelligenceEngine: ObservableObject {
         defer { engineState = .ready }
         
         // Apply privacy-preserving preprocessing
-        let privacyProtectedData = await applyPrivacyProtection(to: transactionSplits)
+        let privacyProtectedData = applyPrivacyProtection(to: transactionSplits)
         
         // Train pattern analyzer
-        await patternAnalyzer.learnFromTransactions(privacyProtectedData)
+        patternAnalyzer.learnFromTransactions(privacyProtectedData)
         
         // Clear cache to force fresh suggestions with new learning
         clearSuggestionsCache()
@@ -403,14 +402,14 @@ class SplitIntelligenceEngine: ObservableObject {
         logger.info("Training completed successfully")
     }
     
-    func learnFromUserInteraction(_ interaction: UserInteraction) async {
+    func learnFromUserInteraction() {
         logger.info("Learning from user interaction for transaction: \(interaction.transactionId)")
         
         // Create synthetic training data from user feedback
         let syntheticData = createSyntheticTrainingData(from: interaction)
         
         // Apply incremental learning
-        await patternAnalyzer.learnFromTransactions([syntheticData])
+        patternAnalyzer.learnFromTransactions([syntheticData])
         
         // Invalidate cache for similar transactions
         invalidateCacheForSimilarTransactions(interaction: interaction)
@@ -418,14 +417,14 @@ class SplitIntelligenceEngine: ObservableObject {
     
     // MARK: - Privacy Compliance
     
-    func enableDifferentialPrivacy(epsilon: Double) async {
+    func enableDifferentialPrivacy() {
         logger.info("Enabling differential privacy with epsilon: \(epsilon)")
         isDifferentialPrivacyEnabled = true
         privacyBudget = epsilon
     }
     
-    func generatePrivacyComplianceReport() async -> PrivacyComplianceReport {
-        let privacyScore = await calculatePrivacyScore()
+    func generatePrivacyComplianceReport() -> PrivacyComplianceReport {
+        let privacyScore = calculatePrivacyScore()
         let isCompliant = privacyScore >= privacyThreshold
         
         return PrivacyComplianceReport(
@@ -447,7 +446,7 @@ class SplitIntelligenceEngine: ObservableObject {
         )
     }
     
-    func getDifferentialPrivacyMetrics() async -> DifferentialPrivacyMetrics {
+    func getDifferentialPrivacyMetrics() -> DifferentialPrivacyMetrics {
         return DifferentialPrivacyMetrics(
             isEnabled: isDifferentialPrivacyEnabled,
             epsilon: privacyBudget,
@@ -457,12 +456,12 @@ class SplitIntelligenceEngine: ObservableObject {
         )
     }
     
-    func enableDataMinimization(_ enabled: Bool) async {
+    func enableDataMinimization() {
         logger.info("Data minimization \(enabled ? "enabled" : "disabled")")
         isDataMinimizationEnabled = enabled
     }
     
-    func getDataUsageReport() async -> DataUsageReport {
+    func getDataUsageReport() -> DataUsageReport {
         return DataUsageReport(
             dataMinimizationEnabled: isDataMinimizationEnabled,
             dataRetentionPeriod: isDataMinimizationEnabled ? (86400 * 30) : (86400 * 365), // 30 days vs 1 year
@@ -475,7 +474,7 @@ class SplitIntelligenceEngine: ObservableObject {
     
     // MARK: - Australian Tax Compliance
     
-    func analyzeTaxCompliance(transaction: Transaction, splits: [SplitAllocation]) async -> TaxComplianceResult {
+    func analyzeTaxCompliance() -> TaxComplianceResult {
         logger.info("Analyzing Australian tax compliance for transaction: \(transaction.category ?? "unknown")")
         
         let complianceLevel = assessTaxComplianceLevel(transaction: transaction, splits: splits)
@@ -493,7 +492,7 @@ class SplitIntelligenceEngine: ObservableObject {
         )
     }
     
-    func analyzeDeductibility(_ transaction: Transaction) async -> DeductibilityAnalysis {
+    func analyzeDeductibility() -> DeductibilityAnalysis {
         let category = transaction.category?.lowercased() ?? ""
         let amount = transaction.amount
         
@@ -510,7 +509,7 @@ class SplitIntelligenceEngine: ObservableObject {
         )
     }
     
-    func checkATOCompliance(_ transaction: Transaction) async -> ATOComplianceResult {
+    func checkATOCompliance() -> ATOComplianceResult {
         let category = transaction.category?.lowercased() ?? ""
         let amount = transaction.amount
         
@@ -531,7 +530,7 @@ class SplitIntelligenceEngine: ObservableObject {
     
     // MARK: - Performance and Optimization
     
-    func processBatchSuggestions(_ transactions: [Transaction]) async -> BatchProcessingResult {
+    func processBatchSuggestions() -> BatchProcessingResult {
         logger.info("Processing batch suggestions for \(transactions.count) transactions")
         
         let startTime = Date()
@@ -541,7 +540,7 @@ class SplitIntelligenceEngine: ObservableObject {
         let initialMemory = getCurrentMemoryUsage()
         
         for transaction in transactions {
-            if let suggestion = await generateIntelligentSplitSuggestions(for: transaction) {
+            if let suggestion = generateIntelligentSplitSuggestions(for: transaction) {
                 processedTransactions.append(transaction)
                 confidenceScores.append(suggestion.confidenceScore)
             } else {
@@ -563,7 +562,7 @@ class SplitIntelligenceEngine: ObservableObject {
         )
     }
     
-    func optimizeMemoryUsage() async {
+    func optimizeMemoryUsage() {
         logger.info("Optimizing memory usage")
         
         // Clear old cache entries
@@ -577,12 +576,12 @@ class SplitIntelligenceEngine: ObservableObject {
         }
         
         // Clear pattern analyzer temporary data
-        await patternAnalyzer.clearLearntPatterns()
+        patternAnalyzer.clearLearntPatterns()
         
         logger.info("Memory optimization completed")
     }
     
-    func getCacheMetrics() async -> CacheMetrics {
+    func getCacheMetrics() -> CacheMetrics {
         return CacheMetrics(
             hitRate: performanceMetrics.cacheHitRate,
             missRate: 1.0 - performanceMetrics.cacheHitRate,
@@ -594,13 +593,13 @@ class SplitIntelligenceEngine: ObservableObject {
     
     // MARK: - Error Handling
     
-    func getLastErrorInfo() async -> ErrorInfo? {
+    func getLastErrorInfo() -> ErrorInfo? {
         return lastErrorInfo
     }
     
     // MARK: - Private Helper Methods
     
-    private func validatePrivacyCompliance() async -> Bool {
+    private func validatePrivacyCompliance() -> Bool {
         return isPrivacyModeEnabled && privacyBudget > 0
     }
     
@@ -706,7 +705,7 @@ class SplitIntelligenceEngine: ObservableObject {
         return value >= 0 ? 1.0 : -1.0
     }
     
-    private func calculatePrivacyScore() async -> Double {
+    private func calculatePrivacyScore() -> Double {
         var score = 1.0
         
         // Deduct points for disabled privacy features
@@ -739,12 +738,12 @@ class SplitIntelligenceEngine: ObservableObject {
     
     // MARK: - Tax Compliance Helper Methods
     
-    private func applyAustralianTaxCompliance(suggestion: IntelligentSplitSuggestion?, transaction: Transaction) async -> IntelligentSplitSuggestion? {
+    private func applyAustralianTaxCompliance() -> IntelligentSplitSuggestion? {
         guard let suggestion = suggestion else { return nil }
         guard isAustralianTaxComplianceEnabled else { return suggestion }
         
         // Apply ATO guidelines to suggestion
-        let complianceResult = await analyzeTaxCompliance(transaction: transaction, splits: [])
+        let complianceResult = analyzeTaxCompliance(transaction: transaction, splits: [])
         
         // Modify suggestion based on compliance requirements
         if complianceResult.hasComplianceIssues {
@@ -900,12 +899,12 @@ class SplitIntelligenceEngine: ObservableObject {
     
     // MARK: - Contextual Intelligence Helper Methods
     
-    private func getUserJourneyInsights(for transaction: Transaction) async -> String? {
+    private func getUserJourneyInsights() -> String? {
         // This would integrate with the UserJourneyTracker
         return nil // TODO: Implement journey insights
     }
     
-    private func getAnalyticsInsights(for transaction: Transaction) async -> String? {
+    private func getAnalyticsInsights() -> String? {
         guard let analyticsEngine = analyticsEngine else { return nil }
         
         // This would get insights from the analytics engine

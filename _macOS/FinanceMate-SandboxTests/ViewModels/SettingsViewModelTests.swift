@@ -22,14 +22,15 @@ import CoreData
  * Last Updated: 2025-07-05
  */
 
-@MainActor
+// EMERGENCY FIX: Removed to eliminate Swift Concurrency crashes
+// COMPREHENSIVE FIX: Removed ALL Swift Concurrency patterns to eliminate TaskLocal crashes
 class SettingsViewModelTests: XCTestCase {
     
     var viewModel: SettingsViewModel!
     var userDefaults: UserDefaults!
     
-    override func setUp() async throws {
-        try await super.setUp()
+    override func setUp() throws {
+        try super.setUp()
         
         // Create test UserDefaults instance
         userDefaults = UserDefaults(suiteName: "test.settings.financemate")
@@ -39,16 +40,16 @@ class SettingsViewModelTests: XCTestCase {
         viewModel = SettingsViewModel(userDefaults: userDefaults)
     }
     
-    override func tearDown() async throws {
+    override func tearDown() throws {
         userDefaults.removePersistentDomain(forName: "test.settings.financemate")
         viewModel = nil
         userDefaults = nil
-        try await super.tearDown()
+        try super.tearDown()
     }
     
     // MARK: - Initialization Tests
     
-    func testViewModelInitialization() async {
+    func testViewModelInitialization() {
         XCTAssertNotNil(viewModel)
         XCTAssertEqual(viewModel.theme, "System")
         XCTAssertEqual(viewModel.currency, "USD")
@@ -57,7 +58,7 @@ class SettingsViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.errorMessage)
     }
     
-    func testViewModelDefaultValues() async {
+    func testViewModelDefaultValues() {
         let freshViewModel = SettingsViewModel(userDefaults: UserDefaults(suiteName: "fresh.test.settings"))
         XCTAssertEqual(freshViewModel.theme, "System")
         XCTAssertEqual(freshViewModel.currency, "USD")
@@ -66,13 +67,13 @@ class SettingsViewModelTests: XCTestCase {
     
     // MARK: - Theme Management Tests
     
-    func testThemeUpdates() async {
+    func testThemeUpdates() {
         viewModel.theme = "Dark"
         XCTAssertEqual(viewModel.theme, "Dark")
         XCTAssertEqual(userDefaults.string(forKey: "theme"), "Dark")
     }
     
-    func testThemeOptions() async {
+    func testThemeOptions() {
         let validThemes = ["System", "Light", "Dark"]
         
         for theme in validThemes {
@@ -82,7 +83,7 @@ class SettingsViewModelTests: XCTestCase {
         }
     }
     
-    func testThemePersistence() async {
+    func testThemePersistence() {
         viewModel.theme = "Light"
         
         // Create new ViewModel instance to test persistence
@@ -92,13 +93,13 @@ class SettingsViewModelTests: XCTestCase {
     
     // MARK: - Currency Management Tests
     
-    func testCurrencyUpdates() async {
+    func testCurrencyUpdates() {
         viewModel.currency = "EUR"
         XCTAssertEqual(viewModel.currency, "EUR")
         XCTAssertEqual(userDefaults.string(forKey: "currency"), "EUR")
     }
     
-    func testCurrencyOptions() async {
+    func testCurrencyOptions() {
         let validCurrencies = ["USD", "EUR", "GBP", "JPY", "AUD", "CAD"]
         
         for currency in validCurrencies {
@@ -108,7 +109,7 @@ class SettingsViewModelTests: XCTestCase {
         }
     }
     
-    func testCurrencyPersistence() async {
+    func testCurrencyPersistence() {
         viewModel.currency = "GBP"
         
         // Create new ViewModel instance to test persistence
@@ -118,7 +119,7 @@ class SettingsViewModelTests: XCTestCase {
     
     // MARK: - Notifications Management Tests
     
-    func testNotificationToggle() async {
+    func testNotificationToggle() {
         viewModel.notifications = false
         XCTAssertFalse(viewModel.notifications)
         XCTAssertFalse(userDefaults.bool(forKey: "notifications"))
@@ -128,7 +129,7 @@ class SettingsViewModelTests: XCTestCase {
         XCTAssertTrue(userDefaults.bool(forKey: "notifications"))
     }
     
-    func testNotificationsPersistence() async {
+    func testNotificationsPersistence() {
         viewModel.notifications = false
         
         // Create new ViewModel instance to test persistence
@@ -138,7 +139,7 @@ class SettingsViewModelTests: XCTestCase {
     
     // MARK: - Settings Reset Tests
     
-    func testResetSettings() async {
+    func testResetSettings() {
         // Modify all settings
         viewModel.theme = "Dark"
         viewModel.currency = "EUR"
@@ -155,7 +156,7 @@ class SettingsViewModelTests: XCTestCase {
     
     // MARK: - State Management Tests
     
-    func testLoadingStateManagement() async {
+    func testLoadingStateManagement() {
         XCTAssertFalse(viewModel.isLoading)
         
         // Simulate loading operation
@@ -166,7 +167,7 @@ class SettingsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isLoading)
     }
     
-    func testErrorStateHandling() async {
+    func testErrorStateHandling() {
         XCTAssertNil(viewModel.errorMessage)
         
         viewModel.errorMessage = "Test error message"
@@ -178,7 +179,7 @@ class SettingsViewModelTests: XCTestCase {
     
     // MARK: - Performance Tests
     
-    func testSettingsUpdatePerformance() async {
+    func testSettingsUpdatePerformance() {
         let startTime = CFAbsoluteTimeGetCurrent()
         
         // Perform multiple settings updates
@@ -194,7 +195,7 @@ class SettingsViewModelTests: XCTestCase {
     
     // MARK: - Published Properties Tests
     
-    func testPublishedPropertiesUpdating() async {
+    func testPublishedPropertiesUpdating() {
         let expectation = XCTestExpectation(description: "Published properties should trigger updates")
         
         var updateCount = 0
@@ -209,14 +210,14 @@ class SettingsViewModelTests: XCTestCase {
         viewModel.currency = "EUR"
         viewModel.notifications = false
         
-        await fulfillment(of: [expectation], timeout: 1.0)
+        fulfillment(of: [expectation], timeout: 1.0)
         cancellable.cancel()
         XCTAssertGreaterThanOrEqual(updateCount, 3)
     }
     
     // MARK: - Settings Validation Tests
     
-    func testValidateSettingsWithValidData() async {
+    func testValidateSettingsWithValidData() {
         // Test with valid default settings
         XCTAssertTrue(viewModel.validateSettings())
         
@@ -230,7 +231,7 @@ class SettingsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.validateSettings())
     }
     
-    func testValidateSettingsWithInvalidData() async {
+    func testValidateSettingsWithInvalidData() {
         // Test with invalid theme (simulated by direct property manipulation)
         // Note: In practice, invalid themes would need to be set through different means
         // since the published property setters use validation
@@ -247,7 +248,7 @@ class SettingsViewModelTests: XCTestCase {
     
     // MARK: - Settings Save Tests
     
-    func testSaveSettings() async {
+    func testSaveSettings() {
         // Modify settings
         viewModel.theme = "Dark"
         viewModel.currency = "EUR"
@@ -262,7 +263,7 @@ class SettingsViewModelTests: XCTestCase {
         XCTAssertFalse(userDefaults.bool(forKey: "notifications"))
     }
     
-    func testSaveSettingsEnsuresSynchronization() async {
+    func testSaveSettingsEnsuresSynchronization() {
         // Create separate UserDefaults to test synchronization
         let testDefaults = UserDefaults(suiteName: "sync.test.settings")
         let syncViewModel = SettingsViewModel(userDefaults: testDefaults)
@@ -285,7 +286,7 @@ class SettingsViewModelTests: XCTestCase {
     
     // MARK: - Settings Export Tests
     
-    func testExportSettings() async {
+    func testExportSettings() {
         // Set specific values
         viewModel.theme = "Dark"
         viewModel.currency = "EUR"
@@ -301,7 +302,7 @@ class SettingsViewModelTests: XCTestCase {
         XCTAssertEqual(exportedData.count, 3)
     }
     
-    func testExportSettingsWithDefaultValues() async {
+    func testExportSettingsWithDefaultValues() {
         // Test export with default values
         let exportedData = viewModel.exportSettings()
         
@@ -312,7 +313,7 @@ class SettingsViewModelTests: XCTestCase {
     
     // MARK: - Settings Import Tests
     
-    func testImportValidSettings() async {
+    func testImportValidSettings() {
         let importData: [String: Any] = [
             "theme": "Light",
             "currency": "AUD",
@@ -328,7 +329,7 @@ class SettingsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.notifications)
     }
     
-    func testImportInvalidSettings() async {
+    func testImportInvalidSettings() {
         // Store original values
         let originalTheme = viewModel.theme
         let originalCurrency = viewModel.currency
@@ -349,7 +350,7 @@ class SettingsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.notifications, originalNotifications)
     }
     
-    func testImportPartialSettings() async {
+    func testImportPartialSettings() {
         // Set initial values
         viewModel.theme = "Dark"
         viewModel.currency = "EUR"
@@ -372,7 +373,7 @@ class SettingsViewModelTests: XCTestCase {
     
     // MARK: - Theme Display Name Tests
     
-    func testThemeDisplayNameMapping() async {
+    func testThemeDisplayNameMapping() {
         // Test all theme display names
         viewModel.theme = "System"
         XCTAssertEqual(viewModel.themeDisplayName(), "Follow System")
@@ -384,7 +385,7 @@ class SettingsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.themeDisplayName(), "Dark Mode")
     }
     
-    func testThemeDisplayNameWithUnknownTheme() async {
+    func testThemeDisplayNameWithUnknownTheme() {
         // Set up scenario with unknown theme (for testing edge case)
         let customDefaults = UserDefaults(suiteName: "custom.theme.test")
         customDefaults.set("CustomTheme", forKey: "theme")
@@ -398,7 +399,7 @@ class SettingsViewModelTests: XCTestCase {
     
     // MARK: - Currency Symbol Tests
     
-    func testCurrencySymbolMapping() async {
+    func testCurrencySymbolMapping() {
         // Test all currency symbols
         viewModel.currency = "USD"
         XCTAssertEqual(viewModel.currencySymbol(), "$")
@@ -419,7 +420,7 @@ class SettingsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.currencySymbol(), "C$")
     }
     
-    func testCurrencySymbolWithUnknownCurrency() async {
+    func testCurrencySymbolWithUnknownCurrency() {
         // Set up scenario with unknown currency
         let customDefaults = UserDefaults(suiteName: "custom.currency.test")
         customDefaults.set("XYZ", forKey: "currency")
@@ -433,7 +434,7 @@ class SettingsViewModelTests: XCTestCase {
     
     // MARK: - Apply Theme Tests
     
-    func testApplyThemeReturnsCorrectColorScheme() async {
+    func testApplyThemeReturnsCorrectColorScheme() {
         // Test Light theme
         viewModel.theme = "Light"
         XCTAssertEqual(viewModel.applyTheme(), .light)
@@ -447,7 +448,7 @@ class SettingsViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.applyTheme())
     }
     
-    func testApplyThemeWithUnknownTheme() async {
+    func testApplyThemeWithUnknownTheme() {
         // Set up scenario with unknown theme
         let customDefaults = UserDefaults(suiteName: "custom.apply.test")
         customDefaults.set("UnknownTheme", forKey: "theme")

@@ -1,0 +1,166 @@
+import Foundation
+import OSLog
+
+/// Help content generation and adaptation engine
+/// Focused responsibility: Generate and adapt help content based on user context
+// EMERGENCY FIX: Removed @MainActor to eliminate Swift Concurrency crashes
+final class HelpContentGenerator: ObservableObject {
+    
+    // MARK: - Properties
+    
+    private let logger = Logger(subsystem: "com.financemate.help", category: "HelpContentGenerator")
+    
+    // User profiling
+    private var userProfile: UserProfile = .unknown
+    private var userIndustry: UserIndustry = .other
+    private var isAccessibilityModeEnabled: Bool = false
+    
+    // Content caching
+    private var contentCache: [HelpContext: HelpContent] = [:]
+    private var strugglingContexts: Set<HelpContext> = []
+    
+    // MARK: - Initialization
+    
+    init() {
+        setupDefaultContent()
+    }
+    
+    // MARK: - Content Generation
+    
+    /// Generate contextual help content for a specific context
+    func getContextualHelp(for context: HelpContext) -> HelpContent {
+        // Check cache first
+        if let cachedContent = contentCache[context] {
+            return adaptContentForCurrentUser(cachedContent)
+        }
+        
+        // Generate contextual help content
+        let baseContent = HelpContentFactory.createBaseContent(for: context)
+        let adaptedContent = adaptContentForCurrentUser(baseContent)
+        
+        // Cache the content
+        contentCache[context] = adaptedContent
+        
+        logger.debug("Generated contextual help for context: \(context.rawValue)")
+        return adaptedContent
+    }
+    
+    /// Adapt content for current user characteristics
+    func adaptContentForCurrentUser(_ content: HelpContent, userLevel: ExpertiseLevel = .beginner, featureGatingEnabled: Bool = true) -> HelpContent {
+        let isStruggling = strugglingContexts.contains(content.context)
+        
+        // Create adapted content based on user characteristics
+        return HelpContent(
+            context: content.context,
+            title: content.title,
+            description: content.description,
+            complexity: HelpContentFactory.getComplexityForUserLevel(userLevel),
+            priority: isStruggling ? .high : .medium,
+            targetUserLevel: userLevel,
+            includesStepByStepGuidance: userLevel == .beginner || isStruggling,
+            includesBasicConcepts: userLevel == .beginner,
+            includesAdvancedTips: userLevel == .advanced,
+            includesOptimizationTips: userLevel != .beginner,
+            includesBestPractices: userLevel != .beginner,
+            includesKeyboardShortcuts: userLevel == .advanced,
+            includesExpertModeFeatures: userLevel == .advanced,
+            isAdaptedForStruggle: isStruggling,
+            isPersonalized: true,
+            isAdaptedToUsagePatterns: featureGatingEnabled,
+            respectsFeatureGating: featureGatingEnabled,
+            considersUserJourney: true,
+            isContextuallyRelevant: true,
+            includesBusinessTaxTips: userProfile == .business,
+            includesAustralianTaxCompliance: true,
+            includesDeductionGuidance: userProfile == .business,
+            includesPersonalTaxTips: userProfile == .personal,
+            includesSimplifiedCategories: userProfile == .personal || userLevel == .beginner,
+            includesComplexBusinessRules: userProfile == .business && userLevel != .beginner,
+            includesIndustrySpecificTips: userIndustry != .other,
+            includesConstructionTaxGuidance: userIndustry == .construction,
+            includesAdvancedFeatureHints: featureGatingEnabled && userLevel != .beginner,
+            hasMultimediaContent: true,
+            hasAudioDescriptions: isAccessibilityModeEnabled,
+            hasTextAlternatives: isAccessibilityModeEnabled,
+            supportsVoiceOver: true,
+            isOfflineCapable: true,
+            requiresNetworkConnection: false,
+            isFromCache: contentCache[content.context] != nil
+        )
+    }
+    
+    // MARK: - User Profile Management
+    
+    /// Set user profile for content adaptation
+    func setUserProfile(_ profile: UserProfile) {
+        self.userProfile = profile
+        clearContentCache()
+        logger.info("User profile set to: \(profile.rawValue)")
+    }
+    
+    /// Set user industry for specialized content
+    func setUserIndustry(_ industry: UserIndustry) {
+        self.userIndustry = industry
+        clearContentCache()
+        logger.info("User industry set to: \(industry.rawValue)")
+    }
+    
+    /// Enable accessibility features for content
+    func enableAccessibilityMode(_ enabled: Bool) {
+        self.isAccessibilityModeEnabled = enabled
+        clearContentCache()
+        logger.info("Accessibility mode \(enabled ? "enabled" : "disabled")")
+    }
+    
+    /// Mark a context as one where user is struggling
+    func markContextAsStruggling(_ context: HelpContext) {
+        strugglingContexts.insert(context)
+        clearContentCache()
+        logger.debug("Context marked as struggling: \(context.rawValue)")
+    }
+    
+    /// Clear struggling status for a context
+    func clearStrugglingStatus(for context: HelpContext) {
+        strugglingContexts.remove(context)
+        clearContentCache()
+        logger.debug("Struggling status cleared for context: \(context.rawValue)")
+    }
+    
+    // MARK: - Private Helper Methods
+    
+    private func setupDefaultContent() {
+        // Pre-populate cache with essential offline content
+        for context in HelpContext.allCases {
+            let baseContent = HelpContentFactory.createBaseContent(for: context)
+            contentCache[context] = baseContent
+        }
+        logger.debug("Default content setup completed")
+    }
+    
+    private func clearContentCache() {
+        contentCache.removeAll()
+        logger.debug("Content cache cleared")
+    }
+    
+    /// Clear all cached content (for testing)
+    func simulateMissingContent(_ enabled: Bool) {
+        if enabled {
+            contentCache.removeAll()
+        }
+    }
+}
+
+// MARK: - Help Complexity Types
+
+enum HelpComplexity: String, Codable {
+    case simplified = "simplified"
+    case balanced = "balanced"
+    case advanced = "advanced"
+}
+
+enum HelpPriority: String, Codable {
+    case low = "low"
+    case medium = "medium"
+    case high = "high"
+    case critical = "critical"
+}
