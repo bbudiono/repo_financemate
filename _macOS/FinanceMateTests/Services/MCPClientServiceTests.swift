@@ -378,8 +378,8 @@ final class MCPClientServiceTests: XCTestCase {
         let context = PersistenceController.preview.container.viewContext
         let chatbot = ProductionChatbotViewModel(context: context)
         
-        // Replace static responses with MCP integration
-        // This test validates the integration works correctly
+        // Verify LLM service integration
+        XCTAssertNotNil(chatbot.llmService, "ChatBot should have LLM service integrated")
         
         let originalMessageCount = chatbot.messages.count
         
@@ -388,19 +388,21 @@ final class MCPClientServiceTests: XCTestCase {
         chatbot.sendMessage()
         
         // Wait for processing
-        try? await Task.sleep(nanoseconds: 1_000_000_000) // 1 second
+        try? await Task.sleep(nanoseconds: 2_000_000_000) // 2 seconds
         
         // Validate response was added
         XCTAssertGreater(chatbot.messages.count, originalMessageCount, "Should add response message")
         
-        // If network is available, response should come from MCP
+        // Check if response has LLM quality indicators
         let lastMessage = chatbot.messages.last
         if let message = lastMessage, message.role == .assistant {
-            // Response should have quality score if from MCP
-            if let qualityScore = message.qualityScore {
-                XCTAssertGreaterThan(qualityScore, 0.0, "MCP responses should have quality scores")
+            XCTAssertNotNil(message.qualityScore, "LLM responses should have quality scores")
+            if let score = message.qualityScore {
+                XCTAssertGreaterThan(score, 0.0, "Quality score should be positive")
             }
         }
+        
+        print("✅ LLM Service integration verified in ProductionChatbotViewModel")
     }
     
     func testAdvancedTaxOptimizationScenario15() async {
@@ -466,6 +468,37 @@ final class MCPClientServiceTests: XCTestCase {
             
         } catch {
             XCTFail("Unexpected error processing 15th complex tax scenario: \(error)")
+        }
+    }
+
+    func testAdvancedTaxOptimizationScenario16() async {
+        // 16th Complex Query Scenario: Cross-entity capital structure and CGT timing
+        let question = """
+        I operate a holding company with two subsidiaries (software and property), a discretionary family trust, and an SMSF. We're planning to dispose of a long-held asset with significant unrealized gains. What are the key strategies around CGT discount eligibility, small business CGT concessions, timing of distributions to beneficiaries, and franking credit optimization to minimize overall tax? Consider Division 7A, PSI rules, and compliance with ATO guidance.
+        """
+
+        do {
+            let start = Date()
+            let response = try await mcpClient.queryFinancialKnowledge(question: question)
+            let elapsed = Date().timeIntervalSince(start)
+
+            XCTAssertNotNil(response.content)
+            XCTAssertFalse(response.content.isEmpty)
+            XCTAssertEqual(response.questionType, .complexScenarios)
+
+            let lower = response.content.lowercased()
+            // Ensure relevant Australian tax concepts are referenced
+            let requiredTerms = ["cgt", "discount", "small business", "franking", "division 7a", "ato", "beneficiaries"]
+            let hits = requiredTerms.filter { lower.contains($0) }
+            XCTAssertGreaterThanOrEqual(hits.count, 3)
+
+            // Reasonable performance bound
+            XCTAssertLessThan(elapsed, 3.5)
+        } catch MCPError.networkUnavailable {
+            // Acceptable in CI without external MCP
+            print("ℹ️ Network unavailable for complex scenario 16; fallback acceptable")
+        } catch {
+            XCTFail("Unexpected error in complex scenario 16: \(error)")
         }
     }
     

@@ -184,7 +184,7 @@ if let session = sessionManager.currentSession, session.isValid {
         
         switch state {
         case .authenticated:
-            NotificationCenter.default.post(name: NSNotification.Name("UserAuthenticated"), object: nil)
+            NotificationCenter.default.post(name: .userAuthenticated, object: nil)
         case .unauthenticated, .sessionExpired:
             currentUser = nil
             currentSession = nil
@@ -207,6 +207,9 @@ if let session = sessionManager.currentSession, session.isValid {
         userProfileManager.activateUser()
         _ = sessionManager.createSession(for: user, provider: session.provider)
         _ = sessionManager.saveSessionToKeychain()
+        
+        // Trigger authentication state change to send notification
+        handleAuthenticationStateChange(.authenticated)
     }
     
     private func handleSessionExpiration() {

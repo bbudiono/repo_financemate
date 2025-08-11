@@ -1,0 +1,42 @@
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMate/FinanceMate/ViewModels/SessionManager.swift:149:7: warning: result of call to 'refreshSession()' is unused
+self?.refreshSession() 
+      ^             ~~
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMate/FinanceMate/ViewModels/UserProfileManager.swift:129:11: warning: 'catch' block is unreachable because no errors are thrown in 'do' block
+        } catch {
+          ^
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMate/FinanceMate/Views/LineItemEntryView.swift:403:16: warning: value 'lineItem' was defined but never used; consider replacing with boolean test
+        if let lineItem = selectedLineItemForSplit {
+           ~~~~^~~~~~~~~~~
+                                                   != nil
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMate/FinanceMate/Services/AppleAuthProvider.swift:244:9: warning: switch must be exhaustive
+        switch authError.code {
+        ^
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMate/FinanceMate/Services/AppleAuthProvider.swift:244:9: note: add missing case: '.matchedExcludedCredential'
+        switch authError.code {
+        ^
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMate/FinanceMate/Services/AppleAuthProvider.swift:244:9: note: add missing case: '.credentialImport'
+        switch authError.code {
+        ^
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMate/FinanceMate/Services/AppleAuthProvider.swift:244:9: note: add missing case: '.credentialExport'
+        switch authError.code {
+        ^
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMate/FinanceMate/Services/AppleAuthProvider.swift:244:9: note: add missing cases
+        switch authError.code {
+        ^
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMate/FinanceMate/Services/GoogleAuthProvider.swift:293:13: warning: initialization of immutable value 'picture' was never used; consider replacing with assignment to '_' or removing it
+        let picture = userInfo["picture"] as? String
+        ~~~~^~~~~~~
+        _
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMate/FinanceMate/Models/Liability+CoreDataClass.swift:70:66: warning: left side of nil coalescing operator '??' has non-optional type 'String', so the right side is never used
+            return LiabilityType.from(string: self.liabilityType ?? "Other")
+                                              ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+                                                                
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMate/FinanceMate/ViewModels/AuthenticationManager.swift:166:11: warning: 'catch' block is unreachable because no errors are thrown in 'do' block
+        } catch {
+          ^
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMate/FinanceMate/ViewModels/AuthenticationManager.swift:155:24: warning: will never be executed
+            if isValid {
+                       ^
+/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/FinanceMate/FinanceMate/ViewModels/AuthenticationManager.swift:155:16: note: condition always evaluates to false
+            if isValid {
+               ^

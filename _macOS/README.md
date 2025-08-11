@@ -45,6 +45,27 @@ xcodebuild test -project FinanceMate.xcodeproj -scheme FinanceMate -destination 
 ### **Test Results: 127/127 Passing ✅**
 All unit tests, integration tests, and performance tests pass with 99.2% stability.
 
+### **MCP Server Testing Suite**
+```bash
+# Run comprehensive MCP server testing with Australian financial Q&A
+./scripts/test_mcp_server.sh
+```
+
+**Latest Test Results (2025-08-10):**
+- 🔗 **Network Connectivity**: ✅ MacMini accessible via bernimac.ddns.net → 60.241.38.134
+- 🌐 **Local Endpoint**: ✅ http://localhost:3000 responding (HTTP 200)
+- 🧠 **MCP Q&A Testing**: ⚠️ `/ask` endpoint not configured (HTTP 404)
+
+**Test Scenarios (Australian Financial Expertise):**
+1. Australian Tax Deductions 2024-25
+2. Superannuation Contribution Limits
+3. CGT Property Investment Rules
+4. **COMPLEX**: SMSF Property Investment Compliance (new iteration)
+5. Negative Gearing Property Strategy
+6. Small Business Tax Concessions
+
+**MCP Integration Status**: Framework ready, server endpoint needs configuration.
+
 ---
 
 ## 🎯 CORE FEATURES

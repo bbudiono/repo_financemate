@@ -1,640 +1,564 @@
-//
-//  BankConnectionView.swift
-//  FinanceMate
-//
-//  Created by AI Dev Agent on 2025-07-09.
-//  Copyright © 2025 FinanceMate. All rights reserved.
-//
-
 import SwiftUI
+import CoreData
 
 /**
- * Purpose: Secure bank account connection UI with OAuth authentication flow
- * Issues & Complexity Summary: Complex authentication flow UI, security-focused design, multi-step process
+ * Purpose: UI interface for connecting to ANZ and NAB banks using real BankAPIIntegrationService
+ * Issues & Complexity Summary: OAuth flow management, secure credential handling, real bank API integration
  * Key Complexity Drivers:
- *   - Logic Scope (Est. LoC): ~500+
- *   - Core Algorithm Complexity: Medium-High (OAuth UI flow, validation, state management)
- *   - Dependencies: 3 New (BankConnectionViewModel, Glassmorphism, Keychain)
- *   - State Management Complexity: High (multi-step flow, authentication states)
- *   - Novelty/Uncertainty Factor: Medium (OAuth UI patterns, security requirements)
- * AI Pre-Task Self-Assessment: 75%
- * Problem Estimate: 80%
- * Initial Code Complexity Estimate: 85%
- * Final Code Complexity: 88%
- * Overall Result Score: 90%
- * Key Variances/Learnings: Multi-step authentication flow more complex than expected
- * Last Updated: 2025-07-09
+ *   - Logic Scope (Est. LoC): ~300+ (OAuth UI flows, bank selection, error handling)
+ *   - Core Algorithm Complexity: Medium (UI coordination, API integration, OAuth flows)
+ *   - Dependencies: 2 New (BankAPIIntegrationService, existing glassmorphism components)
+ *   - State Management Complexity: High (async bank connections, OAuth states, error management)
+ *   - Novelty/Uncertainty Factor: Low (established SwiftUI patterns, existing service integration)
+ * AI Pre-Task Self-Assessment: 90%
+ * Problem Estimate: 92%
+ * Initial Code Complexity Estimate: 88%
+ * Target Coverage: ≥95%
+ * Australian Compliance: CDR compliance, OAuth2 + PKCE security standards
+ * Last Updated: 2025-08-11
  */
 
+/// SwiftUI interface for managing ANZ and NAB bank connections using production BankAPIIntegrationService
 struct BankConnectionView: View {
-    @StateObject private var viewModel: BankConnectionViewModel
-    @Environment(\.dismiss) private var dismiss
-    @State private var selectedBank: BankInstitution?
-    @State private var showingAuthenticationFlow = false
-    @State private var currentAuthStep: AuthenticationStep = .selectBank
-    @State private var credentials = AuthCredentials()
-    @State private var apiKey = ""
-    @State private var twoFactorCode = ""
     
-    init(viewModel: BankConnectionViewModel = BankConnectionViewModel()) {
-        self._viewModel = StateObject(wrappedValue: viewModel)
-    }
+    // MARK: - Properties
+    
+    @StateObject private var bankService = BankAPIIntegrationService()
+    @Environment(\.managedObjectContext) private var viewContext
+    
+    @State private var selectedBank: BankType? = nil
+    @State private var showingCredentialSetup = false
+    @State private var showingConnectionHelp = false
+    @State private var isProcessingConnection = false
+    @State private var connectionMessage: String = ""
     
     var body: some View {
         NavigationView {
-            VStack(spacing: 24) {
-                headerSection
-                
-                if viewModel.hasConnectedAccounts {
-                    connectedAccountsSection
-                }
-                
-                if showingAuthenticationFlow {
-                    authenticationFlowSection
-                } else {
+            ScrollView {
+                VStack(spacing: 24) {
+                    // Header Section
+                    headerSection
+                    
+                    // Bank Selection Section
                     bankSelectionSection
+                    
+                    // Connection Status Section
+                    connectionStatusSection
+                    
+                    // Connected Accounts Section
+                    if !bankService.availableAccounts.isEmpty {
+                        connectedAccountsSection
+                    }
+                    
+                    // Connection Management
+                    connectionManagementSection
                 }
-                
-                actionButtonsSection
+                .padding()
             }
-            .padding()
             .navigationTitle("Bank Connections")
-            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") { dismiss() }
+                ToolbarItem(placement: .primaryAction) {
+                    Button("Help") {
+                        showingConnectionHelp = true
+                    }
                 }
             }
-        }
-        .glassmorphism(.primary, cornerRadius: 16)
-        .frame(minWidth: 700, minHeight: 600)
-        .alert("Error", isPresented: .constant(viewModel.errorMessage != nil)) {
-            Button("OK") { viewModel.clearError() }
-        } message: {
-            if let error = viewModel.errorMessage {
-                Text(error)
+            .sheet(isPresented: $showingCredentialSetup) {
+                BankCredentialSetupView(selectedBank: $selectedBank)
+            }
+            .sheet(isPresented: $showingConnectionHelp) {
+                BankConnectionHelpView()
+            }
+            .onAppear {
+                Task {
+                    await loadInitialConnectionStatus()
+                }
             }
         }
     }
     
-    // MARK: - Header Section
+    // MARK: - View Components
     
     private var headerSection: some View {
-        VStack(spacing: 12) {
-            Image(systemName: "building.columns")
-                .font(.largeTitle)
+        VStack(spacing: 16) {
+            Image(systemName: "building.2.fill")
+                .font(.system(size: 60))
                 .foregroundColor(.blue)
             
-            Text("Connect Your Bank Account")
-                .font(.title2)
+            Text("Bank Account Connections")
+                .font(.largeTitle)
                 .fontWeight(.semibold)
             
-            Text("Securely connect your Australian bank account to automatically sync transactions")
-                .font(.subheadline)
+            Text("Securely connect your ANZ and NAB accounts for automatic transaction importing")
+                .font(.body)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
         }
-        .padding(.bottom, 8)
+        .padding()
+        .background(Color.secondary.opacity(0.1))
+        .cornerRadius(12)
     }
-    
-    // MARK: - Connected Accounts Section
-    
-    private var connectedAccountsSection: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            SectionHeader(title: "Connected Accounts", subtitle: "Manage your connected bank accounts")
-            
-            LazyVStack(spacing: 12) {
-                ForEach(viewModel.connectedBankAccounts, id: \.id) { account in
-                    ConnectedAccountRow(
-                        account: account,
-                        isSelected: viewModel.selectedBankAccount?.id == account.id,
-                        onSelect: { viewModel.selectBankAccount(account) },
-                        onDisconnect: { 
-                            // EMERGENCY FIX: Removed Task block - immediate execution
-        viewModel.disconnectBankAccount(account)
-                        },
-                        onSync: { 
-                            // EMERGENCY FIX: Removed Task block - immediate execution
-        viewModel.syncTransactions(for: account)
-                        }
-                    )
-                }
-            }
-        }
-        .glassmorphism(.secondary, cornerRadius: 12)
-        .padding(.vertical, 16)
-    }
-    
-    // MARK: - Bank Selection Section
     
     private var bankSelectionSection: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            SectionHeader(title: "Select Your Bank", subtitle: "Choose from supported Australian banks")
+        VStack(spacing: 16) {
+            Text("Select Bank to Connect")
+                .font(.headline)
+                .frame(maxWidth: .infinity, alignment: .leading)
             
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3), spacing: 16) {
-                ForEach(BankInstitution.supportedBanks) { bank in
-                    BankSelectionCard(
-                        bank: bank,
-                        isSelected: selectedBank?.id == bank.id,
-                        onSelect: { selectedBank = bank }
+            HStack(spacing: 16) {
+                // ANZ Bank Button
+                BankSelectionCard(
+                    bankType: .anz,
+                    isSelected: selectedBank == .anz,
+                    isConnected: hasANZConnection
+                ) {
+                    selectedBank = .anz
+                }
+                
+                // NAB Bank Button
+                BankSelectionCard(
+                    bankType: .nab,
+                    isSelected: selectedBank == .nab,
+                    isConnected: hasNABConnection
+                ) {
+                    selectedBank = .nab
+                }
+            }
+        }
+        .padding()
+        .background(Color.secondary.opacity(0.1))
+        .cornerRadius(12)
+    }
+    
+    private var connectionStatusSection: some View {
+        VStack(spacing: 12) {
+            HStack {
+                Image(systemName: connectionStatusIcon)
+                    .foregroundColor(connectionStatusColor)
+                    .font(.title2)
+                
+                Text(bankService.connectionStatus)
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+                    .foregroundColor(connectionStatusColor)
+                
+                Spacer()
+            }
+            
+            if let lastSync = bankService.lastSyncDate {
+                HStack {
+                    Text("Last sync: \(lastSync, style: .relative) ago")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    Spacer()
+                }
+            }
+        }
+        .padding()
+        .background(Color.secondary.opacity(0.1))
+        .cornerRadius(8)
+    }
+    
+    private var connectedAccountsSection: some View {
+        VStack(spacing: 16) {
+            HStack {
+                Text("Connected Accounts")
+                    .font(.headline)
+                Spacer()
+                Text("\(bankService.availableAccounts.count) account\(bankService.availableAccounts.count == 1 ? "" : "s")")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+            }
+            
+            LazyVStack(spacing: 8) {
+                ForEach(bankService.availableAccounts, id: \.id) { account in
+                    BankAccountRow(account: account)
+                }
+            }
+        }
+        .padding()
+        .background(Color.secondary.opacity(0.1))
+        .cornerRadius(12)
+    }
+    
+    private var connectionManagementSection: some View {
+        VStack(spacing: 16) {
+            // Connect Button
+            if selectedBank != nil && !isSelectedBankConnected {
+                Button(action: initiateConnection) {
+                    HStack {
+                        if isProcessingConnection {
+                            ProgressView()
+                                .scaleEffect(0.8)
+                                .progressViewStyle(CircularProgressViewStyle())
+                        } else {
+                            Image(systemName: "link")
+                                .font(.system(size: 16, weight: .medium))
+                        }
+                        
+                        Text(isProcessingConnection ? "Connecting..." : "Connect \(selectedBank?.displayName ?? "Bank")")
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 44)
+                    .foregroundColor(.white)
+                    .background(selectedBank == .anz ? Color.blue : Color.green)
+                    .cornerRadius(8)
+                    .opacity(isProcessingConnection ? 0.6 : 1.0)
+                }
+                .disabled(isProcessingConnection)
+                .accessibilityLabel("Connect to \(selectedBank?.displayName ?? "selected bank")")
+            }
+            
+            // Sync All Button
+            if !bankService.availableAccounts.isEmpty {
+                Button(action: syncAllBankData) {
+                    HStack {
+                        Image(systemName: "arrow.clockwise")
+                            .font(.system(size: 16, weight: .medium))
+                        
+                        Text("Sync All Accounts")
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 44)
+                    .foregroundColor(.blue)
+                    .background(Color.blue.opacity(0.1))
+                    .cornerRadius(8)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke(Color.blue.opacity(0.3), lineWidth: 1)
                     )
                 }
+                .accessibilityLabel("Sync all connected bank accounts")
             }
-            .frame(maxWidth: .infinity)
-        }
-        .glassmorphism(.secondary, cornerRadius: 12)
-        .padding(.vertical, 16)
-        .accessibilityElement(children: .contain)
-        .accessibilityLabel("Bank selection grid")
-    }
-    
-    // MARK: - Authentication Flow Section
-    
-    private var authenticationFlowSection: some View {
-        VStack(spacing: 20) {
-            AuthenticationProgressIndicator(currentStep: currentAuthStep)
             
-            Group {
-                switch currentAuthStep {
-                case .selectBank:
-                    bankSelectionStep
-                case .enterCredentials:
-                    credentialsStep
-                case .apiKey:
-                    apiKeyStep
-                case .twoFactor:
-                    twoFactorStep
-                case .complete:
-                    completionStep
+            // Credential Setup Button
+            Button(action: {
+                showingCredentialSetup = true
+            }) {
+                HStack {
+                    Image(systemName: "gearshape")
+                        .font(.system(size: 16, weight: .medium))
+                    
+                    Text("Configure API Credentials")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
                 }
-            }
-            .transition(.slide)
-            .animation(.easeInOut, value: currentAuthStep)
-            
-            AuthenticationActionButtons(
-                currentStep: currentAuthStep,
-                canContinue: canContinueAuthentication,
-                onContinue: continueAuthentication,
-                onBack: goBackStep,
-                onCancel: cancelAuthentication
-            )
-        }
-        .glassmorphism(.secondary, cornerRadius: 12)
-        .padding(.vertical, 20)
-    }
-    
-    // MARK: - Authentication Steps
-    
-    private var bankSelectionStep: some View {
-        VStack(spacing: 16) {
-            Text("Confirm Your Bank Selection")
-                .font(.headline)
-            
-            if let bank = selectedBank {
-                BankSelectionCard(
-                    bank: bank,
-                    isSelected: true,
-                    onSelect: { }
-                )
-                .frame(maxWidth: 200)
-            }
-        }
-    }
-    
-    private var credentialsStep: some View {
-        VStack(spacing: 20) {
-            Text("Enter Your Banking Credentials")
-                .font(.headline)
-            
-            SecureCredentialsForm(credentials: $credentials)
-        }
-    }
-    
-    private var apiKeyStep: some View {
-        VStack(spacing: 20) {
-            Text("Enter API Key")
-                .font(.headline)
-            
-            SecureField("API Key", text: $apiKey)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .frame(maxWidth: 300)
-                .accessibilityLabel("API key input")
-        }
-    }
-    
-    private var twoFactorStep: some View {
-        VStack(spacing: 20) {
-            Text("Enter Two-Factor Authentication Code")
-                .font(.headline)
-            
-            TextField("2FA Code", text: $twoFactorCode)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .frame(maxWidth: 200)
-                .accessibilityLabel("Two-factor authentication code")
-        }
-    }
-    
-    private var completionStep: some View {
-        VStack(spacing: 20) {
-            Image(systemName: "checkmark.circle.fill")
-                .font(.system(size: 60))
-                .foregroundColor(.green)
-            
-            Text("Successfully Connected!")
-                .font(.title2)
-                .fontWeight(.semibold)
-            
-            Text("Your bank account has been securely connected and is ready to sync transactions.")
-                .font(.subheadline)
+                .frame(maxWidth: .infinity)
+                .frame(height: 44)
                 .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
-        }
-    }
-    
-    // MARK: - Action Buttons Section
-    
-    private var actionButtonsSection: some View {
-        HStack(spacing: 16) {
-            if !showingAuthenticationFlow {
-                Button("Connect New Account") {
-                    startAuthenticationFlow()
-                }
-                .buttonStyle(PrimaryButtonStyle())
-                .disabled(selectedBank == nil)
+                .background(Color.secondary.opacity(0.1))
+                .cornerRadius(8)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(Color.secondary.opacity(0.3), lineWidth: 1)
+                )
             }
-            
-            if viewModel.hasConnectedAccounts {
-                Button("Sync All Accounts") {
-                    // EMERGENCY FIX: Removed Task block - immediate execution
-        viewModel.syncAllTransactions()
-                }
-                .buttonStyle(SecondaryButtonStyle())
-                .disabled(viewModel.isLoading)
-            }
+            .accessibilityLabel("Configure bank API credentials")
         }
-        .padding(.top, 16)
-    }
-    
-    // MARK: - Authentication Flow Logic
-    
-    private func startAuthenticationFlow() {
-        showingAuthenticationFlow = true
-        currentAuthStep = .selectBank
-    }
-    
-    private func continueAuthentication() {
-        switch currentAuthStep {
-        case .selectBank:
-            currentAuthStep = .apiKey
-        case .apiKey:
-            // EMERGENCY FIX: Removed Task block - immediate execution
-        authenticateWithAPIKey()
-        case .enterCredentials:
-            currentAuthStep = .twoFactor
-        case .twoFactor:
-            // EMERGENCY FIX: Removed Task block - immediate execution
-        completeTwoFactorAuth()
-        case .complete:
-            completeAuthenticationFlow()
-        }
-    }
-    
-    private func goBackStep() {
-        switch currentAuthStep {
-        case .selectBank:
-            cancelAuthentication()
-        case .apiKey:
-            currentAuthStep = .selectBank
-        case .enterCredentials:
-            currentAuthStep = .apiKey
-        case .twoFactor:
-            currentAuthStep = .enterCredentials
-        case .complete:
-            currentAuthStep = .twoFactor
-        }
-    }
-    
-    private func cancelAuthentication() {
-        showingAuthenticationFlow = false
-        currentAuthStep = .selectBank
-        credentials = AuthCredentials()
-        apiKey = ""
-        twoFactorCode = ""
-    }
-    
-    private func completeAuthenticationFlow() {
-        showingAuthenticationFlow = false
-        currentAuthStep = .selectBank
-        
-        // Create bank connection data
-        if let bank = selectedBank {
-            let connectionData = BankConnectionData(
-                bankName: bank.name,
-                accountNumber: credentials.accountNumber,
-                accountType: credentials.accountType,
-                entityId: UUID() // Default entity for now
-            )
-            
-            // EMERGENCY FIX: Removed Task block - immediate execution
-        viewModel.connectBankAccount(connectionData)
-        }
-    }
-    
-    private func authenticateWithAPIKey() {
-        viewModel.authenticateWithAPIKey(apiKey)
-        
-        if viewModel.isAuthenticated {
-            currentAuthStep = .complete
-        }
-    }
-    
-    private func completeTwoFactorAuth() {
-        // Simulate 2FA completion
-        currentAuthStep = .complete
     }
     
     // MARK: - Computed Properties
     
-    private var canContinueAuthentication: Bool {
-        switch currentAuthStep {
-        case .selectBank:
-            return selectedBank != nil
-        case .apiKey:
-            return !apiKey.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-        case .enterCredentials:
-            return credentials.isValid
-        case .twoFactor:
-            return twoFactorCode.count >= 6
-        case .complete:
-            return true
+    private var hasANZConnection: Bool {
+        bankService.availableAccounts.contains { $0.bankType == .anz }
+    }
+    
+    private var hasNABConnection: Bool {
+        bankService.availableAccounts.contains { $0.bankType == .nab }
+    }
+    
+    private var isSelectedBankConnected: Bool {
+        guard let selected = selectedBank else { return false }
+        return bankService.availableAccounts.contains { $0.bankType == selected }
+    }
+    
+    private var connectionStatusIcon: String {
+        if bankService.isConnected {
+            return "checkmark.circle.fill"
+        } else if isProcessingConnection {
+            return "clock.circle.fill"
+        } else {
+            return "exclamationmark.triangle.fill"
+        }
+    }
+    
+    private var connectionStatusColor: Color {
+        if bankService.isConnected {
+            return .green
+        } else if isProcessingConnection {
+            return .orange
+        } else {
+            return .secondary
+        }
+    }
+    
+    // MARK: - Actions
+    
+    private func loadInitialConnectionStatus() async {
+        // Trigger connection status validation
+        // The bankService will automatically check credential status on init
+    }
+    
+    private func initiateConnection() {
+        guard let selectedBank = selectedBank else { return }
+        
+        isProcessingConnection = true
+        connectionMessage = ""
+        
+        Task {
+            do {
+                switch selectedBank {
+                case .anz:
+                    try await bankService.connectANZBank()
+                case .nab:
+                    try await bankService.connectNABBank()
+                }
+                
+                await MainActor.run {
+                    connectionMessage = "Successfully connected to \(selectedBank.displayName)"
+                    isProcessingConnection = false
+                }
+                
+            } catch {
+                await MainActor.run {
+                    connectionMessage = "Connection failed: \(error.localizedDescription)"
+                    isProcessingConnection = false
+                }
+            }
+        }
+    }
+    
+    private func syncAllBankData() {
+        Task {
+            do {
+                try await bankService.syncAllBankData()
+            } catch {
+                connectionMessage = "Sync failed: \(error.localizedDescription)"
+            }
         }
     }
 }
 
 // MARK: - Supporting Views
 
-struct SectionHeader: View {
-    let title: String
-    let subtitle: String
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(title)
-                .font(.headline)
-                .fontWeight(.semibold)
-            
-            Text(subtitle)
-                .font(.caption)
-                .foregroundColor(.secondary)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
-}
-
-struct BankSelectionCard: View {
-    let bank: BankInstitution
+private struct BankSelectionCard: View {
+    let bankType: BankType
     let isSelected: Bool
-    let onSelect: () -> Void
+    let isConnected: Bool
+    let onTap: () -> Void
     
     var body: some View {
-        Button(action: onSelect) {
+        Button(action: onTap) {
             VStack(spacing: 12) {
-                Image(systemName: bank.icon)
-                    .font(.system(size: 32))
-                    .foregroundColor(bank.color)
+                Image(systemName: bankIcon)
+                    .font(.system(size: 40))
+                    .foregroundColor(bankColor)
                 
-                Text(bank.name)
-                    .font(.caption)
-                    .fontWeight(.medium)
-                    .multilineTextAlignment(.center)
+                Text(bankType.displayName)
+                    .font(.headline)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.primary)
                 
-                if bank.isSupported {
-                    Text("Supported")
-                        .font(.caption2)
-                        .foregroundColor(.green)
+                if isConnected {
+                    HStack {
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundColor(.green)
+                        Text("Connected")
+                            .font(.caption)
+                            .foregroundColor(.green)
+                    }
                 } else {
-                    Text("Coming Soon")
-                        .font(.caption2)
-                        .foregroundColor(.orange)
-                }
-            }
-            .frame(maxWidth: .infinity, minHeight: 100)
-            .background(isSelected ? Color.blue.opacity(0.1) : Color.clear)
-            .cornerRadius(8)
-            .overlay(
-                RoundedRectangle(cornerRadius: 8)
-                    .stroke(isSelected ? Color.blue : Color.gray.opacity(0.3), lineWidth: isSelected ? 2 : 1)
-            )
-        }
-        .buttonStyle(PlainButtonStyle())
-        .disabled(!bank.isSupported)
-        .accessibilityLabel("Select \(bank.name)")
-        .accessibilityHint(bank.isSupported ? "Supported bank" : "Coming soon")
-    }
-}
-
-struct ConnectedAccountRow: View {
-    let account: BankAccount
-    let isSelected: Bool
-    let onSelect: () -> Void
-    let onDisconnect: () -> Void
-    let onSync: () -> Void
-    
-    var body: some View {
-        HStack(spacing: 16) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(account.displayName)
-                    .font(.subheadline)
-                    .fontWeight(.medium)
-                
-                HStack(spacing: 8) {
-                    ConnectionStatusIndicator(status: account.connectionStatusEnum)
-                    
-                    Text(account.lastSyncDescription)
+                    Text("Not Connected")
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
             }
-            
-            Spacer()
-            
-            Text(account.balanceFormatted)
-                .font(.subheadline)
-                .fontWeight(.semibold)
-                .foregroundColor(.primary)
-            
-            HStack(spacing: 8) {
-                Button(action: onSync) {
-                    Image(systemName: "arrow.clockwise")
-                        .font(.caption)
-                }
-                .buttonStyle(BorderlessButtonStyle())
-                .help("Sync transactions")
+            .frame(maxWidth: .infinity)
+            .frame(height: 140)
+            .background(
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(isSelected ? bankColor.opacity(0.1) : Color.secondary.opacity(0.05))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(isSelected ? bankColor : Color.clear, lineWidth: 2)
+                    )
+            )
+        }
+        .buttonStyle(PlainButtonStyle())
+    }
+    
+    private var bankIcon: String {
+        switch bankType {
+        case .anz:
+            return "building.columns.fill"
+        case .nab:
+            return "building.2.fill"
+        }
+    }
+    
+    private var bankColor: Color {
+        switch bankType {
+        case .anz:
+            return .blue
+        case .nab:
+            return .green
+        }
+    }
+}
+
+private struct BankAccountRow: View {
+    let account: BankAccount
+    
+    var body: some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(account.accountName)
+                    .font(.subheadline)
+                    .fontWeight(.medium)
                 
-                Button(action: onDisconnect) {
-                    Image(systemName: "xmark.circle")
-                        .font(.caption)
-                        .foregroundColor(.red)
-                }
-                .buttonStyle(BorderlessButtonStyle())
-                .help("Disconnect account")
+                Text(account.accountType)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
             }
-        }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 12)
-        .background(isSelected ? Color.blue.opacity(0.1) : Color.clear)
-        .cornerRadius(8)
-        .contentShape(Rectangle())
-        .onTapGesture { onSelect() }
-    }
-}
-
-struct ConnectionStatusIndicator: View {
-    let status: ConnectionStatus
-    
-    var body: some View {
-        HStack(spacing: 4) {
-            Circle()
-                .fill(Color(status.statusColor))
-                .frame(width: 8, height: 8)
-            
-            Text(status.displayName)
-                .font(.caption)
-                .foregroundColor(.secondary)
-        }
-    }
-}
-
-struct AuthenticationProgressIndicator: View {
-    let currentStep: AuthenticationStep
-    
-    var body: some View {
-        HStack(spacing: 4) {
-            ForEach(AuthenticationStep.allCases, id: \.self) { step in
-                Circle()
-                    .fill(step.rawValue <= currentStep.rawValue ? Color.blue : Color.gray.opacity(0.3))
-                    .frame(width: 8, height: 8)
-            }
-        }
-        .padding(.vertical, 8)
-    }
-}
-
-struct SecureCredentialsForm: View {
-    @Binding var credentials: AuthCredentials
-    
-    var body: some View {
-        VStack(spacing: 16) {
-            TextField("Account Number", text: $credentials.accountNumber)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .accessibilityLabel("Account number")
-            
-            Picker("Account Type", selection: $credentials.accountType) {
-                ForEach(BankAccountType.allCases, id: \.self) { type in
-                    Text(type.displayName).tag(type.rawValue)
-                }
-            }
-            .pickerStyle(MenuPickerStyle())
-            .frame(maxWidth: 300)
-        }
-        .frame(maxWidth: 400)
-    }
-}
-
-struct AuthenticationActionButtons: View {
-    let currentStep: AuthenticationStep
-    let canContinue: Bool
-    let onContinue: () -> Void
-    let onBack: () -> Void
-    let onCancel: () -> Void
-    
-    var body: some View {
-        HStack(spacing: 16) {
-            if currentStep != .selectBank {
-                Button("Back", action: onBack)
-                    .buttonStyle(SecondaryButtonStyle())
-            }
-            
-            Button("Cancel", action: onCancel)
-                .buttonStyle(SecondaryButtonStyle())
             
             Spacer()
             
-            Button(currentStep == .complete ? "Done" : "Continue", action: onContinue)
-                .buttonStyle(PrimaryButtonStyle())
-                .disabled(!canContinue)
+            VStack(alignment: .trailing, spacing: 4) {
+                Text("AUD \(String(format: "%.2f", account.currentBalance))")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.blue)
+                
+                Text(account.bankType.displayName)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
         }
-        .padding(.top, 16)
+        .padding()
+        .background(Color.secondary.opacity(0.05))
+        .cornerRadius(8)
     }
 }
 
-// MARK: - Button Styles
+// MARK: - Supporting Views (Placeholder implementations)
 
-struct PrimaryButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .foregroundColor(.white)
-            .padding(.horizontal, 24)
-            .padding(.vertical, 12)
-            .background(Color.blue)
-            .cornerRadius(8)
-            .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
-    }
-}
-
-struct SecondaryButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .foregroundColor(.blue)
-            .padding(.horizontal, 24)
-            .padding(.vertical, 12)
-            .background(Color.blue.opacity(0.1))
-            .cornerRadius(8)
-            .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
-    }
-}
-
-// MARK: - Supporting Types
-
-enum AuthenticationStep: Int, CaseIterable {
-    case selectBank = 0
-    case apiKey = 1
-    case enterCredentials = 2
-    case twoFactor = 3
-    case complete = 4
-}
-
-struct AuthCredentials {
-    var accountNumber: String = ""
-    var accountType: String = BankAccountType.savings.rawValue
+private struct BankCredentialSetupView: View {
+    @Binding var selectedBank: BankType?
+    @Environment(\.dismiss) private var dismiss
     
-    var isValid: Bool {
-        !accountNumber.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && 
-        accountNumber.count >= 6
+    var body: some View {
+        NavigationView {
+            VStack(spacing: 20) {
+                Text("API Credential Setup")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                
+                Text("To connect to your bank, you'll need to configure API credentials. This requires:")
+                    .font(.body)
+                    .multilineTextAlignment(.center)
+                
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("1. Register with your bank's developer portal")
+                    Text("2. Obtain OAuth 2.0 client credentials")
+                    Text("3. Configure redirect URIs")
+                    Text("4. Store credentials securely in Keychain")
+                }
+                .font(.body)
+                
+                Spacer()
+                
+                Text("This feature requires production API credentials which are configured separately for security.")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+            }
+            .padding()
+            .navigationTitle("Setup")
+            .toolbar {
+                ToolbarItem(placement: .primaryAction) {
+                    Button("Done") {
+                        dismiss()
+                    }
+                }
+            }
+        }
     }
 }
 
-struct BankInstitution: Identifiable {
-    let id = UUID()
-    let name: String
-    let icon: String
-    let color: Color
-    let isSupported: Bool
+private struct BankConnectionHelpView: View {
+    @Environment(\.dismiss) private var dismiss
     
-    static let supportedBanks = [
-        BankInstitution(name: "Commonwealth Bank", icon: "building.columns", color: .yellow, isSupported: true),
-        BankInstitution(name: "Westpac", icon: "building.columns", color: .red, isSupported: true),
-        BankInstitution(name: "ANZ", icon: "building.columns", color: .blue, isSupported: true),
-        BankInstitution(name: "NAB", icon: "building.columns", color: .red, isSupported: true),
-        BankInstitution(name: "Bendigo Bank", icon: "building.columns", color: .purple, isSupported: false),
-        BankInstitution(name: "Bank of Queensland", icon: "building.columns", color: .orange, isSupported: false)
-    ]
+    var body: some View {
+        NavigationView {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    Text("Bank Connection Guide")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                    
+                    Text("Security & Privacy")
+                        .font(.headline)
+                    
+                    Text("FinanceMate uses bank-grade security to protect your financial data:")
+                        .font(.body)
+                    
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("• OAuth 2.0 with PKCE authentication")
+                        Text("• Encrypted credential storage in macOS Keychain")
+                        Text("• Consumer Data Right (CDR) compliance")
+                        Text("• No storage of banking passwords")
+                        Text("• Read-only access to account data")
+                    }
+                    .font(.body)
+                    
+                    Text("Supported Banks")
+                        .font(.headline)
+                    
+                    Text("Currently supported Australian banks:")
+                        .font(.body)
+                    
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("• ANZ (Australia and New Zealand Banking Group)")
+                        Text("• NAB (National Australia Bank)")
+                    }
+                    .font(.body)
+                    
+                    Text("Connection Process")
+                        .font(.headline)
+                    
+                    Text("Connecting your bank account involves:")
+                        .font(.body)
+                    
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("1. Select your bank")
+                        Text("2. Configure API credentials (one-time setup)")
+                        Text("3. Authenticate through your bank's secure portal")
+                        Text("4. Grant permission for account access")
+                        Text("5. Start automatic transaction syncing")
+                    }
+                    .font(.body)
+                }
+                .padding()
+            }
+            .navigationTitle("Help")
+            .toolbar {
+                ToolbarItem(placement: .primaryAction) {
+                    Button("Done") {
+                        dismiss()
+                    }
+                }
+            }
+        }
+    }
 }
 
 // MARK: - Preview
 
-struct BankConnectionView_Previews: PreviewProvider {
-    static var previews: some View {
-        BankConnectionView()
-    }
+#Preview {
+    BankConnectionView()
+        .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 }
