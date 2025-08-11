@@ -45,9 +45,12 @@ run_headless_tests() {
 # Create test results directory
 mkdir -p test_results
 
-# Run unit tests only (UI tests deprecated for headless validation)
 echo "🧪 Running Unit Tests (headless)..."
 run_headless_tests "FinanceMate" "platform=macOS,arch=arm64" "FinanceMateTests"
+
+# Run headless E2E visual snapshot (no XCUITest, renders SwiftUI to PNG)
+echo "🖼️ Running Headless Visual Snapshot E2E..."
+run_headless_tests "FinanceMate" "platform=macOS,arch=arm64" "FinanceMateTests/VisualSnapshotTests/testNetWealthDashboardVisualSnapshot"
 
 echo ""
 echo "🎉 All headless tests completed successfully!"

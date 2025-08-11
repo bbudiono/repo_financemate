@@ -70,11 +70,65 @@ __pycache__/
 # Editor backup files
 *~
 .#*
-# v3.3 Critical Additions
-/temp/
+
+# =============================================================================
+# SECURITY: CRITICAL - NEVER COMMIT SECRETS OR SENSITIVE DATA
+# =============================================================================
+
+# Environment Files - MANDATORY FOR SECURITY
 .env
 .env.local
 .env.*.local
+.env.production
+.env.staging
+.env.development
+.env.test
+
+# API Keys and Secrets - CRITICAL SECURITY
+api_keys.txt
+secrets.txt
+credentials.json
+service-account.json
+*.pem
+*.key
+*.p12
+*.pfx
+*.keystore
+keychain_export.txt
+
+# Configuration Files with Secrets
+config/secrets.yml
+config/database.yml
+config/production.rb
+*_secrets.json
+*_credentials.json
+oauth_secrets.*
+
+# Security Scan Results - Sensitive Information
+security_scan_results.*
+vulnerability_report.*
+penetration_test.*
+security_audit.*
+
+# Backup Files - May Contain Sensitive Data
+*.backup
+*.bak
+*.dump
+*.sql
+backup_*
+dump_*
+
+# IDE Configuration - May Contain Paths/Secrets
+.vscode/settings.json
+.idea/deployment.xml
+.idea/webServers.xml
+
+# =============================================================================
+# END SECURITY SECTION
+# =============================================================================
+
+# v3.3 Critical Additions
+/temp/
 
 # Agent Communication Files
 temp/Session_Audit_Details.md

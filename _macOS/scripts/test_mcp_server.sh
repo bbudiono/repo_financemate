@@ -155,6 +155,12 @@ run_mcp_test \
     "small business\|concession\|tax" \
     "Small Business Tax Concessions"
 
+# Test 7: NEW LEVEL 7++ Multi-Generational Australian Family Wealth Planning (Expert Complex)
+run_mcp_test \
+    "A Sydney family with \$50M net wealth across 3 generations needs comprehensive Australian tax strategies: grandparents (80s) with SMSF holding property portfolio, parents (50s) managing family trust with capital gains exposure, and adult children (20s-30s) needing investment structuring advice. How should they coordinate estate planning, trust distributions, negative gearing strategies, and capital gains tax optimization while maintaining cash flow for lifestyle needs and intergenerational wealth transfer in NSW?" \
+    "family\|trust\|generations\|estate\|capital gains\|smsf\|negative gearing\|wealth\|tax\|planning" \
+    "Level 7++ Multi-Generational Australian Family Wealth Planning"
+
 echo "📊 PHASE 3: TEST RESULTS SUMMARY"
 echo "================================"
 echo "🎯 Total Tests: $TOTAL_TESTS"
@@ -196,6 +202,7 @@ echo "📄 Detailed Log: $TEST_LOG"
     echo "4. **NEW**: SMSF Property Investment Compliance (Complex)"
     echo "5. Negative Gearing Property Strategy"
     echo "6. Small Business Tax Concessions"
+    echo "7. **LATEST**: Level 7++ Multi-Generational Australian Family Wealth Planning (Expert Complex)"
     echo ""
     echo "**Note**: Tests designed to validate Australian financial expertise and natural language response quality."
 } > "mcp_test_summary_${TIMESTAMP}.md"
