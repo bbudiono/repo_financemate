@@ -1,0 +1,598 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 63;
+	objects = {
+/* Begin PBXBuildFile section */
+		6D18A0E7F92442468E90F828 /* OAuthConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0659DDA52245D781509D7F /* OAuthConfiguration.swift */; };
+		8F3A9B2C4D5E6F7A8B9C0D1E /* GmailAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2D8C9B4A5F6G7H8I9J0K1L /* GmailAPIClient.swift */; };
+		2F4B8C6D9E1A3B5C7D8E9F0A /* GmailEmailParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E3D7C8B5A6F9G2H4I7J0K3L /* GmailEmailParser.swift */; };
+		5G8H1I2J3K4L5M6N7O8P9Q0R /* GmailExpenseExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F7G0H3I6J9K2L5M8N1O4P7Q /* GmailExpenseExtractor.swift */; };
+		9A1B2C3D4E5F6A7B8C9D0E1F /* AdvancedVendorExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8Z0Y1X2W3V4U5T6S7R8Q9P0O /* AdvancedVendorExtractor.swift */; };
+		B17CB21C396F41F8B5CD1775 /* EnhancedMIMEContentExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDAF4F0FA22441CAADE0E767 /* EnhancedMIMEContentExtractor.swift */; };
+		3H6I9J2K5L8M1N4O7P0Q3R6S /* GmailOAuthHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2G5H8I1J4K7L0M3N6O9P2Q5R /* GmailOAuthHandler.swift */; };
+		135997B203FF4A0E99D67022 /* KeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2830D21FB55B4556865D49F3 /* KeychainManager.swift */; };
+		9DA802B9D9404A96A366B8A2 /* TransactionDataExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E540ACB9618417694B7AB02 /* TransactionDataExtractor.swift */; };
+		B2C3D4E5F6789012345678AB /* ServiceContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F678901234567A /* ServiceContainer.swift */; };
+		5EC302708BAB466AA63CC681 /* EmailErrorRecoveryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F0564FAE3F4451BD6EA21C /* EmailErrorRecoveryService.swift */; };
+		28BC6E1D088C487FA279BE06 /* FinanceMateApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971CB1884A8A48A38B0E5373 /* FinanceMateApp.swift */; };
+		C01CAD5688934B57A46205C2 /* FinanceMateModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = ED2D970D13FB4052AD6B58C2 /* FinanceMateModel.xcdatamodeld */; };
+		1533518A967C45CB85468F15 /* AuthenticationTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEC027DFC944415FB61D62A1 /* AuthenticationTypes.swift */; };
+		E64BDFA1ACD44F829438E9A7 /* EmailOAuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A32FDD9EDB44EAAB532DBEC /* EmailOAuthManager.swift */; };
+		63656634323033652D386139 /* LocalOAuthServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36303163303830312D643133 /* LocalOAuthServer.swift */; };
+		D53F556BC8644539B29E2B29 /* ExpenseModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EB8420EADFE41B1AFFA4016 /* ExpenseModels.swift */; };
+		3EEB744FC58648A38774F22A /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D4AA5AD5FA44A60A2B5CB80 /* PersistenceController.swift */; };
+		514F8C875D87440284BEE454 /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83ABB93C572B4D18AFBC01E1 /* Transaction.swift */; };
+		5FE1BA9E12C94C5C9C9B4054 /* TransactionData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 771100333BA04D9EBC121921 /* TransactionData.swift */; };
+		9DE11D4536134ED89B145B86 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 648B4E8854BC4A59AE1BAFA6 /* User.swift */; };
+		9C0E5CCF4FB34DD5A2748650 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 29CD132A278F41D8B14EA17F /* Assets.xcassets */; };
+		F1641EC45A1A4E1586AC82AA /* AuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99EE3D60F3CF4D8ABF1D95F8 /* AuthenticationManager.swift */; };
+		4FAE0875893042FDA200C867 /* AuthenticationStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FCEA65BFB344BE7BAEDC750 /* AuthenticationStateManager.swift */; };
+		67D77250E439443EA3D6671B /* BankConnectionCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D14E648B1B534E21BF08539F /* BankConnectionCoordinator.swift */; };
+		12844A459B2F44778458C4DD /* DashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAD5807011674624BCED518C /* DashboardViewModel.swift */; };
+		3123A47761114A0A8F03E685 /* ProductionChatbotViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB32802F49BB4EEA9A381AAB /* ProductionChatbotViewModel.swift */; };
+		F459EC8FAAA7442183C1E135 /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 484762197D0B4C89B45C7A4F /* SessionManager.swift */; };
+		755D5131547F409A8298E914 /* SimplifiedTransactionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B357B5CF304DD6B2172CF9 /* SimplifiedTransactionsViewModel.swift */; };
+		9732D58F792E46F4B06CF112 /* ChatbotDrawerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D2E2D63F2434471AB0A23D4 /* ChatbotDrawerView.swift */; };
+		35C708C5E8A543BEB41A2D41 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C8652D516A549CEBE53345C /* ContentView.swift */; };
+		CDFADEA869CA4B1DA3C59B09 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17EE92E315F14991AD14A8A9 /* DashboardView.swift */; };
+		8AA7E66DD61347CF8473F5AF /* ExpenseTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E741B0C5EB8047E4B7A58C4B /* ExpenseTableView.swift */; };
+		8A432C7483574F3684914F60 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 191592E8AFDE4D4E88B69E32 /* SettingsView.swift */; };
+		688219397E5044F1A6A1D808 /* BankType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90B1A1E4A9342E083B84D69 /* BankType.swift */; };
+		F9F8B69960964730ACDB272B /* BankConnectionTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EAED9CB3A64A58AF5B06E9 /* BankConnectionTypes.swift */; };
+		74AF61CB2AA24C378CD2E06B /* BankAPIIntegrationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6336F3C059E4A6D8FBD34D1 /* BankAPIIntegrationService.swift */; };
+		1C10422CF35342D483444FD5 /* BankAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1903C83D3B7D474C8AD03D82 /* BankAPIService.swift */; };
+		0F1F0AE5CBC84B01A2556F71 /* BankConnectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AADA36F3C65C4C7AAFEF32BD /* BankConnectionView.swift */; };
+		EFE4343A4DB5498CA773C742 /* BankConnectionHeaderSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7648CAA0BF4A09BB9FA7D1 /* BankConnectionHeaderSection.swift */; };
+		E52BF27B7F4F405C8598446F /* BankConnectionProgressSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A41ECB07C6144257A3B533CC /* BankConnectionProgressSection.swift */; };
+		DEEF6F6700D149D18847C4CD /* BankConnectionStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BA3E8AF939646138A2DCD1B /* BankConnectionStepView.swift */; };
+		785392CCB3D94589B15F8576 /* EnhancedChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49D49AEF4E44C0E91242A76 /* EnhancedChatMessage.swift */; };
+		4C599344AB0843A99B1EDC76 /* AustralianComplianceE2ETests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 723F919A09804608AB89B345 /* AustralianComplianceE2ETests.swift */; };
+		DA3E156C447F4A529D354183 /* PromotionalEmailDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C7C4DFF16D45E68A7FCA99 /* PromotionalEmailDetector.swift */; };
+		FDC35E44D6374DCC97540000 /* ReceiptReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C7C02C0D5D84EACB869218E /* ReceiptReviewView.swift */; };
+		7C7C6F14F67843C790E822D4 /* ReceiptReviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 070DF9FF92FC4DE5ADAFA13E /* ReceiptReviewViewModel.swift */; };
+		A2830F2C0C31454689651A20 /* ReceiptDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1ADAAF845F04BF68DFDF4DA /* ReceiptDetailView.swift */; };
+		4F1589176F614CAB9929D0B7 /* E2ETestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEE33F4E52054AE39B5B57CD /* E2ETestHelpers.swift */; };
+		958283A811864F599AFF1D8B /* FinanceMateE2EWorkflowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59ABA37F9AE04E4ABF9E44C9 /* FinanceMateE2EWorkflowTests.swift */; };
+		E351DBF732D54BF0A642780B /* PerformanceUsabilityE2ETests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AA8F6E585DE479F80CE1FBF /* PerformanceUsabilityE2ETests.swift */; };
+		0AD770FB22CB4C0384959BD7 /* RealWorldScenariosE2ETests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816F47868E86496AAFBC002B /* RealWorldScenariosE2ETests.swift */; };
+		B47289E16ADA462CBA871B3B /* CurrencyExchangeServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE20A23ED7F475D9A5710CD /* CurrencyExchangeServiceTests.swift */; };
+		2E86AEE49F4F442587A5DE20 /* GmailAPIServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2D3EC3D7FA249DC9C917605 /* GmailAPIServiceTests.swift */; };
+		1A63028EC58C484E858954C7 /* LLMServiceManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31D74265F284B2FBBEB11A1 /* LLMServiceManagerTests.swift */; };
+		C722A5D008CA4396AC2E2C4D /* NetWealthServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2806B3A256742EB8AAE01AE /* NetWealthServiceTests.swift */; };
+		EC8FF448ABCE483787C75DB2 /* ProductionLLMServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBBE05CEE7BE455B81E25FD1 /* ProductionLLMServiceTests.swift */; };
+		CD5DEF0EB41841D7B5AA9838 /* TaxCategoryManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12F78A86BF1A43508071F843 /* TaxCategoryManagerTests.swift */; };
+		B180FEA8EEA04A9C8554DD6C /* BankConnectionCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6598CD626B40C28333903F /* BankConnectionCoordinatorTests.swift */; };
+		F41E63D48A3C4DF78AE0AA13 /* TaxCategoryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B794FE9E28D243428B069311 /* TaxCategoryManager.swift */; };
+		88081ED6D329489291D915CC /* CurrencyExchangeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DBC23FB23E148B7BA772481 /* CurrencyExchangeService.swift */; };
+		4790B2340DE44590A9C14C7D /* GmailConnectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D93AA256C5F4799A415AD08 /* GmailConnectionView.swift */; };
+		AAF5A87C60004DCA87247EAB /* GmailAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0E53FBCEEB343FCB5D338D5 /* GmailAPIService.swift */; };
+		7D08228BFF59465C8E7230D4 /* GmailModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B4827FE0FDE4AF692B3AAA8 /* GmailModels.swift */; };
+		C7C30D2ABB84417D9B5D1CE53495DE30 /* GmailLabelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD0FE54D1A7F4190BDF6DEAA5C2B5BDB /* GmailLabelManager.swift */; };
+	
+		08B8249AFF1C44B49D3D7964 /* EmailDiscoveryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 627ABC8DF62A42E685137EFF /* EmailDiscoveryView.swift */; };
+		4C9ABB92104348A5ADE30976 /* Flow2PreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB05E20EB824A85A1D055AB /* Flow2PreviewView.swift */; };
+		04D05C45B56E44F6941E6C12 /* GmailFlow2ProcessingEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56E854DF5DA242E9903B07F8 /* GmailFlow2ProcessingEngine.swift */; };
+		/* End PBXBuildFile section */
+/* Begin PBXFileReference section */
+		6D0659DDA52245D781509D7F /* OAuthConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OAuthConfiguration.swift"; sourceTree = "<group>"; };
+		7E2D8C9B4A5F6G7H8I9J0K1L /* GmailAPIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GmailAPIClient.swift"; sourceTree = "<group>"; };
+		1E3D7C8B5A6F9G2H4I7J0K3L /* GmailEmailParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GmailEmailParser.swift"; sourceTree = "<group>"; };
+		4F7G0H3I6J9K2L5M8N1O4P7Q /* GmailExpenseExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GmailExpenseExtractor.swift"; sourceTree = "<group>"; };
+		8Z0Y1X2W3V4U5T6S7R8Q9P0O /* AdvancedVendorExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AdvancedVendorExtractor.swift"; sourceTree = "<group>"; };
+		FDAF4F0FA22441CAADE0E767 /* EnhancedMIMEContentExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EnhancedMIMEContentExtractor.swift"; sourceTree = "<group>"; };
+		2G5H8I1J4K7L0M3N6O9P2Q5R /* GmailOAuthHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GmailOAuthHandler.swift"; sourceTree = "<group>"; };
+		C0E53FBCEEB343FCB5D338D5 /* GmailAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GmailAPIService.swift"; sourceTree = "<group>"; };
+		2830D21FB55B4556865D49F3 /* KeychainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeychainManager.swift"; sourceTree = "<group>"; };
+		3E540ACB9618417694B7AB02 /* TransactionDataExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TransactionDataExtractor.swift"; sourceTree = "<group>"; };
+		A1B2C3D4E5F678901234567A /* ServiceContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ServiceContainer.swift"; sourceTree = "<group>"; };
+		C8F0564FAE3F4451BD6EA21C /* EmailErrorRecoveryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EmailErrorRecoveryService.swift"; sourceTree = "<group>"; };
+		971CB1884A8A48A38B0E5373 /* FinanceMateApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FinanceMateApp.swift"; sourceTree = "<group>"; };
+		ED2D970D13FB4052AD6B58C2 /* FinanceMateModel.xcdatamodeld */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "FinanceMateModel.xcdatamodeld"; sourceTree = "<group>"; };
+		BEC027DFC944415FB61D62A1 /* AuthenticationTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Models/AuthenticationTypes.swift"; sourceTree = "<group>"; };
+		8A32FDD9EDB44EAAB532DBEC /* EmailOAuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EmailOAuthManager.swift"; sourceTree = "<group>"; };
+		36303163303830312D643133 /* LocalOAuthServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocalOAuthServer.swift"; sourceTree = "<group>"; };
+		9EB8420EADFE41B1AFFA4016 /* ExpenseModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Models/ExpenseModels.swift"; sourceTree = "<group>"; };
+		4D4AA5AD5FA44A60A2B5CB80 /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Models/PersistenceController.swift"; sourceTree = "<group>"; };
+		83ABB93C572B4D18AFBC01E1 /* Transaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Models/Transaction.swift"; sourceTree = "<group>"; };
+		771100333BA04D9EBC121921 /* TransactionData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Models/TransactionData.swift"; sourceTree = "<group>"; };
+		648B4E8854BC4A59AE1BAFA6 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Models/User.swift"; sourceTree = "<group>"; };
+		29CD132A278F41D8B14EA17F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Assets.xcassets"; sourceTree = "<group>"; };
+		99EE3D60F3CF4D8ABF1D95F8 /* AuthenticationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewModels/AuthenticationManager.swift"; sourceTree = "<group>"; };
+		9FCEA65BFB344BE7BAEDC750 /* AuthenticationStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewModels/AuthenticationStateManager.swift"; sourceTree = "<group>"; };
+		D14E648B1B534E21BF08539F /* BankConnectionCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewModels/BankConnectionCoordinator.swift"; sourceTree = "<group>"; };
+		BAD5807011674624BCED518C /* DashboardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewModels/DashboardViewModel.swift"; sourceTree = "<group>"; };
+		AB32802F49BB4EEA9A381AAB /* ProductionChatbotViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewModels/ProductionChatbotViewModel.swift"; sourceTree = "<group>"; };
+		484762197D0B4C89B45C7A4F /* SessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewModels/SessionManager.swift"; sourceTree = "<group>"; };
+		54B357B5CF304DD6B2172CF9 /* SimplifiedTransactionsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewModels/SimplifiedTransactionsViewModel.swift"; sourceTree = "<group>"; };
+		0D2E2D63F2434471AB0A23D4 /* ChatbotDrawerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Views/ChatbotDrawerView.swift"; sourceTree = "<group>"; };
+		9C8652D516A549CEBE53345C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Views/ContentView.swift"; sourceTree = "<group>"; };
+		17EE92E315F14991AD14A8A9 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Views/DashboardView.swift"; sourceTree = "<group>"; };
+		E741B0C5EB8047E4B7A58C4B /* ExpenseTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Views/ExpenseTableView.swift"; sourceTree = "<group>"; };
+		191592E8AFDE4D4E88B69E32 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Views/SettingsView.swift"; sourceTree = "<group>"; };
+		2CC032CE56BC4B82BE5CB572 /* FinanceMate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FinanceMate.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E90B1A1E4A9342E083B84D69 /* BankType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Models/BankType.swift"; sourceTree = "<group>"; };
+		21EAED9CB3A64A58AF5B06E9 /* BankConnectionTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Models/BankConnectionTypes.swift"; sourceTree = "<group>"; };
+		C6336F3C059E4A6D8FBD34D1 /* BankAPIIntegrationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BankAPIIntegrationService.swift"; sourceTree = "<group>"; };
+		1903C83D3B7D474C8AD03D82 /* BankAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BankAPIService.swift"; sourceTree = "<group>"; };
+		AADA36F3C65C4C7AAFEF32BD /* BankConnectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Views/BankConnectionView.swift"; sourceTree = "<group>"; };
+		EB7648CAA0BF4A09BB9FA7D1 /* BankConnectionHeaderSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Views/Components/BankConnectionHeaderSection.swift"; sourceTree = "<group>"; };
+		A41ECB07C6144257A3B533CC /* BankConnectionProgressSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Views/Components/BankConnectionProgressSection.swift"; sourceTree = "<group>"; };
+		3BA3E8AF939646138A2DCD1B /* BankConnectionStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Views/Steps/BankConnectionStepView.swift"; sourceTree = "<group>"; };
+		E49D49AEF4E44C0E91242A76 /* EnhancedChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Models/EnhancedChatMessage.swift"; sourceTree = "<group>"; };
+		723F919A09804608AB89B345 /* AustralianComplianceE2ETests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FinanceMateTests/E2E/AustralianComplianceE2ETests.swift"; sourceTree = "<group>"; };
+		AEE33F4E52054AE39B5B57CD /* E2ETestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FinanceMateTests/E2E/E2ETestHelpers.swift"; sourceTree = "<group>"; };
+		59ABA37F9AE04E4ABF9E44C9 /* FinanceMateE2EWorkflowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FinanceMateTests/E2E/FinanceMateE2EWorkflowTests.swift"; sourceTree = "<group>"; };
+		2AA8F6E585DE479F80CE1FBF /* PerformanceUsabilityE2ETests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FinanceMateTests/E2E/PerformanceUsabilityE2ETests.swift"; sourceTree = "<group>"; };
+		816F47868E86496AAFBC002B /* RealWorldScenariosE2ETests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FinanceMateTests/E2E/RealWorldScenariosE2ETests.swift"; sourceTree = "<group>"; };
+		3BE20A23ED7F475D9A5710CD /* CurrencyExchangeServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FinanceMateTests/Services/CurrencyExchangeServiceTests.swift"; sourceTree = "<group>"; };
+		76258748ba99434daa809aab /* TaxCategoryManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaxCategoryManager.swift"; sourceTree = "<group>"; };
+		D2D3EC3D7FA249DC9C917605 /* GmailAPIServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FinanceMateTests/Services/GmailAPIServiceTests.swift"; sourceTree = "<group>"; };
+		B31D74265F284B2FBBEB11A1 /* LLMServiceManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FinanceMateTests/Services/LLMServiceManagerTests.swift"; sourceTree = "<group>"; };
+		E2806B3A256742EB8AAE01AE /* NetWealthServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FinanceMateTests/Services/NetWealthServiceTests.swift"; sourceTree = "<group>"; };
+		BBBE05CEE7BE455B81E25FD1 /* ProductionLLMServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FinanceMateTests/Services/ProductionLLMServiceTests.swift"; sourceTree = "<group>"; };
+		12F78A86BF1A43508071F843 /* TaxCategoryManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FinanceMateTests/Services/TaxCategoryManagerTests.swift"; sourceTree = "<group>"; };
+		DD6598CD626B40C28333903F /* BankConnectionCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FinanceMateTests/ViewModels/BankConnectionCoordinatorTests.swift"; sourceTree = "<group>"; };
+		722215ECBB8544F897534088 /* FinanceMateTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FinanceMateTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B794FE9E28D243428B069311 /* TaxCategoryManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaxCategoryManager.swift"; sourceTree = "<group>"; };
+		1DBC23FB23E148B7BA772481 /* CurrencyExchangeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CurrencyExchangeService.swift"; sourceTree = "<group>"; };
+		3D93AA256C5F4799A415AD08 /* GmailConnectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Views/GmailConnectionView.swift"; sourceTree = "<group>"; };
+		5B4827FE0FDE4AF692B3AAA8 /* GmailModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Models/GmailModels.swift"; sourceTree = "<group>"; };
+		44C7C4DFF16D45E68A7FCA99 /* PromotionalEmailDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FinanceMate/Services/PromotionalEmailDetector.swift"; sourceTree = "<group>"; };
+		8C7C02C0D5D84EACB869218E /* ReceiptReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FinanceMate/Views/ReceiptReviewView.swift"; sourceTree = "<group>"; };
+		070DF9FF92FC4DE5ADAFA13E /* ReceiptReviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FinanceMate/ViewModels/ReceiptReviewViewModel.swift"; sourceTree = "<group>"; };
+		E1ADAAF845F04BF68DFDF4DA /* ReceiptDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FinanceMate/Views/ReceiptDetailView.swift"; sourceTree = "<group>"; };
+		CD0FE54D1A7F4190BDF6DEAA5C2B5BDB /* GmailLabelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GmailLabelManager.swift"; sourceTree = "<group>"; };
+	
+		627ABC8DF62A42E685137EFF /* EmailDiscoveryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailDiscoveryView.swift; sourceTree = "<group>"; };
+		9AB05E20EB824A85A1D055AB /* Flow2PreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Flow2PreviewView.swift; sourceTree = "<group>"; };
+		56E854DF5DA242E9903B07F8 /* GmailFlow2ProcessingEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GmailFlow2ProcessingEngine.swift; sourceTree = "<group>"; };
+		/* End PBXFileReference section */
+/* Begin PBXFrameworksBuildPhase section */
+		9EBF12C5FA1A445397F5DD7D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EDA4B0634AE448D395744E68 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* Begin PBXContainerItemProxy section */
+		02FA2BE24FF546948EC631D1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9099777EF0694453BF04C64F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 172E96B825104A418DB03F79;
+			remoteInfo = FinanceMate;
+		};
+/* End PBXContainerItemProxy section */
+/* Begin PBXTargetDependency section */
+		0B00632892214E24AE648B54 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 172E96B825104A418DB03F79 /* FinanceMate */;
+			targetProxy = 84C8D9A2BDB4480ABD854F63 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+/* End PBXFrameworksBuildPhase section */
+/* Begin PBXGroup section */
+		44E424ACC38348BFA44EC774 = {
+			isa = PBXGroup;
+			children = (
+				DA950EA3CD6942899B9AF409 /* FinanceMate */,
+				3A7EFA0670D84903AF12C9ED /* Products */,
+							17EEF31654AE4AF6811EF753 /* FinanceMateTests */);
+			sourceTree = "<group>";
+		};
+		DA950EA3CD6942899B9AF409 /* FinanceMate */ = {
+			isa = PBXGroup;
+			children = (
+				C8F0564FAE3F4451BD6EA21C /* EmailErrorRecoveryService.swift */,
+				971CB1884A8A48A38B0E5373 /* FinanceMateApp.swift */,
+				ED2D970D13FB4052AD6B58C2 /* FinanceMateModel.xcdatamodeld */,
+				BEC027DFC944415FB61D62A1 /* AuthenticationTypes.swift */,
+				9EB8420EADFE41B1AFFA4016 /* ExpenseModels.swift */,
+				5B4827FE0FDE4AF692B3AAA8 /* GmailModels.swift */,
+				4D4AA5AD5FA44A60A2B5CB80 /* PersistenceController.swift */,
+				83ABB93C572B4D18AFBC01E1 /* Transaction.swift */,
+				771100333BA04D9EBC121921 /* TransactionData.swift */,
+				648B4E8854BC4A59AE1BAFA6 /* User.swift */,
+				29CD132A278F41D8B14EA17F /* Assets.xcassets */,
+				99EE3D60F3CF4D8ABF1D95F8 /* AuthenticationManager.swift */,
+				9FCEA65BFB344BE7BAEDC750 /* AuthenticationStateManager.swift */,
+				D14E648B1B534E21BF08539F /* BankConnectionCoordinator.swift */,
+				BAD5807011674624BCED518C /* DashboardViewModel.swift */,
+				AB32802F49BB4EEA9A381AAB /* ProductionChatbotViewModel.swift */,
+				484762197D0B4C89B45C7A4F /* SessionManager.swift */,
+				54B357B5CF304DD6B2172CF9 /* SimplifiedTransactionsViewModel.swift */,
+				0D2E2D63F2434471AB0A23D4 /* ChatbotDrawerView.swift */,
+				9C8652D516A549CEBE53345C /* ContentView.swift */,
+				17EE92E315F14991AD14A8A9 /* DashboardView.swift */,
+				E741B0C5EB8047E4B7A58C4B /* ExpenseTableView.swift */,
+				3D93AA256C5F4799A415AD08 /* GmailConnectionView.swift */,
+				191592E8AFDE4D4E88B69E32 /* SettingsView.swift */,
+				F1A2B3C4D5E6F7G8H9I0J1K2 /* Services */
+			);
+			path = FinanceMate;
+			sourceTree = "<group>";
+		};
+		3A7EFA0670D84903AF12C9ED /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2CC032CE56BC4B82BE5CB572 /* FinanceMate.app */,
+							722215ECBB8544F897534088 /* FinanceMateTests.xctest */);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		17EEF31654AE4AF6811EF753 /* FinanceMateTests */ = {
+			isa = PBXGroup;
+			children = (
+				4CA6DE2080B44BC292C29F8C /* E2E */,
+				83E53916FC55497285886B54 /* Services */,
+				A0B69D2626174F9B8A50586D /* ViewModels */);
+			path = FinanceMateTests;
+			sourceTree = "<group>";
+		};
+		4CA6DE2080B44BC292C29F8C /* E2E */ = {
+			isa = PBXGroup;
+			children = (
+				723F919A09804608AB89B345 /* AustralianComplianceE2ETests.swift */,
+				AEE33F4E52054AE39B5B57CD /* E2ETestHelpers.swift */,
+				59ABA37F9AE04E4ABF9E44C9 /* FinanceMateE2EWorkflowTests.swift */,
+				2AA8F6E585DE479F80CE1FBF /* PerformanceUsabilityE2ETests.swift */,
+				816F47868E86496AAFBC002B /* RealWorldScenariosE2ETests.swift */);
+			path = FinanceMateTests/E2E;
+			sourceTree = "<group>";
+		};
+		83E53916FC55497285886B54 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				3BE20A23ED7F475D9A5710CD /* CurrencyExchangeServiceTests.swift */,
+				D2D3EC3D7FA249DC9C917605 /* GmailAPIServiceTests.swift */,
+				B31D74265F284B2FBBEB11A1 /* LLMServiceManagerTests.swift */,
+				E2806B3A256742EB8AAE01AE /* NetWealthServiceTests.swift */,
+				BBBE05CEE7BE455B81E25FD1 /* ProductionLLMServiceTests.swift */,
+				12F78A86BF1A43508071F843 /* TaxCategoryManagerTests.swift */
+			);
+			path = FinanceMateTests/Services;
+			sourceTree = "<group>";
+		};
+		A0B69D2626174F9B8A50586D /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				DD6598CD626B40C28333903F /* BankConnectionCoordinatorTests.swift */);
+			path = FinanceMateTests/ViewModels;
+			sourceTree = "<group>";
+		};
+		F1A2B3C4D5E6F7G8H9I0J1K2 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F678901234567A /* ServiceContainer.swift */,
+				6D0659DDA52245D781509D7F /* OAuthConfiguration.swift */,
+				2830D21FB55B4556865D49F3 /* KeychainManager.swift */,
+				3E540ACB9618417694B7AB02 /* TransactionDataExtractor.swift */,
+				8A32FDD9EDB44EAAB532DBEC /* EmailOAuthManager.swift */,
+				36303163303830312D643133 /* LocalOAuthServer.swift */,
+				B794FE9E28D243428B069311 /* TaxCategoryManager.swift */,
+				1DBC23FB23E148B7BA772481 /* CurrencyExchangeService.swift */,
+				C6336F3C059E4A6D8FBD34D1 /* BankAPIIntegrationService.swift */,
+				1903C83D3B7D474C8AD03D82 /* BankAPIService.swift */,
+				7E2D8C9B4A5F6G7H8I9J0K1L /* GmailAPIClient.swift */,
+				1E3D7C8B5A6F9G2H4I7J0K3L /* GmailEmailParser.swift */,
+				4F7G0H3I6J9K2L5M8N1O4P7Q /* GmailExpenseExtractor.swift */,
+				8Z0Y1X2W3V4U5T6S7R8Q9P0O /* AdvancedVendorExtractor.swift */,
+				FDAF4F0FA22441CAADE0E767 /* EnhancedMIMEContentExtractor.swift */,
+				2G5H8I1J4K7L0M3N6O9P2Q5R /* GmailOAuthHandler.swift */,
+				C0E53FBCEEB343FCB5D338D5 /* GmailAPIService.swift */,
+				CD0FE54D1A7F4190BDF6DEAA5C2B5BDB /* GmailLabelManager.swift */
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+/* Begin PBXNativeTarget section */
+		172E96B825104A418DB03F79 /* FinanceMate */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7651CC5499EC44B7BD1A154F /* Build configuration list for PBXNativeTarget "FinanceMate" */;
+			buildPhases = (
+				FBBDFC71D58743ECB79F02E6 /* Sources */,
+				9EBF12C5FA1A445397F5DD7D /* Frameworks */,
+				01B89CA117CC4D4EAEE82E8D /* Resources */);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FinanceMate;
+			productName = FinanceMate;
+			productReference = 2CC032CE56BC4B82BE5CB572 /* FinanceMate.app */;
+			productType = "com.apple.product-type.application";
+		};
+		30D2DB72399E42CB831ED81B /* FinanceMateTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E7BE5C4A371E40C4B641EB32 /* Build configuration list for PBXNativeTarget "FinanceMateTests" */;
+			buildPhases = (
+				1C418686759D40D5944F1160 /* Sources */,
+				EDA4B0634AE448D395744E68 /* Frameworks */,
+				BEE7BEE5D6334314950A3FC2 /* Resources */);
+			buildRules = (
+			);
+			dependencies = (
+				0B00632892214E24AE648B54 /* PBXTargetDependency */);
+			name = FinanceMateTests;
+			productName = FinanceMateTests;
+			productReference = 722215ECBB8544F897534088 /* FinanceMateTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+/* Begin PBXProject section */
+		9099777EF0694453BF04C64F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1540;
+				LastUpgradeCheck = 1540;
+			};
+			buildConfigurationList = 5D66EFAB79174B7D955263E8 /* Build configuration list for PBXProject "FinanceMate" */;
+			compatibilityVersion = "Xcode 15.0";
+			developmentRegion = en;
+			mainGroup = 44E424ACC38348BFA44EC774;
+			productRefGroup = 3A7EFA0670D84903AF12C9ED /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				172E96B825104A418DB03F79 /* FinanceMate */,
+							30D2DB72399E42CB831ED81B /* FinanceMateTests */);
+		};
+/* End PBXProject section */
+/* Begin PBXResourcesBuildPhase section */
+		01B89CA117CC4D4EAEE82E8D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9C0E5CCF4FB34DD5A2748650 /* Assets.xcassets in Resources */
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BEE7BEE5D6334314950A3FC2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+/* Begin PBXSourcesBuildPhase section */
+		FBBDFC71D58743ECB79F02E6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F41E63D48A3C4DF78AE0AA13 /* TaxCategoryManager.swift in Sources */,
+				88081ED6D329489291D915CC /* CurrencyExchangeService.swift in Sources */,
+				5EC302708BAB466AA63CC681 /* EmailErrorRecoveryService.swift in Sources */,
+				28BC6E1D088C487FA279BE06 /* FinanceMateApp.swift in Sources */,
+				1533518A967C45CB85468F15 /* AuthenticationTypes.swift in Sources */,
+				E64BDFA1ACD44F829438E9A7 /* EmailOAuthManager.swift in Sources */,
+				63656634323033652D386139 /* LocalOAuthServer.swift in Sources */,
+				D53F556BC8644539B29E2B29 /* ExpenseModels.swift in Sources */,
+				3EEB744FC58648A38774F22A /* PersistenceController.swift in Sources */,
+				514F8C875D87440284BEE454 /* Transaction.swift in Sources */,
+				5FE1BA9E12C94C5C9C9B4054 /* TransactionData.swift in Sources */,
+				9DE11D4536134ED89B145B86 /* User.swift in Sources */,
+				F1641EC45A1A4E1586AC82AA /* AuthenticationManager.swift in Sources */,
+				4FAE0875893042FDA200C867 /* AuthenticationStateManager.swift in Sources */,
+				67D77250E439443EA3D6671B /* BankConnectionCoordinator.swift in Sources */,
+				12844A459B2F44778458C4DD /* DashboardViewModel.swift in Sources */,
+				3123A47761114A0A8F03E685 /* ProductionChatbotViewModel.swift in Sources */,
+				F459EC8FAAA7442183C1E135 /* SessionManager.swift in Sources */,
+				755D5131547F409A8298E914 /* SimplifiedTransactionsViewModel.swift in Sources */,
+				9732D58F792E46F4B06CF112 /* ChatbotDrawerView.swift in Sources */,
+				35C708C5E8A543BEB41A2D41 /* ContentView.swift in Sources */,
+				CDFADEA869CA4B1DA3C59B09 /* DashboardView.swift in Sources */,
+				8AA7E66DD61347CF8473F5AF /* ExpenseTableView.swift in Sources */,
+				8A432C7483574F3684914F60 /* SettingsView.swift in Sources */,
+				C01CAD5688934B57A46205C2 /* FinanceMateModel.xcdatamodeld in Sources */,
+				B2C3D4E5F6789012345678AB /* ServiceContainer.swift in Sources */,
+				6D18A0E7F92442468E90F828 /* OAuthConfiguration.swift in Sources */,
+				135997B203FF4A0E99D67022 /* KeychainManager.swift in Sources */,
+				9DA802B9D9404A96A366B8A2 /* TransactionDataExtractor.swift in Sources */,
+				8F3A9B2C4D5E6F7A8B9C0D1E /* GmailAPIClient.swift in Sources */,
+				2F4B8C6D9E1A3B5C7D8E9F0A /* GmailEmailParser.swift in Sources */,
+				5G8H1I2J3K4L5M6N7O8P9Q0R /* GmailExpenseExtractor.swift in Sources */,
+				9A1B2C3D4E5F6A7B8C9D0E1F /* AdvancedVendorExtractor.swift in Sources */,
+				B17CB21C396F41F8B5CD1775 /* EnhancedMIMEContentExtractor.swift in Sources */,
+				3H6I9J2K5L8M1N4O7P0Q3R6S /* GmailOAuthHandler.swift in Sources */,
+				AAF5A87C60004DCA87247EAB /* GmailAPIService.swift in Sources */,
+				4790B2340DE44590A9C14C7D /* GmailConnectionView.swift in Sources */,
+				7D08228BFF59465C8E7230D4 /* GmailModels.swift in Sources */,
+				DA3E156C447F4A529D354183 /* PromotionalEmailDetector.swift in Sources */,
+				FDC35E44D6374DCC97540000 /* ReceiptReviewView.swift in Sources */,
+				7C7C6F14F67843C790E822D4 /* ReceiptReviewViewModel.swift in Sources */,
+				A2830F2C0C31454689651A20 /* ReceiptDetailView.swift in Sources */,
+				C7C30D2ABB84417D9B5D1CE53495DE30 /* GmailLabelManager.swift in Sources */,
+);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1C418686759D40D5944F1160 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4C599344AB0843A99B1EDC76 /* AustralianComplianceE2ETests.swift in Sources */,
+				4F1589176F614CAB9929D0B7 /* E2ETestHelpers.swift in Sources */,
+				958283A811864F599AFF1D8B /* FinanceMateE2EWorkflowTests.swift in Sources */,
+				E351DBF732D54BF0A642780B /* PerformanceUsabilityE2ETests.swift in Sources */,
+				0AD770FB22CB4C0384959BD7 /* RealWorldScenariosE2ETests.swift in Sources */,
+				B47289E16ADA462CBA871B3B /* CurrencyExchangeServiceTests.swift in Sources */,
+				2E86AEE49F4F442587A5DE20 /* GmailAPIServiceTests.swift in Sources */,
+				1A63028EC58C484E858954C7 /* LLMServiceManagerTests.swift in Sources */,
+				C722A5D008CA4396AC2E2C4D /* NetWealthServiceTests.swift in Sources */,
+				EC8FF448ABCE483787C75DB2 /* ProductionLLMServiceTests.swift in Sources */,
+				CD5DEF0EB41841D7B5AA9838 /* TaxCategoryManagerTests.swift in Sources */,
+				B180FEA8EEA04A9C8554DD6C /* BankConnectionCoordinatorTests.swift in Sources */);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+/* Begin XCBuildConfiguration section */
+		EAC726788C6C48DAA0E0C378 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		1069686F95A647A9BA237A43 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		202211AF9A2844C2B7C525FA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "FinanceMate/Preview Content";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks");
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ablankcanvas.FinanceMate;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		5E99CE9AE1D8490FB25D6352 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "FinanceMate/Preview Content";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks");
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ablankcanvas.FinanceMate;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		819212E765F346568D9D14C3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ablankcanvas.FinanceMateTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FinanceMate.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/FinanceMate";
+			};
+			name = Debug;
+		};
+		E807A102AECC42098AB6C662 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ablankcanvas.FinanceMateTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FinanceMate.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/FinanceMate";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+/* Begin XCConfigurationList section */
+		5D66EFAB79174B7D955263E8 /* Build configuration list for PBXProject "FinanceMate" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EAC726788C6C48DAA0E0C378 /* Debug */,
+				1069686F95A647A9BA237A43 /* Release */);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7651CC5499EC44B7BD1A154F /* Build configuration list for PBXNativeTarget "FinanceMate" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				202211AF9A2844C2B7C525FA /* Debug */,
+				5E99CE9AE1D8490FB25D6352 /* Release */);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E7BE5C4A371E40C4B641EB32 /* Build configuration list for PBXNativeTarget "FinanceMateTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				819212E765F346568D9D14C3 /* Debug */,
+				E807A102AECC42098AB6C662 /* Release */);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 9099777EF0694453BF04C64F /* Project object */;
+}
