@@ -55,9 +55,22 @@ def test_launch():
     assert "FinanceMate" in result.stdout
     return True
 
+def test_auth_files_exist():
+    """Authentication files must exist"""
+    auth_files = [
+        "AuthenticationManager.swift",
+        "LoginView.swift",
+        "SettingsView.swift",
+        "GmailOAuthHelper.swift"
+    ]
+    for file in auth_files:
+        path = MACOS_ROOT / "FinanceMate" / file
+        assert path.exists(), f"Missing auth file: {file}"
+    return len(auth_files)
+
 def run_all():
     """Run all tests"""
-    tests = [test_build, test_kiss, test_security, test_data_model, test_config, test_launch]
+    tests = [test_build, test_kiss, test_security, test_data_model, test_config, test_auth_files_exist, test_launch]
     results = []
 
     for test in tests:
