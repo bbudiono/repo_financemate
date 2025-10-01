@@ -9,28 +9,34 @@ struct SettingsView: View {
                 .font(.largeTitle)
                 .fontWeight(.bold)
 
-            if let email = authManager.userEmail {
-                Text("Signed in as: \(email)")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
+            // User Profile Card
+            if authManager.isAuthenticated {
+                VStack(spacing: 12) {
+                    if let name = authManager.userName {
+                        Text(name)
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                    }
+
+                    if let email = authManager.userEmail {
+                        Text(email)
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                    }
+                }
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(RoundedRectangle(cornerRadius: 12).fill(.ultraThinMaterial))
             }
 
             Spacer()
 
             Button("Sign Out") {
-                signOut()
+                authManager.signOut()
             }
             .buttonStyle(.borderedProminent)
             .tint(.red)
         }
         .padding()
-    }
-
-    private func signOut() {
-        let _ = try? KeychainHelper.delete(account: "apple_user_id")
-        let _ = try? KeychainHelper.delete(account: "gmail_refresh_token")
-        let _ = try? KeychainHelper.delete(account: "gmail_access_token")
-        authManager.isAuthenticated = false
-        authManager.userEmail = nil
     }
 }

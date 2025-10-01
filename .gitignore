@@ -165,3 +165,5 @@ venv/
 log/
 tmp/
 .env
+test_results*.xcresult
+*.xcresult
