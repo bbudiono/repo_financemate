@@ -7,9 +7,29 @@
 
 ---
 
+## 2025-10-02: KISS Violation Discovery - Chatbot Refactoring Required
+
+**LATEST:** Critical discovery during BLOCKER 4 implementation
+
+**VIOLATION FOUND:**
+- ChatbotDrawerView.swift: 436 lines (VIOLATES <200 line KISS limit)
+- ChatbotViewModel.swift: 425 lines (VIOLATES <200 line KISS limit)
+- Files exist ONLY in Sandbox, NOT in Production
+- Cannot deploy to production without ATOMIC TDD refactoring
+
+**REVISED IMPLEMENTATION PLAN:**
+- BLOCKER 4 effort: 2 hours → 1-2 days (8-16 hours)
+- Requires modular component split (6+ new files)
+- All files must be <200 lines (MANDATORY)
+- Recommendation: Defer to after BLOCKER 3 (Google SSO)
+
+**TASKS.md UPDATED:** Corrected BLOCKER 4 with detailed refactoring plan
+
+---
+
 ## 2025-10-02: Comprehensive Quality Assessment - 776 Lines, 92% Code | 82% UX
 
-**LATEST:** SME Agent Assessments Complete (code-reviewer + ui-ux-architect)
+**SME Agent Assessments Complete (code-reviewer + ui-ux-architect)
 
 **VALIDATION RESULTS:**
 - E2E tests: 7/7 passing (build, KISS, security, data model, config, auth files, launch)
