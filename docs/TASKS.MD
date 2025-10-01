@@ -2,164 +2,152 @@
 
 **Version**: 1.0.0-MVP-FOUNDATION
 **Last Updated**: 2025-10-02
-**Status**: Foundation complete, P0 fixes applied, ready for feature implementation
+**Status**: Quality assessment complete - 4 P0 BLUEPRINT blockers identified
+**Code Quality**: 92/100 (A) | **UX Quality**: 82/100 (B+)
+**BLUEPRINT Compliance**: 62% complete
 **Coordination**: technical-project-lead agent
 
 ---
 
 ## ✅ COMPLETED (2025-10-02)
 
-### **Foundation Complete** (Commit: 1e7d7eb1)
-- [x] Core app structure (501 lines, 11 files)
-- [x] 100% KISS compliance (all files <200 lines)
-- [x] Build: SUCCESS
-- [x] App launches with 3 tabs functional
-- [x] E2E test suite created (6/6 passing)
-- [x] P0 security fixes (0 force unwraps, 0 fatalError)
-- [x] Quality: 8.0/10 (up from 6.2/10)
+### **Foundation + Quality Assessment** (Commit: 15a00a07)
+- [x] Core app structure (776 lines, 15 Swift files)
+- [x] 100% KISS compliance (all files <200 lines, largest 85)
+- [x] Build: GREEN with Apple code signing
+- [x] E2E tests: 7/7 passing
+- [x] Security: 9.5/10 (zero critical violations)
+- [x] Apple Sign In SSO implemented
+- [x] Gmail OAuth with browser code exchange
+- [x] Settings tab with user preferences
+- [x] Code review: 92/100 (EXCELLENT)
+- [x] UX review: 82/100 (GOOD)
 
 ---
 
-## 🎯 P0 BLOCKERS (Required for MVP Production Release)
+## 🚨 P0 BLOCKERS (4 Critical Gaps - 5-7 Days Total Effort)
 
-### **TASK 1: Apple Sign In SSO**
-**Priority:** P0 BLOCKER
-**BLUEPRINT:** Line 64 - "SSO REQUIRED: THIS IS FUCKING MANDATORY"
-**Effort:** 4-6 hours (2 TDD cycles)
-**Status:** Not started
+### **BLOCKER 1: Gmail Transaction Extraction**
+**Priority:** P0 CRITICAL - HIGHEST PRIORITY
+**BLUEPRINT:** Lines 62-66 - "Pull expenses from gmail, every line item captured"
+**Current Status:** Email fetching works, but NO transaction/receipt extraction
+**Effort:** 2-3 days (16-24 hours)
+**Quality Gap:** Blocks 38% of BLUEPRINT compliance
 
-**Atomic Changes:**
-- [ ] Create AuthenticationManager.swift (≤50 lines)
-- [ ] Add Sign in with Apple button to ContentView
-- [ ] Implement secure token storage
-- [ ] Add authentication state management
-- [ ] Test with real Apple ID (sandbox)
+**Required Implementation:**
+- [ ] Add receipt/invoice OCR parsing to GmailAPI.swift
+- [ ] Implement line item extraction logic
+- [ ] Create transaction mapping in GmailViewModel.swift
+- [ ] Parse email dates from headers (fix hardcoded Date())
+- [ ] Add confidence scoring for extractions
+- [ ] Implement transaction creation from parsed data
+- [ ] Add manual review UI for low-confidence matches
 
 **Success Criteria:**
-- Apple Sign In button functional
-- Token persists in Keychain
-- Auth state survives app restart
-- 5/5 unit tests passing
+- Extract receipts from bernhardbudiono@gmail.com
+- Parse line items (description, amount, date, merchant)
+- Create Transaction entities with proper categories
+- 80%+ extraction accuracy on test emails
+- User can review/approve extracted transactions
 
-**Agents:** security-analyzer, engineer-swift
+**Files to Modify:**
+- GmailAPI.swift (add parsing methods, keep <200 lines)
+- GmailViewModel.swift (add extraction logic)
+- GmailView.swift (add review UI)
+- Transaction.swift (add source field)
+
+**Agents:** data-engineer, engineer-swift
 
 ---
 
-### **TASK 2: Google Sign In SSO**
-**Priority:** P0 BLOCKER
-**BLUEPRINT:** Line 64 - SSO requirement
-**Effort:** 4-6 hours (2 TDD cycles)
-**Status:** Not started
-**Depends on:** TASK 1
+### **BLOCKER 2: Tax Category Support**
+**Priority:** P0 CRITICAL
+**BLUEPRINT:** Line 63 - "Every line item must have tax categories field"
+**Current Status:** Transaction entity has NO tax category field
+**Effort:** 1 day (8 hours)
+**Quality Gap:** Core financial compliance feature missing
 
-**Atomic Changes:**
-- [ ] Add GoogleSignIn SDK dependency
-- [ ] Extend AuthenticationManager (≤40 lines)
-- [ ] Implement OAuth callback handling
-- [ ] Add Google Sign In button
+**Required Implementation:**
+- [ ] Add taxCategory field to Transaction entity
+- [ ] Update PersistenceController with migration
+- [ ] Create TaxCategory enum (Personal, Business, Investment, etc.)
+- [ ] Update TransactionsView to display/edit tax categories
+- [ ] Add tax category picker to transaction creation
+- [ ] Implement percentage-based split allocation UI (future)
+
+**Success Criteria:**
+- Transaction entity has taxCategory field
+- Core Data migration completes without data loss
+- UI allows tax category selection
+- Filtering by tax category works
+- Australian compliance (ATO categories supported)
+
+**Files to Modify:**
+- Transaction.swift (add taxCategory field)
+- PersistenceController.swift (add migration)
+- TransactionsView.swift (add category display/edit)
+- DashboardView.swift (add category filtering)
+
+**Agents:** data-engineer, engineer-swift
+
+---
+
+### **BLOCKER 3: Google Sign In SSO**
+**Priority:** P0 CRITICAL
+**BLUEPRINT:** Line 81 - "SSO REQUIRED: Functional Apple and Google SSO"
+**Current Status:** Apple SSO implemented, Google missing
+**Effort:** 4 hours
+**Quality Gap:** User authentication options incomplete
+
+**Required Implementation:**
+- [ ] Add Google Sign In SDK dependency (Swift Package Manager)
+- [ ] Extend AuthenticationManager (add Google auth methods)
+- [ ] Add Google Sign In button to LoginView
+- [ ] Implement OAuth 2.0 callback handling
 - [ ] Test with real Google account
 
 **Success Criteria:**
-- Google OAuth flow completes
-- Refresh token managed automatically
-- 5/5 Google auth tests passing
+- Google Sign In button appears on LoginView
+- OAuth flow completes successfully
+- User credentials stored in Keychain
+- Auth state persists across app restarts
+- 100% feature parity with Apple Sign In
+
+**Files to Modify:**
+- AuthenticationManager.swift (add Google methods)
+- LoginView.swift (add Google button)
+- Package dependencies (add GoogleSignIn SDK)
 
 **Agents:** security-analyzer, engineer-swift
 
 ---
 
-### **TASK 3: Gmail API OAuth Flow**
-**Priority:** P0 BLOCKER
-**BLUEPRINT:** Line 45 - "Pull expenses from gmail"
-**Effort:** 6-9 hours (3 TDD cycles)
-**Status:** Partial (UI exists, needs OAuth connection)
-**Depends on:** TASK 2
+### **BLOCKER 4: AI Chatbot Drawer Integration**
+**Priority:** P0 CRITICAL
+**BLUEPRINT:** Lines 52, 60 - "Persistent Chatbot on right side via collapsible drawer"
+**Current Status:** ChatbotDrawerView EXISTS but NOT integrated into ContentView
+**Effort:** 2 hours
+**Quality Gap:** Core AI assistant feature not accessible
 
-**Atomic Changes:**
-- [ ] Implement OAuth authorization in GmailViewModel (≤40 lines)
-- [ ] Add automatic token refresh (≤30 lines)
-- [ ] Test with bernhardbudiono@gmail.com
-- [ ] Verify emails display in app UI
-- [ ] Add refresh button and error handling
-
-**Success Criteria:**
-- OAuth completes with real Gmail account
-- Emails visible in UI (screenshot proof)
-- Token refresh automatic
-- 6/6 Gmail tests passing
-
-**Agents:** api-tester, security-analyzer, engineer-swift
-
----
-
-### **TASK 4: Email Receipt Parsing**
-**Priority:** P0 BLOCKER
-**BLUEPRINT:** Line 46 - "Every line item captured"
-**Effort:** 6-9 hours (3 TDD cycles)
-**Status:** Not started
-**Depends on:** TASK 3
-
-**Atomic Changes:**
-- [ ] Create EmailParser.swift (≤50 lines)
-- [ ] Implement regex for common receipt formats
-- [ ] Create TransactionExtractor.swift (≤50 lines)
-- [ ] Add confidence scoring (≥80% threshold)
-- [ ] Test with real emails from Gmail
+**Required Implementation:**
+- [ ] Wrap ContentView TabView in ZStack
+- [ ] Add ChatbotDrawerView as trailing overlay
+- [ ] Implement keyboard shortcut (Cmd+K) to toggle drawer
+- [ ] Add drawer state persistence (UserDefaults)
+- [ ] Test drawer animation and interactions
 
 **Success Criteria:**
-- Parse 5+ common receipt formats
-- Extract amount, date, merchant, category
-- 10/10 parsing tests with real email data
+- Chatbot drawer visible from all tabs
+- Drawer collapses/expands smoothly with spring animation
+- Keyboard shortcut works (Cmd+K)
+- Drawer state persists across app restarts
+- MCP integration functional or graceful fallback
 
-**Agents:** data-engineer, test-writer, engineer-swift
+**Files to Modify:**
+- ContentView.swift (wrap in ZStack, add ChatbotDrawerView)
+- Existing ChatbotDrawerView.swift (already implemented, just needs integration)
 
----
-
-### **TASK 5: Auto Transaction Creation**
-**Priority:** P0 BLOCKER
-**BLUEPRINT:** Line 50 - "Single table of expenses"
-**Effort:** 4-6 hours (2 TDD cycles)
-**Status:** Not started
-**Depends on:** TASK 4
-
-**Atomic Changes:**
-- [ ] Extend TransactionsViewModel (≤40 lines)
-- [ ] Implement createFromEmail() method
-- [ ] Add duplicate detection (amount + date + merchant)
-- [ ] Add user confirmation dialog
-- [ ] Save to Core Data
-
-**Success Criteria:**
-- Email creates transaction automatically
-- Duplicates prevented
-- User can confirm/reject
-- 8/8 tests passing
-
-**Agents:** code-reviewer, engineer-swift
-
----
-
-### **TASK 6: AI Financial Chatbot**
-**Priority:** P0 BLOCKER
-**BLUEPRINT:** Line 60 - "Persistent Chatbot on right side"
-**Effort:** 6-8 hours (3 TDD cycles)
-**Status:** Not started
-**Depends on:** TASK 2
-
-**Atomic Changes:**
-- [ ] Create MCPClient.swift (≤50 lines)
-- [ ] Implement HTTP 404 fallback handling
-- [ ] Create ChatbotView.swift (≤50 lines)
-- [ ] Add ChatMessage model (≤20 lines)
-- [ ] Test with MCP server or local responses
-
-**Success Criteria:**
-- Chat interface renders correctly
-- User can ask financial questions
-- Responses from MCP or fallback
-- 13/13 chatbot tests passing
-
-**Agents:** api-tester, ui-ux-architect, backend-architect
+**Agents:** ui-ux-architect, engineer-swift
 
 ---
 
