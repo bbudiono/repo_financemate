@@ -4,6 +4,21 @@
 
 - **MANDATORY:** ENSURE YOU DO NOT GO TO THE USER UNTIL YOU HAVE VERIFIED EVERYTHING 100% YOURSELF AND FOLLOWED YOUR OWN STEPS. THIS INCLUDES MULTI-MODAL SCREENSHOTS, IMAGES, CODE VALIDATION, CODE VERIFICATION, CODE REVIEW
 - **MANDATORY:** ALL COMPLETION CLAIMS MUST BE VALIDATED - DELETE FALSE CLAIMS IMMEDIATELY
+- **MANDATORY:** All visual validation tests MUST programmatically capture a screenshot of the relevant UI state—either the full screen, a specific window, or an individual UI element—using documented system capabilities like XCTest, `screencapture`, or Core Graphics.
+- **MANDATORY:** All captured snapshots intended for AI processing MUST be saved to a persistent, accessible file location (e.g., a designated test output directory or temporary folder) in a lossless format like PNG to ensure visual fidelity.
+- **MANDATORY:** All visual tests MUST ensure the application is in a predictable and consistent UI state before a snapshot is captured, including waiting for animations to complete and data to be loaded.
+- **MANDATORY:** Every captured snapshot MUST be saved with a descriptive and unique filename that includes contextual information such as the test name, UI state, element identifier, and a timestamp.
+- **MANDATORY:** The agent MUST prioritize capturing specific UI elements (`XCUIElement.screenshot()`) over full-screen captures whenever possible to reduce noise and focus the AI's analysis on the region of interest.
+- **MANDATORY:** Test environments MUST be kept consistent across runs, including screen resolution, window size, operating system theme (light/dark mode), and accessibility settings, to minimize superficial visual changes that could disrupt AI analysis.
+- **MANDATORY:** The agent's workflow MUST include a step to transmit the captured snapshot (or its file path) to a specified vision-based AI for analysis, and the AI's output MUST be used to determine the test's pass/fail result.
+- **MANDATORY:** The agent MUST create or use a metadata file (e.g., JSON) to accompany snapshots when additional context—such as expected elements, layout rules, or the specific assertion to be verified—is required for the AI's analysis.
+- **MANDATORY:** For any content that changes frequently and is not relevant to the visual test (e.g., timestamps, dynamic user data), the agent MUST implement a strategy to either mask, ignore, or make the AI robust to these variations.
+- **MANDATORY:** A feedback loop MUST be established where the analysis results from the vision AI are logged and fed back into the test results, development process, or bug tracking system.
+- **MANDATORY:** All UI automation and testing activities MUST be executed in a dedicated, background, or virtualized environment (such as an Xcode Simulator or a separate user session) and MUST NOT interact with the primary user's active desktop session.
+- **MANDATORY:** The agent is strictly prohibited from programmatically seizing control of the system's main cursor, keyboard focus, or window management outside of its sandboxed and isolated test environment.
+- **MANDATORY:** All test artifacts, including screenshots, logs, and temporary files, MUST be written exclusively to a designated, isolated output directory (e.g., `/tmp/test_outputs/` or a build artifacts folder) and NEVER to user-facing directories like Desktop or Documents.
+- **MANDATORY:** Any application windows or processes launched for a test MUST be automatically and completely terminated upon test completion, failure, or timeout, ensuring no test-related windows or artifacts are left visible in the user's environment.
+- **MANDATORY:** All testing processes must be configured to run with a lower system priority (e.g., using the `nice` command in shell scripts) to prevent significant degradation of system performance or interference with the user's foreground applications.
 
 **MANDATORY REAL DATA REQUIREMENTS (P0 CRITICAL)**
 

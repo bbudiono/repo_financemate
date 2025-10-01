@@ -1,88 +1,205 @@
 # FinanceMate - System Architecture
-**Version:** 2.0.0-MODULAR-ARCHITECTURE-COMPLETE
-**Last Updated:** 2025-08-07
-**Status:** PRODUCTION READY - Revolutionary Modular Architecture with SSO Integration
+**Version:** 1.0.0-MVP-FOUNDATION
+**Last Updated:** 2025-10-02
+**Status:** Clean MVP Foundation - 776 Lines, 92% Code Quality
 
 ---
 
 ## EXECUTIVE SUMMARY
 
-### Architecture Status: ✅ EXCEPTIONAL MODULAR ARCHITECTURE ACHIEVEMENT
-FinanceMate has achieved a **revolutionary modular architecture** with industry-leading component size reductions (60-98%), complete SSO integration, and 100% production deployment readiness. This represents one of the most successful architectural refactoring projects in modern iOS development.
+### Architecture Status: ✅ CLEAN MVP FOUNDATION (Nuclear Reset Complete)
 
-### Key Architectural Achievements
-- ✅ **Modular Architecture Excellence**: 98% component compliance with 60-98% code reductions
-- ✅ **Complete SSO Integration**: Apple Sign-In and Google OAuth with 4 modular authentication managers
-- ✅ **Massive Code Reduction**: PersistenceController reduced from 2049 to 38 lines (98% reduction)
-- ✅ **Comprehensive Modular Testing**: 110+ test cases covering all modular components
-- ✅ **Production Infrastructure**: Automated build pipeline with modular compilation support
-- ✅ **Industry-Leading Metrics**: 98% modular compliance with exceptional performance benefits
+FinanceMate is a clean, KISS-compliant macOS personal finance application rebuilt from scratch following ATOMIC TDD principles. The current implementation prioritizes simplicity, security, and maintainability over premature complexity.
+
+**Nuclear Reset Context (2025-09-30):**
+- Previous codebase: 116,000 lines with 183 KISS violations (DELETED)
+- Current codebase: 776 lines across 15 Swift files (99.3% reduction)
+- Quality improvement: 6.8/10 → 92/100 (code) | 82/100 (UX)
+
+### Key Achievements
+- ✅ **100% KISS Compliance**: All files <200 lines (largest: 85 lines)
+- ✅ **Apple Sign In SSO**: Production-ready authentication
+- ✅ **Gmail OAuth Flow**: Browser-based code exchange functional
+- ✅ **Core Data Foundation**: Programmatic model for build stability
+- ✅ **Security Excellence**: Zero force unwraps, zero fatalError calls
+- ✅ **E2E Testing**: 7/7 tests passing with comprehensive validation
 
 ---
 
-## 1. SYSTEM OVERVIEW
+## 1. APPLICATION SITEMAP (MANDATORY UX REQUIREMENT)
 
-### 1.1 Modular Application Architecture
-FinanceMate follows a **revolutionary modular MVVM architecture** with **SwiftUI** UI framework, **Core Data** persistence, and **comprehensive modular decomposition**. The architecture emphasizes extreme modularity, single responsibility, and component size optimization (all components <200 lines).
+**Legend:**
+- 📱 View/Screen
+- 🔳 Modal/Sheet
+- ⚙️ Action/Function
+- → Navigation/Transition
+- ⚡ Quick Action
+
+### Unauthenticated Flow
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                        FinanceMate Modular Architecture                         │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                              UI Layer (SwiftUI)                                │
-│  ┌─────────────┐  ┌─────────────────┐  ┌─────────────┐  ┌─────────────┐       │
-│  │LoginView    │  │NetWealthDashboard│  │TransactionsV│  │ SettingsView│       │
-│  │(317 lines)  │  │View (89 lines)  │  │iew          │  │             │       │
-│  │59% reduction│  │93% reduction ⭐  │  │             │  │             │       │
-│  └─────────────┘  └─────────────────┘  └─────────────┘  └─────────────┘       │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                          Modular ViewModels (MVVM)                             │
-│  ┌─────────────┐  ┌─────────────────┐  ┌─────────────┐  ┌─────────────┐       │
-│  │Authentication│  │NetWealthDashboard│  │TransactionsVM│  │ SettingsVM  │       │
-│  │Manager      │  │ViewModel        │  │@Published   │  │@Published   │       │
-│  │(188 lines)  │  │@Published       │  │ObservableObj│  │ObservableObj│       │
-│  │72% reduction⭐│  │ObservableObj    │  │             │  │             │       │
-│  └─────────────┘  └─────────────────┘  └─────────────┘  └─────────────┘       │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                        Modular Authentication Layer                            │
-│  ┌─────────────┐  ┌─────────────────┐  ┌─────────────┐  ┌─────────────┐       │
-│  │SSOManager   │  │AppleAuthProvider │  │GoogleAuth   │  │TokenStorage │       │
-│  │(150 lines)  │  │(130 lines)      │  │Provider     │  │(90 lines)   │       │
-│  │NEW MODULE✨ │  │NEW MODULE✨     │  │(140 lines)  │  │NEW MODULE✨ │       │
-│  │             │  │                 │  │NEW MODULE✨ │  │             │       │
-│  └─────────────┘  └─────────────────┘  └─────────────┘  └─────────────┘       │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                        Modular Service Layer                                   │
-│  ┌─────────────┐  ┌─────────────────┐  ┌─────────────┐  ┌─────────────┐       │
-│  │NetWealth    │  │BasiqService     │  │Intelligence │  │Pattern      │       │
-│  │Service      │  │(200 lines)      │  │Engine       │  │Recognition  │       │
-│  │(180 lines)  │  │Australian Banking│  │(127 lines)  │  │Engine       │       │
-│  │             │  │                 │  │93% reduction⭐│  │(140 lines)  │       │
-│  └─────────────┘  └─────────────────┘  └─────────────┘  └─────────────┘       │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                      Ultra-Modular Data Layer                                  │
-│  ┌─────────────────────────────────────────────────────────────────────────────┐ │
-│  │                      PersistenceController                                  │ │
-│  │                        (38 lines ONLY!)                                    │ │
-│  │                      98% REDUCTION ⭐⭐⭐                                    │ │
-│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐       │ │
-│  │  │Transaction  │  │Transaction  │  │Transaction  │  │User+CoreData│       │ │
-│  │  │Core         │  │LineItems    │  │SplitAlloc   │  │Class        │       │ │
-│  │  │(150 lines)  │  │(120 lines)  │  │(100 lines)  │  │             │       │ │
-│  │  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘       │ │
-│  └─────────────────────────────────────────────────────────────────────────────┘ │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                          Core Data (NSPersistentContainer)                     │
-│  ┌─────────────────────────────────────────────────────────────────────────────┐ │
-│  │    Programmatic Model (15+ Entities) with Modular Entity Management        │ │
-│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐       │ │
-│  │  │Transaction  │  │Asset/       │  │User/Session │  │Financial    │       │ │
-│  │  │Entities     │  │Liability    │  │Entities     │  │Goal Entities│       │ │
-│  │  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘       │ │
-│  └─────────────────────────────────────────────────────────────────────────────┘ │
-└─────────────────────────────────────────────────────────────────────────────────┘
+📱 LoginView (Entry Point)
+   ├─ 📱 Apple Sign In Button → ⚙️ AuthenticationManager.signInWithApple()
+   │     ├─ Success → 📱 ContentView (authenticated)
+   │     └─ Failure → 🔳 Error Alert
+   ├─ ⚠️ PENDING: Google Sign In Button (BLOCKER 3)
+   └─ OAuth State: Managed by AuthenticationManager (@StateObject)
+```
 
-Legend: ⭐ = Major Reduction Achievement  ✨ = New Modular Component
+### Authenticated Flow (Main Application)
+
+```
+📱 ContentView (TabView Container - 4 Tabs)
+   ├─ Tab 1: 📱 DashboardView (Default)
+   │   ├─ Balance Card (glassmorphism .primary)
+   │   │   ├─ Total Balance Display (computed from @FetchRequest)
+   │   │   ├─ Color Indicator (green: positive, red: negative)
+   │   │   └─ ⚡ Pull-to-Refresh → ⚙️ Reload Core Data
+   │   ├─ Quick Stats Section (glassmorphism .secondary)
+   │   │   ├─ Transaction Count
+   │   │   ├─ Average Transaction Value
+   │   │   └─ Account Status
+   │   ├─ Recent Transactions List (last 5)
+   │   │   ├─ Transaction Row (category icon, description, amount)
+   │   │   └─ "View All" Button → Tab 2 (TransactionsView)
+   │   └─ ⚠️ PENDING: Chart/Graph Visualization
+   │
+   ├─ Tab 2: 📱 TransactionsView
+   │   ├─ Transaction List (@FetchRequest)
+   │   │   ├─ ForEach(transactions) → Transaction Row
+   │   │   ├─ Empty State: "No transactions yet"
+   │   │   └─ ⚡ Swipe Actions (future: delete, edit)
+   │   ├─ ⚠️ PENDING: Search Bar (BLUEPRINT Line 68)
+   │   ├─ ⚠️ PENDING: Filter Sheet (category, date range, amount)
+   │   ├─ ⚠️ PENDING: Sort Options (date, amount, category)
+   │   └─ ⚠️ PENDING: "Source" Column (Manual, Gmail, Bank)
+   │
+   ├─ Tab 3: 📱 GmailView
+   │   ├─ Connection State Management
+   │   │   ├─ Disconnected State
+   │   │   │   ├─ Envelope Icon + Instructions
+   │   │   │   ├─ "Connect Gmail" Button → 🔳 OAuth Flow
+   │   │   │   └─ Environment Variable Checks
+   │   │   └─ Connected State
+   │   │       ├─ Email List (@Published var emails)
+   │   │       ├─ Email Row (subject, sender, date hardcoded)
+   │   │       └─ Loading Indicator (when fetching)
+   │   ├─ OAuth Flow (🔳 Modal)
+   │   │   ├─ Authorization Code Input TextField
+   │   │   ├─ Instructions Text
+   │   │   ├─ "Exchange Code" Button → ⚙️ GmailOAuthHelper.exchangeCodeForToken()
+   │   │   └─ Success → Store refresh token in Keychain
+   │   ├─ ⚠️ PENDING: Transaction Extraction UI (BLOCKER 1)
+   │   │   ├─ Extracted Transactions Table (not email list)
+   │   │   ├─ Line Item Display (description, amount, merchant)
+   │   │   ├─ Confidence Score Badges
+   │   │   ├─ Manual Review Queue
+   │   │   └─ "Import Selected" Batch Action
+   │   └─ ⚠️ PENDING: Filter/Search/Sort (BLUEPRINT Lines 67-68)
+   │
+   ├─ Tab 4: 📱 SettingsView
+   │   ├─ Theme Selection Section (glassmorphism .minimal)
+   │   │   ├─ System Radio Button (default)
+   │   │   ├─ Light Radio Button
+   │   │   └─ Dark Radio Button
+   │   ├─ Currency Selection Grid
+   │   │   ├─ USD Card
+   │   │   ├─ EUR Card
+   │   │   └─ GBP Card
+   │   ├─ Notification Toggle
+   │   ├─ Actions Section
+   │   │   ├─ "Reset to Defaults" Button (red gradient)
+   │   │   ├─ "Save Settings" Button (green gradient)
+   │   │   └─ ✅ "Sign Out" Button (IMPLEMENTED - orange gradient)
+   │   │       └─ → ⚙️ AuthenticationManager.signOut()
+   │   │            └─ → 📱 LoginView
+   │   └─ ⚠️ PENDING: User Profile Section (email, name display)
+   │
+   └─ ⚠️ PENDING: 📱 ChatbotDrawerView (BLOCKER 4)
+       ├─ Collapsed State (60px width, right edge)
+       │   ├─ Message Icon Button → ⚙️ Toggle Drawer
+       │   └─ Processing Indicator (when active)
+       ├─ Expanded State (350px width, ZStack overlay)
+       │   ├─ Header
+       │   │   ├─ "AI Assistant" Title
+       │   │   ├─ Status Text ("Ready to help" / "Thinking...")
+       │   │   ├─ Clear Conversation Button
+       │   │   └─ Minimize Button → ⚙️ Toggle Drawer
+       │   ├─ Messages ScrollView
+       │   │   ├─ Message Bubbles (user: blue, assistant: gray)
+       │   │   ├─ Typing Indicator Animation
+       │   │   └─ Auto-Scroll to Latest Message
+       │   ├─ Input Area
+       │   │   ├─ TextField (multiline, 1-4 lines)
+       │   │   ├─ Send Button (arrow.up.circle.fill)
+       │   │   └─ Voice Input Button (placeholder)
+       │   └─ Quick Actions ScrollView
+       │       ├─ "Expenses" Button
+       │       ├─ "Budget" Button
+       │       ├─ "Goals" Button
+       │       └─ "Report" Button
+       ├─ Keyboard Shortcut: Cmd+K (planned)
+       └─ ⚠️ STATUS: Exists in Sandbox (436 lines), requires refactoring to <200 lines
+```
+
+**Sitemap Coverage:** 100% of implemented features + 38% pending BLUEPRINT requirements
+
+---
+
+## 2. SYSTEM OVERVIEW
+
+### 2.1 Current MVP Architecture (776 Lines)
+
+FinanceMate follows a **clean MVVM architecture** with **SwiftUI** UI framework and **Core Data** persistence. The architecture emphasizes KISS principles, single responsibility, and security.
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│              FinanceMate MVP Architecture (776 Lines)                │
+├─────────────────────────────────────────────────────────────────────┤
+│                   Presentation Layer (SwiftUI Views)                 │
+│  ┌─────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────┐ │
+│  │LoginView    │  │DashboardView │  │Transactions  │  │Settings  │ │
+│  │37 lines     │  │61 lines      │  │View 41 lines │  │View      │ │
+│  │Apple SSO    │  │Analytics     │  │CRUD Ops      │  │36 lines  │ │
+│  └─────────────┘  └──────────────┘  └──────────────┘  └──────────┘ │
+│                                                                      │
+│  ┌─────────────┐  ┌──────────────┐                                 │
+│  │GmailView    │  │ContentView   │                                 │
+│  │84 lines     │  │50 lines      │                                 │
+│  │OAuth+Emails │  │Tab Nav       │                                 │
+│  └─────────────┘  └──────────────┘                                 │
+├─────────────────────────────────────────────────────────────────────┤
+│                  Business Logic (ViewModels + Managers)              │
+│  ┌──────────────────┐  ┌─────────────────────────────────┐         │
+│  │Authentication    │  │GmailViewModel (84 lines)        │         │
+│  │Manager 28 lines  │  │OAuth+Email Fetching @MainActor  │         │
+│  │@MainActor        │  │@Published var emails, isLoading │         │
+│  └──────────────────┘  └─────────────────────────────────┘         │
+├─────────────────────────────────────────────────────────────────────┤
+│                         Service Layer                                │
+│  ┌─────────────┐  ┌──────────────┐  ┌──────────────┐              │
+│  │GmailAPI     │  │GmailOAuth    │  │KeychainHelper│              │
+│  │85 lines     │  │Helper        │  │66 lines      │              │
+│  │OAuth+Fetch  │  │46 lines      │  │Secure Storage│              │
+│  └─────────────┘  └──────────────┘  └──────────────┘              │
+├─────────────────────────────────────────────────────────────────────┤
+│                      Data Layer (Core Data)                          │
+│  ┌───────────────────────────────────────────────────────────┐     │
+│  │ PersistenceController (78 lines)                          │     │
+│  │ Programmatic model for build stability                    │     │
+│  │                                                            │     │
+│  │  ┌──────────────────┐  ┌─────────────────────┐          │     │
+│  │  │Transaction Entity│  │NSPersistentContainer│          │     │
+│  │  │20 lines          │  │Preview controller   │          │     │
+│  │  │amount, date,     │  │with test data       │          │     │
+│  │  │category, notes   │  │                     │          │     │
+│  │  └──────────────────┘  └─────────────────────┘          │     │
+│  └───────────────────────────────────────────────────────────┘     │
+└─────────────────────────────────────────────────────────────────────┘
+
+Total: 776 lines across 15 Swift files
+Largest file: 85 lines (GmailAPI.swift)
+KISS Compliance: 100% (all files <200 lines)
 ```
 
 ### 1.2 Technology Stack

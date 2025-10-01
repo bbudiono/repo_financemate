@@ -125,29 +125,48 @@
 ### **BLOCKER 4: AI Chatbot Drawer Integration**
 **Priority:** P0 CRITICAL
 **BLUEPRINT:** Lines 52, 60 - "Persistent Chatbot on right side via collapsible drawer"
-**Current Status:** ChatbotDrawerView EXISTS but NOT integrated into ContentView
-**Effort:** 2 hours
-**Quality Gap:** Core AI assistant feature not accessible
+**Current Status:** ❌ KISS VIOLATION DISCOVERED - Cannot deploy from Sandbox
+**Effort:** 1-2 days (8-16 hours) - **REVISED FROM 2 HOURS**
+**Quality Gap:** Core AI assistant feature not accessible + KISS violations
 
-**Required Implementation:**
-- [ ] Wrap ContentView TabView in ZStack
-- [ ] Add ChatbotDrawerView as trailing overlay
-- [ ] Implement keyboard shortcut (Cmd+K) to toggle drawer
-- [ ] Add drawer state persistence (UserDefaults)
-- [ ] Test drawer animation and interactions
+**CRITICAL DISCOVERY (2025-10-02):**
+- ChatbotDrawerView.swift: 436 lines (VIOLATES <200 line limit)
+- ChatbotViewModel.swift: 425 lines (VIOLATES <200 line limit)
+- Files exist ONLY in Sandbox, NOT in Production
+- **Cannot copy directly** - requires ATOMIC TDD refactoring first
+
+**Required Refactoring (MANDATORY):**
+- [ ] Split ChatbotDrawerView into modular components:
+  - ChatbotDrawer.swift (<100 lines) - Main container
+  - MessageBubble.swift (<50 lines) - Message display
+  - TypingIndicator.swift (<30 lines) - Animation component
+  - QuickActions.swift (<50 lines) - Quick action buttons
+- [ ] Split ChatbotViewModel into focused components:
+  - ChatbotViewModel.swift (<100 lines) - Core state
+  - MessageService.swift (<80 lines) - Message handling
+  - MCPClient.swift (<80 lines) - MCP integration
+- [ ] Create ChatMessage.swift model (<30 lines)
+- [ ] Integrate refactored components into Production ContentView
+- [ ] Test with E2E validation
 
 **Success Criteria:**
-- Chatbot drawer visible from all tabs
-- Drawer collapses/expands smoothly with spring animation
-- Keyboard shortcut works (Cmd+K)
-- Drawer state persists across app restarts
-- MCP integration functional or graceful fallback
+- ALL files <200 lines (KISS compliance)
+- Chatbot drawer functional from all tabs
+- Smooth animations with spring physics
+- MCP integration or graceful fallback
+- 100% E2E test passage
 
-**Files to Modify:**
-- ContentView.swift (wrap in ZStack, add ChatbotDrawerView)
-- Existing ChatbotDrawerView.swift (already implemented, just needs integration)
+**Files to Create/Modify:**
+- ChatbotDrawer.swift (NEW - <100 lines)
+- ChatbotViewModel.swift (NEW - <100 lines)
+- MessageBubble.swift (NEW - <50 lines)
+- MessageService.swift (NEW - <80 lines)
+- ChatMessage.swift (NEW - <30 lines)
+- ContentView.swift (MODIFY - add ZStack integration)
 
-**Agents:** ui-ux-architect, engineer-swift
+**Agents:** refactor, code-reviewer, engineer-swift, ui-ux-architect
+
+**RECOMMENDATION:** Defer to after BLOCKER 3 (Google SSO) - simpler 4-hour task
 
 ---
 
