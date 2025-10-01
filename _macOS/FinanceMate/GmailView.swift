@@ -19,12 +19,31 @@ struct GmailView: View {
                     Text("Connect Gmail Account")
                         .font(.title2)
 
+                    Text("Click button to open browser for OAuth")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+
                     Button("Connect Gmail") {
-                        Task {
-                            await viewModel.authenticate()
+                        if let clientID = ProcessInfo.processInfo.environment["GOOGLE_OAUTH_CLIENT_ID"],
+                           let url = GmailOAuthHelper.getAuthorizationURL(clientID: clientID) {
+                            NSWorkspace.shared.open(url)
+                            viewModel.showCodeInput = true
                         }
                     }
                     .buttonStyle(.borderedProminent)
+
+                    if viewModel.showCodeInput {
+                        TextField("Enter authorization code", text: $viewModel.authCode)
+                            .textFieldStyle(.roundedBorder)
+                            .frame(maxWidth: 400)
+
+                        Button("Submit Code") {
+                            Task {
+                                await viewModel.exchangeCode()
+                            }
+                        }
+                        .buttonStyle(.borderedProminent)
+                    }
                 }
             } else {
                 if viewModel.isLoading {

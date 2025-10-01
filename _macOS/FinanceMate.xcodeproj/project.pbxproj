@@ -19,6 +19,7 @@
 		AA5F9890E57C2445AD7261A9 /* TransactionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F6F07E70896D0F653D8125A /* TransactionsView.swift */; };
 		AF37A07AB6DBD988BC6A6BE8 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA373D32E33E191AF2C4D761 /* SettingsView.swift */; };
 		BBBAD1F16B9F9725870AA423 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA0DFAF1B4D00C9177FB89F0 /* PersistenceController.swift */; };
+		E0D3F6168F5AD224E4A8B877 /* GmailOAuthHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97880124EAFD9019DF7A2AD2 /* GmailOAuthHelper.swift */; };
 		E27E3897995C633A280CCA7E /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C1CB1C75DC0D59EB08342C /* LoginView.swift */; };
 		FD47DD6F80A476B4EF448E5D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1715840A6674ADB3AD26EAF /* ContentView.swift */; };
 /* End PBXBuildFile section */
@@ -31,6 +32,7 @@
 		71EF5C81BF4E9894238B9C34 /* GmailModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GmailModels.swift; sourceTree = "<group>"; };
 		85C1CB1C75DC0D59EB08342C /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		862B24382DB2714189DE41A9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		97880124EAFD9019DF7A2AD2 /* GmailOAuthHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GmailOAuthHelper.swift; sourceTree = "<group>"; };
 		99BC4F8F2FAB08CC7A4DEC3A /* FinanceMate.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FinanceMate.entitlements; sourceTree = "<group>"; };
 		A1715840A6674ADB3AD26EAF /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		BA0DFAF1B4D00C9177FB89F0 /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
@@ -62,6 +64,7 @@
 				F64317D4D1264A4EEA0A7239 /* FinanceMateApp.swift */,
 				E904C06A5DEAACD675C7D55C /* GmailAPI.swift */,
 				71EF5C81BF4E9894238B9C34 /* GmailModels.swift */,
+				97880124EAFD9019DF7A2AD2 /* GmailOAuthHelper.swift */,
 				3F7C8A27F4452198FF3D4336 /* GmailView.swift */,
 				C0A06C1B981717175872995B /* GmailViewModel.swift */,
 				862B24382DB2714189DE41A9 /* Info.plist */,
@@ -148,6 +151,7 @@
 				149FBF1C7FEDB4D475A84FA3 /* FinanceMateApp.swift in Sources */,
 				8AD6ED10D16B550839EE977A /* GmailAPI.swift in Sources */,
 				8A4C5F380DC598249916287A /* GmailModels.swift in Sources */,
+				E0D3F6168F5AD224E4A8B877 /* GmailOAuthHelper.swift in Sources */,
 				8A8513582D2EBB487126C8DD /* GmailView.swift in Sources */,
 				472F3AB0C78B22DCD65B3D15 /* GmailViewModel.swift in Sources */,
 				08F06BC3769A8A9F49B8B5AE /* KeychainHelper.swift in Sources */,

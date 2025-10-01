@@ -6,6 +6,8 @@ class GmailViewModel: ObservableObject {
     @Published var emails: [GmailEmail] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
+    @Published var showCodeInput = false
+    @Published var authCode = ""
 
     func checkAuthentication() async {
         if KeychainHelper.get(account: "gmail_refresh_token") != nil {
@@ -13,14 +15,29 @@ class GmailViewModel: ObservableObject {
         }
     }
 
-    func authenticate() async {
+    func exchangeCode() async {
+        guard let clientID = ProcessInfo.processInfo.environment["GOOGLE_OAUTH_CLIENT_ID"],
+              let clientSecret = ProcessInfo.processInfo.environment["GOOGLE_OAUTH_CLIENT_SECRET"] else {
+            errorMessage = "OAuth credentials not found"
+            return
+        }
+
         isLoading = true
         errorMessage = nil
-        await refreshAccessToken()
 
-        if isAuthenticated {
+        do {
+            _ = try await GmailOAuthHelper.exchangeCodeForToken(
+                code: authCode,
+                clientID: clientID,
+                clientSecret: clientSecret
+            )
+            isAuthenticated = true
+            showCodeInput = false
             await fetchEmails()
+        } catch {
+            errorMessage = "Failed to exchange code: \(error.localizedDescription)"
         }
+
         isLoading = false
     }
 
