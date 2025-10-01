@@ -70,7 +70,24 @@ struct PersistenceController {
         sourceAttr.isOptional = false
         sourceAttr.defaultValue = "manual"
 
-        transactionEntity.properties = [idAttr, amountAttr, descAttr, dateAttr, sourceAttr]
+        let categoryAttr = NSAttributeDescription()
+        categoryAttr.name = "category"
+        categoryAttr.attributeType = .stringAttributeType
+        categoryAttr.isOptional = false
+        categoryAttr.defaultValue = "Other"
+
+        let noteAttr = NSAttributeDescription()
+        noteAttr.name = "note"
+        noteAttr.attributeType = .stringAttributeType
+        noteAttr.isOptional = true
+
+        let taxCategoryAttr = NSAttributeDescription()
+        taxCategoryAttr.name = "taxCategory"
+        taxCategoryAttr.attributeType = .stringAttributeType
+        taxCategoryAttr.isOptional = false
+        taxCategoryAttr.defaultValue = "Personal"
+
+        transactionEntity.properties = [idAttr, amountAttr, descAttr, dateAttr, sourceAttr, categoryAttr, noteAttr, taxCategoryAttr]
 
         model.entities = [transactionEntity]
         return model

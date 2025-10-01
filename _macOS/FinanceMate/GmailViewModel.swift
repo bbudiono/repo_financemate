@@ -1,13 +1,21 @@
 import SwiftUI
+import CoreData
 
 @MainActor
 class GmailViewModel: ObservableObject {
     @Published var isAuthenticated = false
     @Published var emails: [GmailEmail] = []
+    @Published var extractedTransactions: [ExtractedTransaction] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
     @Published var showCodeInput = false
     @Published var authCode = ""
+
+    private var viewContext: NSManagedObjectContext?
+
+    func setContext(_ context: NSManagedObjectContext) {
+        self.viewContext = context
+    }
 
     func checkAuthentication() async {
         if KeychainHelper.get(account: "gmail_refresh_token") != nil {
@@ -75,10 +83,44 @@ class GmailViewModel: ObservableObject {
 
         do {
             emails = try await GmailAPI.fetchEmails(accessToken: accessToken, maxResults: 10)
+            await extractTransactionsFromEmails()
         } catch {
             errorMessage = "Failed to fetch emails: \(error.localizedDescription)"
         }
 
         isLoading = false
+    }
+
+    // MARK: - Transaction Extraction
+
+    func extractTransactionsFromEmails() async {
+        extractedTransactions = emails.compactMap { GmailAPI.extractTransaction(from: $0) }
+            .filter { $0.confidence >= 0.6 } // Only show 60%+ confidence
+            .sorted { $0.confidence > $1.confidence }
+    }
+
+    func createTransaction(from extracted: ExtractedTransaction) {
+        guard let context = viewContext else { return }
+
+        let transaction = Transaction(context: context)
+        transaction.id = UUID()
+        transaction.amount = extracted.amount
+        transaction.itemDescription = extracted.merchant
+        transaction.category = extracted.category
+        transaction.taxCategory = TaxCategory.personal.rawValue // Default to Personal
+        transaction.date = extracted.date
+        transaction.source = "gmail"
+        transaction.note = "Merchant: \(extracted.merchant) | Confidence: \(Int(extracted.confidence * 100))%"
+
+        do {
+            try context.save()
+        } catch {
+            errorMessage = "Failed to save transaction: \(error.localizedDescription)"
+        }
+    }
+
+    func createAllTransactions() {
+        extractedTransactions.forEach { createTransaction(from: $0) }
+        extractedTransactions.removeAll()
     }
 }

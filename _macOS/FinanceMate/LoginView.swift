@@ -3,6 +3,8 @@ import AuthenticationServices
 
 struct LoginView: View {
     @ObservedObject var authManager: AuthenticationManager
+    @State private var showGoogleCodeInput = false
+    @State private var googleAuthCode = ""
 
     var body: some View {
         VStack(spacing: 30) {
@@ -24,6 +26,40 @@ struct LoginView: View {
             }
             .frame(height: 50)
             .frame(maxWidth: 300)
+
+            Button(action: {
+                if let clientID = ProcessInfo.processInfo.environment["GOOGLE_OAUTH_CLIENT_ID"],
+                   let url = GmailOAuthHelper.getAuthorizationURL(clientID: clientID) {
+                    NSWorkspace.shared.open(url)
+                    showGoogleCodeInput = true
+                }
+            }) {
+                HStack {
+                    Image(systemName: "g.circle.fill")
+                    Text("Sign in with Google")
+                }
+                .frame(maxWidth: 300)
+                .frame(height: 50)
+            }
+            .buttonStyle(.borderedProminent)
+            .tint(.red)
+
+            if showGoogleCodeInput {
+                VStack(spacing: 12) {
+                    TextField("Enter Google authorization code", text: $googleAuthCode)
+                        .textFieldStyle(.roundedBorder)
+                        .frame(maxWidth: 300)
+
+                    Button("Submit Code") {
+                        Task {
+                            await authManager.handleGoogleSignIn(code: googleAuthCode)
+                            showGoogleCodeInput = false
+                            googleAuthCode = ""
+                        }
+                    }
+                    .buttonStyle(.borderedProminent)
+                }
+            }
 
             if let error = authManager.errorMessage {
                 Text(error)

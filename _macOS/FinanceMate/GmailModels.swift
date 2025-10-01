@@ -42,3 +42,21 @@ struct Header: Codable {
     let name: String
     let value: String
 }
+
+// MARK: - Transaction Extraction Models
+
+struct ExtractedTransaction {
+    let merchant: String
+    let amount: Double
+    let date: Date
+    let category: String
+    let items: [LineItem]
+    let confidence: Double // 0.0 to 1.0
+    let rawText: String
+}
+
+struct LineItem {
+    let description: String
+    let quantity: Int
+    let price: Double
+}

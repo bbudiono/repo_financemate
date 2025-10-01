@@ -2,6 +2,7 @@ import SwiftUI
 
 struct GmailView: View {
     @StateObject private var viewModel = GmailViewModel()
+    @Environment(\.managedObjectContext) private var viewContext
 
     var body: some View {
         VStack(spacing: 20) {
@@ -48,22 +49,30 @@ struct GmailView: View {
             } else {
                 if viewModel.isLoading {
                     ProgressView("Loading emails...")
-                } else if viewModel.emails.isEmpty {
-                    Text("No receipt emails found")
+                } else if viewModel.extractedTransactions.isEmpty {
+                    Text("No transactions detected in emails")
                         .foregroundColor(.secondary)
+                    Button("Refresh Emails") {
+                        Task { await viewModel.fetchEmails() }
+                    }
                 } else {
-                    List(viewModel.emails) { email in
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(email.subject)
+                    VStack {
+                        HStack {
+                            Text("\(viewModel.extractedTransactions.count) transactions found")
                                 .font(.headline)
-                            Text("From: \(email.sender)")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                            Text(email.date, style: .date)
-                                .font(.caption)
-                                .foregroundColor(.secondary)
+                            Spacer()
+                            Button("Create All") {
+                                viewModel.createAllTransactions()
+                            }
+                            .buttonStyle(.borderedProminent)
                         }
-                        .padding(.vertical, 4)
+                        .padding()
+
+                        List(viewModel.extractedTransactions, id: \.rawText) { extracted in
+                            ExtractedTransactionRow(extracted: extracted) {
+                                viewModel.createTransaction(from: extracted)
+                            }
+                        }
                     }
                 }
             }
@@ -80,5 +89,67 @@ struct GmailView: View {
                 await viewModel.fetchEmails()
             }
         }
+        .onAppear {
+            viewModel.setContext(viewContext)
+        }
     }
 }
+
+// MARK: - Extracted Transaction Row
+
+struct ExtractedTransactionRow: View {
+    let extracted: ExtractedTransaction
+    let onApprove: () -> Void
+
+    var confidenceColor: Color {
+        if extracted.confidence >= 0.8 { return .green }
+        if extracted.confidence >= 0.6 { return .orange }
+        return .red
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(extracted.merchant)
+                        .font(.headline)
+                    Text(extracted.category)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+
+                Spacer()
+
+                VStack(alignment: .trailing, spacing: 4) {
+                    Text(String(format: "$%.2f", extracted.amount))
+                        .font(.title3)
+                        .fontWeight(.bold)
+                    HStack(spacing: 4) {
+                        Circle()
+                            .fill(confidenceColor)
+                            .frame(width: 8, height: 8)
+                        Text("\(Int(extracted.confidence * 100))%")
+                            .font(.caption)
+                            .foregroundColor(confidenceColor)
+                    }
+                }
+            }
+
+            if !extracted.items.isEmpty {
+                Text("\(extracted.items.count) line items")
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+            }
+
+            Button("Create Transaction") {
+                onApprove()
+            }
+            .buttonStyle(.bordered)
+            .controlSize(.small)
+        }
+        .padding()
+        .background(Color.secondary.opacity(0.1))
+        .cornerRadius(8)
+    }
+}
+

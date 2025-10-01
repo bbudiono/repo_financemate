@@ -20,12 +20,21 @@ struct TransactionsView: View {
             } else {
                 List(transactions) { transaction in
                     HStack {
-                        VStack(alignment: .leading) {
+                        VStack(alignment: .leading, spacing: 4) {
                             Text(transaction.itemDescription)
                                 .font(.headline)
-                            Text(transaction.date, style: .date)
-                                .font(.caption)
-                                .foregroundColor(.secondary)
+                            HStack(spacing: 8) {
+                                Text(transaction.taxCategory)
+                                    .font(.caption)
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 2)
+                                    .background(taxCategoryColor(transaction.taxCategory).opacity(0.2))
+                                    .foregroundColor(taxCategoryColor(transaction.taxCategory))
+                                    .cornerRadius(4)
+                                Text(transaction.date, style: .date)
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
                         }
 
                         Spacer()
@@ -36,6 +45,16 @@ struct TransactionsView: View {
                     }
                 }
             }
+        }
+    }
+
+    private func taxCategoryColor(_ category: String) -> Color {
+        switch category {
+        case "Personal": return .blue
+        case "Business": return .purple
+        case "Investment": return .green
+        case "Property Investment": return .orange
+        default: return .gray
         }
     }
 }

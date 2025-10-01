@@ -49,6 +49,9 @@ class AuthenticationManager: ObservableObject {
         let _ = try? KeychainHelper.delete(account: "apple_user_id")
         let _ = try? KeychainHelper.delete(account: "apple_user_email")
         let _ = try? KeychainHelper.delete(account: "apple_user_name")
+        let _ = try? KeychainHelper.delete(account: "google_user_id")
+        let _ = try? KeychainHelper.delete(account: "google_user_email")
+        let _ = try? KeychainHelper.delete(account: "google_user_name")
         let _ = try? KeychainHelper.delete(account: "gmail_refresh_token")
         let _ = try? KeychainHelper.delete(account: "gmail_access_token")
 
@@ -56,4 +59,63 @@ class AuthenticationManager: ObservableObject {
         userEmail = nil
         userName = nil
     }
+
+    // MARK: - Google Sign In (OAuth 2.0)
+
+    func handleGoogleSignIn(code: String) async {
+        guard let clientID = ProcessInfo.processInfo.environment["GOOGLE_OAUTH_CLIENT_ID"],
+              let clientSecret = ProcessInfo.processInfo.environment["GOOGLE_OAUTH_CLIENT_SECRET"] else {
+            errorMessage = "Google OAuth credentials not found in .env"
+            return
+        }
+
+        do {
+            _ = try await GmailOAuthHelper.exchangeCodeForToken(
+                code: code,
+                clientID: clientID,
+                clientSecret: clientSecret
+            )
+
+            // Access token is now in Keychain, fetch user info
+            if let accessToken = KeychainHelper.get(account: "gmail_access_token"),
+               let userInfo = try? await fetchGoogleUserInfo(accessToken: accessToken) {
+                userEmail = userInfo.email
+                userName = userInfo.name
+
+                KeychainHelper.save(value: userInfo.id, account: "google_user_id")
+                KeychainHelper.save(value: userInfo.email, account: "google_user_email")
+                KeychainHelper.save(value: userInfo.name, account: "google_user_name")
+            }
+
+            isAuthenticated = true
+        } catch {
+            errorMessage = "Google Sign In failed: \(error.localizedDescription)"
+        }
+    }
+
+    private func fetchGoogleUserInfo(accessToken: String) async throws -> GoogleUserInfo {
+        guard let url = URL(string: "https://www.googleapis.com/oauth2/v2/userinfo") else {
+            throw NSError(domain: "AuthError", code: -1)
+        }
+
+        var request = URLRequest(url: url)
+        request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+
+        let (data, _) = try await URLSession.shared.data(for: request)
+        return try JSONDecoder().decode(GoogleUserInfo.self, from: data)
+    }
+
+    func checkGoogleAuthStatus() {
+        if KeychainHelper.get(account: "google_user_id") != nil {
+            isAuthenticated = true
+            userEmail = KeychainHelper.get(account: "google_user_email")
+            userName = KeychainHelper.get(account: "google_user_name")
+        }
+    }
+}
+
+struct GoogleUserInfo: Codable {
+    let id: String
+    let email: String
+    let name: String
 }
