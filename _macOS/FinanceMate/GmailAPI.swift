@@ -1,5 +1,6 @@
 import Foundation
 
+/// Gmail API error types
 enum GmailAPIError: LocalizedError {
     case invalidURL(String)
 
@@ -10,7 +11,15 @@ enum GmailAPIError: LocalizedError {
     }
 }
 
+/// Gmail API client - OAuth authentication and email fetching
+/// Security: Uses proper URL encoding to prevent injection attacks
 struct GmailAPI {
+    /// Refresh OAuth access token using stored refresh token
+    /// - Parameters:
+    ///   - refreshToken: Long-lived refresh token from initial OAuth flow
+    ///   - clientID: Google OAuth client ID from .env
+    ///   - clientSecret: Google OAuth client secret from .env
+    /// - Returns: New access token with expiry time
     static func refreshToken(refreshToken: String, clientID: String, clientSecret: String) async throws -> TokenResponse {
         guard let url = URL(string: "https://oauth2.googleapis.com/token") else {
             throw GmailAPIError.invalidURL("oauth2.googleapis.com/token")

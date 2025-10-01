@@ -1,9 +1,15 @@
 import Foundation
 import Security
 
+/// Secure storage helper for OAuth tokens and sensitive data
+/// Uses macOS Keychain for secure, encrypted persistence
 struct KeychainHelper {
+    /// Keychain service identifier for FinanceMate
     private static let service = "com.ablankcanvas.FinanceMate"
 
+    /// Retrieve value from Keychain
+    /// - Parameter account: Account identifier (e.g., "gmail_access_token")
+    /// - Returns: Stored value or nil if not found
     static func get(account: String) -> String? {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
