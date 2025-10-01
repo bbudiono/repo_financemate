@@ -67,7 +67,7 @@ def run_all():
         except Exception as e:
             results.append((test.__name__, False, str(e)))
 
-    passed = sum(1 for _, success in results if success)
+    passed = sum(1 for _, success, *_ in results if success)
     print(f"\n{passed}/{len(results)} tests passed")
 
     for name, success, *info in results:
