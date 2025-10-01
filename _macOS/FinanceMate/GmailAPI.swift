@@ -1,21 +1,44 @@
 import Foundation
 
+enum GmailAPIError: LocalizedError {
+    case invalidURL(String)
+
+    var errorDescription: String? {
+        switch self {
+        case .invalidURL(let url): return "Invalid URL: \(url)"
+        }
+    }
+}
+
 struct GmailAPI {
     static func refreshToken(refreshToken: String, clientID: String, clientSecret: String) async throws -> TokenResponse {
-        let url = URL(string: "https://oauth2.googleapis.com/token")!
+        guard let url = URL(string: "https://oauth2.googleapis.com/token") else {
+            throw GmailAPIError.invalidURL("oauth2.googleapis.com/token")
+        }
+
+        var components = URLComponents()
+        components.queryItems = [
+            URLQueryItem(name: "client_id", value: clientID),
+            URLQueryItem(name: "client_secret", value: clientSecret),
+            URLQueryItem(name: "refresh_token", value: refreshToken),
+            URLQueryItem(name: "grant_type", value: "refresh_token")
+        ]
+
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-
-        let body = "client_id=\(clientID)&client_secret=\(clientSecret)&refresh_token=\(refreshToken)&grant_type=refresh_token"
-        request.httpBody = body.data(using: .utf8)
+        request.httpBody = components.percentEncodedQuery?.data(using: .utf8)
 
         let (data, _) = try await URLSession.shared.data(for: request)
         return try JSONDecoder().decode(TokenResponse.self, from: data)
     }
 
     static func fetchEmails(accessToken: String, maxResults: Int) async throws -> [GmailEmail] {
-        let url = URL(string: "https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=\(maxResults)&q=subject:receipt OR subject:invoice")!
+        let urlString = "https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=\(maxResults)"
+        guard let url = URL(string: urlString) else {
+            throw GmailAPIError.invalidURL(urlString)
+        }
+
         var request = URLRequest(url: url)
         request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
 
@@ -33,7 +56,11 @@ struct GmailAPI {
     }
 
     private static func fetchEmailDetails(messageId: String, accessToken: String) async throws -> GmailEmail {
-        let url = URL(string: "https://gmail.googleapis.com/gmail/v1/users/me/messages/\(messageId)")!
+        let urlString = "https://gmail.googleapis.com/gmail/v1/users/me/messages/\(messageId)"
+        guard let url = URL(string: urlString) else {
+            throw GmailAPIError.invalidURL(urlString)
+        }
+
         var request = URLRequest(url: url)
         request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
 
@@ -46,45 +73,4 @@ struct GmailAPI {
 
         return GmailEmail(id: messageId, subject: subject, sender: from, date: Date(), snippet: message.snippet)
     }
-}
-
-struct GmailEmail: Identifiable {
-    let id: String
-    let subject: String
-    let sender: String
-    let date: Date
-    let snippet: String
-}
-
-struct TokenResponse: Codable {
-    let accessToken: String
-    let expiresIn: Int
-
-    enum CodingKeys: String, CodingKey {
-        case accessToken = "access_token"
-        case expiresIn = "expires_in"
-    }
-}
-
-struct MessagesResponse: Codable {
-    let messages: [MessageStub]
-}
-
-struct MessageStub: Codable {
-    let id: String
-}
-
-struct MessageDetail: Codable {
-    let id: String
-    let snippet: String
-    let payload: Payload
-}
-
-struct Payload: Codable {
-    let headers: [Header]
-}
-
-struct Header: Codable {
-    let name: String
-    let value: String
 }

@@ -11,6 +11,7 @@
 		149FBF1C7FEDB4D475A84FA3 /* FinanceMateApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F64317D4D1264A4EEA0A7239 /* FinanceMateApp.swift */; };
 		2DFC3B40CF261DC740E43B4A /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD1B108972E6DE4F2BB3E4BE /* DashboardView.swift */; };
 		472F3AB0C78B22DCD65B3D15 /* GmailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A06C1B981717175872995B /* GmailViewModel.swift */; };
+		8A4C5F380DC598249916287A /* GmailModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71EF5C81BF4E9894238B9C34 /* GmailModels.swift */; };
 		8A8513582D2EBB487126C8DD /* GmailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F7C8A27F4452198FF3D4336 /* GmailView.swift */; };
 		8AD6ED10D16B550839EE977A /* GmailAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = E904C06A5DEAACD675C7D55C /* GmailAPI.swift */; };
 		8BAF2671C99632758B9B44D4 /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4945387B7AF59CA123F400 /* Transaction.swift */; };
@@ -23,6 +24,7 @@
 		0F6F07E70896D0F653D8125A /* TransactionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsView.swift; sourceTree = "<group>"; };
 		3F7C8A27F4452198FF3D4336 /* GmailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GmailView.swift; sourceTree = "<group>"; };
 		6AD7F62BE980B30C777D9BCC /* FinanceMate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FinanceMate.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		71EF5C81BF4E9894238B9C34 /* GmailModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GmailModels.swift; sourceTree = "<group>"; };
 		862B24382DB2714189DE41A9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		99BC4F8F2FAB08CC7A4DEC3A /* FinanceMate.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FinanceMate.entitlements; sourceTree = "<group>"; };
 		A1715840A6674ADB3AD26EAF /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -52,6 +54,7 @@
 				99BC4F8F2FAB08CC7A4DEC3A /* FinanceMate.entitlements */,
 				F64317D4D1264A4EEA0A7239 /* FinanceMateApp.swift */,
 				E904C06A5DEAACD675C7D55C /* GmailAPI.swift */,
+				71EF5C81BF4E9894238B9C34 /* GmailModels.swift */,
 				3F7C8A27F4452198FF3D4336 /* GmailView.swift */,
 				C0A06C1B981717175872995B /* GmailViewModel.swift */,
 				862B24382DB2714189DE41A9 /* Info.plist */,
@@ -134,6 +137,7 @@
 				2DFC3B40CF261DC740E43B4A /* DashboardView.swift in Sources */,
 				149FBF1C7FEDB4D475A84FA3 /* FinanceMateApp.swift in Sources */,
 				8AD6ED10D16B550839EE977A /* GmailAPI.swift in Sources */,
+				8A4C5F380DC598249916287A /* GmailModels.swift in Sources */,
 				8A8513582D2EBB487126C8DD /* GmailView.swift in Sources */,
 				472F3AB0C78B22DCD65B3D15 /* GmailViewModel.swift in Sources */,
 				08F06BC3769A8A9F49B8B5AE /* KeychainHelper.swift in Sources */,

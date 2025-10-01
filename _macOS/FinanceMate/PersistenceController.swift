@@ -7,13 +7,12 @@ struct PersistenceController {
         let viewContext = controller.container.viewContext
 
         let transaction = Transaction(context: viewContext)
-        transaction.id = UUID()
-        transaction.amount = 99.50
-        transaction.itemDescription = "Preview transaction"
-        transaction.date = Date()
-        transaction.source = "preview"
 
-        try? viewContext.save()
+        do {
+            try viewContext.save()
+        } catch {
+            print("Preview save error: \(error.localizedDescription)")
+        }
         return controller
     }()
 
@@ -28,11 +27,12 @@ struct PersistenceController {
 
         container.loadPersistentStores { description, error in
             if let error = error {
-                fatalError("Core Data failed to load: \(error)")
+                print("Core Data load error: \(error.localizedDescription)")
             }
         }
 
         container.viewContext.automaticallyMergesChangesFromParent = true
+        container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
     }
 
     private static func createModel() -> NSManagedObjectModel {
@@ -45,25 +45,30 @@ struct PersistenceController {
         let idAttr = NSAttributeDescription()
         idAttr.name = "id"
         idAttr.attributeType = .UUIDAttributeType
+        idAttr.isOptional = false
 
         let amountAttr = NSAttributeDescription()
         amountAttr.name = "amount"
         amountAttr.attributeType = .doubleAttributeType
+        amountAttr.isOptional = false
+        amountAttr.defaultValue = 0.0
 
         let descAttr = NSAttributeDescription()
         descAttr.name = "itemDescription"
         descAttr.attributeType = .stringAttributeType
-        descAttr.isOptional = true
+        descAttr.isOptional = false
+        descAttr.defaultValue = ""
 
         let dateAttr = NSAttributeDescription()
         dateAttr.name = "date"
         dateAttr.attributeType = .dateAttributeType
-        dateAttr.isOptional = true
+        dateAttr.isOptional = false
 
         let sourceAttr = NSAttributeDescription()
         sourceAttr.name = "source"
         sourceAttr.attributeType = .stringAttributeType
-        sourceAttr.isOptional = true
+        sourceAttr.isOptional = false
+        sourceAttr.defaultValue = "manual"
 
         transactionEntity.properties = [idAttr, amountAttr, descAttr, dateAttr, sourceAttr]
 

@@ -21,9 +21,9 @@ struct TransactionsView: View {
                 List(transactions) { transaction in
                     HStack {
                         VStack(alignment: .leading) {
-                            Text(transaction.itemDescription ?? "Unknown")
+                            Text(transaction.itemDescription)
                                 .font(.headline)
-                            Text(transaction.date ?? Date(), style: .date)
+                            Text(transaction.date, style: .date)
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
