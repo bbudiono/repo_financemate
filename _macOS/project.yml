@@ -1,0 +1,20 @@
+name: FinanceMate
+options:
+  bundleIdPrefix: com.ablankcanvas
+  deploymentTarget:
+    macOS: "14.0"
+
+targets:
+  FinanceMate:
+    type: application
+    platform: macOS
+    sources:
+      - FinanceMate
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: com.ablankcanvas.financemate
+      INFOPLIST_FILE: FinanceMate/Info.plist
+      CODE_SIGN_ENTITLEMENTS: FinanceMate/FinanceMate.entitlements
+      DEVELOPMENT_TEAM: 7KV34995HH
+      CODE_SIGN_STYLE: Automatic
+      ENABLE_HARDENED_RUNTIME: YES
+      MACOSX_DEPLOYMENT_TARGET: "14.0"
