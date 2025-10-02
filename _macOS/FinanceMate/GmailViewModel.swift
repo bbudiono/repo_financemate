@@ -11,9 +11,9 @@ class GmailViewModel: ObservableObject {
     @Published var showCodeInput = false
     @Published var authCode = ""
 
-    private var viewContext: NSManagedObjectContext?
+    private let viewContext: NSManagedObjectContext
 
-    func setContext(_ context: NSManagedObjectContext) {
+    init(context: NSManagedObjectContext) {
         self.viewContext = context
     }
 
@@ -100,9 +100,7 @@ class GmailViewModel: ObservableObject {
     }
 
     func createTransaction(from extracted: ExtractedTransaction) {
-        guard let context = viewContext else { return }
-
-        let transaction = Transaction(context: context)
+        let transaction = Transaction(context: viewContext)
         transaction.id = UUID()
         transaction.amount = extracted.amount
         transaction.itemDescription = extracted.merchant
@@ -114,7 +112,7 @@ class GmailViewModel: ObservableObject {
 
         // BLUEPRINT Line 63: Persist each line item with individual tax categories
         for item in extracted.items {
-            guard let lineItem = NSEntityDescription.insertNewObject(forEntityName: "LineItem", into: context) as? LineItem else {
+            guard let lineItem = NSEntityDescription.insertNewObject(forEntityName: "LineItem", into: viewContext) as? LineItem else {
                 errorMessage = "Failed to create line item entity"
                 continue
             }
@@ -127,7 +125,7 @@ class GmailViewModel: ObservableObject {
         }
 
         do {
-            try context.save()
+            try viewContext.save()
         } catch {
             errorMessage = "Failed to save transaction: \(error.localizedDescription)"
         }

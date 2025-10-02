@@ -1,8 +1,14 @@
 import SwiftUI
 
 struct GmailView: View {
-    @StateObject private var viewModel = GmailViewModel()
     @Environment(\.managedObjectContext) private var viewContext
+    @StateObject private var viewModel: GmailViewModel
+
+    init() {
+        // Initialize GmailViewModel with Core Data context
+        let context = PersistenceController.shared.container.viewContext
+        _viewModel = StateObject(wrappedValue: GmailViewModel(context: context))
+    }
 
     var body: some View {
         VStack(spacing: 20) {
@@ -90,7 +96,9 @@ struct GmailView: View {
             }
         }
         .onAppear {
-            viewModel.setContext(viewContext)
+            Task {
+                await viewModel.checkAuthentication()
+            }
         }
     }
 }

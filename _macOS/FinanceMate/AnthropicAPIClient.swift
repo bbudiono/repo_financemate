@@ -17,8 +17,9 @@ struct AnthropicAPIClient {
     // MARK: - Properties
 
     private let apiKey: String
+    private let model: String
+    private let maxTokens: Int
     private let baseURL = "https://api.anthropic.com/v1/messages"
-    private let model = "claude-sonnet-4-20250514"
     private let anthropicVersion = "2023-06-01"
     private let logger = Logger(subsystem: "com.financemate.api", category: "AnthropicClient")
     private let streamHandler = AnthropicStreamHandler()
@@ -35,10 +36,16 @@ struct AnthropicAPIClient {
 
     // MARK: - Initialization
 
-    /// Initialize with API key
-    /// - Parameter apiKey: Anthropic API key (should start with "sk-ant-")
-    init(apiKey: String) {
+    /// Initialize with API key and optional configuration
+    /// - Parameters:
+    ///   - apiKey: Anthropic API key (should start with "sk-ant-")
+    ///   - model: Claude model version (default: claude-sonnet-4-20250514)
+    ///   - maxTokens: Maximum response tokens (default: 4096)
+    init(apiKey: String, model: String = "claude-sonnet-4-20250514", maxTokens: Int = 4096) {
         self.apiKey = apiKey
+        self.model = model
+        self.maxTokens = maxTokens
+
         if !apiKey.starts(with: "sk-ant-") {
             logger.warning("API key format may be invalid - expected to start with 'sk-ant-'")
         }
@@ -128,7 +135,7 @@ struct AnthropicAPIClient {
 
         var requestBody: [String: Any] = [
             "model": model,
-            "max_tokens": 1024,
+            "max_tokens": maxTokens,
             "messages": messages.map { ["role": $0.role, "content": $0.content] },
             "stream": stream
         ]

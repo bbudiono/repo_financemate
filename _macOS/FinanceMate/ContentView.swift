@@ -6,6 +6,14 @@ struct ContentView: View {
     @State private var selectedTab = 0
     @Environment(\.managedObjectContext) private var viewContext
 
+    @StateObject private var chatbotVM: ChatbotViewModel
+
+    init() {
+        // Initialize ChatbotViewModel with Core Data context from environment
+        let context = PersistenceController.shared.container.viewContext
+        _chatbotVM = StateObject(wrappedValue: ChatbotViewModel(context: context))
+    }
+
     var body: some View {
         Group {
             if !authManager.isAuthenticated {
@@ -40,7 +48,7 @@ struct ContentView: View {
                     .frame(minWidth: 800, minHeight: 600)
                     .environmentObject(authManager)
 
-                    ChatbotDrawer(viewModel: ChatbotViewModel(context: viewContext))
+                    ChatbotDrawer(viewModel: chatbotVM)
                         .zIndex(1000)
                 }
             }
