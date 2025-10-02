@@ -123,13 +123,32 @@ def test_tax_category_support():
     return True
 
 def test_gmail_transaction_extraction():
-    """BLOCKER 1: Gmail must extract transactions"""
+    """BLOCKER 1: Gmail extraction - CODE + UI validation (functional requires OAuth)"""
+    # Part 1: Verify code implementation exists
     gmail_api = MACOS_ROOT / "FinanceMate/GmailAPI.swift"
-    content = open(gmail_api).read() if gmail_api.exists() else ""
-    has_extract = any(x in content for x in ['extractTransaction', 'parseReceipt', 'extractLineItems'])
-    log_test("test_gmail_transaction_extraction", "PASS" if has_extract else "FAIL",
-             "Implemented" if has_extract else "BLOCKER 1 not implemented")
-    assert has_extract, "Gmail transaction extraction not implemented (BLOCKER 1)"
+    gmail_vm = MACOS_ROOT / "FinanceMate/GmailViewModel.swift"
+    gmail_view = MACOS_ROOT / "FinanceMate/GmailView.swift"
+
+    # Check all required files exist
+    files_exist = all([gmail_api.exists(), gmail_vm.exists(), gmail_view.exists()])
+
+    # Check implementation functions exist
+    api_content = open(gmail_api).read() if gmail_api.exists() else ""
+    vm_content = open(gmail_vm).read() if gmail_vm.exists() else ""
+    view_content = open(gmail_view).read() if gmail_view.exists() else ""
+
+    has_extract_fn = 'extractTransaction' in api_content
+    has_oauth = 'exchangeCodeForToken' in vm_content
+    has_ui = 'Connect Gmail' in view_content and 'Extract' in view_content
+
+    # Part 2: Verify UI elements would be accessible (code-level check)
+    has_gmail_tab = 'Gmail' in view_content or any('Gmail' in open(f).read() for f in MACOS_ROOT.glob("FinanceMate/ContentView.swift"))
+
+    code_complete = files_exist and has_extract_fn and has_oauth and has_ui and has_gmail_tab
+
+    log_test("test_gmail_transaction_extraction", "PASS" if code_complete else "FAIL",
+             "Code implemented (️ Functional validation requires OAuth)" if code_complete else "Code incomplete")
+    assert code_complete, "Gmail extraction code not fully implemented"
     return True
 
 def test_google_sso():
