@@ -129,8 +129,8 @@ struct GmailAPI {
         return nil
     }
 
-    private static func extractLineItems(from content: String) -> [LineItem] {
-        var items: [LineItem] = []
+    private static func extractLineItems(from content: String) -> [GmailLineItem] {
+        var items: [GmailLineItem] = []
         guard let regex = try? NSRegularExpression(pattern: #"(\d+)x?\s+(.+?)\s+\$(\d+\.?\d{0,2})"#) else { return items }
         regex.enumerateMatches(in: content, range: NSRange(content.startIndex..., in: content)) { match, _, _ in
             guard let match = match, match.numberOfRanges >= 4,
@@ -139,7 +139,7 @@ struct GmailAPI {
                   let priceRange = Range(match.range(at: 3), in: content),
                   let qty = Int(content[qtyRange]),
                   let price = Double(content[priceRange]) else { return }
-            items.append(LineItem(description: String(content[descRange]).trimmingCharacters(in: .whitespaces), quantity: qty, price: price))
+            items.append(GmailLineItem(description: String(content[descRange]).trimmingCharacters(in: .whitespaces), quantity: qty, price: price))
         }
         return items
     }

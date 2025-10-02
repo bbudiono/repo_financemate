@@ -107,10 +107,21 @@ class GmailViewModel: ObservableObject {
         transaction.amount = extracted.amount
         transaction.itemDescription = extracted.merchant
         transaction.category = extracted.category
-        transaction.taxCategory = TaxCategory.personal.rawValue // Default to Personal
+        transaction.taxCategory = TaxCategory.personal.rawValue
         transaction.date = extracted.date
         transaction.source = "gmail"
         transaction.note = "Merchant: \(extracted.merchant) | Confidence: \(Int(extracted.confidence * 100))%"
+
+        // BLUEPRINT Line 63: Persist each line item with individual tax categories
+        for item in extracted.items {
+            let lineItem = NSEntityDescription.insertNewObject(forEntityName: "LineItem", into: context) as! LineItem
+            lineItem.id = UUID()
+            lineItem.itemDescription = item.description
+            lineItem.quantity = Int32(item.quantity)
+            lineItem.price = item.price
+            lineItem.taxCategory = TaxCategory.personal.rawValue
+            lineItem.transaction = transaction
+        }
 
         do {
             try context.save()

@@ -50,12 +50,12 @@ struct ExtractedTransaction {
     let amount: Double
     let date: Date
     let category: String
-    let items: [LineItem]
+    let items: [GmailLineItem]
     let confidence: Double // 0.0 to 1.0
     let rawText: String
 }
 
-struct LineItem {
+struct GmailLineItem {
     let description: String
     let quantity: Int
     let price: Double
