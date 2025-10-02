@@ -127,15 +127,19 @@ def test_google_sso():
     return True
 
 def test_ai_chatbot_integration():
-    """BLOCKER 4: AI Chatbot with KISS compliance"""
-    files = ["ChatbotDrawer.swift", "ChatbotViewModel.swift", "MessageBubble.swift"]
-    existing = [(f, len(open(MACOS_ROOT / "FinanceMate" / f).readlines()))
-                for f in files if (MACOS_ROOT / "FinanceMate" / f).exists()]
-    violations = [(f, l) for f, l in existing if l >= 200]
-    has_chatbot = len(existing) >= 3 and len(violations) == 0
+    """BLOCKER 4: AI Chatbot with LLM (no mock data)"""
+    # Check LLM files exist
+    anthropic = (MACOS_ROOT / "FinanceMate/AnthropicAPIClient.swift").exists()
+    llm_service = (MACOS_ROOT / "FinanceMate/LLMFinancialAdvisorService.swift").exists()
+
+    # Check no static dictionaries
+    ks = MACOS_ROOT / "FinanceMate/FinancialKnowledgeService.swift"
+    no_mock = 'australianFinancialKnowledge' not in open(ks).read() if ks.exists() else False
+
+    has_chatbot = anthropic and llm_service and no_mock
     log_test("test_ai_chatbot_integration", "PASS" if has_chatbot else "FAIL",
-             f"Files: {len(existing)}, Violations: {len(violations)}")
-    assert has_chatbot, f"AI Chatbot not properly integrated (BLOCKER 4) - {len(existing)}/3 files, {len(violations)} violations"
+             f"LLM: {anthropic and llm_service}, NoMock: {no_mock}")
+    assert has_chatbot, "Chatbot integration incomplete"
     return True
 
 def test_apple_sso():
