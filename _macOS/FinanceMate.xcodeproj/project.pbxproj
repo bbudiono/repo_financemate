@@ -23,6 +23,7 @@
 		3I6E7F0A5D2B9C3E6F4A1B59 /* QuickActionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F2A0C7E4D9B6A1F3E5C8D0B /* QuickActionButton.swift */; };
 		3J7F8A1B6E3C0D4F7A5B2C60 /* LLMFinancialAdvisorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A3B1D8F5E4C2A7B9E1F3D5C /* LLMFinancialAdvisorService.swift */; };
 		3K8A9B2C7F4D1E5A8B6C3D71 /* AnthropicAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B4C2E9D6F5A3C8B1E4D7A9F /* AnthropicAPIClient.swift */; };
+		3L9B0C3D8F5E2A6B9C7D4E82 /* LineItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C6D5F4A0E7B3A9C1D2F8E6B /* LineItem.swift */; };
 		44D1E7A36F1DEFC689B2D29B /* AuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0462096396F23463327279A7 /* AuthenticationManager.swift */; };
 		472F3AB0C78B22DCD65B3D15 /* GmailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A06C1B981717175872995B /* GmailViewModel.swift */; };
 		8A4C5F380DC598249916287A /* GmailModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71EF5C81BF4E9894238B9C34 /* GmailModels.swift */; };
@@ -51,6 +52,7 @@
 		5F2A0C7E4D9B6A1F3E5C8D0B /* QuickActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickActionButton.swift; sourceTree = "<group>"; };
 		6A3B1D8F5E4C2A7B9E1F3D5C /* LLMFinancialAdvisorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LLMFinancialAdvisorService.swift; sourceTree = "<group>"; };
 		7B4C2E9D6F5A3C8B1E4D7A9F /* AnthropicAPIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnthropicAPIClient.swift; sourceTree = "<group>"; };
+		8C6D5F4A0E7B3A9C1D2F8E6B /* LineItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineItem.swift; sourceTree = "<group>"; };
 		6AD7F62BE980B30C777D9BCC /* FinanceMate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FinanceMate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		71EF5C81BF4E9894238B9C34 /* GmailModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GmailModels.swift; sourceTree = "<group>"; };
 		7D4E2A9B6C1F8E3A5B7C9D1F /* ChatbotDrawer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatbotDrawer.swift; sourceTree = "<group>"; };
@@ -103,6 +105,7 @@
 				C0A06C1B981717175872995B /* GmailViewModel.swift */,
 				862B24382DB2714189DE41A9 /* Info.plist */,
 				CA76140EE4946838694BF9A2 /* KeychainHelper.swift */,
+				8C6D5F4A0E7B3A9C1D2F8E6B /* LineItem.swift */,
 				6A3B1D8F5E4C2A7B9E1F3D5C /* LLMFinancialAdvisorService.swift */,
 				85C1CB1C75DC0D59EB08342C /* LoginView.swift */,
 				3D0E8A5C2B7F4A9D1E3F6C8B /* MessageBubble.swift */,
@@ -202,6 +205,7 @@
 				8A8513582D2EBB487126C8DD /* GmailView.swift in Sources */,
 				472F3AB0C78B22DCD65B3D15 /* GmailViewModel.swift in Sources */,
 				08F06BC3769A8A9F49B8B5AE /* KeychainHelper.swift in Sources */,
+				3L9B0C3D8F5E2A6B9C7D4E82 /* LineItem.swift in Sources */,
 				3J7F8A1B6E3C0D4F7A5B2C60 /* LLMFinancialAdvisorService.swift in Sources */,
 				E27E3897995C633A280CCA7E /* LoginView.swift in Sources */,
 				3G4C5D8E3B0F7A1C4D2E9F37 /* MessageBubble.swift in Sources */,

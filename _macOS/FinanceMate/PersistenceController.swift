@@ -1,6 +1,9 @@
 import CoreData
+import os.log
 
 struct PersistenceController {
+    private static let logger = Logger(subsystem: "FinanceMate", category: "PersistenceController")
+
     static let shared = PersistenceController()
     static let preview: PersistenceController = {
         let controller = PersistenceController(inMemory: true)
@@ -11,7 +14,7 @@ struct PersistenceController {
         do {
             try viewContext.save()
         } catch {
-            print("Preview save error: \(error.localizedDescription)")
+            logger.error("Preview save error: \(error.localizedDescription)")
         }
         return controller
     }()
@@ -27,7 +30,7 @@ struct PersistenceController {
 
         container.loadPersistentStores { description, error in
             if let error = error {
-                print("Core Data load error: \(error.localizedDescription)")
+                Self.logger.error("Core Data load error: \(error.localizedDescription)")
             }
         }
 

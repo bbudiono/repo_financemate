@@ -114,7 +114,10 @@ class GmailViewModel: ObservableObject {
 
         // BLUEPRINT Line 63: Persist each line item with individual tax categories
         for item in extracted.items {
-            let lineItem = NSEntityDescription.insertNewObject(forEntityName: "LineItem", into: context) as! LineItem
+            guard let lineItem = NSEntityDescription.insertNewObject(forEntityName: "LineItem", into: context) as? LineItem else {
+                errorMessage = "Failed to create line item entity"
+                continue
+            }
             lineItem.id = UUID()
             lineItem.itemDescription = item.description
             lineItem.quantity = Int32(item.quantity)
