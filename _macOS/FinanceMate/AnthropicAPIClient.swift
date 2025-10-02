@@ -4,6 +4,7 @@
 //
 // Production-ready Anthropic Claude API client with streaming support
 // Implements Messages API with comprehensive error handling and security
+// KISS compliant: Modular architecture with extracted models and stream handler
 //
 
 import Foundation
@@ -20,6 +21,7 @@ struct AnthropicAPIClient {
     private let model = "claude-sonnet-4-20250514"
     private let anthropicVersion = "2023-06-01"
     private let logger = Logger(subsystem: "com.financemate.api", category: "AnthropicClient")
+    private let streamHandler = AnthropicStreamHandler()
 
     // MARK: - Configuration
 
@@ -50,7 +52,7 @@ struct AnthropicAPIClient {
     ///   - systemPrompt: Optional system prompt for context
     /// - Returns: AsyncThrowingStream of response chunks
     func sendMessage(
-        messages: [Message],
+        messages: [AnthropicMessage],
         systemPrompt: String? = nil
     ) async throws -> AsyncThrowingStream<String, Error> {
         logger.info("Sending streaming message request with \(messages.count) messages")
@@ -63,19 +65,9 @@ struct AnthropicAPIClient {
                     let (bytes, response) = try await session.bytes(for: request)
                     try validateResponse(response)
 
-                    var buffer = ""
-                    for try await byte in bytes {
-                        buffer.append(Character(UnicodeScalar(byte)))
-
-                        // Process complete SSE events
-                        while let newlineRange = buffer.range(of: "\n\n") {
-                            let event = String(buffer[..<newlineRange.lowerBound])
-                            buffer.removeSubrange(..<newlineRange.upperBound)
-
-                            if let content = parseSSEEvent(event) {
-                                continuation.yield(content)
-                            }
-                        }
+                    // Delegate stream processing to handler
+                    for try await content in streamHandler.processStream(bytes) {
+                        continuation.yield(content)
                     }
 
                     continuation.finish()
@@ -95,7 +87,7 @@ struct AnthropicAPIClient {
     ///   - systemPrompt: Optional system prompt for context
     /// - Returns: Complete response text
     func sendMessageSync(
-        messages: [Message],
+        messages: [AnthropicMessage],
         systemPrompt: String? = nil
     ) async throws -> String {
         logger.info("Sending synchronous message request with \(messages.count) messages")
@@ -105,11 +97,11 @@ struct AnthropicAPIClient {
         let (data, response) = try await session.data(for: request)
         try validateResponse(response)
 
-        let apiResponse = try JSONDecoder().decode(MessageResponse.self, from: data)
+        let apiResponse = try JSONDecoder().decode(AnthropicMessageResponse.self, from: data)
 
         guard let firstContent = apiResponse.content.first else {
             logger.error("Empty response content")
-            throw APIError.invalidResponse
+            throw AnthropicAPIError.invalidResponse
         }
 
         logger.info("Received synchronous response: \(firstContent.text.prefix(100))...")
@@ -118,13 +110,14 @@ struct AnthropicAPIClient {
 
     // MARK: - Private Helpers
 
+    /// Build HTTP request for API call
     private func buildRequest(
-        messages: [Message],
+        messages: [AnthropicMessage],
         systemPrompt: String?,
         stream: Bool
     ) throws -> URLRequest {
         guard let url = URL(string: baseURL) else {
-            throw APIError.invalidResponse
+            throw AnthropicAPIError.invalidResponse
         }
 
         var request = URLRequest(url: url)
@@ -149,9 +142,10 @@ struct AnthropicAPIClient {
         return request
     }
 
+    /// Validate HTTP response status
     private func validateResponse(_ response: URLResponse) throws {
         guard let httpResponse = response as? HTTPURLResponse else {
-            throw APIError.invalidResponse
+            throw AnthropicAPIError.invalidResponse
         }
 
         switch httpResponse.statusCode {
@@ -159,118 +153,37 @@ struct AnthropicAPIClient {
             return
         case 401:
             logger.error("Invalid API key (401)")
-            throw APIError.invalidAPIKey
+            throw AnthropicAPIError.invalidAPIKey
         case 429:
             let retryAfter = httpResponse.value(forHTTPHeaderField: "retry-after")
                 .flatMap { TimeInterval($0) } ?? 60.0
             logger.warning("Rate limit exceeded, retry after \(retryAfter)s")
-            throw APIError.rateLimitExceeded(retryAfter: retryAfter)
+            throw AnthropicAPIError.rateLimitExceeded(retryAfter: retryAfter)
         case 500...599:
             logger.error("Server error: \(httpResponse.statusCode)")
-            throw APIError.serverError(statusCode: httpResponse.statusCode)
+            throw AnthropicAPIError.serverError(statusCode: httpResponse.statusCode)
         default:
             logger.error("Unexpected status code: \(httpResponse.statusCode)")
-            throw APIError.invalidResponse
+            throw AnthropicAPIError.invalidResponse
         }
     }
 
-    private func parseSSEEvent(_ event: String) -> String? {
-        let lines = event.split(separator: "\n")
-
-        for line in lines {
-            if line.starts(with: "data: ") {
-                let jsonString = String(line.dropFirst(6))
-
-                // Check for stream end
-                if jsonString == "[DONE]" {
-                    return nil
-                }
-
-                guard let data = jsonString.data(using: .utf8),
-                      let json = try? JSONDecoder().decode(StreamEvent.self, from: data),
-                      json.type == "content_block_delta",
-                      let delta = json.delta,
-                      delta.type == "text_delta" else {
-                    continue
-                }
-
-                return delta.text
-            }
-        }
-
-        return nil
-    }
-
+    /// Map generic errors to API-specific errors
     private func mapError(_ error: Error) -> Error {
-        if let apiError = error as? APIError {
+        if let apiError = error as? AnthropicAPIError {
             return apiError
         }
 
         if let urlError = error as? URLError {
             logger.error("Network error: \(urlError.localizedDescription)")
-            return APIError.networkError(urlError)
+            return AnthropicAPIError.networkError(urlError)
         }
 
         if error is DecodingError {
             logger.error("Decoding error: \(error.localizedDescription)")
-            return APIError.decodingError(error)
+            return AnthropicAPIError.decodingError(error)
         }
 
         return error
-    }
-}
-
-// MARK: - Models
-
-extension AnthropicAPIClient {
-
-    struct Message: Codable, Equatable {
-        let role: String  // "user" or "assistant"
-        let content: String
-    }
-
-    enum APIError: Error, LocalizedError {
-        case invalidAPIKey
-        case rateLimitExceeded(retryAfter: TimeInterval)
-        case networkError(Error)
-        case invalidResponse
-        case decodingError(Error)
-        case serverError(statusCode: Int)
-
-        var errorDescription: String? {
-            switch self {
-            case .invalidAPIKey:
-                return "Invalid Anthropic API key. Please check your credentials."
-            case .rateLimitExceeded(let retryAfter):
-                return "Rate limit exceeded. Please retry after \(Int(retryAfter)) seconds."
-            case .networkError(let error):
-                return "Network error: \(error.localizedDescription)"
-            case .invalidResponse:
-                return "Invalid response from Anthropic API."
-            case .decodingError(let error):
-                return "Failed to decode API response: \(error.localizedDescription)"
-            case .serverError(let statusCode):
-                return "Anthropic server error (status code: \(statusCode))"
-            }
-        }
-    }
-
-    private struct MessageResponse: Codable {
-        let content: [Content]
-
-        struct Content: Codable {
-            let type: String
-            let text: String
-        }
-    }
-
-    private struct StreamEvent: Codable {
-        let type: String
-        let delta: Delta?
-
-        struct Delta: Codable {
-            let type: String
-            let text: String?
-        }
     }
 }

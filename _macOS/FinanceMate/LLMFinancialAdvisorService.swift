@@ -32,7 +32,7 @@ struct LLMFinancialAdvisorService {
         User Question: \(question)
         """
 
-        let messages = [AnthropicAPIClient.Message(role: "user", content: fullQuestion)]
+        let messages = [AnthropicMessage(role: "user", content: fullQuestion)]
 
         let response = try await client.sendMessageSync(messages: messages, systemPrompt: systemPrompt)
         logger.info("LLM response generated (\(response.count) chars)")
@@ -55,7 +55,7 @@ struct LLMFinancialAdvisorService {
         User Question: \(question)
         """
 
-        let messages = [AnthropicAPIClient.Message(role: "user", content: fullQuestion)]
+        let messages = [AnthropicMessage(role: "user", content: fullQuestion)]
 
         return try await client.sendMessage(messages: messages, systemPrompt: systemPrompt)
     }

@@ -45,15 +45,15 @@ final class AnthropicAPIClientTests: XCTestCase {
     // MARK: - Message Model Tests
 
     func testMessageCreation() {
-        let message = AnthropicAPIClient.Message(role: "user", content: "Hello")
+        let message = AnthropicMessage(role: "user", content: "Hello")
         XCTAssertEqual(message.role, "user")
         XCTAssertEqual(message.content, "Hello")
     }
 
     func testMessageEquality() {
-        let message1 = AnthropicAPIClient.Message(role: "user", content: "Hello")
-        let message2 = AnthropicAPIClient.Message(role: "user", content: "Hello")
-        let message3 = AnthropicAPIClient.Message(role: "assistant", content: "Hello")
+        let message1 = AnthropicMessage(role: "user", content: "Hello")
+        let message2 = AnthropicMessage(role: "user", content: "Hello")
+        let message3 = AnthropicMessage(role: "assistant", content: "Hello")
 
         XCTAssertEqual(message1, message2)
         XCTAssertNotEqual(message1, message3)
@@ -62,20 +62,20 @@ final class AnthropicAPIClientTests: XCTestCase {
     // MARK: - Error Handling Tests
 
     func testAPIErrorDescriptions() {
-        let invalidKeyError = AnthropicAPIClient.APIError.invalidAPIKey
+        let invalidKeyError = AnthropicAPIError.invalidAPIKey
         XCTAssertNotNil(invalidKeyError.errorDescription)
         XCTAssertTrue(invalidKeyError.errorDescription!.contains("Invalid Anthropic API key"))
 
-        let rateLimitError = AnthropicAPIClient.APIError.rateLimitExceeded(retryAfter: 60)
+        let rateLimitError = AnthropicAPIError.rateLimitExceeded(retryAfter: 60)
         XCTAssertNotNil(rateLimitError.errorDescription)
         XCTAssertTrue(rateLimitError.errorDescription!.contains("60"))
 
-        let networkError = AnthropicAPIClient.APIError.networkError(
+        let networkError = AnthropicAPIError.networkError(
             URLError(.notConnectedToInternet)
         )
         XCTAssertNotNil(networkError.errorDescription)
 
-        let serverError = AnthropicAPIClient.APIError.serverError(statusCode: 500)
+        let serverError = AnthropicAPIError.serverError(statusCode: 500)
         XCTAssertNotNil(serverError.errorDescription)
         XCTAssertTrue(serverError.errorDescription!.contains("500"))
     }
@@ -86,7 +86,7 @@ final class AnthropicAPIClientTests: XCTestCase {
         // This test validates the request structure
         // In production, we'd use URLProtocol mocking
         let messages = [
-            AnthropicAPIClient.Message(role: "user", content: "Test message")
+            AnthropicMessage(role: "user", content: "Test message")
         ]
 
         // Attempting to call with invalid endpoint will test request building
