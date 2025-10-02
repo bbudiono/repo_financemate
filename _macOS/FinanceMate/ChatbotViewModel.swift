@@ -41,7 +41,12 @@ final class ChatbotViewModel: ObservableObject {
         defer { isProcessing = false }
 
         let startTime = Date()
-        let result = FinancialKnowledgeService.processQuestion(content, context: context)
+
+        // Get API key from environment
+        let apiKey = ProcessInfo.processInfo.environment["ANTHROPIC_API_KEY"]
+
+        // Call async LLM-powered service
+        let result = await FinancialKnowledgeService.processQuestion(content, context: context, apiKey: apiKey)
         let responseTime = Date().timeIntervalSince(startTime)
 
         let assistantMessage = ChatMessage(

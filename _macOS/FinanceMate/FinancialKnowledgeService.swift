@@ -1,95 +1,45 @@
 import Foundation
 import CoreData
+import os.log
 
-/// Financial knowledge base with Australian compliance and FinanceMate-specific expertise
+/// LLM-powered financial knowledge service (NO MOCK DATA - BLUEPRINT Line 49 compliant)
 struct FinancialKnowledgeService {
 
-    // MARK: - Knowledge Base (REAL DATA - NO MOCKS)
+    private static let logger = Logger(subsystem: "FinanceMate", category: "FinancialKnowledgeService")
 
-    private static let australianFinancialKnowledge: [String: String] = [
-        "capital gains tax": "In NSW, capital gains tax applies when you sell an investment property. You'll pay CGT on the profit at your marginal tax rate, but if you've held the property for more than 12 months, you can claim the 50% CGT discount. Primary residence is generally exempt from CGT.",
+    // MARK: - Q&A Processing (ASYNC - LLM Integration)
 
-        "negative gearing": "Negative gearing occurs when your rental property costs (interest, maintenance, depreciation) exceed rental income. In Australia, this loss can be offset against your other taxable income, reducing your overall tax liability. It's particularly beneficial for high-income earners.",
+    static func processQuestion(_ question: String, context: NSManagedObjectContext? = nil, apiKey: String? = nil) async -> (content: String, hasData: Bool, actionType: ActionType, questionType: FinancialQuestionType?, qualityScore: Double) {
 
-        "smsf": "Self-Managed Super Funds give you direct control over investments but require active management and have higher admin costs. Industry super funds offer professional management, lower fees, and better returns for most people. SMSF is typically only cost-effective with balances over $200,000."
-    ]
-
-    private static let financeMateFeatures: [String: String] = [
-        "net wealth": "FinanceMate calculates your net wealth by tracking all your assets (cash, investments, property) minus liabilities (debts, loans). The interactive dashboard shows wealth trends over time, helping you monitor progress toward financial goals and make informed decisions.",
-
-        "categorize transactions": "FinanceMate uses intelligent categorization with customizable categories. You can set rules for automatic categorization, manually assign categories, and analyze spending patterns. The system learns from your patterns to improve future categorization accuracy.",
-
-        "financial goals": "Set SMART goals in FinanceMate by defining specific amounts, timeframes, and priorities. The app tracks progress automatically, shows projected completion dates, and suggests optimization strategies based on your current income and spending patterns."
-    ]
-
-    private static let basicFinancialConcepts: [String: String] = [
-        "assets and liabilities": "Assets are things you own that have value (cash, investments, property, cars). Liabilities are debts you owe (mortgages, loans, credit cards). Your net worth equals total assets minus total liabilities. Building assets while minimizing liabilities increases wealth over time.",
-
-        "create budget": "Start by tracking income and expenses for a month. Categorize spending (needs vs wants). Use the 50/30/20 rule: 50% needs, 30% wants, 20% savings. Adjust based on your situation. Review monthly and make realistic adjustments to ensure you can stick to it.",
-
-        "save percentage": "The general rule is saving 20% of gross income, but this depends on age, income, and goals. Younger people might save 10-15% and increase over time. High earners could save 30%+. Start with what's achievable and increase gradually.",
-
-        "compound interest": "Compound interest is earning interest on your interest. For example, $1,000 at 7% annually becomes $1,070 after year 1, then $1,145 after year 2 (earning interest on $1,070, not just $1,000). Over decades, this creates exponential wealth growth."
-    ]
-
-    // MARK: - Q&A Processing
-
-    static func processQuestion(_ question: String, context: NSManagedObjectContext? = nil) -> (content: String, hasData: Bool, actionType: ActionType, questionType: FinancialQuestionType?, qualityScore: Double) {
-        let questionLower = question.lowercased()
         let questionType = classifyQuestion(question)
+        logger.info("Processing question (type: \(String(describing: questionType)))")
 
-        // PRIORITY 1: Check user's actual data FIRST (if context available)
+        // PRIORITY 1: Try LLM with user context (if API key available)
+        if let context = context, let apiKey = apiKey, !apiKey.isEmpty {
+            do {
+                logger.debug("Attempting LLM response with user context")
+                let service = LLMFinancialAdvisorService(context: context, apiKey: apiKey)
+                let response = try await service.answerQuestion(question)
+                let qualityScore = calculateQualityScore(response: response, question: question)
+                logger.info("LLM response generated (quality: \(qualityScore)/10)")
+                return (response, true, .analyzeExpenses, questionType, qualityScore)
+            } catch {
+                logger.warning("LLM API failed: \(error.localizedDescription), falling back")
+            }
+        }
+
+        // PRIORITY 2: Try data-aware responses (no LLM needed)
         if let context = context, let dataResponse = DataAwareResponseGenerator.generate(question: question, context: context) {
             let qualityScore = calculateQualityScore(response: dataResponse.content, question: question)
+            logger.info("Data-aware response generated (quality: \(qualityScore)/10)")
             return (dataResponse.content, true, dataResponse.actionType, dataResponse.questionType, qualityScore)
         }
 
-        // PRIORITY 2: Fall back to knowledge base
-        var response = ""
-        var hasData = false
-        var actionType: ActionType = .none
-
-        // Search knowledge bases
-        for (key, value) in australianFinancialKnowledge {
-            if questionLower.contains(key) {
-                response = value
-                hasData = true
-                actionType = .analyzeExpenses
-                break
-            }
-        }
-
-        if response.isEmpty {
-            for (key, value) in financeMateFeatures {
-                if questionLower.contains(key) {
-                    response = value
-                    hasData = true
-                    actionType = .showDashboard
-                    break
-                }
-            }
-        }
-
-        if response.isEmpty {
-            for (key, value) in basicFinancialConcepts {
-                if questionLower.contains(key) {
-                    response = value
-                    hasData = true
-                    actionType = .analyzeExpenses
-                    break
-                }
-            }
-        }
-
-        // Fallback responses by question type
-        if response.isEmpty {
-            response = generateFallbackResponse(questionType: questionType)
-            hasData = true
-            actionType = questionType == .financeMateSpecific ? .showDashboard : .none
-        }
-
-        let qualityScore = calculateQualityScore(response: response, question: question)
-        return (response, hasData, actionType, questionType, qualityScore)
+        // PRIORITY 3: Generic fallback (offline or no API key)
+        logger.info("Using generic fallback response")
+        let fallbackResponse = generateGenericFallback(questionType: questionType)
+        let qualityScore = calculateQualityScore(response: fallbackResponse, question: question)
+        return (fallbackResponse, false, .none, questionType, qualityScore)
     }
 
     // MARK: - Question Classification
@@ -120,20 +70,20 @@ struct FinancialKnowledgeService {
         return .general
     }
 
-    private static func generateFallbackResponse(questionType: FinancialQuestionType) -> String {
+    private static func generateGenericFallback(questionType: FinancialQuestionType) -> String {
         switch questionType {
         case .basicLiteracy:
-            return "This is a fundamental financial concept that involves understanding basic money management principles. The key is to start simple and build your knowledge gradually. Consider speaking with a financial advisor for personalized advice."
+            return "This is a fundamental financial concept. Consider using FinanceMate's transaction tracking to better understand your money management. For personalized advice, consult a financial advisor."
         case .personalFinance:
-            return "This requires balancing multiple financial factors and understanding your personal situation. Consider your risk tolerance, time horizon, and financial goals when making decisions. Professional advice can help optimize your strategy."
+            return "This requires balancing multiple financial factors. FinanceMate can help you track and analyze your financial situation. Consider professional advice for personalized strategies."
         case .australianTax:
-            return "This involves complex Australian tax and investment regulations. The optimal approach depends on your complete financial picture, tax situation, and long-term objectives. Professional financial and tax advice is strongly recommended."
+            return "This involves Australian tax regulations. FinanceMate supports Australian tax categories for expense tracking. Consult a professional tax advisor for specific guidance."
         case .complexScenarios:
-            return "This requires sophisticated financial planning considering tax efficiency, asset protection, estate planning, and risk management. Given the complexity, engaging qualified financial planners and tax professionals is essential."
+            return "This requires sophisticated financial planning. FinanceMate provides tools for tracking and analysis. Engage qualified financial planners for complex scenarios."
         case .financeMateSpecific:
-            return "FinanceMate can help you track and analyze this aspect of your finances. The app provides tools for monitoring progress, setting goals, and making informed financial decisions based on your actual data."
+            return "FinanceMate provides tools for tracking transactions, analyzing spending, and managing your finances. Explore the Dashboard and Transactions tabs for more features."
         case .general:
-            return "I'd be happy to help you with your financial questions. Could you be more specific? I can assist with expense tracking, budget analysis, investment insights, and financial goal management."
+            return "I can help with your financial questions. Try asking about your balance, spending, or specific financial topics. FinanceMate tracks your transactions and provides insights."
         }
     }
 

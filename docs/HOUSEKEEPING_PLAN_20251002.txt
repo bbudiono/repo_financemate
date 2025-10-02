@@ -1,0 +1,55 @@
+FINANCEMATE DOCUMENTATION CONSOLIDATION PLAN
+=============================================
+
+Current: 67 .md files
+Target: 16 Gold Standard files
+Action: Consolidate 51 files
+
+GOLD STANDARD STRUCTURE (from ~/.claude/templates/project_repo/docs/):
+ARCHITECTURE.MD
+BLUEPRINT.MD  
+BUGS.MD
+BUILDING.MD
+BUILD_FAILURES.MD
+CODE_QUALITY.MD
+DEVELOPMENT_LOG.MD
+PRODUCTION_READINESS_CHECKLIST.MD
+README.MD
+TASKS.MD
+SCRIPTS.MD
+
+CONSOLIDATION PLAN:
+
+1. MERGE into BUILDING.MD:
+   - AUTOMATED_DEPLOYMENT_GUIDE.md
+   - MANUAL_XCODE_TARGET_CONFIGURATION.md
+   - XCODE_TARGET_CONFIGURATION_GUIDE.md
+   - NOTARIZATION_PROCESS_GUIDE.md
+
+2. MERGE into ARCHITECTURE.MD:
+   - INTEGRATION_GUIDE.md
+   - UI_UX_Enhancement_Tasks.md
+
+3. MERGE into BUGS.MD:
+   - PATTERNS_KB.md (debugging patterns)
+
+4. MERGE into BLUEPRINT.MD:
+   - UR-101_BANK_INTEGRATION_PLAN.md (future feature)
+   - USER_ONBOARDING_STRATEGY.md (UX flow)
+
+5. MERGE into PRODUCTION_READINESS_CHECKLIST.MD:
+   - SECURITY_AUDIT_CHECKLIST.md
+   - PERFORMANCE_BENCHMARKS.md
+
+6. KEEP AS-IS (Valid Documentation):
+   - SSO_SETUP_GUIDE.md (specific OAuth setup instructions)
+   - UX_Snapshots/VISUAL_REGRESSION_TESTING_GUIDE.md (testing methodology)
+
+7. ARCHIVE (Already in archive/, leave as-is):
+   - docs/archive/* (all archived properly)
+   - docs/plans/* (future planning)
+
+8. DELETE after merging:
+   - Files once content extracted to Gold Standard docs
+
+EXECUTION: 1-2 hours
