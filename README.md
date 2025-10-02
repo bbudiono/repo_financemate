@@ -88,9 +88,45 @@ FinanceMate is a **production-quality MVP** built with KISS principles and ATOMI
 ## 🚀 Quick Start
 
 ### Prerequisites
+
+**System Requirements:**
 - **macOS**: 14.0 or later
 - **Xcode**: 15.0 or later (for building from source)
 - **Apple Developer Account**: Required for code signing (distribution only)
+
+**Required Environment Variables (BLUEPRINT Line 50 Compliance):**
+
+FinanceMate requires the following environment variables for full functionality. Copy `.env.template` to `.env` and configure:
+
+1. **Google OAuth 2.0** (for Gmail integration & Google Sign-In):
+   ```bash
+   GOOGLE_OAUTH_CLIENT_ID=your_client_id.apps.googleusercontent.com
+   GOOGLE_OAUTH_CLIENT_SECRET=your_client_secret
+   ```
+   **Setup:** [Google Cloud Console](https://console.cloud.google.com/apis/credentials) → Create OAuth 2.0 Client ID → Desktop app
+
+2. **Anthropic Claude API** (for AI Financial Advisor):
+   ```bash
+   ANTHROPIC_API_KEY=sk-ant-your_api_key_here
+   ```
+   **Setup:** [Anthropic Console](https://console.anthropic.com/settings/keys) → Create API Key
+
+3. **Configuration:**
+   ```bash
+   # Copy template
+   cp .env.template .env
+
+   # Edit with your credentials
+   nano .env
+
+   # .env is gitignored (security) - never commit it
+   ```
+
+**Dependencies Documented:**
+- Gmail API: Email receipt/invoice extraction (HIGHEST PRIORITY per BLUEPRINT Line 62)
+- Claude Sonnet 4: Context-aware financial chatbot (BLUEPRINT Lines 51-52)
+- Keychain: Secure credential storage (automatic)
+- Core Data: Local transaction persistence (automatic)
 
 ### Installation Options
 
