@@ -210,14 +210,44 @@ def test_app_launch():
     assert is_running, "Not running"
     return True
 
+def test_search_filter_sort_ui():
+    """BLUEPRINT Line 68: Search, filter, sort functionality"""
+    tv = MACOS_ROOT / "FinanceMate/TransactionsView.swift"
+    content = open(tv).read() if tv.exists() else ""
+    has_search = 'searchText' in content and 'TextField' in content and 'Search transactions' in content
+    has_filter = 'selectedSource' in content and 'selectedCategory' in content
+    has_sort = 'sortOption' in content and 'SortOption' in content and 'Menu' in content
+    success = has_search and has_filter and has_sort
+    log_test("test_search_filter_sort_ui", "PASS" if success else "FAIL",
+             f"Search: {has_search}, Filter: {has_filter}, Sort: {has_sort}")
+    assert success, f"Search/Filter/Sort incomplete - Search: {has_search}, Filter: {has_filter}, Sort: {has_sort}"
+    return True
+
+def test_lineitem_schema():
+    """LineItem Core Data entity must exist"""
+    persistence = MACOS_ROOT / "FinanceMate/PersistenceController.swift"
+    lineitem = MACOS_ROOT / "FinanceMate/LineItem.swift"
+    p_exists = persistence.exists()
+    l_exists = lineitem.exists()
+    if p_exists:
+        content = open(persistence).read()
+        has_entity = 'name = "LineItem"' in content
+    else:
+        has_entity = False
+    success = p_exists and l_exists and has_entity
+    log_test("test_lineitem_schema", "PASS" if success else "FAIL",
+             f"Files: {p_exists and l_exists}, Entity: {has_entity}")
+    assert success, "LineItem entity not properly configured"
+    return True
+
 def get_test_groups():
     """Define test groups"""
     return [
         ("BUILD & FOUNDATION", [test_build, test_kiss_compliance, test_security_hardening, test_core_data_schema]),
         ("BLUEPRINT MVP", [test_tax_category_support, test_gmail_transaction_extraction,
                           test_google_sso, test_ai_chatbot_integration, test_apple_sso]),
-        ("UI/UX", [test_ui_architecture, test_dark_light_mode]),
-        ("INTEGRATION", [test_oauth_configuration, test_app_launch])
+        ("UI/UX", [test_ui_architecture, test_dark_light_mode, test_search_filter_sort_ui]),
+        ("INTEGRATION", [test_oauth_configuration, test_app_launch, test_lineitem_schema])
     ]
 
 def run_test_group(name, tests):

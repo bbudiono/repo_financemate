@@ -11,6 +11,11 @@ struct TransactionsView: View {
     @State private var searchText = ""
     @State private var selectedSource: String? = nil
     @State private var selectedCategory: String? = nil
+    @State private var sortOption: SortOption = .dateDescending
+
+    enum SortOption {
+        case dateDescending, dateAscending, amountDescending, amountAscending, categoryAZ
+    }
 
     // BLUEPRINT Line 68: FILTERABLE, SEARCHABLE, SORTABLE
     var filteredTransactions: [Transaction] {
@@ -34,17 +39,38 @@ struct TransactionsView: View {
             result = result.filter { $0.category == category }
         }
 
+        // Sort
+        switch sortOption {
+        case .dateDescending: result.sort { $0.date > $1.date }
+        case .dateAscending: result.sort { $0.date < $1.date }
+        case .amountDescending: result.sort { $0.amount > $1.amount }
+        case .amountAscending: result.sort { $0.amount < $1.amount }
+        case .categoryAZ: result.sort { $0.category < $1.category }
+        }
+
         return result
     }
 
     var body: some View {
         VStack(spacing: 0) {
-            // Header
+            // Header with sort menu
             HStack {
                 Text("Transactions")
                     .font(.largeTitle)
                     .fontWeight(.bold)
                 Spacer()
+                // BLUEPRINT Line 68: SORTABLE
+                Menu {
+                    Button("Date (Newest)") { sortOption = .dateDescending }
+                    Button("Date (Oldest)") { sortOption = .dateAscending }
+                    Button("Amount (High)") { sortOption = .amountDescending }
+                    Button("Amount (Low)") { sortOption = .amountAscending }
+                    Button("Category (A-Z)") { sortOption = .categoryAZ }
+                } label: {
+                    Image(systemName: "arrow.up.arrow.down.circle")
+                        .font(.title3)
+                }
+                .buttonStyle(.plain)
             }
             .padding()
 
