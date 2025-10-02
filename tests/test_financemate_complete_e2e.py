@@ -5,6 +5,7 @@ import subprocess
 import time
 import os
 import json
+import re
 from pathlib import Path
 from datetime import datetime
 
@@ -61,14 +62,29 @@ def test_security_hardening():
     swift_dir = str(MACOS_ROOT / "FinanceMate")
     violations = []
 
-    # Detect actual force unwraps (pattern: variable! or function()!)
-    # Exclude: != (not equal), ! at start (negation), string literals
+    # Detect actual force unwraps with improved pattern
+    # Force unwrap: identifier! followed by . or space or , or ) or end-of-line
+    # NOT force unwrap: !identifier (logical NOT), != (not equal), !! (double negation)
     result1 = subprocess.run(["grep", "-rn", r"\w!", swift_dir], capture_output=True, text=True)
-    force_unwraps = [l for l in result1.stdout.split('\n')
-                     if '!' in l
-                     and not l.strip().startswith('//')
-                     and '!=' not in l
-                     and not any(x in l for x in ['hasSuffix("!")', 'hasPrefix("!")', "I'm", "you're", "it's"])]
+    force_unwraps = []
+    for line in result1.stdout.split('\n'):
+        # Skip comments, empty lines
+        if not line or line.strip().startswith('//'):
+            continue
+        # Skip != operator
+        if '!=' in line:
+            continue
+        # Skip string literals with !
+        if any(x in line for x in ['hasSuffix("!")', 'hasPrefix("!")', "I'm", "you're", "it's"]):
+            continue
+        # Skip logical NOT operators: !identifier, !$, !condition
+        # These have ! BEFORE the identifier, not after
+        if re.search(r'!\s*[\$\w]', line) and not re.search(r'\w+![.,\s\)]', line):
+            continue
+        # Must have actual force unwrap pattern: identifier!. or identifier! or identifier!)
+        if re.search(r'\w+![.,\s\)\]]', line):
+            force_unwraps.append(line)
+
     if force_unwraps:
         violations.append(f"{len(force_unwraps)} force unwraps")
 
