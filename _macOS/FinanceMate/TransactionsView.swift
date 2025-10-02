@@ -8,23 +8,112 @@ struct TransactionsView: View {
         animation: .default)
     private var transactions: FetchedResults<Transaction>
 
-    var body: some View {
-        VStack {
-            Text("Transactions")
-                .font(.largeTitle)
-                .fontWeight(.bold)
-                .padding()
+    @State private var searchText = ""
+    @State private var selectedSource: String? = nil
+    @State private var selectedCategory: String? = nil
 
-            if transactions.isEmpty {
-                Text("No transactions yet")
+    // BLUEPRINT Line 68: FILTERABLE, SEARCHABLE, SORTABLE
+    var filteredTransactions: [Transaction] {
+        var result = Array(transactions)
+
+        // Search
+        if !searchText.isEmpty {
+            result = result.filter {
+                $0.itemDescription.localizedCaseInsensitiveContains(searchText) ||
+                $0.category.localizedCaseInsensitiveContains(searchText)
+            }
+        }
+
+        // Filter by source
+        if let source = selectedSource {
+            result = result.filter { $0.source == source }
+        }
+
+        // Filter by category
+        if let category = selectedCategory {
+            result = result.filter { $0.category == category }
+        }
+
+        return result
+    }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            // Header
+            HStack {
+                Text("Transactions")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                Spacer()
+            }
+            .padding()
+
+            // BLUEPRINT Line 68: SEARCHABLE
+            HStack {
+                Image(systemName: "magnifyingglass")
                     .foregroundColor(.secondary)
+                TextField("Search transactions...", text: $searchText)
+                    .textFieldStyle(.plain)
+                if !searchText.isEmpty {
+                    Button(action: { searchText = "" }) {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundColor(.secondary)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding(8)
+            .background(Color.secondary.opacity(0.1))
+            .cornerRadius(8)
+            .padding(.horizontal)
+
+            // BLUEPRINT Line 68: FILTERABLE
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    FilterButton(title: "All", isSelected: selectedSource == nil && selectedCategory == nil) {
+                        selectedSource = nil
+                        selectedCategory = nil
+                    }
+                    FilterButton(title: "Gmail", isSelected: selectedSource == "gmail") {
+                        selectedSource = selectedSource == "gmail" ? nil : "gmail"
+                    }
+                    FilterButton(title: "Manual", isSelected: selectedSource == "manual") {
+                        selectedSource = selectedSource == "manual" ? nil : "manual"
+                    }
+                    ForEach(["Groceries", "Dining", "Transport", "Utilities"], id: \.self) { cat in
+                        FilterButton(title: cat, isSelected: selectedCategory == cat) {
+                            selectedCategory = selectedCategory == cat ? nil : cat
+                        }
+                    }
+                }
+                .padding(.horizontal)
+                .padding(.vertical, 8)
+            }
+
+            // Transaction List
+            if filteredTransactions.isEmpty {
+                VStack(spacing: 16) {
+                    Image(systemName: "doc.text.magnifyingglass")
+                        .font(.system(size: 48))
+                        .foregroundColor(.secondary)
+                    Text(searchText.isEmpty ? "No transactions yet" : "No matching transactions")
+                        .foregroundColor(.secondary)
+                }
+                .frame(maxHeight: .infinity)
             } else {
-                List(transactions) { transaction in
+                List(filteredTransactions) { transaction in
                     HStack {
                         VStack(alignment: .leading, spacing: 4) {
                             Text(transaction.itemDescription)
                                 .font(.headline)
                             HStack(spacing: 8) {
+                                // Source badge
+                                if transaction.source == "gmail" {
+                                    Image(systemName: "envelope.fill")
+                                        .font(.caption2)
+                                        .foregroundColor(.blue)
+                                }
+                                // Tax category
                                 Text(transaction.taxCategory)
                                     .font(.caption)
                                     .padding(.horizontal, 8)
@@ -32,6 +121,7 @@ struct TransactionsView: View {
                                     .background(taxCategoryColor(transaction.taxCategory).opacity(0.2))
                                     .foregroundColor(taxCategoryColor(transaction.taxCategory))
                                     .cornerRadius(4)
+                                // Date
                                 Text(transaction.date, style: .date)
                                     .font(.caption)
                                     .foregroundColor(.secondary)
@@ -57,5 +147,26 @@ struct TransactionsView: View {
         case "Property Investment": return .orange
         default: return .gray
         }
+    }
+}
+
+// MARK: - Filter Button Component
+
+struct FilterButton: View {
+    let title: String
+    let isSelected: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Text(title)
+                .font(.caption)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 6)
+                .background(isSelected ? Color.blue : Color.secondary.opacity(0.2))
+                .foregroundColor(isSelected ? .white : .primary)
+                .cornerRadius(16)
+        }
+        .buttonStyle(.plain)
     }
 }
