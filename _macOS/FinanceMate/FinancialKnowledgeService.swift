@@ -1,4 +1,5 @@
 import Foundation
+import CoreData
 
 /// Financial knowledge base with Australian compliance and FinanceMate-specific expertise
 struct FinancialKnowledgeService {
@@ -33,10 +34,17 @@ struct FinancialKnowledgeService {
 
     // MARK: - Q&A Processing
 
-    static func processQuestion(_ question: String) -> (content: String, hasData: Bool, actionType: ActionType, questionType: FinancialQuestionType?, qualityScore: Double) {
+    static func processQuestion(_ question: String, context: NSManagedObjectContext? = nil) -> (content: String, hasData: Bool, actionType: ActionType, questionType: FinancialQuestionType?, qualityScore: Double) {
         let questionLower = question.lowercased()
         let questionType = classifyQuestion(question)
 
+        // PRIORITY 1: Check user's actual data FIRST (if context available)
+        if let context = context, let dataResponse = DataAwareResponseGenerator.generate(question: question, context: context) {
+            let qualityScore = calculateQualityScore(response: dataResponse.content, question: question)
+            return (dataResponse.content, true, dataResponse.actionType, dataResponse.questionType, qualityScore)
+        }
+
+        // PRIORITY 2: Fall back to knowledge base
         var response = ""
         var hasData = false
         var actionType: ActionType = .none

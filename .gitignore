@@ -167,3 +167,7 @@ tmp/
 .env
 test_results*.xcresult
 *.xcresult
+
+# Test Output
+test_output/
+_macOS/test_output/

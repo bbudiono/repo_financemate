@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct SettingsView: View {
+    @Environment(\.colorScheme) private var colorScheme
     @EnvironmentObject var authManager: AuthenticationManager
 
     var body: some View {

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct TransactionsView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    @Environment(\.colorScheme) private var colorScheme
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \Transaction.date, ascending: false)],
         animation: .default)

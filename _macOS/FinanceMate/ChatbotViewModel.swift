@@ -41,7 +41,7 @@ final class ChatbotViewModel: ObservableObject {
         defer { isProcessing = false }
 
         let startTime = Date()
-        let result = FinancialKnowledgeService.processQuestion(content)
+        let result = FinancialKnowledgeService.processQuestion(content, context: context)
         let responseTime = Date().timeIntervalSince(startTime)
 
         let assistantMessage = ChatMessage(

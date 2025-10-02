@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		08F06BC3769A8A9F49B8B5AE /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA76140EE4946838694BF9A2 /* KeychainHelper.swift */; };
+		0A1B2C3D4E5F6A7B8C9D0E1F /* TransactionQueryHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F0E9D8C7B6A5F4E3D2C1B0A /* TransactionQueryHelper.swift */; };
+		0B2C3D4E5F6A7B8C9D0E1F2A /* DataAwareResponseGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A1F0E9D8C7B6A5F4E3D2C1B /* DataAwareResponseGenerator.swift */; };
 		149FBF1C7FEDB4D475A84FA3 /* FinanceMateApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F64317D4D1264A4EEA0A7239 /* FinanceMateApp.swift */; };
 		2DFC3B40CF261DC740E43B4A /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD1B108972E6DE4F2BB3E4BE /* DashboardView.swift */; };
 		3A8C9F2D7E4B1A5C8D6F3E91 /* ChatbotDrawer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D4E2A9B6C1F8E3A5B7C9D1F /* ChatbotDrawer.swift */; };
@@ -36,6 +38,8 @@
 /* Begin PBXFileReference section */
 		0462096396F23463327279A7 /* AuthenticationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationManager.swift; sourceTree = "<group>"; };
 		0A7B5D2F9E4C1A6B8D0F3E5A /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
+		1F0E9D8C7B6A5F4E3D2C1B0A /* TransactionQueryHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionQueryHelper.swift; sourceTree = "<group>"; };
+		2A1F0E9D8C7B6A5F4E3D2C1B /* DataAwareResponseGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataAwareResponseGenerator.swift; sourceTree = "<group>"; };
 		0F6F07E70896D0F653D8125A /* TransactionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsView.swift; sourceTree = "<group>"; };
 		1B8C6E3A0F5D2A7B9E1F4C6D /* FinancialKnowledgeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinancialKnowledgeService.swift; sourceTree = "<group>"; };
 		2C9D7F4B1A6E3B8C0F2E5D7A /* GlassmorphismBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassmorphismBackground.swift; sourceTree = "<group>"; };
@@ -82,6 +86,7 @@
 				0A7B5D2F9E4C1A6B8D0F3E5A /* ChatMessage.swift */,
 				A1715840A6674ADB3AD26EAF /* ContentView.swift */,
 				FD1B108972E6DE4F2BB3E4BE /* DashboardView.swift */,
+				2A1F0E9D8C7B6A5F4E3D2C1B /* DataAwareResponseGenerator.swift */,
 				1B8C6E3A0F5D2A7B9E1F4C6D /* FinancialKnowledgeService.swift */,
 				99BC4F8F2FAB08CC7A4DEC3A /* FinanceMate.entitlements */,
 				F64317D4D1264A4EEA0A7239 /* FinanceMateApp.swift */,
@@ -99,6 +104,7 @@
 				5F2A0C7E4D9B6A1F3E5C8D0B /* QuickActionButton.swift */,
 				EA373D32E33E191AF2C4D761 /* SettingsView.swift */,
 				DA4945387B7AF59CA123F400 /* Transaction.swift */,
+				1F0E9D8C7B6A5F4E3D2C1B0A /* TransactionQueryHelper.swift */,
 				0F6F07E70896D0F653D8125A /* TransactionsView.swift */,
 				4E1F9B6D3C8A5F0E2D4A7C9E /* TypingIndicator.swift */,
 			);
@@ -179,6 +185,7 @@
 				3D1F2A5B0E7C4D8F1A9B6C04 /* ChatMessage.swift in Sources */,
 				FD47DD6F80A476B4EF448E5D /* ContentView.swift in Sources */,
 				2DFC3B40CF261DC740E43B4A /* DashboardView.swift in Sources */,
+				0B2C3D4E5F6A7B8C9D0E1F2A /* DataAwareResponseGenerator.swift in Sources */,
 				3E2A3B6C1F8D5E9A2B0C7D15 /* FinancialKnowledgeService.swift in Sources */,
 				149FBF1C7FEDB4D475A84FA3 /* FinanceMateApp.swift in Sources */,
 				3F3B4C7D2A9E6F0B3C1D8E26 /* GlassmorphismBackground.swift in Sources */,
@@ -194,6 +201,7 @@
 				3I6E7F0A5D2B9C3E6F4A1B59 /* QuickActionButton.swift in Sources */,
 				AF37A07AB6DBD988BC6A6BE8 /* SettingsView.swift in Sources */,
 				8BAF2671C99632758B9B44D4 /* Transaction.swift in Sources */,
+				0A1B2C3D4E5F6A7B8C9D0E1F /* TransactionQueryHelper.swift in Sources */,
 				AA5F9890E57C2445AD7261A9 /* TransactionsView.swift in Sources */,
 				3H5D6E9F4C1A8B2D5E3F0A48 /* TypingIndicator.swift in Sources */,
 			);
