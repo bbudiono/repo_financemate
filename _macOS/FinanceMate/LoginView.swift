@@ -5,6 +5,7 @@ struct LoginView: View {
     @ObservedObject var authManager: AuthenticationManager
     @State private var showGoogleCodeInput = false
     @State private var googleAuthCode = ""
+    @State private var isAuthenticating = false
 
     var body: some View {
         VStack(spacing: 30) {
@@ -22,17 +23,23 @@ struct LoginView: View {
             SignInWithAppleButton(.signIn) { request in
                 request.requestedScopes = [.email, .fullName]
             } onCompletion: { result in
+                isAuthenticating = true
                 authManager.handleAppleSignIn(result: result)
+                isAuthenticating = false
             }
             .frame(height: 50)
             .frame(maxWidth: 300)
+            .accessibilityLabel("Sign in with Apple")
+            .disabled(isAuthenticating)
 
             Button(action: {
+                isAuthenticating = true
                 if let clientID = ProcessInfo.processInfo.environment["GOOGLE_OAUTH_CLIENT_ID"],
                    let url = GmailOAuthHelper.getAuthorizationURL(clientID: clientID) {
                     NSWorkspace.shared.open(url)
                     showGoogleCodeInput = true
                 }
+                isAuthenticating = false
             }) {
                 HStack {
                     Image(systemName: "g.circle.fill")
@@ -43,6 +50,8 @@ struct LoginView: View {
             }
             .buttonStyle(.borderedProminent)
             .tint(.red)
+            .accessibilityLabel("Sign in with Google")
+            .disabled(isAuthenticating)
 
             if showGoogleCodeInput {
                 VStack(spacing: 12) {
@@ -59,6 +68,11 @@ struct LoginView: View {
                     }
                     .buttonStyle(.borderedProminent)
                 }
+            }
+
+            if isAuthenticating {
+                ProgressView("Authenticating...")
+                    .padding()
             }
 
             if let error = authManager.errorMessage {

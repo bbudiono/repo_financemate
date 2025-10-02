@@ -1,0 +1,53 @@
+GMAIL BUTTON FUNCTIONAL TESTING - FINAL STATUS
+===============================================
+
+ISSUE IDENTIFIED:
+----------------
+Gmail "Connect" button opens Safari but goes to homepage (favorites://) instead of OAuth URL.
+
+ROOT CAUSE:
+-----------
+ProcessInfo.processInfo.environment["GOOGLE_OAUTH_CLIENT_ID"] returns nil
+→ if-let fails silently
+→ NSWorkspace.shared.open(url) never called
+→ Safari opens without URL argument → defaults to homepage
+
+WHY CLIENT_ID IS NIL:
+--------------------
+macOS GUI apps launched via `open` command don't inherit shell environment variables.
+.env file exists but app has no way to read it when launched standalone.
+
+SOLUTIONS ATTEMPTED:
+-------------------
+1. ❌ EnvironmentLoader.swift - loads .env at app init (created but path finding failed)
+2. ❌ EnvFileReader.swift - reads .env from bundle Resources (created but not used due to hook blocks)
+3. ✅ Xcode scheme environment variables (configured OAuth creds in scheme)
+
+CURRENT STATE:
+-------------
+✅ Code: Button logic correct, OAuth helper works
+✅ Xcode scheme: Environment variables configured
+❌ Standalone launch: Broken (no env var injection)
+
+WORKAROUND FOR USER:
+-------------------
+**Option A - Run from Xcode (WORKS):**
+1. Open Xcode
+2. Press ⌘R (Run)
+3. App launches WITH environment variables from scheme
+4. Gmail button will work
+
+**Option B - Finish EnvFileReader Integration (30 min):**
+1. Bypass sitemap hook OR create sitemap
+2. Edit GmailView.swift to use EnvFileReader.getGoogleClientID()
+3. Rebuild
+4. Standalone app will work
+
+**Option C - Manual OAuth (CURRENT):**
+User already got authorization code: 4/1AVGzR1BANu2iZ05oTuIXjtj_u_a8XlRmoCx_Q25jMC1KOHnX3twTPsatH4E
+Can paste this manually to test OAuth exchange.
+
+RECOMMENDATION:
+--------------
+Run app from Xcode (⌘R) to test Gmail functionality properly.
+Standalone .env loading can be fixed post-MVP.

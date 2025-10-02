@@ -74,9 +74,11 @@ struct GmailView: View {
                         }
                         .padding()
 
-                        List(viewModel.extractedTransactions, id: \.rawText) { extracted in
-                            ExtractedTransactionRow(extracted: extracted) {
-                                viewModel.createTransaction(from: extracted)
+                        List {
+                            ForEach(viewModel.extractedTransactions, id: \.rawText) { extracted in
+                                ExtractedTransactionRow(extracted: extracted) {
+                                    viewModel.createTransaction(from: extracted)
+                                }
                             }
                         }
                     }

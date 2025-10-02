@@ -119,7 +119,15 @@ struct GmailAPI {
     }
 
     private static func extractAmount(from content: String) -> Double? {
-        let patterns = [#"\$(\d+\.?\d{0,2})"#, #"(?:Total|Amount):\s?\$?(\d+\.?\d{0,2})"#, #"AUD\s?(\d+\.?\d{0,2})"#]
+        // Enhanced patterns for Australian receipts (GST, ABN, etc)
+        let patterns = [
+            #"\$(\d+\.?\d{0,2})"#,  // Basic $XX.XX
+            #"(?:Total|Amount|GST Inc|Incl GST):\s?\$?(\d+\.?\d{0,2})"#,  // Australian GST patterns
+            #"AUD\s?(\d+\.?\d{0,2})"#,  // AUD currency
+            #"Total\s+Due\s+\$?(\d+\.?\d{0,2})"#,  // Invoice patterns
+            #"Grand\s+Total\s+\$?(\d+\.?\d{0,2})"#,  // Receipt totals
+            #"Amount\s+Paid\s+\$?(\d+\.?\d{0,2})"#  // Payment confirmations
+        ]
         for pattern in patterns {
             if let match = content.range(of: pattern, options: .regularExpression) {
                 let nums = String(content[match]).components(separatedBy: CharacterSet.decimalDigits.union(CharacterSet(charactersIn: ".")).inverted).joined()
@@ -146,9 +154,16 @@ struct GmailAPI {
 
     private static func inferCategory(from merchant: String) -> String {
         let m = merchant.lowercased()
-        if ["woolworths", "coles", "aldi"].contains(where: { m.contains($0) }) { return "Groceries" }
-        if ["uber", "taxi", "petrol"].contains(where: { m.contains($0) }) { return "Transport" }
-        if ["restaurant", "cafe"].contains(where: { m.contains($0) }) { return "Dining" }
+        // Australian grocery stores
+        if ["woolworths", "coles", "aldi", "iga", "foodworks", "harris farm"].contains(where: { m.contains($0) }) { return "Groceries" }
+        // Transport (Australian specific)
+        if ["uber", "taxi", "petrol", "bp", "shell", "caltex", "7-eleven", "ampol", "metro", "opal"].contains(where: { m.contains($0) }) { return "Transport" }
+        // Dining
+        if ["restaurant", "cafe", "mcdonald", "kfc", "hungry jack", "subway", "domino"].contains(where: { m.contains($0) }) { return "Dining" }
+        // Utilities
+        if ["telstra", "optus", "vodafone", "agl", "origin", "energy australia"].contains(where: { m.contains($0) }) { return "Utilities" }
+        // Retail
+        if ["bunnings", "kmart", "big w", "target", "officeworks", "jb hi-fi", "harvey norman"].contains(where: { m.contains($0) }) { return "Retail" }
         return "Other"
     }
 }

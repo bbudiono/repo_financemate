@@ -4,6 +4,7 @@
 
 - **MANDATORY:** ENSURE YOU DO NOT GO TO THE USER UNTIL YOU HAVE VERIFIED EVERYTHING 100% YOURSELF AND FOLLOWED YOUR OWN STEPS. THIS INCLUDES MULTI-MODAL SCREENSHOTS, IMAGES, CODE VALIDATION, CODE VERIFICATION, CODE REVIEW
 - **MANDATORY:** ENSURE FOR EVERY TEST THEN SUBSEQUENT CODE YOU WRITE, THAT THE TEST PASSES AND THE CODE PASSES CODE REVIEW BEFORE PUSHING A COMMIT TO GITHUB.
+- **MANDATORY:** ENSURE EVERY UI COMPONENT IS TESTED - THIS INCLUDES SCROLL BARS, BUTTONS, NAVIGATION, ETC. ENSURE THAT EACH BUTTON IS TESTED AS PART OF E2E AND WE TEST FOR ALL REQUIRED AND INTENDED STATES - DO NOT ASK THE USER TO RUN "SCRIPTS" TO TEST.
 - **MANDATORY:** ALL COMPLETION CLAIMS MUST BE VALIDATED - DELETE FALSE CLAIMS IMMEDIATELY
 - **MANDATORY:** All visual validation tests MUST programmatically capture a screenshot of the relevant UI state—either the full screen, a specific window, or an individual UI element—using documented system capabilities like XCTest, `screencapture`, or Core Graphics.
 - **MANDATORY:** All captured snapshots intended for AI processing MUST be saved to a persistent, accessible file location (e.g., a designated test output directory or temporary folder) in a lossless format like PNG to ensure visual fidelity.

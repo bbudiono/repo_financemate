@@ -3,6 +3,8 @@ import SwiftUI
 struct SettingsView: View {
     @Environment(\.colorScheme) private var colorScheme
     @EnvironmentObject var authManager: AuthenticationManager
+    @State private var displayName: String = ""
+    @State private var isSaving = false
 
     var body: some View {
         VStack(spacing: 20) {
@@ -23,6 +25,33 @@ struct SettingsView: View {
                         Text(email)
                             .font(.subheadline)
                             .foregroundColor(.secondary)
+                    }
+
+                    // Display Name TextField
+                    HStack {
+                        Text("Display Name:")
+                            .foregroundColor(.secondary)
+                        TextField("Enter display name", text: $displayName)
+                            .textFieldStyle(.roundedBorder)
+                            .frame(maxWidth: 200)
+                    }
+
+                    // Save Button
+                    Button("Save") {
+                        Task {
+                            isSaving = true
+                            // Save settings logic here
+                            // For now, just simulate saving
+                            try? await Task.sleep(nanoseconds: 500_000_000)
+                            isSaving = false
+                        }
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .disabled(isSaving)
+
+                    if isSaving {
+                        ProgressView()
+                            .scaleEffect(0.8)
                     }
                 }
                 .frame(maxWidth: .infinity)

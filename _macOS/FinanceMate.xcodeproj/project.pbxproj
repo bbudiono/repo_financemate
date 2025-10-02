@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4AF937E2D44D481B9D07AA60 /* EnvFileReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1302CDE5EAEF49159914BEB0 /* EnvFileReader.swift */; };
+		B90D7978D16741B6BF9B9F94 /* EnvironmentLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F4404D3009245FE9363125F /* EnvironmentLoader.swift */; };
+
 		08F06BC3769A8A9F49B8B5AE /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA76140EE4946838694BF9A2 /* KeychainHelper.swift */; };
 		0A1B2C3D4E5F6A7B8C9D0E1F /* TransactionQueryHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F0E9D8C7B6A5F4E3D2C1B0A /* TransactionQueryHelper.swift */; };
 		0B2C3D4E5F6A7B8C9D0E1F2A /* DataAwareResponseGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A1F0E9D8C7B6A5F4E3D2C1B /* DataAwareResponseGenerator.swift */; };
@@ -41,6 +44,9 @@
 		/* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1302CDE5EAEF49159914BEB0 /* EnvFileReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnvFileReader.swift; sourceTree = "<group>"; };
+		8F4404D3009245FE9363125F /* EnvironmentLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnvironmentLoader.swift; sourceTree = "<group>"; };
+
 		0462096396F23463327279A7 /* AuthenticationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationManager.swift; sourceTree = "<group>"; };
 		0A7B5D2F9E4C1A6B8D0F3E5A /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
 		1F0E9D8C7B6A5F4E3D2C1B0A /* TransactionQueryHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionQueryHelper.swift; sourceTree = "<group>"; };
@@ -103,6 +109,8 @@
 				1B8C6E3A0F5D2A7B9E1F4C6D /* FinancialKnowledgeService.swift */,
 				99BC4F8F2FAB08CC7A4DEC3A /* FinanceMate.entitlements */,
 				F64317D4D1264A4EEA0A7239 /* FinanceMateApp.swift */,
+				8F4404D3009245FE9363125F /* EnvironmentLoader.swift */,
+				1302CDE5EAEF49159914BEB0 /* EnvFileReader.swift */,
 				2C9D7F4B1A6E3B8C0F2E5D7A /* GlassmorphismBackground.swift */,
 				E904C06A5DEAACD675C7D55C /* GmailAPI.swift */,
 				71EF5C81BF4E9894238B9C34 /* GmailModels.swift */,
@@ -193,6 +201,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B90D7978D16741B6BF9B9F94 /* EnvironmentLoader.swift in Sources */,
+				4AF937E2D44D481B9D07AA60 /* EnvFileReader.swift in Sources */,
 				28773E7AEA0946CC85A623E2 /* AnthropicAPIModels.swift in Sources */,
 				AAEA75325EBD49519A675A84 /* AnthropicStreamHandler.swift in Sources */,
 				3K8A9B2C7F4D1E5A8B6C3D71 /* AnthropicAPIClient.swift in Sources */,

@@ -12,6 +12,8 @@ struct TransactionsView: View {
     @State private var selectedSource: String? = nil
     @State private var selectedCategory: String? = nil
     @State private var sortOption: SortOption = .dateDescending
+    @State private var showingAddTransaction = false
+    @State private var isDeleting = false
 
     enum SortOption {
         case dateDescending, dateAscending, amountDescending, amountAscending, categoryAZ
@@ -59,6 +61,17 @@ struct TransactionsView: View {
                     .font(.largeTitle)
                     .fontWeight(.bold)
                 Spacer()
+
+                // Add Transaction Button
+                Button(action: {
+                    showingAddTransaction = true
+                }) {
+                    Image(systemName: "plus.circle.fill")
+                        .font(.title2)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Add Transaction")
+
                 // BLUEPRINT Line 68: SORTABLE
                 Menu {
                     Button("Date (Newest)") { sortOption = .dateDescending }
@@ -127,40 +140,80 @@ struct TransactionsView: View {
                 }
                 .frame(maxHeight: .infinity)
             } else {
-                List(filteredTransactions) { transaction in
-                    HStack {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(transaction.itemDescription)
-                                .font(.headline)
-                            HStack(spacing: 8) {
-                                // Source badge
-                                if transaction.source == "gmail" {
-                                    Image(systemName: "envelope.fill")
-                                        .font(.caption2)
-                                        .foregroundColor(.blue)
+                List {
+                    ForEach(filteredTransactions) { transaction in
+                        HStack {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(transaction.itemDescription)
+                                    .font(.headline)
+                                HStack(spacing: 8) {
+                                    // Source badge
+                                    if transaction.source == "gmail" {
+                                        Image(systemName: "envelope.fill")
+                                            .font(.caption2)
+                                            .foregroundColor(.blue)
+                                    }
+                                    // Tax category
+                                    Text(transaction.taxCategory)
+                                        .font(.caption)
+                                        .padding(.horizontal, 8)
+                                        .padding(.vertical, 2)
+                                        .background(taxCategoryColor(transaction.taxCategory).opacity(0.2))
+                                        .foregroundColor(taxCategoryColor(transaction.taxCategory))
+                                        .cornerRadius(4)
+                                    // Date
+                                    Text(transaction.date, style: .date)
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
                                 }
-                                // Tax category
-                                Text(transaction.taxCategory)
-                                    .font(.caption)
-                                    .padding(.horizontal, 8)
-                                    .padding(.vertical, 2)
-                                    .background(taxCategoryColor(transaction.taxCategory).opacity(0.2))
-                                    .foregroundColor(taxCategoryColor(transaction.taxCategory))
-                                    .cornerRadius(4)
-                                // Date
-                                Text(transaction.date, style: .date)
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
                             }
+
+                            Spacer()
+
+                            Text(String(format: "$%.2f", transaction.amount))
+                                .font(.headline)
+                                .foregroundColor(transaction.amount >= 0 ? .green : .red)
                         }
-
-                        Spacer()
-
-                        Text(String(format: "$%.2f", transaction.amount))
-                            .font(.headline)
-                            .foregroundColor(transaction.amount >= 0 ? .green : .red)
                     }
+                    .onDelete(perform: deleteTransaction)
                 }
+            }
+        }
+        .sheet(isPresented: $showingAddTransaction) {
+            // Add Transaction Form (placeholder for now)
+            VStack(spacing: 20) {
+                Text("Add Transaction")
+                    .font(.title2)
+                    .fontWeight(.bold)
+
+                Text("Transaction form coming soon")
+                    .foregroundColor(.secondary)
+
+                Button("Cancel") {
+                    showingAddTransaction = false
+                }
+                .buttonStyle(.borderedProminent)
+            }
+            .frame(width: 400, height: 300)
+            .padding()
+        }
+    }
+
+    private func deleteTransaction(at offsets: IndexSet) {
+        withAnimation {
+            isDeleting = true
+            for index in offsets {
+                let transaction = filteredTransactions[index]
+                viewContext.delete(transaction)
+            }
+
+            do {
+                try viewContext.save()
+                isDeleting = false
+            } catch {
+                // Handle error
+                print("Failed to delete transaction: \(error)")
+                isDeleting = false
             }
         }
     }
