@@ -43,7 +43,7 @@ struct GmailAPI {
     }
 
     static func fetchEmails(accessToken: String, maxResults: Int) async throws -> [GmailEmail] {
-        // BLUEPRINT Line 71: Search ALL emails (not just Inbox) for 5-year financial history
+        // BLUEPRINT Line 72: Search ALL emails (not just Inbox) for 5-year financial history
         let fiveYearsAgo = Calendar.current.date(byAdding: .year, value: -5, to: Date())!
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy/MM/dd"
@@ -56,6 +56,14 @@ struct GmailAPI {
         }
 
         let urlString = "https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=\(maxResults)&q=\(encodedQuery)"
+
+        // DEBUG: Log search parameters
+        NSLog("=== GMAIL API SEARCH ===")
+        NSLog("Date Range: after:\(afterDate) (5 years from \(Date()))")
+        NSLog("Query: \(query)")
+        NSLog("URL: \(urlString)")
+        NSLog("MaxResults: \(maxResults)")
+
         guard let url = URL(string: urlString) else {
             throw GmailAPIError.invalidURL(urlString)
         }

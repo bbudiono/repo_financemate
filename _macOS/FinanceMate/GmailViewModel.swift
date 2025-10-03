@@ -96,15 +96,27 @@ class GmailViewModel: ObservableObject {
     // MARK: - Transaction Extraction
 
     func extractTransactionsFromEmails() async {
+        NSLog("=== EXTRACTION DEBUG ===")
+        NSLog("Total emails fetched: \(emails.count)")
+
         // Debug: Save email content for analysis
         GmailDebugLogger.saveEmailsForDebug(emails)
 
         // BLUEPRINT Line 66: Each line item becomes a distinct transaction
-        extractedTransactions = emails.flatMap { GmailAPI.extractTransactions(from: $0) }
+        let allExtracted = emails.flatMap { GmailAPI.extractTransactions(from: $0) }
+        NSLog("Total transactions extracted (before filter): \(allExtracted.count)")
+
+        extractedTransactions = allExtracted
             .filter { $0.confidence >= 0.6 } // Only show 60%+ confidence
             .sorted { $0.confidence > $1.confidence }
 
-        NSLog("Extracted \(extractedTransactions.count) transactions from \(emails.count) emails")
+        NSLog("After confidence filter (≥0.6): \(extractedTransactions.count) transactions")
+        NSLog("Filtered out: \(allExtracted.count - extractedTransactions.count) low-confidence transactions")
+
+        // Log first few for debugging
+        for (index, transaction) in extractedTransactions.prefix(3).enumerated() {
+            NSLog("Transaction \(index + 1): \(transaction.merchant) - $\(transaction.amount) (conf: \(transaction.confidence))")
+        }
     }
 
     func createTransaction(from extracted: ExtractedTransaction) {
