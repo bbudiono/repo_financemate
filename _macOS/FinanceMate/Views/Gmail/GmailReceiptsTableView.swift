@@ -1,185 +1,152 @@
 import SwiftUI
 
-/// BLUEPRINT Line 67: Interactive, detailed, comprehensive table for Gmail receipts
-/// Features: Sortable columns, filterable, searchable, best practice UI
+// BLUEPRINT Lines 67-68: Information dense, spreadsheet-like table with in-line editing
 struct GmailReceiptsTableView: View {
-    @ObservedObject var viewModel: GmailViewModel
-    @State private var sortOrder = [KeyPathComparator(\ExtractedTransaction.date, order: .reverse)]
-    @State private var selection = Set<ExtractedTransaction.ID>()
-    @State private var selectedTransaction: ExtractedTransaction?
+    @Binding var transactions: [ExtractedTransaction]
+    @Binding var selectedIDs: Set<String>
+    @State private var sortOrder: [KeyPathComparator<ExtractedTransaction>] = [
+        .init(\.date, order: .reverse)
+    ]
+
+    // In-line editing state (track which row is being edited)
+    @State private var editingID: String?
 
     var body: some View {
         VStack(spacing: 0) {
-            // Header with actions
-            HStack {
-                Text("\(viewModel.filteredAndSortedTransactions.count) transactions")
-                    .font(.headline)
-                    .foregroundColor(.secondary)
-
-                Spacer()
-
-                if !selection.isEmpty {
-                    Text("\(selection.count) selected")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-
-                    Button("Create Selected") {
-                        createSelectedTransactions()
-                    }
-                    .buttonStyle(.bordered)
+            // Spreadsheet-like Table (BLUEPRINT Line 68)
+            Table(transactions, selection: $selectedIDs, sortOrder: $sortOrder) {
+                // COLUMN 1: Confirmation checkbox
+                TableColumn("") { transaction in
+                    Toggle("", isOn: Binding(
+                        get: { selectedIDs.contains(transaction.id) },
+                        set: { isSelected in
+                            if isSelected {
+                                selectedIDs.insert(transaction.id)
+                            } else {
+                                selectedIDs.remove(transaction.id)
+                            }
+                        }
+                    ))
+                    .toggleStyle(.checkbox)
+                    .labelsHidden()
                 }
+                .width(30)
 
-                Button("Create All") {
-                    viewModel.createAllTransactions()
-                }
-                .buttonStyle(.borderedProminent)
-                .disabled(viewModel.extractedTransactions.isEmpty)
-            }
-            .padding(.horizontal)
-            .padding(.vertical, 8)
-
-            // Professional table with sortable columns
-            Table(viewModel.filteredAndSortedTransactions,
-                  selection: $selection,
-                  sortOrder: $sortOrder) {
-
-                // Date column - sortable
+                // COLUMN 2: Date (sortable, data typed)
                 TableColumn("Date", value: \.date) { transaction in
-                    Text(transaction.date, format: .dateTime.month().day().year())
-                        .font(.caption)
+                    Text(transaction.date, style: .date)
+                        .font(.system(.body, design: .monospaced))
                 }
-                .width(min: 80, ideal: 100, max: 120)
+                .width(min: 90, ideal: 100, max: 120)
 
-                // Merchant column - sortable
+                // COLUMN 3: Merchant (editable - BLUEPRINT Line 68)
                 TableColumn("Merchant", value: \.merchant) { transaction in
-                    VStack(alignment: .leading, spacing: 2) {
+                    if editingID == transaction.id {
+                        TextField("Merchant", text: Binding(
+                            get: { transaction.merchant },
+                            set: { transaction.merchant = $0 }
+                        ))
+                        .textFieldStyle(.plain)
+                        .onSubmit {
+                            editingID = nil
+                        }
+                    } else {
                         Text(transaction.merchant)
-                            .font(.caption)
-                            .fontWeight(.medium)
+                            .onTapGesture(count: 2) {
+                                editingID = transaction.id
+                            }
+                    }
+                }
+                .width(min: 120, ideal: 150)
+
+                // COLUMN 4: Amount (editable, currency formatted - BLUEPRINT Line 68)
+                TableColumn("Amount", value: \.amount) { transaction in
+                    if editingID == transaction.id {
+                        TextField("Amount", value: Binding(
+                            get: { transaction.amount },
+                            set: { transaction.amount = $0 }
+                        ), format: .number)
+                        .textFieldStyle(.plain)
+                        .onSubmit {
+                            editingID = nil
+                        }
+                    } else {
+                        Text(transaction.amount, format: .currency(code: "AUD"))
+                            .font(.system(.body, design: .monospaced))
+                            .foregroundColor(transaction.amount < 0 ? .red : .primary)
+                            .onTapGesture(count: 2) {
+                                editingID = transaction.id
+                            }
+                    }
+                }
+                .width(min: 80, ideal: 100)
+
+                // COLUMN 5: Category (editable - BLUEPRINT Line 68)
+                TableColumn("Category", value: \.category) { transaction in
+                    if editingID == transaction.id {
+                        TextField("Category", text: Binding(
+                            get: { transaction.category },
+                            set: { transaction.category = $0 }
+                        ))
+                        .textFieldStyle(.plain)
+                        .onSubmit {
+                            editingID = nil
+                        }
+                    } else {
+                        Text(transaction.category)
+                            .onTapGesture(count: 2) {
+                                editingID = transaction.id
+                            }
+                    }
+                }
+                .width(min: 100, ideal: 120)
+
+                // COLUMN 6: Confidence (data typed as percentage)
+                TableColumn("Confidence", value: \.confidence) { transaction in
+                    HStack {
+                        Text("\(Int(transaction.confidence * 100))%")
+                            .font(.system(.body, design: .monospaced))
+
+                        // Visual indicator
+                        Circle()
+                            .fill(confidenceColor(transaction.confidence))
+                            .frame(width: 8, height: 8)
+                    }
+                }
+                .width(min: 80, ideal: 90)
+
+                // COLUMN 7: Items count
+                TableColumn("Items") { transaction in
+                    Text("\(transaction.items.count)")
+                        .font(.system(.body, design: .monospaced))
+                }
+                .width(min: 50, ideal: 60)
+
+                // COLUMN 8: Source details
+                TableColumn("Source") { transaction in
+                    VStack(alignment: .leading, spacing: 2) {
                         Text(transaction.emailSender)
+                            .font(.caption)
+                            .lineLimit(1)
+                        Text(transaction.emailSubject)
                             .font(.caption2)
                             .foregroundColor(.secondary)
                             .lineLimit(1)
                     }
                 }
-                .width(min: 120, ideal: 180, max: 250)
-
-                // Amount column - sortable, AUD formatted
-                TableColumn("Amount", value: \.amount) { transaction in
-                    Text(transaction.amount, format: .currency(code: "AUD"))
-                        .font(.caption)
-                        .fontWeight(.bold)
-                        .foregroundColor(.primary)
-                }
-                .width(min: 80, ideal: 100, max: 120)
-
-                // Line Items count - visual indicator
-                TableColumn("Items") { transaction in
-                    HStack(spacing: 4) {
-                        Image(systemName: "list.bullet")
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
-                        Text("\(transaction.items.count)")
-                            .font(.caption)
-                    }
-                }
-                .width(min: 50, ideal: 60, max: 80)
-
-                // Category - sortable
-                TableColumn("Category", value: \.category) { transaction in
-                    Text(transaction.category)
-                        .font(.caption)
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 2)
-                        .background(categoryColor(transaction.category).opacity(0.2))
-                        .cornerRadius(4)
-                }
-                .width(min: 80, ideal: 100, max: 120)
-
-                // Confidence indicator - sortable
-                TableColumn("Confidence", value: \.confidence) { transaction in
-                    HStack(spacing: 4) {
-                        Circle()
-                            .fill(confidenceColor(transaction.confidence))
-                            .frame(width: 8, height: 8)
-                        Text("\(Int(transaction.confidence * 100))%")
-                            .font(.caption2)
-                            .foregroundColor(confidenceColor(transaction.confidence))
-                    }
-                }
-                .width(min: 70, ideal: 85, max: 100)
-
-                // Actions column
-                TableColumn("Actions") { transaction in
-                    Button("Create") {
-                        viewModel.createTransaction(from: transaction)
-                    }
-                    .buttonStyle(.borderless)
-                    .controlSize(.small)
-                }
-                .width(min: 60, ideal: 70, max: 80)
+                .width(min: 150, ideal: 200)
             }
-            .onChange(of: sortOrder) { _ in
-                viewModel.applySortOrder(sortOrder)
-            }
-            .contextMenu(forSelectionType: ExtractedTransaction.ID.self) { items in
-                Button("Create Transactions") {
-                    createTransactions(items)
-                }
-                Button("View Details") {
-                    if let id = items.first,
-                       let transaction = viewModel.extractedTransactions.first(where: { $0.id == id }) {
-                        selectedTransaction = transaction
-                    }
-                }
-                Divider()
-                Button("Select All") {
-                    selection = Set(viewModel.filteredAndSortedTransactions.map(\.id))
-                }
-                Button("Deselect All") {
-                    selection.removeAll()
-                }
-            }
-        }
-        .sheet(item: $selectedTransaction) { transaction in
-            TransactionDetailView(transaction: transaction) {
-                viewModel.createTransaction(from: transaction)
+            .onChange(of: sortOrder) { oldValue, newValue in
+                transactions.sort(using: newValue)
             }
         }
     }
 
-    // MARK: - Helper Methods
-
-    private func createSelectedTransactions() {
-        for id in selection {
-            if let transaction = viewModel.extractedTransactions.first(where: { $0.id == id }) {
-                viewModel.createTransaction(from: transaction)
-            }
-        }
-        selection.removeAll()
-    }
-
-    private func createTransactions(_ ids: Set<ExtractedTransaction.ID>) {
-        for id in ids {
-            if let transaction = viewModel.extractedTransactions.first(where: { $0.id == id }) {
-                viewModel.createTransaction(from: transaction)
-            }
-        }
-    }
+    // MARK: - Helper Functions
 
     private func confidenceColor(_ confidence: Double) -> Color {
         if confidence >= 0.8 { return .green }
-        if confidence >= 0.6 { return .orange }
-        return .red
-    }
-
-    private func categoryColor(_ category: String) -> Color {
-        switch category.lowercased() {
-        case "cashback": return .green
-        case "expense": return .blue
-        case "income": return .purple
-        case "refund": return .orange
-        default: return .gray
-        }
+        else if confidence >= 0.5 { return .yellow }
+        else { return .red }
     }
 }

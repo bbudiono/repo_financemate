@@ -57,12 +57,13 @@ struct Header: Codable {
 
 // MARK: - Transaction Extraction Models
 
-struct ExtractedTransaction: Identifiable {
+// BLUEPRINT Lines 67-68: Mutable model for in-line editing support
+class ExtractedTransaction: Identifiable, ObservableObject {
     let id: String  // Use email ID as unique identifier
-    let merchant: String
-    let amount: Double
+    @Published var merchant: String
+    @Published var amount: Double
     let date: Date
-    let category: String
+    @Published var category: String
     let items: [GmailLineItem]
     let confidence: Double // 0.0 to 1.0
     let rawText: String
@@ -74,6 +75,26 @@ struct ExtractedTransaction: Identifiable {
     let abn: String?
     let invoiceNumber: String?
     let paymentMethod: String?
+
+    init(id: String, merchant: String, amount: Double, date: Date, category: String,
+         items: [GmailLineItem], confidence: Double, rawText: String,
+         emailSubject: String, emailSender: String, gstAmount: Double? = nil,
+         abn: String? = nil, invoiceNumber: String? = nil, paymentMethod: String? = nil) {
+        self.id = id
+        self.merchant = merchant
+        self.amount = amount
+        self.date = date
+        self.category = category
+        self.items = items
+        self.confidence = confidence
+        self.rawText = rawText
+        self.emailSubject = emailSubject
+        self.emailSender = emailSender
+        self.gstAmount = gstAmount
+        self.abn = abn
+        self.invoiceNumber = invoiceNumber
+        self.paymentMethod = paymentMethod
+    }
 }
 
 struct GmailLineItem {

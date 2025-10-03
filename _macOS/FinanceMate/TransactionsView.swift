@@ -1,62 +1,27 @@
 import SwiftUI
 import CoreData
 
+// BLUEPRINT Lines 73-75: Information dense, spreadsheet-like transaction table
 struct TransactionsView: View {
     @Environment(\.managedObjectContext) private var viewContext
-    @Environment(\.colorScheme) private var colorScheme
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \Transaction.date, ascending: false)],
         animation: .default)
     private var transactions: FetchedResults<Transaction>
 
-    @State private var searchText = ""
-    @State private var selectedSource: String? = nil
-    @State private var selectedCategory: String? = nil
-    @State private var sortOption: SortOption = .dateDescending
+    @StateObject private var viewModel: TransactionsViewModel
     @State private var showingAddTransaction = false
-    @State private var isDeleting = false
 
-    enum SortOption {
-        case dateDescending, dateAscending, amountDescending, amountAscending, categoryAZ
-    }
-
-    // BLUEPRINT Line 68: FILTERABLE, SEARCHABLE, SORTABLE
-    var filteredTransactions: [Transaction] {
-        var result = Array(transactions)
-
-        // Search
-        if !searchText.isEmpty {
-            result = result.filter {
-                $0.itemDescription.localizedCaseInsensitiveContains(searchText) ||
-                $0.category.localizedCaseInsensitiveContains(searchText)
-            }
-        }
-
-        // Filter by source
-        if let source = selectedSource {
-            result = result.filter { $0.source == source }
-        }
-
-        // Filter by category
-        if let category = selectedCategory {
-            result = result.filter { $0.category == category }
-        }
-
-        // Sort
-        switch sortOption {
-        case .dateDescending: result.sort { $0.date > $1.date }
-        case .dateAscending: result.sort { $0.date < $1.date }
-        case .amountDescending: result.sort { $0.amount > $1.amount }
-        case .amountAscending: result.sort { $0.amount < $1.amount }
-        case .categoryAZ: result.sort { $0.category < $1.category }
-        }
-
-        return result
+    init() {
+        // Initialize viewModel with a temporary context
+        // Will be updated in onAppear with the actual environment context
+        let tempContext = PersistenceController.shared.container.viewContext
+        _viewModel = StateObject(wrappedValue: TransactionsViewModel(viewContext: tempContext))
     }
 
     var body: some View {
         VStack(spacing: 0) {
-            // Header with sort menu
+            // Header with actions
             HStack {
                 Text("Transactions")
                     .font(.largeTitle)
@@ -73,13 +38,13 @@ struct TransactionsView: View {
                 .buttonStyle(.plain)
                 .accessibilityLabel("Add Transaction")
 
-                // BLUEPRINT Line 68: SORTABLE
+                // BLUEPRINT Line 73: SORTABLE via Menu
                 Menu {
-                    Button("Date (Newest)") { sortOption = .dateDescending }
-                    Button("Date (Oldest)") { sortOption = .dateAscending }
-                    Button("Amount (High)") { sortOption = .amountDescending }
-                    Button("Amount (Low)") { sortOption = .amountAscending }
-                    Button("Category (A-Z)") { sortOption = .categoryAZ }
+                    Button("Date (Newest)") { viewModel.sortOption = .dateDescending }
+                    Button("Date (Oldest)") { viewModel.sortOption = .dateAscending }
+                    Button("Amount (High)") { viewModel.sortOption = .amountDescending }
+                    Button("Amount (Low)") { viewModel.sortOption = .amountAscending }
+                    Button("Category (A-Z)") { viewModel.sortOption = .categoryAZ }
                 } label: {
                     Image(systemName: "arrow.up.arrow.down.circle")
                         .font(.title3)
@@ -88,48 +53,32 @@ struct TransactionsView: View {
             }
             .padding()
 
-            // BLUEPRINT Line 68: SEARCHABLE
-            TransactionSearchBar(searchText: $searchText)
+            // BLUEPRINT Line 73: SEARCHABLE
+            TransactionSearchBar(searchText: $viewModel.searchText)
 
-            // BLUEPRINT Line 68: FILTERABLE
+            // BLUEPRINT Line 73: FILTERABLE
             TransactionFilterBar(
-                selectedSource: $selectedSource,
-                selectedCategory: $selectedCategory
+                selectedSource: $viewModel.selectedSource,
+                selectedCategory: $viewModel.selectedCategory
             )
 
-            // Transaction List
-            if filteredTransactions.isEmpty {
-                TransactionEmptyStateView(searchText: searchText)
+            // BLUEPRINT Lines 73-75: Spreadsheet-like table
+            if viewModel.filteredTransactions.isEmpty {
+                TransactionEmptyStateView(searchText: viewModel.searchText)
             } else {
-                List {
-                    ForEach(filteredTransactions) { transaction in
-                        TransactionRowView(transaction: transaction)
-                    }
-                    .onDelete(perform: deleteTransaction)
-                }
+                TransactionsTableView(viewModel: viewModel)
             }
         }
         .sheet(isPresented: $showingAddTransaction) {
             AddTransactionForm(isPresented: $showingAddTransaction)
         }
-    }
-
-    private func deleteTransaction(at offsets: IndexSet) {
-        withAnimation {
-            isDeleting = true
-            for index in offsets {
-                let transaction = filteredTransactions[index]
-                viewContext.delete(transaction)
-            }
-
-            do {
-                try viewContext.save()
-                isDeleting = false
-            } catch {
-                // Handle error
-                print("Failed to delete transaction: \(error)")
-                isDeleting = false
-            }
+        .onAppear {
+            // Update viewModel with actual transactions
+            viewModel.updateTransactions(Array(transactions))
+        }
+        .onChange(of: transactions.count) { oldCount, newCount in
+            // Refresh when transactions change
+            viewModel.updateTransactions(Array(transactions))
         }
     }
 }
