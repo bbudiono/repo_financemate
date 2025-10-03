@@ -83,7 +83,8 @@ class GmailViewModel: ObservableObject {
         errorMessage = nil
 
         do {
-            emails = try await GmailAPI.fetchEmails(accessToken: accessToken, maxResults: 10)
+            // BLUEPRINT Line 71: Fetch 5 years of financial emails from "All Mail"
+            emails = try await GmailAPI.fetchEmails(accessToken: accessToken, maxResults: 500)
             await extractTransactionsFromEmails()
         } catch {
             errorMessage = "Failed to fetch emails: \(error.localizedDescription)"

@@ -43,7 +43,19 @@ struct GmailAPI {
     }
 
     static func fetchEmails(accessToken: String, maxResults: Int) async throws -> [GmailEmail] {
-        let urlString = "https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=\(maxResults)"
+        // BLUEPRINT Line 71: Search ALL emails (not just Inbox) for 5-year financial history
+        let fiveYearsAgo = Calendar.current.date(byAdding: .year, value: -5, to: Date())!
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy/MM/dd"
+        let afterDate = dateFormatter.string(from: fiveYearsAgo)
+
+        // Gmail query: All Mail + Financial keywords + 5-year range
+        let query = "in:anywhere after:\(afterDate) (receipt OR invoice OR payment OR order OR purchase OR cashback)"
+        guard let encodedQuery = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
+            throw GmailAPIError.invalidURL("Failed to encode query")
+        }
+
+        let urlString = "https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=\(maxResults)&q=\(encodedQuery)"
         guard let url = URL(string: urlString) else {
             throw GmailAPIError.invalidURL(urlString)
         }
