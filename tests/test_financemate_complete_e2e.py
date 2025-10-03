@@ -424,12 +424,16 @@ def test_gmail_ui_integration():
 def test_transaction_persistence():
     """Transactions from Gmail must be persisted to Core Data"""
     gmail_vm = MACOS_ROOT / "FinanceMate/GmailViewModel.swift"
+    transaction_builder = MACOS_ROOT / "FinanceMate/Services/TransactionBuilder.swift"
 
     if not gmail_vm.exists():
         log_test("test_transaction_persistence", "FAIL", "GmailViewModel.swift not found")
         assert False, "GmailViewModel.swift not found"
 
-    content = open(gmail_vm).read()
+    # Check both GmailViewModel and TransactionBuilder (refactored architecture)
+    vm_content = open(gmail_vm).read()
+    builder_content = open(transaction_builder).read() if transaction_builder.exists() else ""
+    content = vm_content + builder_content
 
     # Check Core Data integration
     has_context = 'viewContext' in content or 'managedObjectContext' in content

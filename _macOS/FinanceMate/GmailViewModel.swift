@@ -11,13 +11,17 @@ class GmailViewModel: ObservableObject {
     @Published var errorMessage: String?
     @Published var showCodeInput = false
     @Published var authCode = ""
-    @Published var currentPage = 1
 
     private let viewContext: NSManagedObjectContext
-    private let pageSize = 50
+    private let cacheService = EmailCacheService()
+    private let paginationManager = PaginationManager(pageSize: 50)
+    private let importTracker: ImportTracker
+    private let transactionBuilder: TransactionBuilder
 
     init(context: NSManagedObjectContext) {
         self.viewContext = context
+        self.importTracker = ImportTracker(context: context)
+        self.transactionBuilder = TransactionBuilder(context: context)
     }
 
     func checkAuthentication() async {
@@ -82,7 +86,7 @@ class GmailViewModel: ObservableObject {
         guard let accessToken = KeychainHelper.get(account: "gmail_access_token") else { return }
 
         // BLUEPRINT Lines 74, 91: Try cache first
-        if let cachedEmails = EmailCacheManager.load() {
+        if let cachedEmails = cacheService.loadCachedEmails() {
             emails = cachedEmails
             await extractTransactionsFromEmails()
             return
@@ -94,7 +98,7 @@ class GmailViewModel: ObservableObject {
         do {
             // BLUEPRINT Line 71: Fetch 5 years of financial emails from "All Mail"
             emails = try await GmailAPI.fetchEmails(accessToken: accessToken, maxResults: 500)
-            EmailCacheManager.save(emails: emails) // Cache the results
+            cacheService.saveEmailsToCache(emails)
             await extractTransactionsFromEmails()
         } catch {
             errorMessage = "Failed to fetch emails: \(error.localizedDescription)"
@@ -106,28 +110,19 @@ class GmailViewModel: ObservableObject {
     // MARK: - Transaction Extraction
 
     var unprocessedEmails: [ExtractedTransaction] {
-        extractedTransactions.filter { email in
-            !isAlreadyImported(email.id)
-        }
+        importTracker.filterUnprocessed(extractedTransactions)
     }
 
     var paginatedTransactions: [ExtractedTransaction] {
-        Array(unprocessedEmails.prefix(currentPage * pageSize))
+        paginationManager.paginatedResults(unprocessedEmails)
     }
 
     var hasMorePages: Bool {
-        currentPage * pageSize < unprocessedEmails.count
+        paginationManager.hasMorePages(totalCount: unprocessedEmails.count)
     }
 
     func loadNextPage() {
-        guard hasMorePages else { return }
-        currentPage += 1
-    }
-
-    func isAlreadyImported(_ emailID: String) -> Bool {
-        let request = NSFetchRequest<Transaction>(entityName: "Transaction")
-        request.predicate = NSPredicate(format: "sourceEmailID == %@", emailID)
-        return (try? viewContext.count(for: request)) ?? 0 > 0
+        paginationManager.loadNextPage(totalCount: unprocessedEmails.count)
     }
 
     func extractTransactionsFromEmails() async {
@@ -155,82 +150,13 @@ class GmailViewModel: ObservableObject {
     }
 
     func createTransaction(from extracted: ExtractedTransaction) {
-        NSLog("=== CREATE TRANSACTION CALLED ===")
-        NSLog("Merchant: %@", extracted.merchant)
-        NSLog("Amount: %.2f", extracted.amount)
-
-        let transaction = Transaction(context: viewContext)
-        transaction.id = UUID()
-        transaction.amount = extracted.amount
-        transaction.itemDescription = extracted.merchant
-        transaction.category = extracted.category
-        transaction.taxCategory = TaxCategory.personal.rawValue
-        transaction.date = extracted.date
-        transaction.source = "gmail"
-        transaction.sourceEmailID = extracted.id  // Track email UUID
-        transaction.importedDate = Date()         // Track import timestamp
-
-        // Enhanced note with comprehensive expense details
-        transaction.note = buildTransactionNote(from: extracted)
-
-        // BLUEPRINT Line 63: Persist each line item with individual tax categories
-        NSLog("Creating %d line items", extracted.items.count)
-        createLineItems(for: transaction, from: extracted.items)
-
-        saveTransaction()
-    }
-
-    private func createLineItems(for transaction: Transaction, from items: [GmailLineItem]) {
-        for item in items {
-            guard let lineItem = NSEntityDescription.insertNewObject(forEntityName: "LineItem", into: viewContext) as? LineItem else {
-                errorMessage = "Failed to create line item entity"
-                NSLog("ERROR: Failed to create line item")
-                continue
-            }
-            lineItem.id = UUID()
-            lineItem.itemDescription = item.description
-            lineItem.quantity = Int32(item.quantity)
-            lineItem.price = item.price
-            lineItem.taxCategory = TaxCategory.personal.rawValue
-            lineItem.transaction = transaction
-        }
-    }
-
-    private func saveTransaction() {
-        do {
-            try viewContext.save()
-            NSLog(" Transaction saved successfully")
-        } catch {
-            errorMessage = "Failed to save transaction: \(error.localizedDescription)"
-            NSLog(" Save failed: %@", error.localizedDescription)
+        if transactionBuilder.createTransaction(from: extracted) == nil {
+            errorMessage = "Failed to save transaction"
         }
     }
 
     func createAllTransactions() {
         extractedTransactions.forEach { createTransaction(from: $0) }
         extractedTransactions.removeAll()
-    }
-
-    private func buildTransactionNote(from extracted: ExtractedTransaction) -> String {
-        var components = [
-            "Email: \(extracted.emailSubject)",
-            "From: \(extracted.emailSender)",
-            "Confidence: \(Int(extracted.confidence * 100))%"
-        ]
-
-        if let gst = extracted.gstAmount {
-            components.append("GST: $\(String(format: "%.2f", gst))")
-        }
-        if let abn = extracted.abn {
-            components.append("ABN: \(abn)")
-        }
-        if let invoice = extracted.invoiceNumber {
-            components.append("Invoice#: \(invoice)")
-        }
-        if let payment = extracted.paymentMethod {
-            components.append("Payment: \(payment)")
-        }
-
-        return components.joined(separator: " | ")
     }
 }

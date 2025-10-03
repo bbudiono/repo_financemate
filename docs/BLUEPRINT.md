@@ -95,6 +95,11 @@ To be the central command center for personal and family wealth, empowering user
   * Transactions Table should allow users to `right-click` on items or a selection of items and conduct key actions such as `delete`, etc.
   * Transactions Table should always make optimal use of available space, and implement `best practices` when it comes to UI implementations, especially handling dynamic resizing and widths, etc. Ensuring no adverse UI/UX such as overlap, hidden elements, broken elements, etc.
 * **MANDATORY:** **Multi-Currency Support:** The system must handle multiple currencies, with Australian Dollars (AUD) as the default. All UI displays must use locale-correct currency formatting.
+* **MANDATORY:** **Expanded Settings:** Expand the Settings Screen. The "Settings" screen MUST be expanded into a multi-section view. It must include dedicated, clearly separated sections for "Profile," "Security" (Change Password), "API Keys" (for LLMs), and "Connections" (for linked bank/email accounts).
+* **MANDATORY:** **Enhanced Visual Indicators:** Provide Visual Indicators for Splits. A clear visual indicator (e.g., a small icon or badge) MUST be present on any transaction in the main list that has been split.
+* **MANDATORY:** **Context-Aware AI Assistant:** The AI Assistant MUST be context-aware. When the user navigates to a new screen (e.g., "Transactions"), the assistant's placeholder text and suggested query buttons (Expenses, Budget, etc.) MUST dynamically update to be relevant to that screen's content.
+* **MANDATORY:** **Implement Advanced Filtering Controls:** The simple filter pills MUST be upgraded to a more robust and complex filtering control system. This should allow for multi-selection of categories, date range picking, and rule-based filtering (e.g., "merchant contains 'Uber'").
+* **MANDATORY:** **Archive Processed Items:** The "Gmail Receipts" table MUST automatically hide or archive items that have been successfully imported into the "Transactions" table. A toggle or filter must be available for the user to view these archived items.
 
 #### **3.1.2. User Management, Security & SSO (MVP)**
 
@@ -128,13 +133,29 @@ To be the central command center for personal and family wealth, empowering user
 * **MANDATORY:** **Empty States:** Every view that can display a list of data **MUST have a well-designed "empty state"** with a helpful message, an icon, and a primary call-to-action.
 * **MANDATORY:** **Interactive Feedback:** All interactive elements **MUST provide clear visual feedback** on interaction (e.g., hover effects, active/selected states).
 * **MANDATORY:** **User-focused UI/UX:** Ensure all visual components don't overlap/cover/interfere with other key elements of the application. i.e. AI Chatbot should NEVER block buttons, information and other interactive UI/UX.
+* **MANDATORY:** **Enhanced Dashboard Cards:** Enhance Dashboard Cards. The "Dashboard" summary cards MUST be enhanced to provide more context. This includes adding relevant icons (e.g., a wallet for balance, a list for transactions), secondary metrics (e.g., monthly spending total), and a visual trend indicator (e.g., an up/down arrow with percentage change).
+* **MANDATORY:** **Enhanced Transaction Limits:** Add Monetary Amounts to Transaction Lists. The main "Transactions" and "Gmail Receipts" list views MUST display the monetary amount for each item, formatted for the local currency. Debit and credit/income transactions must be made visually distinct from each other (e.g., using color or +/- symbols).
+* **MANDATORY:** **Typographic Enhancements:** Establish Typographic Hierarchy. A clear visual and typographic hierarchy MUST be established on all screens. Use varying font weights (e.g., bold for primary data like amounts and merchant names) and opacities/colors (e.g., dimmer text for secondary info like dates and categories) to guide the user's focus.
+* **MANDATORY:** **Tooltips and Information:** Implement Data-Rich Tooltips or Expandable Rows. On the main transaction list, hovering over a row (or clicking an expand icon) MUST reveal a tooltip or an expandable inline view showing more details,
+* **MANDATORY:** **Implement Glassmorphism Design System:** The "glassmorphism" design system MUST be implemented across all primary UI components. All cards, sidebars, modals, and primary containers must use a background blur/translucency effect with a subtle border to create depth and a modern aesthetic.
+* **MANDATORY:** **Optimize Layout for Information Density:** The layout MUST make optimal use of available space. Implement best practices for handling dynamic resizing and column widths to ensure no UI elements overlap, become hidden, or break on different window sizes.
+* **MANDATORY:** **Unify Iconography:** The application MUST use a single, high-quality, and consistent icon set for all interactive elements, including navigation tabs, dashboard cards, and action buttons, to create a professional and cohesive visual language.
+* **MANDATORY:** **Non-Blocking UI:** The AI Assistant chatbot sidebar MUST NOT overlap or functionally block any core content or interactive elements in the main view. The main content area must intelligently resize or adapt its layout when the assistant is visible.
 
-#### ***3.1.5. AI/ML/LLM and Feature Development**
+#### **3.1.5. AI/ML/LLM and Feature Development**
 
 * **MANDATORY:** A dedicated data model/table for "User Automation Memory" MUST be created. It must store associations between transaction characteristics (e.g., merchant name, keywords) and user actions (e.g., assigned category, split template used) to serve as a training dataset for the AI/LLM.
 * **MANDATORY:** A new section within "Settings" MUST be created for "Automation Rules." This UI must allow users to create, view, edit, and delete the filtering and categorization rules for incoming email transactions.
 * **MANDATORY:** All ingested email items MUST have a status field (e.g., 'Needs Review', 'Transaction Created', 'Archived'). The "Gmail Receipts" table should, by default, only display items with the 'Needs Review' status. An option or filter must be provided to view archived items.
 * **MANDATORY:** Ensure the LLM/Chatbot is context aware about the data within the application. This includes being able to do aggregation, and other `agentic` actions on the transactional and email data/information.
+
+#### **3.1.6 Workflow & Interactivity**
+
+* **MANDATORY:** Automate Gmail Receipt Parsing. The "Gmail Receipts" view MUST automatically parse raw email data into a structured, pre-filled transaction form. It must intelligently extract the merchant, date, total amount, and line items, presenting them for one-click confirmation rather than requiring manual data entry.
+* **MANDATORY:** Implement "Spreadsheet-Like" Table Functionality. Both the "Transactions" and "Gmail Receipts" tables MUST support advanced, spreadsheet-like interactions. This includes multi-select (e.g., using checkboxes or Shift/Command-click), in-line editing of fields, and automatic column width adjustment.
+* **MANDATORY:** Add a Contextual Right-Click Menu. Users MUST be able to right-click on a single transaction/receipt or a multi-selected group to access a contextual menu with key actions like "Categorize," "Assign to Entity," "Apply Split Template," and "Delete."
+* **MANDATORY:** rovide Clear Visual Feedback. All interactive elements (buttons, list items, tabs, filters) MUST provide clear visual feedback. This includes distinct hover effects, a clear "active/selected" state for navigation items and filters, and subtle animations on tap/click to confirm user actions.
+* **MANDATORY:** Design "Empty States" and Onboarding Cues. Every view that can display a list of data MUST have a well-designed "empty state." This state must not be a blank screen; it should include a helpful message, an icon, and a primary call-to-action button (e.g., "You have no transactions yet. Link your first bank account to get started.").
 
 </MVP>
 
