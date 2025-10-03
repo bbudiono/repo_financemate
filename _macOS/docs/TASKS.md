@@ -1795,3 +1795,48 @@ Following comprehensive risk assessment and security validation treating Finance
 - **Template**: ~/.claude/templates/project_repo/docs/NAVIGATION_TEMPLATE.md
 - **Created**: 2025-10-03 19:48:49
 
+
+### TECH-DEBT-1b22b1f9: Fix Code Quality Violations
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: code_quality_enforcer_hook.sh
+- **File**: FinanceMate/Views/Transactions/TransactionsTableView.swift
+- **Description**: Code does not meet quality standards
+- **Requirements**:
+  - Function size ≤50 lines
+  - File size ≤500 lines
+  - Complexity ≤75
+  - See log for details
+- **Template**: N/A
+- **Created**: 2025-10-03 20:13:53
+
+
+### TECH-DEBT-092219a9: Document Navigation Structure
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: mandatory_sitemap_enforcer_hook.sh
+- **File**: add_gmail_table_to_xcode.rb
+- **Description**: Routes/views detected but sitemap missing
+- **Requirements**:
+  - Document all routes/pages/views
+  - Define navigation flows
+  - Specify authentication requirements
+  - Map API integrations
+- **Template**: ~/.claude/templates/project_repo/docs/NAVIGATION_TEMPLATE.md
+- **Created**: 2025-10-03 20:15:33
+
+
+### TECH-DEBT-260b11c5: Fix Code Quality Violations
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: code_quality_enforcer_hook.sh
+- **File**: add_gmail_table_to_xcode.rb
+- **Description**: Code does not meet quality standards
+- **Requirements**:
+  - Function size ≤50 lines
+  - File size ≤500 lines
+  - Complexity ≤75
+  - See log for details
+- **Template**: N/A
+- **Created**: 2025-10-03 20:15:33
+

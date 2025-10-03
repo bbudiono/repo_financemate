@@ -6,6 +6,7 @@ class GmailViewModel: ObservableObject {
     @Published var isAuthenticated = false
     @Published var emails: [GmailEmail] = []
     @Published var extractedTransactions: [ExtractedTransaction] = []
+    @Published var selectedIDs: Set<String> = [] // For table row selection
     @Published var isLoading = false
     @Published var errorMessage: String?
     @Published var showCodeInput = false

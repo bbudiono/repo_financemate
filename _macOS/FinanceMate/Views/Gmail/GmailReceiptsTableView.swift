@@ -2,8 +2,7 @@ import SwiftUI
 
 // BLUEPRINT Lines 67-68: Information dense, spreadsheet-like table with in-line editing
 struct GmailReceiptsTableView: View {
-    @Binding var transactions: [ExtractedTransaction]
-    @Binding var selectedIDs: Set<String>
+    @ObservedObject var viewModel: GmailViewModel
     @State private var sortOrder: [KeyPathComparator<ExtractedTransaction>] = [
         .init(\.date, order: .reverse)
     ]
@@ -14,16 +13,16 @@ struct GmailReceiptsTableView: View {
     var body: some View {
         VStack(spacing: 0) {
             // Spreadsheet-like Table (BLUEPRINT Line 68)
-            Table(transactions, selection: $selectedIDs, sortOrder: $sortOrder) {
+            Table(viewModel.extractedTransactions, selection: $viewModel.selectedIDs, sortOrder: $sortOrder) {
                 // COLUMN 1: Confirmation checkbox
                 TableColumn("") { transaction in
                     Toggle("", isOn: Binding(
-                        get: { selectedIDs.contains(transaction.id) },
+                        get: { viewModel.selectedIDs.contains(transaction.id) },
                         set: { isSelected in
                             if isSelected {
-                                selectedIDs.insert(transaction.id)
+                                viewModel.selectedIDs.insert(transaction.id)
                             } else {
-                                selectedIDs.remove(transaction.id)
+                                viewModel.selectedIDs.remove(transaction.id)
                             }
                         }
                     ))
@@ -137,7 +136,7 @@ struct GmailReceiptsTableView: View {
                 .width(min: 150, ideal: 200)
             }
             .onChange(of: sortOrder) { oldValue, newValue in
-                transactions.sort(using: newValue)
+                viewModel.extractedTransactions.sort(using: newValue)
             }
         }
     }

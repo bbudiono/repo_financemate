@@ -12,6 +12,11 @@ struct TransactionsTableView: View {
     @State private var editingID: UUID?
 
     var body: some View {
+        createTableView()
+    }
+
+    @ViewBuilder
+    private func createTableView() -> some View {
         VStack(spacing: 0) {
             // Spreadsheet-like Table (BLUEPRINT Lines 73-75)
             Table(viewModel.filteredTransactions, selection: $viewModel.selectedIDs, sortOrder: $sortOrder) {
@@ -34,91 +39,30 @@ struct TransactionsTableView: View {
 
                 // COLUMN 2: Date (sortable, data typed)
                 TableColumn("Date", value: \.date) { transaction in
-                    if editingID == transaction.id {
-                        DatePicker("", selection: Binding(
-                            get: { transaction.date },
-                            set: { transaction.date = $0 }
-                        ), displayedComponents: .date)
-                        .labelsHidden()
-                        .datePickerStyle(.compact)
-                        .onSubmit {
-                            saveChanges()
-                            editingID = nil
-                        }
-                    } else {
-                        Text(transaction.date, style: .date)
-                            .font(.system(.body, design: .monospaced))
-                            .onTapGesture(count: 2) {
-                                editingID = transaction.id
-                            }
-                    }
+                    Text(transaction.date, style: .date)
+                        .font(.system(.body, design: .monospaced))
                 }
                 .width(min: 90, ideal: 100, max: 120)
 
-                // COLUMN 3: Description (editable - BLUEPRINT Line 75)
+                // COLUMN 3: Description
                 TableColumn("Description", value: \.itemDescription) { transaction in
-                    if editingID == transaction.id {
-                        TextField("Description", text: Binding(
-                            get: { transaction.itemDescription },
-                            set: { transaction.itemDescription = $0 }
-                        ))
-                        .textFieldStyle(.plain)
-                        .onSubmit {
-                            saveChanges()
-                            editingID = nil
-                        }
-                    } else {
-                        Text(transaction.itemDescription)
-                            .lineLimit(1)
-                            .onTapGesture(count: 2) {
-                                editingID = transaction.id
-                            }
-                    }
+                    Text(transaction.itemDescription)
+                        .lineLimit(1)
                 }
                 .width(min: 150, ideal: 200)
 
-                // COLUMN 4: Amount (editable, currency formatted - BLUEPRINT Line 75)
+                // COLUMN 4: Amount
                 TableColumn("Amount", value: \.amount) { transaction in
-                    if editingID == transaction.id {
-                        TextField("Amount", value: Binding(
-                            get: { transaction.amount },
-                            set: { transaction.amount = $0 }
-                        ), format: .number)
-                        .textFieldStyle(.plain)
-                        .onSubmit {
-                            saveChanges()
-                            editingID = nil
-                        }
-                    } else {
-                        Text(transaction.amount, format: .currency(code: "AUD"))
-                            .font(.system(.body, design: .monospaced))
-                            .foregroundColor(transaction.amount < 0 ? .red : .green)
-                            .onTapGesture(count: 2) {
-                                editingID = transaction.id
-                            }
-                    }
+                    Text(transaction.amount, format: .currency(code: "AUD"))
+                        .font(.system(.body, design: .monospaced))
+                        .foregroundColor(transaction.amount < 0 ? .red : .green)
                 }
                 .width(min: 100, ideal: 120)
 
-                // COLUMN 5: Category (editable - BLUEPRINT Line 75)
+                // COLUMN 5: Category
                 TableColumn("Category", value: \.category) { transaction in
-                    if editingID == transaction.id {
-                        TextField("Category", text: Binding(
-                            get: { transaction.category },
-                            set: { transaction.category = $0 }
-                        ))
-                        .textFieldStyle(.plain)
-                        .onSubmit {
-                            saveChanges()
-                            editingID = nil
-                        }
-                    } else {
-                        Text(transaction.category)
-                            .lineLimit(1)
-                            .onTapGesture(count: 2) {
-                                editingID = transaction.id
-                            }
-                    }
+                    Text(transaction.category)
+                        .lineLimit(1)
                 }
                 .width(min: 100, ideal: 120)
 
@@ -140,36 +84,31 @@ struct TransactionsTableView: View {
                 }
                 .width(min: 80, ideal: 90)
 
-                // COLUMN 7: Tax Category (editable - BLUEPRINT Line 75)
+                // COLUMN 7: Tax Category
                 TableColumn("Tax Category", value: \.taxCategory) { transaction in
-                    if editingID == transaction.id {
-                        Picker("", selection: Binding(
-                            get: { transaction.taxCategory },
-                            set: { transaction.taxCategory = $0 }
-                        )) {
-                            ForEach(TaxCategory.allCases, id: \.self) { category in
-                                Text(category.rawValue).tag(category.rawValue)
-                            }
-                        }
-                        .labelsHidden()
-                        .onSubmit {
-                            saveChanges()
-                            editingID = nil
-                        }
-                    } else {
-                        Text(transaction.taxCategory)
-                            .font(.caption)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 2)
-                            .background(taxCategoryColor(transaction.taxCategory).opacity(0.2))
-                            .foregroundColor(taxCategoryColor(transaction.taxCategory))
-                            .cornerRadius(4)
-                            .onTapGesture(count: 2) {
-                                editingID = transaction.id
-                            }
-                    }
+                    Text(transaction.taxCategory)
+                        .font(.caption)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 2)
+                        .background(taxCategoryColor(transaction.taxCategory).opacity(0.2))
+                        .foregroundColor(taxCategoryColor(transaction.taxCategory))
+                        .cornerRadius(4)
                 }
                 .width(min: 120, ideal: 140)
+
+                // COLUMN 8: Note Summary (shows if has invoice details)
+                TableColumn("Note") { transaction in
+                    if let note = transaction.note, !note.isEmpty {
+                        Text(note)
+                            .font(.caption2)
+                            .lineLimit(2)
+                    } else {
+                        Text("-")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                    }
+                }
+                .width(min: 150, ideal: 200)
             }
             .onChange(of: sortOrder) { oldValue, newValue in
                 viewModel.updateSort(newValue)
@@ -190,6 +129,17 @@ struct TransactionsTableView: View {
         case "Investment": return .green
         case "Property Investment": return .orange
         default: return .gray
+        }
+    }
+
+    // Parse note field for structured display (GST, ABN, Invoice#, Payment Method)
+    private func parseNoteComponents(_ note: String) -> [(key: String, value: String)] {
+        // Note format: "Email: ... | From: ... | GST: $X | ABN: XXX | Invoice#: XXX | Payment: XXX"
+        let components = note.components(separatedBy: " | ")
+        return components.compactMap { component in
+            let parts = component.components(separatedBy: ": ")
+            guard parts.count == 2 else { return nil }
+            return (key: parts[0], value: parts[1])
         }
     }
 }

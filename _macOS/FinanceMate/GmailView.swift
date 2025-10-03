@@ -76,27 +76,8 @@ struct GmailView: View {
                         Task { await viewModel.fetchEmails() }
                     }
                 } else {
-                    VStack {
-                        HStack {
-                            Text("\(viewModel.extractedTransactions.count) transactions found")
-                                .font(.headline)
-                            Spacer()
-                            Button("Create All") {
-                                viewModel.createAllTransactions()
-                            }
-                            .buttonStyle(.borderedProminent)
-                        }
-                        .padding()
-
-                        List {
-                            ForEach(viewModel.extractedTransactions) { extracted in
-                                ExtractedTransactionRow(extracted: extracted) {
-                                    NSLog("=== ExtractedTransactionRow onApprove CALLED ===")
-                                    viewModel.createTransaction(from: extracted)
-                                }
-                            }
-                        }
-                    }
+                    // BLUEPRINT Lines 67-68: Information dense, spreadsheet-like table
+                    GmailReceiptsTable(viewModel: viewModel)
                 }
             }
 
@@ -120,3 +101,105 @@ struct GmailView: View {
     }
 }
 
+// BLUEPRINT Lines 67-68: Information dense, spreadsheet-like table with in-line editing
+struct GmailReceiptsTable: View {
+    @ObservedObject var viewModel: GmailViewModel
+    @State private var sortOrder: [KeyPathComparator<ExtractedTransaction>] = [
+        .init(\.date, order: .reverse)
+    ]
+    @State private var editingID: String?
+
+    var body: some View {
+        VStack(spacing: 0) {
+            Table(viewModel.extractedTransactions, selection: $viewModel.selectedIDs, sortOrder: $sortOrder) {
+                // Confirmation checkbox
+                TableColumn("") { transaction in
+                    Toggle("", isOn: Binding(
+                        get: { viewModel.selectedIDs.contains(transaction.id) },
+                        set: { isSelected in
+                            if isSelected {
+                                viewModel.selectedIDs.insert(transaction.id)
+                            } else {
+                                viewModel.selectedIDs.remove(transaction.id)
+                            }
+                        }
+                    ))
+                    .toggleStyle(.checkbox)
+                    .labelsHidden()
+                }
+                .width(30)
+
+                // Date
+                TableColumn("Date", value: \.date) { transaction in
+                    Text(transaction.date, style: .date)
+                        .font(.system(.body, design: .monospaced))
+                }
+                .width(min: 90, ideal: 100, max: 120)
+
+                // Merchant
+                TableColumn("Merchant", value: \.merchant) { transaction in
+                    Text(transaction.merchant)
+                        .lineLimit(1)
+                }
+                .width(min: 120, ideal: 150)
+
+                // Amount
+                TableColumn("Amount", value: \.amount) { transaction in
+                    Text(transaction.amount, format: .currency(code: "AUD"))
+                        .font(.system(.body, design: .monospaced))
+                        .foregroundColor(transaction.amount < 0 ? .red : .primary)
+                }
+                .width(min: 80, ideal: 100)
+
+                // Category
+                TableColumn("Category", value: \.category) { transaction in
+                    Text(transaction.category)
+                        .lineLimit(1)
+                }
+                .width(min: 100, ideal: 120)
+
+                // Confidence
+                TableColumn("Confidence", value: \.confidence) { transaction in
+                    HStack {
+                        Text("\(Int(transaction.confidence * 100))%")
+                            .font(.system(.body, design: .monospaced))
+                        Circle()
+                            .fill(confidenceColor(transaction.confidence))
+                            .frame(width: 8, height: 8)
+                    }
+                }
+                .width(min: 80, ideal: 90)
+
+                // Items count
+                TableColumn("Items") { transaction in
+                    Text("\(transaction.items.count)")
+                        .font(.system(.body, design: .monospaced))
+                }
+                .width(min: 50, ideal: 60)
+
+                // Source details
+                TableColumn("Source") { transaction in
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(transaction.emailSender)
+                            .font(.caption)
+                            .lineLimit(1)
+                        Text(transaction.emailSubject)
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                            .lineLimit(1)
+                    }
+                }
+                .width(min: 150, ideal: 200)
+            }
+            .onChange(of: sortOrder) { oldValue, newValue in
+                viewModel.extractedTransactions.sort(using: newValue)
+            }
+        }
+    }
+
+    private func confidenceColor(_ confidence: Double) -> Color {
+        if confidence >= 0.8 { return .green }
+        else if confidence >= 0.5 { return .yellow }
+        else { return .red }
+    }
+}
