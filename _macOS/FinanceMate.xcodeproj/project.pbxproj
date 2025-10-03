@@ -58,7 +58,8 @@
 		F19107AB83A247DD8A98C764 /* GmailCashbackExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 730E193D8F9F43AEBA97EB19 /* GmailCashbackExtractor.swift */; };
 		F73403B44F38F91E224CD21D /* GmailReceiptsTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E4DCEAC92B2E4D08EFD6720 /* GmailReceiptsTableView.swift */; };
 		FD47DD6F80A476B4EF448E5D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1715840A6674ADB3AD26EAF /* ContentView.swift */; };
-/* End PBXBuildFile section */
+		472F3AB0C78B22DCD65B3D17 /* EmailCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 472F3AB0C78B22DCD65B3D16 /* EmailCacheManager.swift */; };
+		/* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		0462096396F23463327279A7 /* AuthenticationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationManager.swift; sourceTree = "<group>"; };
@@ -115,7 +116,8 @@
 		F7A67DE18ED946FCBF0CE117 /* GmailEmailFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GmailEmailFetcher.swift; sourceTree = "<group>"; };
 		FB450CF228F541ACBECDC36B /* AnthropicAPIModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnthropicAPIModels.swift; sourceTree = "<group>"; };
 		FD1B108972E6DE4F2BB3E4BE /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
-/* End PBXFileReference section */
+		472F3AB0C78B22DCD65B3D16 /* EmailCacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailCacheManager.swift; sourceTree = "<group>"; };
+		/* End PBXFileReference section */
 
 /* Begin PBXGroup section */
 		23E7A407FC97C201F14B660F /* Gmail */ = {
@@ -191,7 +193,7 @@
 				8F1545D1B8C7FB389DAD93A8 /* AddTransactionForm.swift */,
 				E7B6C95040B9C4282752BA14 /* DotEnvLoader.swift */,
 				B428534A201E50EAA8E7092A /* Views */,
-			);
+				472F3AB0C78B22DCD65B3D16 /* EmailCacheManager.swift */,);
 			path = FinanceMate;
 			sourceTree = "<group>";
 		};
@@ -328,6 +330,7 @@
 				F73403B44F38F91E224CD21D /* GmailReceiptsTableView.swift in Sources */,
 				9B5A852303860E3FAF9988D2 /* GmailTableRow.swift in Sources */,
 				B95153452F263FDC3554D9CA /* GmailTableComponents.swift in Sources */,
+				472F3AB0C78B22DCD65B3D17 /* EmailCacheManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

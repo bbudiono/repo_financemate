@@ -1,6 +1,6 @@
 import Foundation
 
-struct GmailEmail: Identifiable {
+struct GmailEmail: Identifiable, Codable {
     let id: String
     let subject: String
     let sender: String

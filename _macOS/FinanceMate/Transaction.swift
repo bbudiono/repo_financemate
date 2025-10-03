@@ -21,6 +21,9 @@ public class Transaction: NSManagedObject, Identifiable {
     @NSManaged public var category: String
     @NSManaged public var taxCategory: String
     @NSManaged public var note: String?
+    @NSManaged public var sourceEmailID: String?
+    @NSManaged public var importedDate: Date?
+    @NSManaged public var transactionType: String
 
     public override func awakeFromInsert() {
         super.awakeFromInsert()
@@ -31,5 +34,6 @@ public class Transaction: NSManagedObject, Identifiable {
         setPrimitiveValue(0.0, forKey: "amount")
         setPrimitiveValue("Other", forKey: "category")
         setPrimitiveValue(TaxCategory.personal.rawValue, forKey: "taxCategory")
+        setPrimitiveValue("expense", forKey: "transactionType")
     }
 }

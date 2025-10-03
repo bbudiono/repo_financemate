@@ -5,6 +5,7 @@ import SwiftUI
 struct GmailView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @StateObject private var viewModel: GmailViewModel
+    @AppStorage("gmail_auto_refresh") private var autoRefresh = false
 
     init() {
         // Initialize GmailViewModel with Core Data context
@@ -14,10 +15,16 @@ struct GmailView: View {
 
     var body: some View {
         VStack(spacing: 20) {
-            Text("Gmail Receipts")
-                .font(.largeTitle)
-                .fontWeight(.bold)
-                .padding()
+            // Header with auto-refresh toggle
+            HStack {
+                Text("Gmail Receipts")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                Spacer()
+                Toggle("Auto-refresh", isOn: $autoRefresh)
+                    .toggleStyle(.switch)
+            }
+            .padding()
 
             if !viewModel.isAuthenticated {
                 VStack(spacing: 16) {
@@ -92,7 +99,7 @@ struct GmailView: View {
         }
         .task {
             await viewModel.checkAuthentication()
-            if viewModel.isAuthenticated {
+            if viewModel.isAuthenticated && autoRefresh {
                 await viewModel.fetchEmails()
             }
         }

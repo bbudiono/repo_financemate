@@ -44,14 +44,32 @@ struct TransactionsTableView: View {
                 }
                 .width(min: 90, ideal: 100, max: 120)
 
-                // COLUMN 3: Description
+                // COLUMN 3: Type
+                TableColumn("Type", value: \.transactionType) { transaction in
+                    Picker("", selection: Binding(
+                        get: { transaction.transactionType },
+                        set: { newValue in
+                            transaction.transactionType = newValue
+                            saveChanges()
+                        }
+                    )) {
+                        Text("Income").tag("income")
+                        Text("Expense").tag("expense")
+                        Text("Transfer").tag("transfer")
+                    }
+                    .labelsHidden()
+                    .frame(width: 100)
+                }
+                .width(80)
+
+                // COLUMN 4: Description
                 TableColumn("Description", value: \.itemDescription) { transaction in
                     Text(transaction.itemDescription)
                         .lineLimit(1)
                 }
                 .width(min: 150, ideal: 200)
 
-                // COLUMN 4: Amount
+                // COLUMN 5: Amount
                 TableColumn("Amount", value: \.amount) { transaction in
                     Text(transaction.amount, format: .currency(code: "AUD"))
                         .font(.system(.body, design: .monospaced))
@@ -59,14 +77,14 @@ struct TransactionsTableView: View {
                 }
                 .width(min: 100, ideal: 120)
 
-                // COLUMN 5: Category
+                // COLUMN 6: Category
                 TableColumn("Category", value: \.category) { transaction in
                     Text(transaction.category)
                         .lineLimit(1)
                 }
                 .width(min: 100, ideal: 120)
 
-                // COLUMN 6: Source (data typed)
+                // COLUMN 7: Source (data typed)
                 TableColumn("Source", value: \.source) { transaction in
                     HStack(spacing: 4) {
                         if transaction.source == "gmail" {
@@ -84,7 +102,7 @@ struct TransactionsTableView: View {
                 }
                 .width(min: 80, ideal: 90)
 
-                // COLUMN 7: Tax Category
+                // COLUMN 8: Tax Category
                 TableColumn("Tax Category", value: \.taxCategory) { transaction in
                     Text(transaction.taxCategory)
                         .font(.caption)
@@ -96,7 +114,7 @@ struct TransactionsTableView: View {
                 }
                 .width(min: 120, ideal: 140)
 
-                // COLUMN 8: Note Summary (shows if has invoice details)
+                // COLUMN 9: Note Summary (shows if has invoice details)
                 TableColumn("Note") { transaction in
                     if let note = transaction.note, !note.isEmpty {
                         Text(note)
@@ -112,6 +130,27 @@ struct TransactionsTableView: View {
             }
             .onChange(of: sortOrder) { oldValue, newValue in
                 viewModel.updateSort(newValue)
+            }
+            .contextMenu(forSelectionType: UUID.self) { selection in
+                if let transactionID = selection.first,
+                   let transaction = viewModel.filteredTransactions.first(where: { $0.id == transactionID }) {
+                    Button("Edit Transaction") {
+                        editTransaction(transaction)
+                    }
+                    Button("Delete Transaction") {
+                        deleteTransaction(transaction)
+                    }
+                    Divider()
+                    Button("Mark as Income") {
+                        setType(transaction, "income")
+                    }
+                    Button("Mark as Expense") {
+                        setType(transaction, "expense")
+                    }
+                    Button("Mark as Transfer") {
+                        setType(transaction, "transfer")
+                    }
+                }
             }
         }
     }
@@ -141,5 +180,18 @@ struct TransactionsTableView: View {
             guard parts.count == 2 else { return nil }
             return (key: parts[0], value: parts[1])
         }
+    }
+
+    private func editTransaction(_ transaction: Transaction) {
+        editingID = transaction.id
+    }
+
+    private func deleteTransaction(_ transaction: Transaction) {
+        viewModel.deleteTransaction(transaction)
+    }
+
+    private func setType(_ transaction: Transaction, _ type: String) {
+        transaction.setValue(type, forKey: "transactionType")
+        saveChanges()
     }
 }

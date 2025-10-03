@@ -97,6 +97,25 @@ struct GmailTableRow: View {
                     expandedID = expandedID == transaction.id ? nil : transaction.id
                 }
             }
+            .contextMenu {
+                Button("Import to Transactions") {
+                    viewModel.createTransaction(from: transaction)
+                    viewModel.selectedIDs.remove(transaction.id)
+                }
+                Button("Delete Email") {
+                    deleteEmail()
+                }
+
+                if !viewModel.selectedIDs.isEmpty {
+                    Divider()
+                    Button("Import Selected (\(viewModel.selectedIDs.count))") {
+                        importSelected()
+                    }
+                    Button("Delete Selected") {
+                        deleteSelected()
+                    }
+                }
+            }
 
             // Expandable detail panel - Shows ALL invoice data
             if expandedID == transaction.id {
@@ -111,5 +130,16 @@ struct GmailTableRow: View {
     private func deleteEmail() {
         viewModel.extractedTransactions.removeAll(where: { $0.id == transaction.id })
         viewModel.selectedIDs.remove(transaction.id)
+    }
+
+    private func importSelected() {
+        let selectedTransactions = viewModel.extractedTransactions.filter { viewModel.selectedIDs.contains($0.id) }
+        selectedTransactions.forEach { viewModel.createTransaction(from: $0) }
+        viewModel.selectedIDs.removeAll()
+    }
+
+    private func deleteSelected() {
+        viewModel.extractedTransactions.removeAll { viewModel.selectedIDs.contains($0.id) }
+        viewModel.selectedIDs.removeAll()
     }
 }

@@ -11,8 +11,10 @@ class GmailViewModel: ObservableObject {
     @Published var errorMessage: String?
     @Published var showCodeInput = false
     @Published var authCode = ""
+    @Published var currentPage = 1
 
     private let viewContext: NSManagedObjectContext
+    private let pageSize = 50
 
     init(context: NSManagedObjectContext) {
         self.viewContext = context
@@ -79,12 +81,20 @@ class GmailViewModel: ObservableObject {
     func fetchEmails() async {
         guard let accessToken = KeychainHelper.get(account: "gmail_access_token") else { return }
 
+        // BLUEPRINT Lines 74, 91: Try cache first
+        if let cachedEmails = EmailCacheManager.load() {
+            emails = cachedEmails
+            await extractTransactionsFromEmails()
+            return
+        }
+
         isLoading = true
         errorMessage = nil
 
         do {
             // BLUEPRINT Line 71: Fetch 5 years of financial emails from "All Mail"
             emails = try await GmailAPI.fetchEmails(accessToken: accessToken, maxResults: 500)
+            EmailCacheManager.save(emails: emails) // Cache the results
             await extractTransactionsFromEmails()
         } catch {
             errorMessage = "Failed to fetch emails: \(error.localizedDescription)"
@@ -94,6 +104,31 @@ class GmailViewModel: ObservableObject {
     }
 
     // MARK: - Transaction Extraction
+
+    var unprocessedEmails: [ExtractedTransaction] {
+        extractedTransactions.filter { email in
+            !isAlreadyImported(email.id)
+        }
+    }
+
+    var paginatedTransactions: [ExtractedTransaction] {
+        Array(unprocessedEmails.prefix(currentPage * pageSize))
+    }
+
+    var hasMorePages: Bool {
+        currentPage * pageSize < unprocessedEmails.count
+    }
+
+    func loadNextPage() {
+        guard hasMorePages else { return }
+        currentPage += 1
+    }
+
+    func isAlreadyImported(_ emailID: String) -> Bool {
+        let request = NSFetchRequest<Transaction>(entityName: "Transaction")
+        request.predicate = NSPredicate(format: "sourceEmailID == %@", emailID)
+        return (try? viewContext.count(for: request)) ?? 0 > 0
+    }
 
     func extractTransactionsFromEmails() async {
         NSLog("=== EXTRACTION DEBUG ===")
@@ -132,6 +167,8 @@ class GmailViewModel: ObservableObject {
         transaction.taxCategory = TaxCategory.personal.rawValue
         transaction.date = extracted.date
         transaction.source = "gmail"
+        transaction.sourceEmailID = extracted.id  // Track email UUID
+        transaction.importedDate = Date()         // Track import timestamp
 
         // Enhanced note with comprehensive expense details
         transaction.note = buildTransactionNote(from: extracted)

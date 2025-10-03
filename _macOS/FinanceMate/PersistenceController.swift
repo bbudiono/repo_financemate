@@ -129,7 +129,23 @@ struct PersistenceController {
         taxCategoryAttr.isOptional = false
         taxCategoryAttr.defaultValue = "Personal"
 
-        transactionEntity.properties = [idAttr, amountAttr, descAttr, dateAttr, sourceAttr, categoryAttr, noteAttr, taxCategoryAttr]
+        let sourceEmailIDAttr = NSAttributeDescription()
+        sourceEmailIDAttr.name = "sourceEmailID"
+        sourceEmailIDAttr.attributeType = .stringAttributeType
+        sourceEmailIDAttr.isOptional = true
+
+        let importedDateAttr = NSAttributeDescription()
+        importedDateAttr.name = "importedDate"
+        importedDateAttr.attributeType = .dateAttributeType
+        importedDateAttr.isOptional = true
+
+        let transactionTypeAttr = NSAttributeDescription()
+        transactionTypeAttr.name = "transactionType"
+        transactionTypeAttr.attributeType = .stringAttributeType
+        transactionTypeAttr.isOptional = false
+        transactionTypeAttr.defaultValue = "expense"
+
+        transactionEntity.properties = [idAttr, amountAttr, descAttr, dateAttr, sourceAttr, categoryAttr, noteAttr, taxCategoryAttr, sourceEmailIDAttr, importedDateAttr, transactionTypeAttr]
 
         // MARK: - Relationships
 

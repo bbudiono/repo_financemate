@@ -10,7 +10,7 @@ struct GmailReceiptsTableView: View {
         VStack(spacing: 12) {
             // Header with batch actions
             HStack {
-                Text("\(viewModel.extractedTransactions.count) emails to review")
+                Text("\(viewModel.unprocessedEmails.count) emails to review")
                     .font(.headline)
                 Spacer()
                 if !viewModel.selectedIDs.isEmpty {
@@ -24,14 +24,30 @@ struct GmailReceiptsTableView: View {
             }
             .padding(.horizontal)
 
-            // Spreadsheet-like list with expandable rows
+            // Spreadsheet-like list with expandable rows (only unprocessed + paginated)
             List {
-                ForEach(viewModel.extractedTransactions) { transaction in
+                ForEach(viewModel.paginatedTransactions) { transaction in
                     GmailTableRow(
                         transaction: transaction,
                         viewModel: viewModel,
                         expandedID: $expandedID
                     )
+                }
+
+                // Load More button
+                if viewModel.hasMorePages {
+                    HStack {
+                        Spacer()
+                        Button("Load 50 More") {
+                            viewModel.loadNextPage()
+                        }
+                        .buttonStyle(.borderedProminent)
+                        Spacer()
+                    }
+                    .padding(.vertical, 8)
+                    .onAppear {
+                        viewModel.loadNextPage() // Auto-load when scrolled to bottom
+                    }
                 }
             }
             .listStyle(.plain)
