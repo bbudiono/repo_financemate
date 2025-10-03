@@ -31,21 +31,23 @@ struct GmailView: View {
                         .foregroundColor(.secondary)
 
                     Button("Connect Gmail") {
-                        let clientID = ProcessInfo.processInfo.environment["GOOGLE_OAUTH_CLIENT_ID"]
-                        let clientSecret = ProcessInfo.processInfo.environment["GOOGLE_OAUTH_CLIENT_SECRET"]
+                        // Get credentials from DotEnvLoader (not ProcessInfo - sandboxing issue)
+                        let clientID = DotEnvLoader.get("GOOGLE_OAUTH_CLIENT_ID")
+                        let clientSecret = DotEnvLoader.get("GOOGLE_OAUTH_CLIENT_SECRET")
 
-                        print(" Connect Gmail button clicked")
-                        print("   Client ID: \(clientID != nil ? "Found" : "NOT FOUND")")
-                        print("   Client Secret: \(clientSecret != nil ? "Found" : "NOT FOUND")")
+                        NSLog("=== GMAIL BUTTON CLICKED ===")
+                        NSLog("Client ID: %@", clientID ?? "NOT FOUND")
+                        NSLog("Client Secret: %@", clientSecret != nil ? "FOUND" : "NOT FOUND")
 
                         if let clientID = clientID,
                            let url = GmailOAuthHelper.getAuthorizationURL(clientID: clientID) {
-                            print(" Opening OAuth URL: \(url.absoluteString.prefix(100))...")
+                            NSLog("Generated OAuth URL: %@", url.absoluteString)
+                            NSLog("Opening URL in browser...")
                             NSWorkspace.shared.open(url)
                             viewModel.showCodeInput = true
                         } else {
-                            print(" Failed to generate OAuth URL")
-                            print("   Ensure .env file is loaded with OAuth credentials")
+                            NSLog("FAILED: Could not generate OAuth URL")
+                            NSLog("Client ID nil: %@", clientID == nil ? "YES" : "NO")
                             viewModel.errorMessage = "OAuth not configured. Check .env file."
                         }
                     }
@@ -87,8 +89,9 @@ struct GmailView: View {
                         .padding()
 
                         List {
-                            ForEach(viewModel.extractedTransactions, id: \.rawText) { extracted in
+                            ForEach(viewModel.extractedTransactions) { extracted in
                                 ExtractedTransactionRow(extracted: extracted) {
+                                    NSLog("=== ExtractedTransactionRow onApprove CALLED ===")
                                     viewModel.createTransaction(from: extracted)
                                 }
                             }
@@ -114,64 +117,6 @@ struct GmailView: View {
                 await viewModel.checkAuthentication()
             }
         }
-    }
-}
-
-// MARK: - Extracted Transaction Row
-
-struct ExtractedTransactionRow: View {
-    let extracted: ExtractedTransaction
-    let onApprove: () -> Void
-
-    var confidenceColor: Color {
-        if extracted.confidence >= 0.8 { return .green }
-        if extracted.confidence >= 0.6 { return .orange }
-        return .red
-    }
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(extracted.merchant)
-                        .font(.headline)
-                    Text(extracted.category)
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
-
-                Spacer()
-
-                VStack(alignment: .trailing, spacing: 4) {
-                    Text(String(format: "$%.2f", extracted.amount))
-                        .font(.title3)
-                        .fontWeight(.bold)
-                    HStack(spacing: 4) {
-                        Circle()
-                            .fill(confidenceColor)
-                            .frame(width: 8, height: 8)
-                        Text("\(Int(extracted.confidence * 100))%")
-                            .font(.caption)
-                            .foregroundColor(confidenceColor)
-                    }
-                }
-            }
-
-            if !extracted.items.isEmpty {
-                Text("\(extracted.items.count) line items")
-                    .font(.caption2)
-                    .foregroundColor(.secondary)
-            }
-
-            Button("Create Transaction") {
-                onApprove()
-            }
-            .buttonStyle(.bordered)
-            .controlSize(.small)
-        }
-        .padding()
-        .background(Color.secondary.opacity(0.1))
-        .cornerRadius(8)
     }
 }
 

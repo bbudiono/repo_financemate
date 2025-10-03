@@ -36,6 +36,18 @@ struct MessageDetail: Codable {
 
 struct Payload: Codable {
     let headers: [Header]
+    let body: EmailBody?
+    let parts: [EmailPart]?
+}
+
+struct EmailBody: Codable {
+    let data: String?
+}
+
+struct EmailPart: Codable {
+    let mimeType: String
+    let body: EmailBody?
+    let parts: [EmailPart]?  // Support nested multipart
 }
 
 struct Header: Codable {
@@ -45,7 +57,8 @@ struct Header: Codable {
 
 // MARK: - Transaction Extraction Models
 
-struct ExtractedTransaction {
+struct ExtractedTransaction: Identifiable {
+    let id: String  // Use email ID as unique identifier
     let merchant: String
     let amount: Double
     let date: Date
@@ -53,6 +66,14 @@ struct ExtractedTransaction {
     let items: [GmailLineItem]
     let confidence: Double // 0.0 to 1.0
     let rawText: String
+
+    // Enhanced expense details per BLUEPRINT Line 63
+    let emailSubject: String
+    let emailSender: String
+    let gstAmount: Double?
+    let abn: String?
+    let invoiceNumber: String?
+    let paymentMethod: String?
 }
 
 struct GmailLineItem {

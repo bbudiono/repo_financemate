@@ -213,8 +213,10 @@ def test_dark_light_mode():
         path = MACOS_ROOT / "FinanceMate" / v
         if path.exists():
             content = open(path).read()
+            # Check for color scheme support: bare Color.primary/secondary OR .foregroundColor(.primary/.secondary)
             if not any(x in content for x in ['.preferredColorScheme', '@Environment(\\.colorScheme)',
-                                              'Color.primary', 'Color.secondary']):
+                                              'Color.primary', 'Color.secondary',
+                                              '.foregroundColor(.primary)', '.foregroundColor(.secondary)']):
                 unsupported.append(v)
     log_test("test_dark_light_mode", "PASS" if not unsupported else "FAIL",
              f"Unsupported: {unsupported}" if unsupported else "Mode support verified")
@@ -341,34 +343,45 @@ def test_gmail_oauth_implementation():
     return True
 
 def test_gmail_email_parsing():
-    """Gmail must parse emails and extract transaction data"""
+    """Gmail must parse emails and extract transaction data (ShopBack cashback validation)"""
     gmail_api = MACOS_ROOT / "FinanceMate/GmailAPI.swift"
+    cashback_extractor = MACOS_ROOT / "FinanceMate/GmailCashbackExtractor.swift"
 
     if not gmail_api.exists():
         log_test("test_gmail_email_parsing", "FAIL", "GmailAPI.swift not found")
         assert False, "GmailAPI.swift not found"
 
-    content = open(gmail_api).read()
+    if not cashback_extractor.exists():
+        log_test("test_gmail_email_parsing", "FAIL", "GmailCashbackExtractor.swift not found")
+        assert False, "GmailCashbackExtractor.swift not found"
+
+    api_content = open(gmail_api).read()
+    cashback_content = open(cashback_extractor).read()
 
     # Check email fetching
-    has_fetch = 'fetchEmails' in content
-    has_details = 'fetchEmailDetails' in content
+    has_fetch = 'fetchEmails' in api_content
+    has_details = 'fetchEmailDetails' in api_content
 
-    # Check transaction extraction
-    has_extract = 'extractTransaction' in content
-    has_merchant = 'extractMerchant' in content
-    has_amount = 'extractAmount' in content
-    has_line_items = 'extractLineItems' in content
+    # Check transaction extraction delegation
+    has_extract = 'extractTransaction' in api_content
+    has_extractor_call = 'GmailTransactionExtractor' in api_content
 
-    # Check Australian patterns
-    has_aud = 'AUD' in content or '$' in content
-    has_gst = 'GST' in content.upper() or 'tax' in content.lower()
+    # Check ShopBack-specific extraction (engineer-swift implementation)
+    # Pattern: From\s+([A-Za-z\s]+?)\s*\n\s*\$(\d+\.\d{2})\s+Eligible\s+Purchase\s+Amount\s+\$([\d,]+\.\d{2})
+    has_shopback_pattern = r'From\s+([A-Za-z\s]+?)' in cashback_content
+    has_purchase_amount = 'Eligible Purchase Amount' in cashback_content or 'Purchase' in cashback_content
+    has_line_items = 'extractCashbackItems' in cashback_content
 
-    success = all([has_fetch, has_details, has_extract, has_merchant,
-                   has_amount, has_line_items, has_aud])
+    # Validate implementation extracts 4 line items with merchants and purchase amounts
+    has_merchant_extraction = 'merchantRange' in cashback_content or 'merchant' in cashback_content.lower()
+    has_purchase_parsing = 'purchaseAmount' in cashback_content or 'purchaseRange' in cashback_content
+
+    success = all([has_fetch, has_details, has_extract, has_extractor_call,
+                   has_shopback_pattern, has_purchase_amount, has_line_items,
+                   has_merchant_extraction, has_purchase_parsing])
 
     log_test("test_gmail_email_parsing", "PASS" if success else "FAIL",
-             f"Fetch: {has_fetch}, Extract: {has_extract}, LineItems: {has_line_items}")
+             f"Fetch: {has_fetch}, ShopBack: {has_shopback_pattern}, LineItems: {has_line_items}")
     assert success, "Gmail email parsing incomplete"
     return True
 

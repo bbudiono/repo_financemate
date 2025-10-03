@@ -65,7 +65,7 @@ struct GmailAPI {
     }
 
     private static func fetchEmailDetails(messageId: String, accessToken: String) async throws -> GmailEmail {
-        let urlString = "https://gmail.googleapis.com/gmail/v1/users/me/messages/\(messageId)"
+        let urlString = "https://gmail.googleapis.com/gmail/v1/users/me/messages/\(messageId)?format=full"
         guard let url = URL(string: urlString) else {
             throw GmailAPIError.invalidURL(urlString)
         }
@@ -82,7 +82,10 @@ struct GmailAPI {
         let dateString = headers.first(where: { $0.name == "Date" })?.value
         let date = parseEmailDate(dateString) ?? Date()
 
-        return GmailEmail(id: messageId, subject: subject, sender: from, date: date, snippet: message.snippet)
+        // Extract full email body for better transaction extraction
+        let fullBody = GmailEmailFetcher.getEmailText(from: message.payload)
+
+        return GmailEmail(id: messageId, subject: subject, sender: from, date: date, snippet: fullBody)
     }
 
     // MARK: - Date Parsing
@@ -97,73 +100,6 @@ struct GmailAPI {
     // MARK: - Transaction Extraction
 
     static func extractTransaction(from email: GmailEmail) -> ExtractedTransaction? {
-        guard let merchant = extractMerchant(from: email.subject, sender: email.sender),
-              let amount = extractAmount(from: email.snippet) else { return nil }
-
-        let items = extractLineItems(from: email.snippet)
-        let confidence = (merchant.isEmpty ? 0.0 : 0.4) + (amount > 0 ? 0.4 : 0.0) + (items.isEmpty ? 0.0 : 0.2)
-        let category = inferCategory(from: merchant)
-
-        return ExtractedTransaction(merchant: merchant, amount: amount, date: email.date,
-                                   category: category, items: items, confidence: confidence, rawText: email.snippet)
-    }
-
-    private static func extractMerchant(from subject: String, sender: String) -> String? {
-        if let range = subject.range(of: #"(from|at) ([A-Za-z\s]+)"#, options: .regularExpression) {
-            return String(subject[range]).replacingOccurrences(of: "from ", with: "").replacingOccurrences(of: "at ", with: "").trimmingCharacters(in: .whitespaces)
-        }
-        if let atIndex = sender.firstIndex(of: "@") {
-            return sender[sender.index(after: atIndex)...].split(separator: ".").first.map(String.init)?.capitalized
-        }
-        return nil
-    }
-
-    private static func extractAmount(from content: String) -> Double? {
-        // Enhanced patterns for Australian receipts (GST, ABN, etc)
-        let patterns = [
-            #"\$(\d+\.?\d{0,2})"#,  // Basic $XX.XX
-            #"(?:Total|Amount|GST Inc|Incl GST):\s?\$?(\d+\.?\d{0,2})"#,  // Australian GST patterns
-            #"AUD\s?(\d+\.?\d{0,2})"#,  // AUD currency
-            #"Total\s+Due\s+\$?(\d+\.?\d{0,2})"#,  // Invoice patterns
-            #"Grand\s+Total\s+\$?(\d+\.?\d{0,2})"#,  // Receipt totals
-            #"Amount\s+Paid\s+\$?(\d+\.?\d{0,2})"#  // Payment confirmations
-        ]
-        for pattern in patterns {
-            if let match = content.range(of: pattern, options: .regularExpression) {
-                let nums = String(content[match]).components(separatedBy: CharacterSet.decimalDigits.union(CharacterSet(charactersIn: ".")).inverted).joined()
-                if let amount = Double(nums), amount > 0 { return amount }
-            }
-        }
-        return nil
-    }
-
-    private static func extractLineItems(from content: String) -> [GmailLineItem] {
-        var items: [GmailLineItem] = []
-        guard let regex = try? NSRegularExpression(pattern: #"(\d+)x?\s+(.+?)\s+\$(\d+\.?\d{0,2})"#) else { return items }
-        regex.enumerateMatches(in: content, range: NSRange(content.startIndex..., in: content)) { match, _, _ in
-            guard let match = match, match.numberOfRanges >= 4,
-                  let qtyRange = Range(match.range(at: 1), in: content),
-                  let descRange = Range(match.range(at: 2), in: content),
-                  let priceRange = Range(match.range(at: 3), in: content),
-                  let qty = Int(content[qtyRange]),
-                  let price = Double(content[priceRange]) else { return }
-            items.append(GmailLineItem(description: String(content[descRange]).trimmingCharacters(in: .whitespaces), quantity: qty, price: price))
-        }
-        return items
-    }
-
-    private static func inferCategory(from merchant: String) -> String {
-        let m = merchant.lowercased()
-        // Australian grocery stores
-        if ["woolworths", "coles", "aldi", "iga", "foodworks", "harris farm"].contains(where: { m.contains($0) }) { return "Groceries" }
-        // Transport (Australian specific)
-        if ["uber", "taxi", "petrol", "bp", "shell", "caltex", "7-eleven", "ampol", "metro", "opal"].contains(where: { m.contains($0) }) { return "Transport" }
-        // Dining
-        if ["restaurant", "cafe", "mcdonald", "kfc", "hungry jack", "subway", "domino"].contains(where: { m.contains($0) }) { return "Dining" }
-        // Utilities
-        if ["telstra", "optus", "vodafone", "agl", "origin", "energy australia"].contains(where: { m.contains($0) }) { return "Utilities" }
-        // Retail
-        if ["bunnings", "kmart", "big w", "target", "officeworks", "jb hi-fi", "harvey norman"].contains(where: { m.contains($0) }) { return "Retail" }
-        return "Other"
+        return GmailTransactionExtractor.extract(from: email)
     }
 }

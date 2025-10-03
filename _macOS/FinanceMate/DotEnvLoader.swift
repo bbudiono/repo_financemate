@@ -3,38 +3,93 @@ import Foundation
 /// Loads environment variables from .env file
 /// CRITICAL: This is required for Gmail OAuth to work properly
 struct DotEnvLoader {
+    // Store credentials in memory (sandboxing prevents setenv from working reliably)
+    private static var credentials: [String: String] = [:]
+
+    /// Get a credential value
+    static func get(_ key: String) -> String? {
+        return credentials[key]
+    }
+
+    /// Set credentials programmatically (for testing/fallback)
+    static func setCredentials(_ creds: [String: String]) {
+        credentials = creds
+    }
+
     /// Load .env file from project root and set environment variables
     static func load() {
+        // Use desktop for debug log (accessible even with sandboxing)
+        let debugLog = NSHomeDirectory() + "/Desktop/financemate_debug.log"
+        var log = "=== DotEnvLoader.load() START ===\n"
+        log += "Bundle path: \(Bundle.main.bundlePath)\n"
+        log += "Current directory: \(FileManager.default.currentDirectoryPath)\n"
+
+        print("=== DotEnvLoader.load() START ===")
+        print("Bundle path: \(Bundle.main.bundlePath)")
+        print("Current directory: \(FileManager.default.currentDirectoryPath)")
+
         // Try multiple possible locations for .env file
         let possiblePaths = [
+            // Absolute path to project root (MOST RELIABLE)
+            "/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/.env",
             // Production path (app bundle)
             Bundle.main.bundlePath + "/../../../../.env",
             // Development path (relative to _macOS)
-            FileManager.default.currentDirectoryPath + "/../../.env",
-            // Absolute path to project root
-            "/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/.env"
+            FileManager.default.currentDirectoryPath + "/../../.env"
         ]
 
-        for path in possiblePaths {
-            if loadFromPath(path) {
-                print(" Loaded .env from: \(path)")
+        log += "Trying \(possiblePaths.count) possible paths:\n"
+        print("Trying \(possiblePaths.count) possible paths:")
+        for (index, path) in possiblePaths.enumerated() {
+            log += "  [\(index + 1)] \(path)\n"
+            print("  [\(index + 1)] \(path)")
+            let exists = FileManager.default.fileExists(atPath: path)
+            log += "      Exists: \(exists)\n"
+            print("      Exists: \(exists)")
+
+            if loadFromPath(path, log: &log) {
+                log += "=== SUCCESS: Loaded .env from path [\(index + 1)] ===\n"
+                log += "Credentials in memory: \(credentials.keys.sorted())\n"
+                log += "Client ID: \(credentials["GOOGLE_OAUTH_CLIENT_ID"]?.prefix(20) ?? "NOT FOUND")\n"
+
+                print("=== SUCCESS: Loaded .env from path [\(index + 1)] ===")
+                print("Credentials in memory: \(credentials.keys.sorted())")
+                print("Client ID: \(credentials["GOOGLE_OAUTH_CLIENT_ID"]?.prefix(20) ?? "NOT FOUND")")
+
+                try? log.write(toFile: debugLog, atomically: true, encoding: .utf8)
                 return
             }
         }
 
-        print("️ Warning: .env file not found. OAuth features will not work.")
-        print("Searched paths: \(possiblePaths)")
+        log += "=== FAILED: .env file not found in any location ===\n"
+        log += "Credentials dict is empty: \(credentials.isEmpty)\n"
+        print("=== FAILED: .env file not found in any location ===")
+        print("Credentials dict is empty: \(credentials.isEmpty)")
+
+        try? log.write(toFile: debugLog, atomically: true, encoding: .utf8)
     }
 
     /// Load environment variables from a specific path
     @discardableResult
-    private static func loadFromPath(_ path: String) -> Bool {
+    private static func loadFromPath(_ path: String, log: inout String) -> Bool {
+        log += "    Attempting to load from: \(path)\n"
+        print("    Attempting to load from: \(path)")
+
         guard let contents = try? String(contentsOfFile: path, encoding: .utf8) else {
+            log += "    FAILED: Could not read file\n"
+            print("    FAILED: Could not read file")
             return false
         }
 
+        log += "    File read successfully, size: \(contents.count) bytes\n"
+        print("    File read successfully, size: \(contents.count) bytes")
+
         // Parse .env file line by line
         let lines = contents.components(separatedBy: .newlines)
+        log += "    Parsing \(lines.count) lines...\n"
+        print("    Parsing \(lines.count) lines...")
+
+        var keysFound = 0
         for line in lines {
             // Skip comments and empty lines
             let trimmed = line.trimmingCharacters(in: .whitespaces)
@@ -48,30 +103,46 @@ struct DotEnvLoader {
                 let key = String(parts[0]).trimmingCharacters(in: .whitespaces)
                 let value = String(parts[1]).trimmingCharacters(in: .whitespaces)
 
-                // Set environment variable
+                // Store in memory dictionary
+                credentials[key] = value
+                keysFound += 1
+
+                if key.contains("OAUTH") {
+                    log += "    Found OAuth key: \(key) = \(value.prefix(20))...\n"
+                    print("    Found OAuth key: \(key) = \(value.prefix(20))...")
+                }
+
+                // Also try to set environment variable (may not work in sandbox)
                 setenv(key, value, 1)
             }
         }
 
-        // Verify critical OAuth variables were loaded
-        if ProcessInfo.processInfo.environment["GOOGLE_OAUTH_CLIENT_ID"] != nil &&
-           ProcessInfo.processInfo.environment["GOOGLE_OAUTH_CLIENT_SECRET"] != nil {
-            return true
-        }
+        log += "    Stored \(keysFound) credentials in memory\n"
+        print("    Stored \(keysFound) credentials in memory")
 
-        return false
+        // Verify critical OAuth variables were loaded
+        let hasClientID = credentials["GOOGLE_OAUTH_CLIENT_ID"] != nil
+        let hasClientSecret = credentials["GOOGLE_OAUTH_CLIENT_SECRET"] != nil
+
+        log += "    Has Client ID: \(hasClientID)\n"
+        log += "    Has Client Secret: \(hasClientSecret)\n"
+        print("    Has Client ID: \(hasClientID)")
+        print("    Has Client Secret: \(hasClientSecret)")
+
+        return hasClientID && hasClientSecret
     }
 
     /// Verify OAuth credentials are loaded
     static func verifyOAuthCredentials() -> Bool {
-        let clientID = ProcessInfo.processInfo.environment["GOOGLE_OAUTH_CLIENT_ID"]
-        let clientSecret = ProcessInfo.processInfo.environment["GOOGLE_OAUTH_CLIENT_SECRET"]
+        let clientID = credentials["GOOGLE_OAUTH_CLIENT_ID"]
+        let clientSecret = credentials["GOOGLE_OAUTH_CLIENT_SECRET"]
 
         guard let id = clientID, !id.isEmpty,
               let secret = clientSecret, !secret.isEmpty else {
-            print(" OAuth credentials not found in environment")
+            print(" OAuth credentials not found")
             print("  GOOGLE_OAUTH_CLIENT_ID: \(clientID ?? "NOT SET")")
             print("  GOOGLE_OAUTH_CLIENT_SECRET: \(clientSecret != nil ? "SET" : "NOT SET")")
+            print("  Available keys: \(credentials.keys.sorted())")
             return false
         }
 
