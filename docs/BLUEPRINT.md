@@ -74,6 +74,7 @@ To be the central command center for personal and family wealth, empowering user
   * Gmail Receipts Table should always cache to improve performance and reduce the "load times". Use `best practice` to implement a rolling/phased solution that will balance performance, speed and compute.
   * Gmail Receipts Table should always be formatted with a `user-focus` and should allow `best practice` implementations; such as multi-select; multi-delete, multi-edit. Sort, Filter, Auto-compact column widths based on content; ensuring that a user can always see all actions available (i.e. delete, etc). Think of a user experience similar to `Microsoft Excel` spreadsheets.
   * Gmail Receipts Table should always `hide` or `archive` items that have been `processed` or added to the `transactions` table. Ensure that every item is considered as `unique` (ALWAYS STORE UUID's) so that we DO NOT `DUPLICATE` items.
+  * Gmail Receipts Table should allow users to `right-click` on items or a selection of items and conduct key actions such as `delete`, etc.
 * **MANDATORY:** **Email Transaction Filtering (BUG FIX):** The current email ingestion is filtering incorrectly. This must be fixed. The system MUST correctly parse and display all relevant financial transactions from the test email account.
 * **MANDATORY:** **Long-term Email Span:** Ensure we search through "All Emails" and not just the "Inbox" within an email. This should identify (At minimum) 5 years worth of rolling information, however, if an email is "converted" to a transaction it becomes static and stored in the database.
 * **MANDATORY:** **Unified Transaction Table:**
@@ -90,6 +91,7 @@ To be the central command center for personal and family wealth, empowering user
   * Transactions Table should always cache to improve performance and reduce the "load times". Use `best practice` to implement a rolling/phased solution that will balance performance, speed and compute.
   * Transactions Table should always be formatted with a `user-focus` and should allow `best practice` implementations; such as multi-select; multi-delete, multi-edit. Sort, Filter, Auto-compact column widths based on content; ensuring that a user can always see all actions available (i.e. delete, etc). Think of a user experience similar to `Microsoft Excel` spreadsheets.
   * Transactions Table should always be able to be edited as `income`, `expense`, `transfer` (and anything else based on accounting or ledge best practice).
+  * Transactions Table should allow users to `right-click` on items or a selection of items and conduct key actions such as `delete`, etc.
 * **MANDATORY:** **Multi-Currency Support:** The system must handle multiple currencies, with Australian Dollars (AUD) as the default. All UI displays must use locale-correct currency formatting.
 
 #### **3.1.2. User Management, Security & SSO (MVP)**
@@ -123,6 +125,7 @@ To be the central command center for personal and family wealth, empowering user
 * **MANDATORY:** **Visual & Typographic Hierarchy:** A clear **visual and typographic hierarchy MUST be established** on all screens to guide the user's focus.
 * **MANDATORY:** **Empty States:** Every view that can display a list of data **MUST have a well-designed "empty state"** with a helpful message, an icon, and a primary call-to-action.
 * **MANDATORY:** **Interactive Feedback:** All interactive elements **MUST provide clear visual feedback** on interaction (e.g., hover effects, active/selected states).
+* **MANDATORY:** **User-focused UI/UX:** Ensure all visual components don't overlap/cover/interfere with other key elements of the application. i.e. AI Chatbot should NEVER block buttons, information and other interactive UI/UX.
 </MVP>
 
 ### **3.2. Alpha Phase**

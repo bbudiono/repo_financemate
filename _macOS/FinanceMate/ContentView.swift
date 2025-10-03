@@ -19,7 +19,9 @@ struct ContentView: View {
             if !authManager.isAuthenticated {
                 LoginView(authManager: authManager)
             } else {
-                ZStack(alignment: .trailing) {
+                // BLUEPRINT Line 126: HSplitView prevents chatbot from blocking table content
+                HSplitView {
+                    // Main content area
                     TabView(selection: $selectedTab) {
                         DashboardView()
                             .tabItem {
@@ -45,12 +47,16 @@ struct ContentView: View {
                             }
                             .tag(3)
                     }
-                    .frame(minWidth: 800, minHeight: 600)
+                    .frame(minWidth: 600)
                     .environmentObject(authManager)
 
-                    ChatbotDrawer(viewModel: chatbotVM)
-                        .zIndex(1000)
+                    // Chatbot sidebar (no overlay - prevents blocking)
+                    if chatbotVM.isDrawerVisible {
+                        ChatbotDrawer(viewModel: chatbotVM)
+                            .frame(minWidth: 300, idealWidth: 350, maxWidth: 500)
+                    }
                 }
+                .frame(minWidth: 900, minHeight: 600)
             }
         }
         .onAppear {
