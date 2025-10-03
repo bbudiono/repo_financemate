@@ -68,6 +68,8 @@ To be the central command center for personal and family wealth, empowering user
   * Gmail Receipts Table should be information dense and `spreadsheet-like` with the ability to edit in-line, and structured, data typed and allows for user `confirmation` (like a database/spreadsheet)
   * Gmail Receipts Table should allow a user to quick delete/edit/process emails
   * Gmail Receipts Table would be extremely large, and therefore appropriate pagination, filters, and UI/UX all in line with best practice to ensure appropriate handling
+  * Gmail Receipts Table should handle a robust, and complex filtering control system that is able to handle large API calls (i.e. 5 years of information), therefore `best practice` rate limiting, pagination, etc, needs to be implemented. We need a robust `rules` system, similar to frontier `email managers` and robust filtering to assist in automation and identification.
+  * Gmail Receipts Table should store and capture complex user patterns and allow users to store easily editable "memory" that also has robust infrastructure to allow Machine Learning and diagnostic information to allow an AI/LLM to suggest automatic filtering rules and automate processing of new emails, etc. I.e. So the app can "learn" how a user operates and the "types" of emails that often become processable "transactions."
 * **MANDATORY:** **Email Transaction Filtering (BUG FIX):** The current email ingestion is filtering incorrectly. This must be fixed. The system MUST correctly parse and display all relevant financial transactions from the test email account.
 * **MANDATORY:** **Long-term Email Span:** Ensure we search through "All Emails" and not just the "Inbox" within an email. This should identify (At minimum) 5 years worth of rolling information, however, if an email is "converted" to a transaction it becomes static and stored in the database.
 * **MANDATORY:** **Unified Transaction Table:**
@@ -78,6 +80,8 @@ To be the central command center for personal and family wealth, empowering user
   * Transactions Table should be information dense and `spreadsheet-like` with the ability to edit in-line, and structured, data typed and allows for user `confirmation` (like a database/spreadsheet)
   * Transactions Table should allow a user to quick delete/edit/process transactions that are extracted from the "emails" in the "Gmail Receipts" table.
   * Transactions Table would be extremely large, and therefore appropriate pagination, filters, and UI/UX all in line with best practice to ensure appropriate handling
+  * Transactions Table should handle a robust, and complex filtering control system that is able to handle large API calls (i.e. 5 years of information), therefore `best practice` rate limiting, pagination, etc, needs to be implemented. We need a robust `rules` system, similar to frontier `email managers` and robust filtering to assist in automation and identification.
+  * Transactions Table should store and capture complex user patterns and allow users to store easily editable "memory" that also has robust infrastructure to allow Machine Learning and diagnostic information to allow an AI/LLM to suggest automatic filtering rules and automate processing of new transactions, etc. I.e. So the app can "learn" how a user operates and the "types" of transactions that are processed.
 * **MANDATORY:** **Multi-Currency Support:** The system must handle multiple currencies, with Australian Dollars (AUD) as the default. All UI displays must use locale-correct currency formatting.
 
 #### **3.1.2. User Management, Security & SSO (MVP)**
@@ -100,6 +104,7 @@ To be the central command center for personal and family wealth, empowering user
 * **MANDATORY:** **Tax Category Management:**
   * The user must be able to create, edit, and delete entity-specific, color-coded tax categories.
   * The system must provide default Australian tax categories (Personal, Business, Investment) on first setup.
+* **MANDATORY:** User-focused UI/UX. Ensure the AI/Chatbot does not *BLOCK* the transactions and Gmail Receipts Table. Ensure all table UI/UX is working (i.e. sort, filter, etc.)
 
 #### **3.1.4. UI/UX & Design System (MVP)**
 

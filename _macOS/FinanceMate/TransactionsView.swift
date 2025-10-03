@@ -4,6 +4,7 @@ import CoreData
 // BLUEPRINT Lines 73-75: Information dense, spreadsheet-like transaction table
 struct TransactionsView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    @Environment(\.colorScheme) private var colorScheme
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \Transaction.date, ascending: false)],
         animation: .default)
@@ -38,7 +39,7 @@ struct TransactionsView: View {
                 .buttonStyle(.plain)
                 .accessibilityLabel("Add Transaction")
 
-                // BLUEPRINT Line 73: SORTABLE via Menu
+                // BLUEPRINT Line 73: SORTABLE via Menu (SortOption enum in ViewModel)
                 Menu {
                     Button("Date (Newest)") { viewModel.sortOption = .dateDescending }
                     Button("Date (Oldest)") { viewModel.sortOption = .dateAscending }
@@ -50,6 +51,7 @@ struct TransactionsView: View {
                         .font(.title3)
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel("Sort Options")
             }
             .padding()
 

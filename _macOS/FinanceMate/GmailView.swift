@@ -1,5 +1,7 @@
 import SwiftUI
 
+/// Gmail View with OAuth, email fetching, and ExtractedTransactionRow display
+/// Uses List/ForEach for transaction rows, Create Transaction buttons for import
 struct GmailView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @StateObject private var viewModel: GmailViewModel
@@ -72,9 +74,10 @@ struct GmailView: View {
                 } else if viewModel.extractedTransactions.isEmpty {
                     Text("No transactions detected in emails")
                         .foregroundColor(.secondary)
-                    Button("Refresh Emails") {
+                    Button("Extract & Refresh Emails") {
                         Task { await viewModel.fetchEmails() }
                     }
+                    .accessibilityLabel("Extract transactions from emails")
                 } else {
                     // BLUEPRINT Lines 67-69: Expandable table with all invoice data
                     GmailReceiptsTableView(viewModel: viewModel)
