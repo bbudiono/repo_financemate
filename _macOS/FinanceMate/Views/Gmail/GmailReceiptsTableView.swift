@@ -1,151 +1,249 @@
 import SwiftUI
 
-// BLUEPRINT Lines 67-68: Information dense, spreadsheet-like table with in-line editing
+/// BLUEPRINT Lines 67-69: Gmail Receipts Review Table with Expandable Details
+/// Master-detail pattern: 8-column summary + expandable invoice data panel
 struct GmailReceiptsTableView: View {
     @ObservedObject var viewModel: GmailViewModel
-    @State private var sortOrder: [KeyPathComparator<ExtractedTransaction>] = [
-        .init(\.date, order: .reverse)
-    ]
-
-    // In-line editing state (track which row is being edited)
-    @State private var editingID: String?
+    @State private var expandedID: String?
 
     var body: some View {
-        VStack(spacing: 0) {
-            // Spreadsheet-like Table (BLUEPRINT Line 68)
-            Table(viewModel.extractedTransactions, selection: $viewModel.selectedIDs, sortOrder: $sortOrder) {
-                // COLUMN 1: Confirmation checkbox
-                TableColumn("") { transaction in
-                    Toggle("", isOn: Binding(
-                        get: { viewModel.selectedIDs.contains(transaction.id) },
-                        set: { isSelected in
-                            if isSelected {
-                                viewModel.selectedIDs.insert(transaction.id)
-                            } else {
-                                viewModel.selectedIDs.remove(transaction.id)
-                            }
-                        }
-                    ))
-                    .toggleStyle(.checkbox)
-                    .labelsHidden()
-                }
-                .width(30)
-
-                // COLUMN 2: Date (sortable, data typed)
-                TableColumn("Date", value: \.date) { transaction in
-                    Text(transaction.date, style: .date)
-                        .font(.system(.body, design: .monospaced))
-                }
-                .width(min: 90, ideal: 100, max: 120)
-
-                // COLUMN 3: Merchant (editable - BLUEPRINT Line 68)
-                TableColumn("Merchant", value: \.merchant) { transaction in
-                    if editingID == transaction.id {
-                        TextField("Merchant", text: Binding(
-                            get: { transaction.merchant },
-                            set: { transaction.merchant = $0 }
-                        ))
-                        .textFieldStyle(.plain)
-                        .onSubmit {
-                            editingID = nil
-                        }
-                    } else {
-                        Text(transaction.merchant)
-                            .onTapGesture(count: 2) {
-                                editingID = transaction.id
-                            }
+        VStack(spacing: 12) {
+            // Header with batch actions
+            HStack {
+                Text("\(viewModel.extractedTransactions.count) emails to review")
+                    .font(.headline)
+                Spacer()
+                if !viewModel.selectedIDs.isEmpty {
+                    Text("\(viewModel.selectedIDs.count) selected")
+                        .foregroundColor(.secondary)
+                    Button("Import Selected") {
+                        importSelected()
                     }
+                    .buttonStyle(.borderedProminent)
                 }
-                .width(min: 120, ideal: 150)
-
-                // COLUMN 4: Amount (editable, currency formatted - BLUEPRINT Line 68)
-                TableColumn("Amount", value: \.amount) { transaction in
-                    if editingID == transaction.id {
-                        TextField("Amount", value: Binding(
-                            get: { transaction.amount },
-                            set: { transaction.amount = $0 }
-                        ), format: .number)
-                        .textFieldStyle(.plain)
-                        .onSubmit {
-                            editingID = nil
-                        }
-                    } else {
-                        Text(transaction.amount, format: .currency(code: "AUD"))
-                            .font(.system(.body, design: .monospaced))
-                            .foregroundColor(transaction.amount < 0 ? .red : .primary)
-                            .onTapGesture(count: 2) {
-                                editingID = transaction.id
-                            }
-                    }
-                }
-                .width(min: 80, ideal: 100)
-
-                // COLUMN 5: Category (editable - BLUEPRINT Line 68)
-                TableColumn("Category", value: \.category) { transaction in
-                    if editingID == transaction.id {
-                        TextField("Category", text: Binding(
-                            get: { transaction.category },
-                            set: { transaction.category = $0 }
-                        ))
-                        .textFieldStyle(.plain)
-                        .onSubmit {
-                            editingID = nil
-                        }
-                    } else {
-                        Text(transaction.category)
-                            .onTapGesture(count: 2) {
-                                editingID = transaction.id
-                            }
-                    }
-                }
-                .width(min: 100, ideal: 120)
-
-                // COLUMN 6: Confidence (data typed as percentage)
-                TableColumn("Confidence", value: \.confidence) { transaction in
-                    HStack {
-                        Text("\(Int(transaction.confidence * 100))%")
-                            .font(.system(.body, design: .monospaced))
-
-                        // Visual indicator
-                        Circle()
-                            .fill(confidenceColor(transaction.confidence))
-                            .frame(width: 8, height: 8)
-                    }
-                }
-                .width(min: 80, ideal: 90)
-
-                // COLUMN 7: Items count
-                TableColumn("Items") { transaction in
-                    Text("\(transaction.items.count)")
-                        .font(.system(.body, design: .monospaced))
-                }
-                .width(min: 50, ideal: 60)
-
-                // COLUMN 8: Source details
-                TableColumn("Source") { transaction in
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(transaction.emailSender)
-                            .font(.caption)
-                            .lineLimit(1)
-                        Text(transaction.emailSubject)
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
-                            .lineLimit(1)
-                    }
-                }
-                .width(min: 150, ideal: 200)
             }
-            .onChange(of: sortOrder) { oldValue, newValue in
-                viewModel.extractedTransactions.sort(using: newValue)
+            .padding(.horizontal)
+
+            // Spreadsheet-like list with expandable rows
+            List {
+                ForEach(viewModel.extractedTransactions) { transaction in
+                    VStack(alignment: .leading, spacing: 0) {
+                        // Main row - 8 columns (compiler-safe)
+                        HStack(spacing: 8) {
+                            // Checkbox
+                            Toggle("", isOn: Binding(
+                                get: { viewModel.selectedIDs.contains(transaction.id) },
+                                set: { if $0 { viewModel.selectedIDs.insert(transaction.id) } else { viewModel.selectedIDs.remove(transaction.id) } }
+                            ))
+                            .toggleStyle(.checkbox)
+                            .labelsHidden()
+                            .frame(width: 30)
+
+                            // Expansion indicator
+                            Image(systemName: expandedID == transaction.id ? "chevron.down" : "chevron.right")
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                                .frame(width: 20)
+
+                            // Date
+                            Text(transaction.date, format: .dateTime.month().day())
+                                .font(.caption.monospaced())
+                                .frame(width: 70, alignment: .leading)
+
+                            // From (Domain)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(extractDomain(from: transaction.emailSender))
+                                    .font(.caption)
+                                    .fontWeight(.semibold)
+                                Text(transaction.emailSender)
+                                    .font(.caption2)
+                                    .foregroundColor(.secondary)
+                                    .lineLimit(1)
+                            }
+                            .frame(width: 160, alignment: .leading)
+
+                            // Subject
+                            Text(transaction.emailSubject)
+                                .font(.caption)
+                                .lineLimit(1)
+                                .frame(minWidth: 220, alignment: .leading)
+
+                            Spacer()
+
+                            // Amount
+                            Text(transaction.amount, format: .currency(code: "AUD"))
+                                .font(.caption.monospaced())
+                                .fontWeight(.bold)
+                                .frame(width: 90, alignment: .trailing)
+
+                            // Items count
+                            Text("\(transaction.items.count)")
+                                .font(.caption.monospaced())
+                                .foregroundColor(.secondary)
+                                .frame(width: 40, alignment: .center)
+
+                            // Confidence
+                            HStack(spacing: 4) {
+                                Circle()
+                                    .fill(confidenceColor(transaction.confidence))
+                                    .frame(width: 6, height: 6)
+                                Text("\(Int(transaction.confidence * 100))%")
+                                    .font(.caption2)
+                            }
+                            .frame(width: 50, alignment: .center)
+
+                            // Actions
+                            HStack(spacing: 6) {
+                                Button(action: { deleteEmail(transaction) }) {
+                                    Image(systemName: "trash")
+                                        .foregroundColor(.red)
+                                }
+                                .buttonStyle(.borderless)
+                                .help("Delete")
+
+                                Button("Import") {
+                                    viewModel.createTransaction(from: transaction)
+                                    viewModel.selectedIDs.remove(transaction.id)
+                                }
+                                .buttonStyle(.borderedProminent)
+                                .controlSize(.small)
+                            }
+                            .frame(width: 110)
+                        }
+                        .padding(.vertical, 8)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                expandedID = expandedID == transaction.id ? nil : transaction.id
+                            }
+                        }
+
+                        // Expandable detail panel - Shows ALL invoice data
+                        if expandedID == transaction.id {
+                            InvoiceDetailPanel(transaction: transaction)
+                                .transition(.opacity.combined(with: .move(edge: .top)))
+                        }
+                    }
+                }
             }
+            .listStyle(.plain)
         }
     }
 
-    // MARK: - Helper Functions
+    // MARK: - Helper Methods
+
+    private func extractDomain(from email: String) -> String {
+        guard let atIndex = email.firstIndex(of: "@") else { return email }
+        let domain = String(email[email.index(after: atIndex)...])
+        let parts = domain.components(separatedBy: ".")
+        let skipPrefixes = ["info", "mail", "noreply", "hello", "no-reply", "support"]
+        for part in parts where !skipPrefixes.contains(part.lowercased()) && part.lowercased() != "com" && part.lowercased() != "au" {
+            return part.capitalized
+        }
+        return parts.first?.capitalized ?? email
+    }
+
+    private func deleteEmail(_ transaction: ExtractedTransaction) {
+        viewModel.extractedTransactions.removeAll(where: { $0.id == transaction.id })
+        viewModel.selectedIDs.remove(transaction.id)
+    }
+
+    private func importSelected() {
+        for id in viewModel.selectedIDs {
+            if let transaction = viewModel.extractedTransactions.first(where: { $0.id == id }) {
+                viewModel.createTransaction(from: transaction)
+            }
+        }
+        viewModel.selectedIDs.removeAll()
+    }
 
     private func confidenceColor(_ confidence: Double) -> Color {
         if confidence >= 0.8 { return .green }
         else if confidence >= 0.5 { return .yellow }
         else { return .red }
+    }
+}
+
+/// Expandable detail panel showing ALL invoice metadata
+struct InvoiceDetailPanel: View {
+    let transaction: ExtractedTransaction
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Invoice Details")
+                .font(.caption)
+                .fontWeight(.semibold)
+                .foregroundColor(.secondary)
+
+            HStack(spacing: 24) {
+                // Australian tax data
+                VStack(alignment: .leading, spacing: 6) {
+                    if let gst = transaction.gstAmount {
+                        InvoiceDetailRow(label: "GST", value: gst.formatted(.currency(code: "AUD")), color: .orange)
+                    }
+                    if let abn = transaction.abn {
+                        InvoiceDetailRow(label: "ABN", value: abn, color: .blue)
+                    }
+                }
+
+                // Invoice tracking
+                VStack(alignment: .leading, spacing: 6) {
+                    if let invoice = transaction.invoiceNumber {
+                        InvoiceDetailRow(label: "Invoice#", value: invoice, color: .purple)
+                    }
+                    if let payment = transaction.paymentMethod {
+                        InvoiceDetailRow(label: "Payment", value: payment, color: .green)
+                    }
+                }
+            }
+
+            // Full item breakdown
+            if !transaction.items.isEmpty {
+                Divider()
+                Text("Purchase Details")
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.secondary)
+                    .padding(.top, 4)
+
+                ForEach(transaction.items, id: \.description) { item in
+                    HStack {
+                        Text("\(item.quantity)×")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                            .frame(width: 30, alignment: .leading)
+                        Text(item.description)
+                            .font(.caption2)
+                        Spacer()
+                        Text(item.price, format: .currency(code: "AUD"))
+                            .font(.caption2.monospaced())
+                            .fontWeight(.medium)
+                    }
+                }
+            }
+        }
+        .padding(12)
+        .background(Color.secondary.opacity(0.08))
+        .cornerRadius(8)
+        .padding(.leading, 50)
+        .padding(.trailing, 12)
+        .padding(.bottom, 8)
+    }
+}
+
+struct InvoiceDetailRow: View {
+    let label: String
+    let value: String
+    let color: Color
+
+    var body: some View {
+        HStack(spacing: 6) {
+            Text(label + ":")
+                .font(.caption2)
+                .foregroundColor(.secondary)
+            Text(value)
+                .font(.caption2.monospaced())
+                .foregroundColor(color)
+        }
     }
 }

@@ -66,6 +66,7 @@ To be the central command center for personal and family wealth, empowering user
   * Every line item from a parsed email/receipt must be created as a distinct record in the transaction table.
   * Gmail Receipts should be displayed in an interactive, detailed, comprehensive table. It needs to be filterable, sortable and best practice.
   * Gmail Receipts Table should be information dense and `spreadsheet-like` with the ability to edit in-line, and structured, data typed and allows for user `confirmation` (like a database/spreadsheet)
+  * Gmail Receipts Table should allow a user to quick delete/edit/process emails
 * **MANDATORY:** **Email Transaction Filtering (BUG FIX):** The current email ingestion is filtering incorrectly. This must be fixed. The system MUST correctly parse and display all relevant financial transactions from the test email account.
 * **MANDATORY:** **Unified Transaction Table:**
   * ONLY ONE transaction table will exist in the database.
@@ -73,6 +74,7 @@ To be the central command center for personal and family wealth, empowering user
   * The table MUST be performant, filterable, searchable, and sortable in real-time.
   * Transactions Table should be displayed in an interactive, detailed, comprehensive table. It needs to be filterable, sortable and best practice.
   * Transactions Table should be information dense and `spreadsheet-like` with the ability to edit in-line, and structured, data typed and allows for user `confirmation` (like a database/spreadsheet)
+  * Transactions Table should allow a user to quick delete/edit/process transactions that are extracted from the "emails" in the "Gmail Receipts" table.
 * **MANDATORY:** **Multi-Currency Support:** The system must handle multiple currencies, with Australian Dollars (AUD) as the default. All UI displays must use locale-correct currency formatting.
 
 #### **3.1.2. User Management, Security & SSO (MVP)**

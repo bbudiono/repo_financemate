@@ -79,4 +79,11 @@ class TransactionsViewModel: ObservableObject {
         }
         saveContext()
     }
+
+    // Delete single transaction (for quick action button)
+    func deleteTransaction(_ transaction: Transaction) {
+        viewContext.delete(transaction)
+        saveContext()
+        objectWillChange.send()
+    }
 }
