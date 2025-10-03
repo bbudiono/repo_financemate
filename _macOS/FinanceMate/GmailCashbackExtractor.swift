@@ -8,8 +8,8 @@ struct GmailCashbackExtractor {
         let items = extractCashbackItems(from: email.snippet)
         guard !items.isEmpty else { return nil }
 
-        // Sum total cashback amount
-        let totalCashback = items.reduce(0.0) { $0 + $1.price }
+        // Sum total purchase amounts (not cashback)
+        let totalPurchaseAmount = items.reduce(0.0) { $0 + $1.price }
 
         // Get primary merchant (first item)
         let primaryMerchant = items.first?.description ?? "ShopBack"
@@ -17,7 +17,7 @@ struct GmailCashbackExtractor {
         return ExtractedTransaction(
             id: email.id,
             merchant: "ShopBack Cashback",
-            amount: totalCashback,
+            amount: totalPurchaseAmount,
             date: email.date,
             category: "Cashback",
             items: items,
@@ -50,7 +50,7 @@ struct GmailCashbackExtractor {
 
             let merchant = String(content[merchantRange]).trimmingCharacters(in: .whitespaces)
             items.append(GmailLineItem(
-                description: "\(merchant) (Cashback: $\(String(format: "%.2f", cashbackAmount)))",
+                description: "\(merchant) - Purchase: $\(String(format: "%.2f", purchaseAmount)) (Cashback: $\(String(format: "%.2f", cashbackAmount)))",
                 quantity: 1,
                 price: purchaseAmount
             ))

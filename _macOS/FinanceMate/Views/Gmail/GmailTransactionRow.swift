@@ -90,26 +90,37 @@ struct ExtractedTransactionRow: View {
                 .padding(.vertical, 4)
             }
 
-            // Line items
+            // Line items with prominent purchase amounts
             if !extracted.items.isEmpty {
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: 6) {
                     Text("\(extracted.items.count) line items:")
                         .font(.caption)
                         .fontWeight(.medium)
                         .foregroundColor(.secondary)
 
                     ForEach(extracted.items.indices, id: \.self) { index in
-                        HStack {
-                            Text("\(extracted.items[index].quantity)x \(extracted.items[index].description)")
+                        HStack(alignment: .top, spacing: 8) {
+                            Text("\(extracted.items[index].quantity)x")
                                 .font(.caption2)
+                                .foregroundColor(.secondary)
+                                .frame(width: 20, alignment: .leading)
+
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(extracted.items[index].description)
+                                    .font(.caption2)
+                                    .foregroundColor(.primary)
+                            }
+
                             Spacer()
+
                             Text("$\(String(format: "%.2f", extracted.items[index].price))")
-                                .font(.caption2)
-                                .fontWeight(.medium)
+                                .font(.caption)
+                                .fontWeight(.bold)
+                                .foregroundColor(.primary)
                         }
                     }
                 }
-                .padding(.vertical, 4)
+                .padding(.vertical, 6)
             }
 
             Button("Create Transaction") {
