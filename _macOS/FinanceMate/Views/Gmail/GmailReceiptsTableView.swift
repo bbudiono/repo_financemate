@@ -62,13 +62,11 @@ struct GmailReceiptsTableView: View {
                             }
                             .frame(width: 160, alignment: .leading)
 
-                            // Subject
+                            // Subject (flexible width - takes remaining space)
                             Text(transaction.emailSubject)
                                 .font(.caption)
                                 .lineLimit(1)
-                                .frame(minWidth: 220, alignment: .leading)
-
-                            Spacer()
+                                .frame(maxWidth: .infinity, alignment: .leading)
 
                             // Amount
                             Text(transaction.amount, format: .currency(code: "AUD"))
