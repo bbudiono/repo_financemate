@@ -108,6 +108,7 @@ struct GmailReceiptsTableView: View {
                             }
                             .frame(width: 110)
                         }
+                        .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.vertical, 8)
                         .contentShape(Rectangle())
                         .onTapGesture {
