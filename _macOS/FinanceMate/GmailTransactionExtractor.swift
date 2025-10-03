@@ -3,15 +3,20 @@ import Foundation
 /// Extracts transaction data from Gmail email content
 struct GmailTransactionExtractor {
 
-    /// Extract transaction from email
-    static func extract(from email: GmailEmail) -> ExtractedTransaction? {
+    /// Extract transactions from email - returns array for BLUEPRINT Line 66 compliance
+    static func extract(from email: GmailEmail) -> [ExtractedTransaction] {
         // Detect email type and use appropriate extraction
         if email.subject.contains("Cashback") || email.sender.contains("shopback") {
-            return GmailCashbackExtractor.extractCashbackTransaction(from: email)
+            // Returns multiple transactions (one per line item)
+            return GmailCashbackExtractor.extractCashbackTransactions(from: email)
         }
 
-        // Default extraction for other emails
-        return GmailStandardTransactionExtractor.extractStandardTransaction(from: email)
+        // Default extraction for other emails (single transaction)
+        if let transaction = GmailStandardTransactionExtractor.extractStandardTransaction(from: email) {
+            return [transaction]
+        }
+
+        return []
     }
 
     // MARK: - Amount Extraction

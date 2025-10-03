@@ -1390,3 +1390,363 @@ Following comprehensive risk assessment and security validation treating Finance
 - **Template**: N/A
 - **Created**: 2025-10-03 10:47:23
 
+
+### TECH-DEBT-c51001bf: Document Navigation Structure
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: mandatory_sitemap_enforcer_hook.sh
+- **File**: FinanceMateUITests/GmailOAuthUITests.swift
+- **Description**: Routes/views detected but sitemap missing
+- **Requirements**:
+  - Document all routes/pages/views
+  - Define navigation flows
+  - Specify authentication requirements
+  - Map API integrations
+- **Template**: ~/.claude/templates/project_repo/docs/NAVIGATION_TEMPLATE.md
+- **Created**: 2025-10-03 16:48:46
+
+
+### TECH-DEBT-a75a5075: Fix Code Quality Violations
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: code_quality_enforcer_hook.sh
+- **File**: FinanceMateUITests/GmailOAuthUITests.swift
+- **Description**: Code does not meet quality standards
+- **Requirements**:
+  - Function size ≤50 lines
+  - File size ≤500 lines
+  - Complexity ≤75
+  - See log for details
+- **Template**: N/A
+- **Created**: 2025-10-03 16:48:46
+
+
+### TECH-DEBT-03b43e46: Document Navigation Structure
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: mandatory_sitemap_enforcer_hook.sh
+- **File**: FinanceMate/GmailEmailBodyDecoder.swift
+- **Description**: Routes/views detected but sitemap missing
+- **Requirements**:
+  - Document all routes/pages/views
+  - Define navigation flows
+  - Specify authentication requirements
+  - Map API integrations
+- **Template**: ~/.claude/templates/project_repo/docs/NAVIGATION_TEMPLATE.md
+- **Created**: 2025-10-03 17:41:11
+
+
+### TECH-DEBT-c32e67e4: Fix Code Quality Violations
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: code_quality_enforcer_hook.sh
+- **File**: FinanceMate/GmailEmailBodyDecoder.swift
+- **Description**: Code does not meet quality standards
+- **Requirements**:
+  - Function size ≤50 lines
+  - File size ≤500 lines
+  - Complexity ≤75
+  - See log for details
+- **Template**: N/A
+- **Created**: 2025-10-03 17:41:11
+
+
+### TECH-DEBT-cad6a99a: Document Navigation Structure
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: mandatory_sitemap_enforcer_hook.sh
+- **File**: FinanceMate/GmailTransactionExtractor.swift
+- **Description**: Routes/views detected but sitemap missing
+- **Requirements**:
+  - Document all routes/pages/views
+  - Define navigation flows
+  - Specify authentication requirements
+  - Map API integrations
+- **Template**: ~/.claude/templates/project_repo/docs/NAVIGATION_TEMPLATE.md
+- **Created**: 2025-10-03 17:41:53
+
+
+### TECH-DEBT-39083d91: Fix Code Quality Violations
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: code_quality_enforcer_hook.sh
+- **File**: FinanceMate/GmailTransactionExtractor.swift
+- **Description**: Code does not meet quality standards
+- **Requirements**:
+  - Function size ≤50 lines
+  - File size ≤500 lines
+  - Complexity ≤75
+  - See log for details
+- **Template**: N/A
+- **Created**: 2025-10-03 17:41:53
+
+
+### TECH-DEBT-89742c82: Document Navigation Structure
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: mandatory_sitemap_enforcer_hook.sh
+- **File**: FinanceMate/GmailEmailFetcher.swift
+- **Description**: Routes/views detected but sitemap missing
+- **Requirements**:
+  - Document all routes/pages/views
+  - Define navigation flows
+  - Specify authentication requirements
+  - Map API integrations
+- **Template**: ~/.claude/templates/project_repo/docs/NAVIGATION_TEMPLATE.md
+- **Created**: 2025-10-03 17:42:58
+
+
+### TECH-DEBT-ee681573: Fix Code Quality Violations
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: code_quality_enforcer_hook.sh
+- **File**: FinanceMate/GmailEmailFetcher.swift
+- **Description**: Code does not meet quality standards
+- **Requirements**:
+  - Function size ≤50 lines
+  - File size ≤500 lines
+  - Complexity ≤75
+  - See log for details
+- **Template**: N/A
+- **Created**: 2025-10-03 17:42:58
+
+
+### TECH-DEBT-70ee212c: Document Navigation Structure
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: mandatory_sitemap_enforcer_hook.sh
+- **File**: test_cashback_regex.swift
+- **Description**: Routes/views detected but sitemap missing
+- **Requirements**:
+  - Document all routes/pages/views
+  - Define navigation flows
+  - Specify authentication requirements
+  - Map API integrations
+- **Template**: ~/.claude/templates/project_repo/docs/NAVIGATION_TEMPLATE.md
+- **Created**: 2025-10-03 18:22:50
+
+
+### TECH-DEBT-f04f59b4: Fix Code Quality Violations
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: code_quality_enforcer_hook.sh
+- **File**: test_cashback_regex.swift
+- **Description**: Code does not meet quality standards
+- **Requirements**:
+  - Function size ≤50 lines
+  - File size ≤500 lines
+  - Complexity ≤75
+  - See log for details
+- **Template**: N/A
+- **Created**: 2025-10-03 18:22:51
+
+
+### TECH-DEBT-a1e11747: Document Navigation Structure
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: mandatory_sitemap_enforcer_hook.sh
+- **File**: tests/test_gmail_email_parsing.py
+- **Description**: Routes/views detected but sitemap missing
+- **Requirements**:
+  - Document all routes/pages/views
+  - Define navigation flows
+  - Specify authentication requirements
+  - Map API integrations
+- **Template**: ~/.claude/templates/project_repo/docs/NAVIGATION_TEMPLATE.md
+- **Created**: 2025-10-03 18:24:59
+
+
+### TECH-DEBT-ce9e3e4a: Fix Code Quality Violations
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: code_quality_enforcer_hook.sh
+- **File**: tests/test_gmail_email_parsing.py
+- **Description**: Code does not meet quality standards
+- **Requirements**:
+  - Function size ≤50 lines
+  - File size ≤500 lines
+  - Complexity ≤75
+  - See log for details
+- **Template**: N/A
+- **Created**: 2025-10-03 18:24:59
+
+
+### TECH-DEBT-7c8c2213: Document Navigation Structure
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: mandatory_sitemap_enforcer_hook.sh
+- **File**: FinanceMate/GmailCashbackExtractor.swift
+- **Description**: Routes/views detected but sitemap missing
+- **Requirements**:
+  - Document all routes/pages/views
+  - Define navigation flows
+  - Specify authentication requirements
+  - Map API integrations
+- **Template**: ~/.claude/templates/project_repo/docs/NAVIGATION_TEMPLATE.md
+- **Created**: 2025-10-03 18:27:18
+
+
+### TECH-DEBT-c66f236a: Fix Code Quality Violations
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: code_quality_enforcer_hook.sh
+- **File**: FinanceMate/GmailCashbackExtractor.swift
+- **Description**: Code does not meet quality standards
+- **Requirements**:
+  - Function size ≤50 lines
+  - File size ≤500 lines
+  - Complexity ≤75
+  - See log for details
+- **Template**: N/A
+- **Created**: 2025-10-03 18:27:18
+
+
+### TECH-DEBT-0c532c6a: Document Navigation Structure
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: mandatory_sitemap_enforcer_hook.sh
+- **File**: FinanceMate/GmailStandardTransactionExtractor.swift
+- **Description**: Routes/views detected but sitemap missing
+- **Requirements**:
+  - Document all routes/pages/views
+  - Define navigation flows
+  - Specify authentication requirements
+  - Map API integrations
+- **Template**: ~/.claude/templates/project_repo/docs/NAVIGATION_TEMPLATE.md
+- **Created**: 2025-10-03 18:28:21
+
+
+### TECH-DEBT-82071b73: Fix Code Quality Violations
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: code_quality_enforcer_hook.sh
+- **File**: FinanceMate/GmailStandardTransactionExtractor.swift
+- **Description**: Code does not meet quality standards
+- **Requirements**:
+  - Function size ≤50 lines
+  - File size ≤500 lines
+  - Complexity ≤75
+  - See log for details
+- **Template**: N/A
+- **Created**: 2025-10-03 18:28:21
+
+
+### TECH-DEBT-30e93d1b: Document Navigation Structure
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: mandatory_sitemap_enforcer_hook.sh
+- **File**: FinanceMate/Views/Gmail/GmailTransactionRow.swift
+- **Description**: Routes/views detected but sitemap missing
+- **Requirements**:
+  - Document all routes/pages/views
+  - Define navigation flows
+  - Specify authentication requirements
+  - Map API integrations
+- **Template**: ~/.claude/templates/project_repo/docs/NAVIGATION_TEMPLATE.md
+- **Created**: 2025-10-03 18:32:19
+
+
+### TECH-DEBT-ff5f5db7: Fix Code Quality Violations
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: code_quality_enforcer_hook.sh
+- **File**: FinanceMate/Views/Gmail/GmailTransactionRow.swift
+- **Description**: Code does not meet quality standards
+- **Requirements**:
+  - Function size ≤50 lines
+  - File size ≤500 lines
+  - Complexity ≤75
+  - See log for details
+- **Template**: N/A
+- **Created**: 2025-10-03 18:32:19
+
+
+### TECH-DEBT-00e5f359: Document Navigation Structure
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: mandatory_sitemap_enforcer_hook.sh
+- **File**: FinanceMate/Utilities/GmailDebugLogger.swift
+- **Description**: Routes/views detected but sitemap missing
+- **Requirements**:
+  - Document all routes/pages/views
+  - Define navigation flows
+  - Specify authentication requirements
+  - Map API integrations
+- **Template**: ~/.claude/templates/project_repo/docs/NAVIGATION_TEMPLATE.md
+- **Created**: 2025-10-03 18:33:56
+
+
+### TECH-DEBT-998923a2: Document Navigation Structure
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: mandatory_sitemap_enforcer_hook.sh
+- **File**: FinanceMate/Views/Gmail/GmailReceiptsTableView.swift
+- **Description**: Routes/views detected but sitemap missing
+- **Requirements**:
+  - Document all routes/pages/views
+  - Define navigation flows
+  - Specify authentication requirements
+  - Map API integrations
+- **Template**: ~/.claude/templates/project_repo/docs/NAVIGATION_TEMPLATE.md
+- **Created**: 2025-10-03 19:22:22
+
+
+### TECH-DEBT-ab8d3b4d: Document Navigation Structure
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: mandatory_sitemap_enforcer_hook.sh
+- **File**: FinanceMate/Views/Gmail/GmailFilterBar.swift
+- **Description**: Routes/views detected but sitemap missing
+- **Requirements**:
+  - Document all routes/pages/views
+  - Define navigation flows
+  - Specify authentication requirements
+  - Map API integrations
+- **Template**: ~/.claude/templates/project_repo/docs/NAVIGATION_TEMPLATE.md
+- **Created**: 2025-10-03 19:22:55
+
+
+### TECH-DEBT-d797bea6: Document Navigation Structure
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: mandatory_sitemap_enforcer_hook.sh
+- **File**: FinanceMate/Views/TransactionDetailView.swift
+- **Description**: Routes/views detected but sitemap missing
+- **Requirements**:
+  - Document all routes/pages/views
+  - Define navigation flows
+  - Specify authentication requirements
+  - Map API integrations
+- **Template**: ~/.claude/templates/project_repo/docs/NAVIGATION_TEMPLATE.md
+- **Created**: 2025-10-03 19:23:28
+
+
+### TECH-DEBT-35b15e21: Document Navigation Structure
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: mandatory_sitemap_enforcer_hook.sh
+- **File**: FinanceMate/GmailTransactionFilter.swift
+- **Description**: Routes/views detected but sitemap missing
+- **Requirements**:
+  - Document all routes/pages/views
+  - Define navigation flows
+  - Specify authentication requirements
+  - Map API integrations
+- **Template**: ~/.claude/templates/project_repo/docs/NAVIGATION_TEMPLATE.md
+- **Created**: 2025-10-03 19:24:36
+
+
+### TECH-DEBT-094df822: Fix Code Quality Violations
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: code_quality_enforcer_hook.sh
+- **File**: FinanceMate/GmailTransactionFilter.swift
+- **Description**: Code does not meet quality standards
+- **Requirements**:
+  - Function size ≤50 lines
+  - File size ≤500 lines
+  - Complexity ≤75
+  - See log for details
+- **Template**: N/A
+- **Created**: 2025-10-03 19:24:36
+

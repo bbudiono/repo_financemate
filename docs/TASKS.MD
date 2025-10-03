@@ -723,3 +723,333 @@
 - **Template**: N/A
 - **Created**: 2025-10-03 08:40:24
 
+
+### TECH-DEBT-bbc822c5: Document Navigation Structure
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: mandatory_sitemap_enforcer_hook.sh
+- **File**: scripts/oauth_token_exchange.py
+- **Description**: Routes/views detected but sitemap missing
+- **Requirements**:
+  - Document all routes/pages/views
+  - Define navigation flows
+  - Specify authentication requirements
+  - Map API integrations
+- **Template**: ~/.claude/templates/project_repo/docs/NAVIGATION_TEMPLATE.md
+- **Created**: 2025-10-03 16:50:57
+
+
+### TECH-DEBT-fcc7dad6: Fix Code Quality Violations
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: code_quality_enforcer_hook.sh
+- **File**: scripts/oauth_token_exchange.py
+- **Description**: Code does not meet quality standards
+- **Requirements**:
+  - Function size ≤50 lines
+  - File size ≤500 lines
+  - Complexity ≤75
+  - See log for details
+- **Template**: N/A
+- **Created**: 2025-10-03 16:50:57
+
+
+### TECH-DEBT-c61d5b90: Document Navigation Structure
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: mandatory_sitemap_enforcer_hook.sh
+- **File**: scripts/test_gmail_complete_flow.py
+- **Description**: Routes/views detected but sitemap missing
+- **Requirements**:
+  - Document all routes/pages/views
+  - Define navigation flows
+  - Specify authentication requirements
+  - Map API integrations
+- **Template**: ~/.claude/templates/project_repo/docs/NAVIGATION_TEMPLATE.md
+- **Created**: 2025-10-03 16:53:43
+
+
+### TECH-DEBT-43d630a0: Fix Code Quality Violations
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: code_quality_enforcer_hook.sh
+- **File**: scripts/test_gmail_complete_flow.py
+- **Description**: Code does not meet quality standards
+- **Requirements**:
+  - Function size ≤50 lines
+  - File size ≤500 lines
+  - Complexity ≤75
+  - See log for details
+- **Template**: N/A
+- **Created**: 2025-10-03 16:53:43
+
+
+### TECH-DEBT-b918a8bc: Document Navigation Structure
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: mandatory_sitemap_enforcer_hook.sh
+- **File**: scripts/validate_gmail_oauth.sh
+- **Description**: Routes/views detected but sitemap missing
+- **Requirements**:
+  - Document all routes/pages/views
+  - Define navigation flows
+  - Specify authentication requirements
+  - Map API integrations
+- **Template**: ~/.claude/templates/project_repo/docs/NAVIGATION_TEMPLATE.md
+- **Created**: 2025-10-03 16:54:03
+
+
+### TECH-DEBT-a97aa94a: Fix Code Quality Violations
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: code_quality_enforcer_hook.sh
+- **File**: scripts/validate_gmail_oauth.sh
+- **Description**: Code does not meet quality standards
+- **Requirements**:
+  - Function size ≤50 lines
+  - File size ≤500 lines
+  - Complexity ≤75
+  - See log for details
+- **Template**: N/A
+- **Created**: 2025-10-03 16:54:03
+
+
+### TECH-DEBT-ee4ab7e7: Document Navigation Structure
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: mandatory_sitemap_enforcer_hook.sh
+- **File**: test_output/gmail_validation_20251003_164938/test-results.json
+- **Description**: Routes/views detected but sitemap missing
+- **Requirements**:
+  - Document all routes/pages/views
+  - Define navigation flows
+  - Specify authentication requirements
+  - Map API integrations
+- **Template**: ~/.claude/templates/project_repo/docs/NAVIGATION_TEMPLATE.md
+- **Created**: 2025-10-03 16:56:07
+
+
+### TECH-DEBT-02978ee0: Fix Code Quality Violations
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: code_quality_enforcer_hook.sh
+- **File**: test_output/gmail_validation_20251003_164938/test-results.json
+- **Description**: Code does not meet quality standards
+- **Requirements**:
+  - Function size ≤50 lines
+  - File size ≤500 lines
+  - Complexity ≤75
+  - See log for details
+- **Template**: N/A
+- **Created**: 2025-10-03 16:56:07
+
+
+### TECH-DEBT-ee4af11a: Document Navigation Structure
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: mandatory_sitemap_enforcer_hook.sh
+- **File**: scripts/test_gmail_fix.sh
+- **Description**: Routes/views detected but sitemap missing
+- **Requirements**:
+  - Document all routes/pages/views
+  - Define navigation flows
+  - Specify authentication requirements
+  - Map API integrations
+- **Template**: ~/.claude/templates/project_repo/docs/NAVIGATION_TEMPLATE.md
+- **Created**: 2025-10-03 17:02:07
+
+
+### TECH-DEBT-0ed2aa6a: Document Navigation Structure
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: mandatory_sitemap_enforcer_hook.sh
+- **File**: test_output/gmail_fix_20251003_170216/test-results.json
+- **Description**: Routes/views detected but sitemap missing
+- **Requirements**:
+  - Document all routes/pages/views
+  - Define navigation flows
+  - Specify authentication requirements
+  - Map API integrations
+- **Template**: ~/.claude/templates/project_repo/docs/NAVIGATION_TEMPLATE.md
+- **Created**: 2025-10-03 17:03:36
+
+
+### TECH-DEBT-25bd0f59: Document Navigation Structure
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: mandatory_sitemap_enforcer_hook.sh
+- **File**: scripts/test_with_console.sh
+- **Description**: Routes/views detected but sitemap missing
+- **Requirements**:
+  - Document all routes/pages/views
+  - Define navigation flows
+  - Specify authentication requirements
+  - Map API integrations
+- **Template**: ~/.claude/templates/project_repo/docs/NAVIGATION_TEMPLATE.md
+- **Created**: 2025-10-03 17:06:27
+
+
+### TECH-DEBT-097de10b: Document Navigation Structure
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: mandatory_sitemap_enforcer_hook.sh
+- **File**: test_output/final_test_20251003_171048/test-results.json
+- **Description**: Routes/views detected but sitemap missing
+- **Requirements**:
+  - Document all routes/pages/views
+  - Define navigation flows
+  - Specify authentication requirements
+  - Map API integrations
+- **Template**: ~/.claude/templates/project_repo/docs/NAVIGATION_TEMPLATE.md
+- **Created**: 2025-10-03 17:12:12
+
+
+### TECH-DEBT-aa59e1be: Document Navigation Structure
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: mandatory_sitemap_enforcer_hook.sh
+- **File**: test_output/VALIDATION_STATUS.md
+- **Description**: Routes/views detected but sitemap missing
+- **Requirements**:
+  - Document all routes/pages/views
+  - Define navigation flows
+  - Specify authentication requirements
+  - Map API integrations
+- **Template**: ~/.claude/templates/project_repo/docs/NAVIGATION_TEMPLATE.md
+- **Created**: 2025-10-03 17:22:06
+
+
+### TECH-DEBT-2af8016a: Document Navigation Structure
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: mandatory_sitemap_enforcer_hook.sh
+- **File**: test_output/enhanced_ui_20251003_172627/test-results.json
+- **Description**: Routes/views detected but sitemap missing
+- **Requirements**:
+  - Document all routes/pages/views
+  - Define navigation flows
+  - Specify authentication requirements
+  - Map API integrations
+- **Template**: ~/.claude/templates/project_repo/docs/NAVIGATION_TEMPLATE.md
+- **Created**: 2025-10-03 17:28:29
+
+
+### TECH-DEBT-70b87d17: Fix Code Quality Violations
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: code_quality_enforcer_hook.sh
+- **File**: test_output/enhanced_ui_20251003_172627/test-results.json
+- **Description**: Code does not meet quality standards
+- **Requirements**:
+  - Function size ≤50 lines
+  - File size ≤500 lines
+  - Complexity ≤75
+  - See log for details
+- **Template**: N/A
+- **Created**: 2025-10-03 17:28:29
+
+
+### TECH-DEBT-3de3a3c1: Document Navigation Structure
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: mandatory_sitemap_enforcer_hook.sh
+- **File**: scripts/comprehensive_gmail_test.sh
+- **Description**: Routes/views detected but sitemap missing
+- **Requirements**:
+  - Document all routes/pages/views
+  - Define navigation flows
+  - Specify authentication requirements
+  - Map API integrations
+- **Template**: ~/.claude/templates/project_repo/docs/NAVIGATION_TEMPLATE.md
+- **Created**: 2025-10-03 17:33:07
+
+
+### TECH-DEBT-ab05965b: Fix Code Quality Violations
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: code_quality_enforcer_hook.sh
+- **File**: scripts/comprehensive_gmail_test.sh
+- **Description**: Code does not meet quality standards
+- **Requirements**:
+  - Function size ≤50 lines
+  - File size ≤500 lines
+  - Complexity ≤75
+  - See log for details
+- **Template**: N/A
+- **Created**: 2025-10-03 17:33:07
+
+
+### TECH-DEBT-fb962f81: Document Navigation Structure
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: mandatory_sitemap_enforcer_hook.sh
+- **File**: test_output/improved_extraction_20251003_174946/test-results.json
+- **Description**: Routes/views detected but sitemap missing
+- **Requirements**:
+  - Document all routes/pages/views
+  - Define navigation flows
+  - Specify authentication requirements
+  - Map API integrations
+- **Template**: ~/.claude/templates/project_repo/docs/NAVIGATION_TEMPLATE.md
+- **Created**: 2025-10-03 17:51:12
+
+
+### TECH-DEBT-ed911926: Document Navigation Structure
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: mandatory_sitemap_enforcer_hook.sh
+- **File**: test_output/GMAIL_EXTRACTION_STATUS.md
+- **Description**: Routes/views detected but sitemap missing
+- **Requirements**:
+  - Document all routes/pages/views
+  - Define navigation flows
+  - Specify authentication requirements
+  - Map API integrations
+- **Template**: ~/.claude/templates/project_repo/docs/NAVIGATION_TEMPLATE.md
+- **Created**: 2025-10-03 18:00:14
+
+
+### TECH-DEBT-eaa20419: Fix Code Quality Violations
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: code_quality_enforcer_hook.sh
+- **File**: test_output/GMAIL_EXTRACTION_STATUS.md
+- **Description**: Code does not meet quality standards
+- **Requirements**:
+  - Function size ≤50 lines
+  - File size ≤500 lines
+  - Complexity ≤75
+  - See log for details
+- **Template**: N/A
+- **Created**: 2025-10-03 18:00:14
+
+
+### TECH-DEBT-125a350e: Document Navigation Structure
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: mandatory_sitemap_enforcer_hook.sh
+- **File**: test_output/FINAL_STATUS_20251003.md
+- **Description**: Routes/views detected but sitemap missing
+- **Requirements**:
+  - Document all routes/pages/views
+  - Define navigation flows
+  - Specify authentication requirements
+  - Map API integrations
+- **Template**: ~/.claude/templates/project_repo/docs/NAVIGATION_TEMPLATE.md
+- **Created**: 2025-10-03 18:43:47
+
+
+### TECH-DEBT-c1a0bdba: Fix Code Quality Violations
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: code_quality_enforcer_hook.sh
+- **File**: test_output/FINAL_STATUS_20251003.md
+- **Description**: Code does not meet quality standards
+- **Requirements**:
+  - Function size ≤50 lines
+  - File size ≤500 lines
+  - Complexity ≤75
+  - See log for details
+- **Template**: N/A
+- **Created**: 2025-10-03 18:43:47
+

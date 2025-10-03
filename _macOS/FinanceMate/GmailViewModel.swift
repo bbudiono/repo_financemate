@@ -97,7 +97,8 @@ class GmailViewModel: ObservableObject {
         // Debug: Save email content for analysis
         GmailDebugLogger.saveEmailsForDebug(emails)
 
-        extractedTransactions = emails.compactMap { GmailAPI.extractTransaction(from: $0) }
+        // BLUEPRINT Line 66: Each line item becomes a distinct transaction
+        extractedTransactions = emails.flatMap { GmailAPI.extractTransactions(from: $0) }
             .filter { $0.confidence >= 0.6 } // Only show 60%+ confidence
             .sorted { $0.confidence > $1.confidence }
 

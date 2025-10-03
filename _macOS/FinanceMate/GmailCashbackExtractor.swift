@@ -3,33 +3,40 @@ import Foundation
 /// Extracts cashback transaction data from Gmail emails (ShopBack, etc.)
 struct GmailCashbackExtractor {
 
-    /// Extract ShopBack cashback confirmation
-    static func extractCashbackTransaction(from email: GmailEmail) -> ExtractedTransaction? {
+    /// Extract ShopBack cashback confirmation - creates SEPARATE transaction per line item
+    /// BLUEPRINT Line 66: "Every line item must be created as a distinct record"
+    static func extractCashbackTransactions(from email: GmailEmail) -> [ExtractedTransaction] {
         let items = extractCashbackItems(from: email.snippet)
-        guard !items.isEmpty else { return nil }
+        guard !items.isEmpty else { return [] }
 
-        // Sum total purchase amounts (not cashback)
-        let totalPurchaseAmount = items.reduce(0.0) { $0 + $1.price }
+        // Create SEPARATE transaction for each line item (BLUEPRINT Line 66 compliance)
+        return items.enumerated().map { (index, item) in
+            ExtractedTransaction(
+                id: "\(email.id)-item-\(index)",
+                merchant: extractMerchantName(from: item.description),
+                amount: item.price,
+                date: email.date,
+                category: "Purchase",
+                items: [item], // Single item per transaction
+                confidence: 0.9,
+                rawText: email.snippet,
+                emailSubject: email.subject,
+                emailSender: email.sender,
+                gstAmount: nil,
+                abn: nil,
+                invoiceNumber: nil,
+                paymentMethod: "Cashback"
+            )
+        }
+    }
 
-        // Get primary merchant (first item)
-        let primaryMerchant = items.first?.description ?? "ShopBack"
-
-        return ExtractedTransaction(
-            id: email.id,
-            merchant: "ShopBack Cashback",
-            amount: totalPurchaseAmount,
-            date: email.date,
-            category: "Cashback",
-            items: items,
-            confidence: 0.9,
-            rawText: email.snippet,
-            emailSubject: email.subject,
-            emailSender: email.sender,
-            gstAmount: nil,
-            abn: nil,
-            invoiceNumber: nil,
-            paymentMethod: "Cashback"
-        )
+    // Helper to extract merchant name from description
+    private static func extractMerchantName(from description: String) -> String {
+        // Description format: "eBay - Purchase: $99.71 (Cashback: $1.30)"
+        if let dashRange = description.range(of: " - ") {
+            return String(description[..<dashRange.lowerBound])
+        }
+        return description
     }
 
     static func extractCashbackItems(from content: String) -> [GmailLineItem] {
