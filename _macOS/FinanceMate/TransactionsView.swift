@@ -1,4 +1,5 @@
 import SwiftUI
+import CoreData
 
 struct TransactionsView: View {
     @Environment(\.managedObjectContext) private var viewContext
@@ -88,114 +89,28 @@ struct TransactionsView: View {
             .padding()
 
             // BLUEPRINT Line 68: SEARCHABLE
-            HStack {
-                Image(systemName: "magnifyingglass")
-                    .foregroundColor(.secondary)
-                TextField("Search transactions...", text: $searchText)
-                    .textFieldStyle(.plain)
-                if !searchText.isEmpty {
-                    Button(action: { searchText = "" }) {
-                        Image(systemName: "xmark.circle.fill")
-                            .foregroundColor(.secondary)
-                    }
-                    .buttonStyle(.plain)
-                }
-            }
-            .padding(8)
-            .background(Color.secondary.opacity(0.1))
-            .cornerRadius(8)
-            .padding(.horizontal)
+            TransactionSearchBar(searchText: $searchText)
 
             // BLUEPRINT Line 68: FILTERABLE
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 8) {
-                    FilterButton(title: "All", isSelected: selectedSource == nil && selectedCategory == nil) {
-                        selectedSource = nil
-                        selectedCategory = nil
-                    }
-                    FilterButton(title: "Gmail", isSelected: selectedSource == "gmail") {
-                        selectedSource = selectedSource == "gmail" ? nil : "gmail"
-                    }
-                    FilterButton(title: "Manual", isSelected: selectedSource == "manual") {
-                        selectedSource = selectedSource == "manual" ? nil : "manual"
-                    }
-                    ForEach(["Groceries", "Dining", "Transport", "Utilities"], id: \.self) { cat in
-                        FilterButton(title: cat, isSelected: selectedCategory == cat) {
-                            selectedCategory = selectedCategory == cat ? nil : cat
-                        }
-                    }
-                }
-                .padding(.horizontal)
-                .padding(.vertical, 8)
-            }
+            TransactionFilterBar(
+                selectedSource: $selectedSource,
+                selectedCategory: $selectedCategory
+            )
 
             // Transaction List
             if filteredTransactions.isEmpty {
-                VStack(spacing: 16) {
-                    Image(systemName: "doc.text.magnifyingglass")
-                        .font(.system(size: 48))
-                        .foregroundColor(.secondary)
-                    Text(searchText.isEmpty ? "No transactions yet" : "No matching transactions")
-                        .foregroundColor(.secondary)
-                }
-                .frame(maxHeight: .infinity)
+                TransactionEmptyStateView(searchText: searchText)
             } else {
                 List {
                     ForEach(filteredTransactions) { transaction in
-                        HStack {
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(transaction.itemDescription)
-                                    .font(.headline)
-                                HStack(spacing: 8) {
-                                    // Source badge
-                                    if transaction.source == "gmail" {
-                                        Image(systemName: "envelope.fill")
-                                            .font(.caption2)
-                                            .foregroundColor(.blue)
-                                    }
-                                    // Tax category
-                                    Text(transaction.taxCategory)
-                                        .font(.caption)
-                                        .padding(.horizontal, 8)
-                                        .padding(.vertical, 2)
-                                        .background(taxCategoryColor(transaction.taxCategory).opacity(0.2))
-                                        .foregroundColor(taxCategoryColor(transaction.taxCategory))
-                                        .cornerRadius(4)
-                                    // Date
-                                    Text(transaction.date, style: .date)
-                                        .font(.caption)
-                                        .foregroundColor(.secondary)
-                                }
-                            }
-
-                            Spacer()
-
-                            Text(String(format: "$%.2f", transaction.amount))
-                                .font(.headline)
-                                .foregroundColor(transaction.amount >= 0 ? .green : .red)
-                        }
+                        TransactionRowView(transaction: transaction)
                     }
                     .onDelete(perform: deleteTransaction)
                 }
             }
         }
         .sheet(isPresented: $showingAddTransaction) {
-            // Add Transaction Form (placeholder for now)
-            VStack(spacing: 20) {
-                Text("Add Transaction")
-                    .font(.title2)
-                    .fontWeight(.bold)
-
-                Text("Transaction form coming soon")
-                    .foregroundColor(.secondary)
-
-                Button("Cancel") {
-                    showingAddTransaction = false
-                }
-                .buttonStyle(.borderedProminent)
-            }
-            .frame(width: 400, height: 300)
-            .padding()
+            AddTransactionForm(isPresented: $showingAddTransaction)
         }
     }
 
@@ -216,36 +131,5 @@ struct TransactionsView: View {
                 isDeleting = false
             }
         }
-    }
-
-    private func taxCategoryColor(_ category: String) -> Color {
-        switch category {
-        case "Personal": return .blue
-        case "Business": return .purple
-        case "Investment": return .green
-        case "Property Investment": return .orange
-        default: return .gray
-        }
-    }
-}
-
-// MARK: - Filter Button Component
-
-struct FilterButton: View {
-    let title: String
-    let isSelected: Bool
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            Text(title)
-                .font(.caption)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 6)
-                .background(isSelected ? Color.blue : Color.secondary.opacity(0.2))
-                .foregroundColor(isSelected ? .white : .primary)
-                .cornerRadius(16)
-        }
-        .buttonStyle(.plain)
     }
 }

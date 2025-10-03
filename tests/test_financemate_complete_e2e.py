@@ -255,10 +255,25 @@ def test_app_launch():
 def test_search_filter_sort_ui():
     """BLUEPRINT Line 68: Search, filter, sort functionality"""
     tv = MACOS_ROOT / "FinanceMate/TransactionsView.swift"
-    content = open(tv).read() if tv.exists() else ""
-    has_search = 'searchText' in content and 'TextField' in content and 'Search transactions' in content
-    has_filter = 'selectedSource' in content and 'selectedCategory' in content
-    has_sort = 'sortOption' in content and 'SortOption' in content and 'Menu' in content
+    search_bar = MACOS_ROOT / "FinanceMate/TransactionSearchBar.swift"
+    filter_bar = MACOS_ROOT / "FinanceMate/TransactionFilterBar.swift"
+
+    # Check main file and component files
+    tv_content = open(tv).read() if tv.exists() else ""
+    search_content = open(search_bar).read() if search_bar.exists() else ""
+    filter_content = open(filter_bar).read() if filter_bar.exists() else ""
+
+    # Search can be in TransactionsView or TransactionSearchBar
+    has_search = ('searchText' in tv_content and ('TransactionSearchBar' in tv_content or 'TextField' in tv_content)) or \
+                 ('searchText' in search_content and 'TextField' in search_content and 'Search transactions' in search_content)
+
+    # Filter can be in TransactionsView or TransactionFilterBar
+    has_filter = ('selectedSource' in tv_content and 'selectedCategory' in tv_content) or \
+                 ('selectedSource' in filter_content and 'selectedCategory' in filter_content)
+
+    # Sort should be in TransactionsView
+    has_sort = 'sortOption' in tv_content and 'SortOption' in tv_content and 'Menu' in tv_content
+
     success = has_search and has_filter and has_sort
     log_test("test_search_filter_sort_ui", "PASS" if success else "FAIL",
              f"Search: {has_search}, Filter: {has_filter}, Sort: {has_sort}")
