@@ -9,16 +9,19 @@ struct GmailCashbackExtractor {
         let items = extractCashbackItems(from: email.snippet)
         guard !items.isEmpty else { return [] }
 
+        // Extract merchant from EMAIL DOMAIN (not content) - user feedback
+        let merchantFromDomain = extractDomainMerchant(from: email.sender)
+
         // Create SEPARATE transaction for each line item (BLUEPRINT Line 66 compliance)
         return items.enumerated().map { (index, item) in
             ExtractedTransaction(
                 id: "\(email.id)-item-\(index)",
-                merchant: extractMerchantName(from: item.description),
+                merchant: merchantFromDomain,
                 amount: item.price,
                 date: email.date,
                 category: "Purchase",
                 items: [item], // Single item per transaction
-                confidence: 0.9,
+                confidence: 0.5, // Lower confidence - user should review
                 rawText: email.snippet,
                 emailSubject: email.subject,
                 emailSender: email.sender,
@@ -30,13 +33,25 @@ struct GmailCashbackExtractor {
         }
     }
 
-    // Helper to extract merchant name from description
-    private static func extractMerchantName(from description: String) -> String {
-        // Description format: "eBay - Purchase: $99.71 (Cashback: $1.30)"
-        if let dashRange = description.range(of: " - ") {
-            return String(description[..<dashRange.lowerBound])
+    // Extract merchant from email domain: "hello@info.shopback.com.au" → "ShopBack"
+    private static func extractDomainMerchant(from sender: String) -> String {
+        // Extract domain from email address
+        guard let atIndex = sender.firstIndex(of: "@") else { return sender }
+        let domain = String(sender[sender.index(after: atIndex)...])
+
+        // Clean up domain: "info.shopback.com.au" → "shopback"
+        let parts = domain.components(separatedBy: ".")
+
+        // Find the meaningful part (skip "info", "mail", "noreply", etc.)
+        let skipPrefixes = ["info", "mail", "noreply", "hello", "no-reply", "support"]
+        for part in parts {
+            if !skipPrefixes.contains(part.lowercased()) && part.lowercased() != "com" && part.lowercased() != "au" {
+                return part.capitalized
+            }
         }
-        return description
+
+        // Fallback to first part
+        return parts.first?.capitalized ?? sender
     }
 
     static func extractCashbackItems(from content: String) -> [GmailLineItem] {

@@ -101,18 +101,35 @@ struct GmailView: View {
     }
 }
 
-// BLUEPRINT Lines 67-68: Information dense, spreadsheet-like table with in-line editing
+// BLUEPRINT Lines 67-68: Gmail Receipts Review Table
+// PURPOSE: Show ALL email info for user to REVIEW and CONFIRM before importing
 struct GmailReceiptsTable: View {
     @ObservedObject var viewModel: GmailViewModel
     @State private var sortOrder: [KeyPathComparator<ExtractedTransaction>] = [
         .init(\.date, order: .reverse)
     ]
-    @State private var editingID: String?
 
     var body: some View {
-        VStack(spacing: 0) {
+        VStack(spacing: 12) {
+            // Header with batch actions
+            HStack {
+                Text("\(viewModel.extractedTransactions.count) emails to review")
+                    .font(.headline)
+                Spacer()
+                if !viewModel.selectedIDs.isEmpty {
+                    Text("\(viewModel.selectedIDs.count) selected")
+                        .foregroundColor(.secondary)
+                    Button("Import Selected") {
+                        importSelected()
+                    }
+                    .buttonStyle(.borderedProminent)
+                }
+            }
+            .padding(.horizontal)
+
+            // Information-dense review table
             Table(viewModel.extractedTransactions, selection: $viewModel.selectedIDs, sortOrder: $sortOrder) {
-                // Confirmation checkbox
+                // Checkbox for confirmation
                 TableColumn("") { transaction in
                     Toggle("", isOn: Binding(
                         get: { viewModel.selectedIDs.contains(transaction.id) },
@@ -131,70 +148,105 @@ struct GmailReceiptsTable: View {
 
                 // Date
                 TableColumn("Date", value: \.date) { transaction in
-                    Text(transaction.date, style: .date)
-                        .font(.system(.body, design: .monospaced))
+                    Text(transaction.date, format: .dateTime.month().day())
+                        .font(.caption)
                 }
-                .width(min: 90, ideal: 100, max: 120)
+                .width(min: 60, ideal: 70)
 
-                // Merchant
-                TableColumn("Merchant", value: \.merchant) { transaction in
-                    Text(transaction.merchant)
-                        .lineLimit(1)
-                }
-                .width(min: 120, ideal: 150)
-
-                // Amount
-                TableColumn("Amount", value: \.amount) { transaction in
-                    Text(transaction.amount, format: .currency(code: "AUD"))
-                        .font(.system(.body, design: .monospaced))
-                        .foregroundColor(transaction.amount < 0 ? .red : .primary)
-                }
-                .width(min: 80, ideal: 100)
-
-                // Category
-                TableColumn("Category", value: \.category) { transaction in
-                    Text(transaction.category)
-                        .lineLimit(1)
-                }
-                .width(min: 100, ideal: 120)
-
-                // Confidence
-                TableColumn("Confidence", value: \.confidence) { transaction in
-                    HStack {
-                        Text("\(Int(transaction.confidence * 100))%")
-                            .font(.system(.body, design: .monospaced))
-                        Circle()
-                            .fill(confidenceColor(transaction.confidence))
-                            .frame(width: 8, height: 8)
-                    }
-                }
-                .width(min: 80, ideal: 90)
-
-                // Items count
-                TableColumn("Items") { transaction in
-                    Text("\(transaction.items.count)")
-                        .font(.system(.body, design: .monospaced))
-                }
-                .width(min: 50, ideal: 60)
-
-                // Source details
-                TableColumn("Source") { transaction in
+                // Email Domain (WHO sent it)
+                TableColumn("From", value: \.emailSender) { transaction in
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(transaction.emailSender)
+                        Text(extractDomain(from: transaction.emailSender))
                             .font(.caption)
-                            .lineLimit(1)
-                        Text(transaction.emailSubject)
+                            .fontWeight(.semibold)
+                        Text(transaction.emailSender)
                             .font(.caption2)
                             .foregroundColor(.secondary)
                             .lineLimit(1)
                     }
                 }
-                .width(min: 150, ideal: 200)
+                .width(min: 140, ideal: 180)
+
+                // Email Subject (WHAT it's about)
+                TableColumn("Subject", value: \.emailSubject) { transaction in
+                    Text(transaction.emailSubject)
+                        .font(.caption)
+                        .lineLimit(2)
+                }
+                .width(min: 200, ideal: 280)
+
+                // Detected Amount
+                TableColumn("Amount", value: \.amount) { transaction in
+                    Text(transaction.amount, format: .currency(code: "AUD"))
+                        .font(.system(.caption, design: .monospaced))
+                        .fontWeight(.bold)
+                }
+                .width(min: 80, ideal: 90)
+
+                // Item Details (WHAT was purchased)
+                TableColumn("Items") { transaction in
+                    VStack(alignment: .leading, spacing: 1) {
+                        ForEach(transaction.items.prefix(2), id: \.description) { item in
+                            Text(item.description)
+                                .font(.caption2)
+                                .lineLimit(1)
+                        }
+                        if transaction.items.count > 2 {
+                            Text("+\(transaction.items.count - 2) more")
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                }
+                .width(min: 180, ideal: 250)
+
+                // Confidence (HOW sure we are)
+                TableColumn("Conf", value: \.confidence) { transaction in
+                    HStack(spacing: 4) {
+                        Circle()
+                            .fill(confidenceColor(transaction.confidence))
+                            .frame(width: 6, height: 6)
+                        Text("\(Int(transaction.confidence * 100))%")
+                            .font(.caption2)
+                    }
+                }
+                .width(min: 50, ideal: 60)
+
+                // Quick action
+                TableColumn("") { transaction in
+                    Button("Import") {
+                        viewModel.createTransaction(from: transaction)
+                        viewModel.selectedIDs.remove(transaction.id)
+                    }
+                    .buttonStyle(.borderless)
+                    .controlSize(.small)
+                }
+                .width(60)
             }
             .onChange(of: sortOrder) { oldValue, newValue in
                 viewModel.extractedTransactions.sort(using: newValue)
             }
         }
+    }
+
+    private func extractDomain(from email: String) -> String {
+        guard let atIndex = email.firstIndex(of: "@") else { return email }
+        let domain = String(email[email.index(after: atIndex)...])
+        let parts = domain.components(separatedBy: ".")
+        let skipPrefixes = ["info", "mail", "noreply", "hello", "no-reply"]
+        for part in parts where !skipPrefixes.contains(part.lowercased()) && part.lowercased() != "com" && part.lowercased() != "au" {
+            return part.capitalized
+        }
+        return parts.first?.capitalized ?? email
+    }
+
+    private func importSelected() {
+        for id in viewModel.selectedIDs {
+            if let transaction = viewModel.extractedTransactions.first(where: { $0.id == id }) {
+                viewModel.createTransaction(from: transaction)
+            }
+        }
+        viewModel.selectedIDs.removeAll()
     }
 
     private func confidenceColor(_ confidence: Double) -> Color {
