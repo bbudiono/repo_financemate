@@ -14,6 +14,9 @@ struct EnvironmentLoader {
 
         // Check multiple possible .env locations
         let possiblePaths = [
+            // Primary: Absolute path to project root (most reliable)
+            URL(fileURLWithPath: "/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/.env"),
+
             // When running from Xcode DerivedData
             URL(fileURLWithPath: bundlePath)
                 .deletingLastPathComponent()
