@@ -50,11 +50,13 @@ struct ContentView: View {
                     .frame(minWidth: 600)
                     .environmentObject(authManager)
 
-                    // Chatbot sidebar (no overlay - prevents blocking)
-                    if chatbotVM.isDrawerVisible {
-                        ChatbotDrawer(viewModel: chatbotVM)
-                            .frame(minWidth: 300, idealWidth: 350, maxWidth: 500)
-                    }
+                    // Chatbot sidebar (always rendered - shows collapsed button when hidden)
+                    ChatbotDrawer(viewModel: chatbotVM)
+                        .frame(
+                            minWidth: chatbotVM.isDrawerVisible ? 300 : 60,
+                            idealWidth: chatbotVM.isDrawerVisible ? 350 : 60,
+                            maxWidth: chatbotVM.isDrawerVisible ? 500 : 60
+                        )
                 }
                 .frame(minWidth: 900, minHeight: 600)
             }
