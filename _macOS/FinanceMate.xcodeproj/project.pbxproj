@@ -41,11 +41,13 @@
 		8BAF2671C99632758B9B44D4 /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4945387B7AF59CA123F400 /* Transaction.swift */; };
 		8EEB38FB8C4442BC839FEC3B /* GmailEmailFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7A67DE18ED946FCBF0CE117 /* GmailEmailFetcher.swift */; };
 		95E511EA66704C768640E2C8 /* GmailEmailBodyDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA32871351DD4329A4B2252A /* GmailEmailBodyDecoder.swift */; };
+		9B5A852303860E3FAF9988D2 /* GmailTableRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FB6236DEDEB94D8F276B1 /* GmailTableRow.swift */; };
 		AA5F9890E57C2445AD7261A9 /* TransactionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F6F07E70896D0F653D8125A /* TransactionsView.swift */; };
 		AAEA75325EBD49519A675A84 /* AnthropicStreamHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 665D1AE9418A4BAFB4C324C6 /* AnthropicStreamHandler.swift */; };
 		AF37A07AB6DBD988BC6A6BE8 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA373D32E33E191AF2C4D761 /* SettingsView.swift */; };
 		B63D5EFAC8F56A504DE84BF3 /* TransactionSearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 496ECB5A13BC97E124EE0058 /* TransactionSearchBar.swift */; };
 		B90D7978D16741B6BF9B9F94 /* EnvironmentLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F4404D3009245FE9363125F /* EnvironmentLoader.swift */; };
+		B95153452F263FDC3554D9CA /* GmailTableComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E4741F5E2CB99773AD0DAE7 /* GmailTableComponents.swift */; };
 		BBBAD1F16B9F9725870AA423 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA0DFAF1B4D00C9177FB89F0 /* PersistenceController.swift */; };
 		C5D039B34678F1E7783D60F3 /* TransactionRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B09DE13DDE1045076AF31A52 /* TransactionRowView.swift */; };
 		CA241A1E98F34C02B8AAF071 /* GmailTransactionExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC44DFD1DCD4F13800C757C /* GmailTransactionExtractor.swift */; };
@@ -85,6 +87,7 @@
 		7D4E2A9B6C1F8E3A5B7C9D1F /* ChatbotDrawer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatbotDrawer.swift; sourceTree = "<group>"; };
 		85C1CB1C75DC0D59EB08342C /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		862B24382DB2714189DE41A9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		896FB6236DEDEB94D8F276B1 /* GmailTableRow.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = GmailTableRow.swift; sourceTree = "<group>"; };
 		8C6D5F4A0E7B3A9C1D2F8E6B /* LineItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineItem.swift; sourceTree = "<group>"; };
 		8E5F3B0C7D2A9F4E6C8A1B3D /* ChatbotViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatbotViewModel.swift; sourceTree = "<group>"; };
 		8F1545D1B8C7FB389DAD93A8 /* AddTransactionForm.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AddTransactionForm.swift; path = AddTransactionForm.swift; sourceTree = "<group>"; };
@@ -92,6 +95,7 @@
 		900D59868012A469340D54CD /* TransactionEmptyStateView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TransactionEmptyStateView.swift; path = TransactionEmptyStateView.swift; sourceTree = "<group>"; };
 		97880124EAFD9019DF7A2AD2 /* GmailOAuthHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GmailOAuthHelper.swift; sourceTree = "<group>"; };
 		99BC4F8F2FAB08CC7A4DEC3A /* FinanceMate.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FinanceMate.entitlements; sourceTree = "<group>"; };
+		9E4741F5E2CB99773AD0DAE7 /* GmailTableComponents.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = GmailTableComponents.swift; sourceTree = "<group>"; };
 		9F6A4C1E8D3B0F5A7D9E2C4F /* ChatInputField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatInputField.swift; sourceTree = "<group>"; };
 		A1715840A6674ADB3AD26EAF /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		B09DE13DDE1045076AF31A52 /* TransactionRowView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TransactionRowView.swift; path = TransactionRowView.swift; sourceTree = "<group>"; };
@@ -118,8 +122,11 @@
 			isa = PBXGroup;
 			children = (
 				3E4DCEAC92B2E4D08EFD6720 /* GmailReceiptsTableView.swift */,
+				896FB6236DEDEB94D8F276B1 /* GmailTableRow.swift */,
+				9E4741F5E2CB99773AD0DAE7 /* GmailTableComponents.swift */,
 			);
 			name = Gmail;
+			path = Gmail;
 			sourceTree = "<group>";
 		};
 		664632500DD526A9BDF8015A = {
@@ -194,6 +201,7 @@
 				23E7A407FC97C201F14B660F /* Gmail */,
 			);
 			name = Views;
+			path = Views;
 			sourceTree = "<group>";
 		};
 		C190AFCE18F9B21044E96663 /* Products */ = {
@@ -318,6 +326,8 @@
 				3DB80824101DB67811E9FE18 /* AddTransactionForm.swift in Sources */,
 				D29D716A0FFCEEA55E62C4E1 /* DotEnvLoader.swift in Sources */,
 				F73403B44F38F91E224CD21D /* GmailReceiptsTableView.swift in Sources */,
+				9B5A852303860E3FAF9988D2 /* GmailTableRow.swift in Sources */,
+				B95153452F263FDC3554D9CA /* GmailTableComponents.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
