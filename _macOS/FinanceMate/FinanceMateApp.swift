@@ -8,8 +8,15 @@ struct FinanceMateApp: App {
     let persistenceController = PersistenceController.shared
 
     init() {
-        // Load .env file for standalone app launches (outside Xcode)
-        EnvironmentLoader.loadEnvironmentFile()
+        // Load .env file for OAuth credentials
+        DotEnvLoader.load()
+
+        // Verify OAuth credentials are loaded (for debugging)
+        if DotEnvLoader.verifyOAuthCredentials() {
+            print(" OAuth credentials loaded successfully")
+        } else {
+            print("️ OAuth credentials not found - Gmail integration will not work")
+        }
     }
 
     var body: some Scene {

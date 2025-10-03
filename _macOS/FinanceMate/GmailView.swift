@@ -31,10 +31,22 @@ struct GmailView: View {
                         .foregroundColor(.secondary)
 
                     Button("Connect Gmail") {
-                        if let clientID = ProcessInfo.processInfo.environment["GOOGLE_OAUTH_CLIENT_ID"],
+                        let clientID = ProcessInfo.processInfo.environment["GOOGLE_OAUTH_CLIENT_ID"]
+                        let clientSecret = ProcessInfo.processInfo.environment["GOOGLE_OAUTH_CLIENT_SECRET"]
+
+                        print(" Connect Gmail button clicked")
+                        print("   Client ID: \(clientID != nil ? "Found" : "NOT FOUND")")
+                        print("   Client Secret: \(clientSecret != nil ? "Found" : "NOT FOUND")")
+
+                        if let clientID = clientID,
                            let url = GmailOAuthHelper.getAuthorizationURL(clientID: clientID) {
+                            print(" Opening OAuth URL: \(url.absoluteString.prefix(100))...")
                             NSWorkspace.shared.open(url)
                             viewModel.showCodeInput = true
+                        } else {
+                            print(" Failed to generate OAuth URL")
+                            print("   Ensure .env file is loaded with OAuth credentials")
+                            viewModel.errorMessage = "OAuth not configured. Check .env file."
                         }
                     }
                     .buttonStyle(.borderedProminent)

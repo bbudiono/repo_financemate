@@ -42,6 +42,7 @@
 		B90D7978D16741B6BF9B9F94 /* EnvironmentLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F4404D3009245FE9363125F /* EnvironmentLoader.swift */; };
 		BBBAD1F16B9F9725870AA423 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA0DFAF1B4D00C9177FB89F0 /* PersistenceController.swift */; };
 		C5D039B34678F1E7783D60F3 /* TransactionRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B09DE13DDE1045076AF31A52 /* TransactionRowView.swift */; };
+		D29D716A0FFCEEA55E62C4E1 /* DotEnvLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B6C95040B9C4282752BA14 /* DotEnvLoader.swift */; };
 		E0D3F6168F5AD224E4A8B877 /* GmailOAuthHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97880124EAFD9019DF7A2AD2 /* GmailOAuthHelper.swift */; };
 		E27E3897995C633A280CCA7E /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C1CB1C75DC0D59EB08342C /* LoginView.swift */; };
 		FD47DD6F80A476B4EF448E5D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1715840A6674ADB3AD26EAF /* ContentView.swift */; };
@@ -84,6 +85,7 @@
 		C0A06C1B981717175872995B /* GmailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GmailViewModel.swift; sourceTree = "<group>"; };
 		CA76140EE4946838694BF9A2 /* KeychainHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainHelper.swift; sourceTree = "<group>"; };
 		DA4945387B7AF59CA123F400 /* Transaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transaction.swift; sourceTree = "<group>"; };
+		E7B6C95040B9C4282752BA14 /* DotEnvLoader.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DotEnvLoader.swift; sourceTree = "<group>"; };
 		E904C06A5DEAACD675C7D55C /* GmailAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GmailAPI.swift; sourceTree = "<group>"; };
 		EA373D32E33E191AF2C4D761 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		F64317D4D1264A4EEA0A7239 /* FinanceMateApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinanceMateApp.swift; sourceTree = "<group>"; };
@@ -143,6 +145,7 @@
 				496ECB5A13BC97E124EE0058 /* TransactionSearchBar.swift */,
 				4872E621110A30A310AEF7D7 /* TransactionFilterBar.swift */,
 				8F1545D1B8C7FB389DAD93A8 /* AddTransactionForm.swift */,
+				E7B6C95040B9C4282752BA14 /* DotEnvLoader.swift */,
 			);
 			path = FinanceMate;
 			sourceTree = "<group>";
@@ -251,6 +254,7 @@
 				B63D5EFAC8F56A504DE84BF3 /* TransactionSearchBar.swift in Sources */,
 				7FB534427BB9D5F604AE43D4 /* TransactionFilterBar.swift in Sources */,
 				3DB80824101DB67811E9FE18 /* AddTransactionForm.swift in Sources */,
+				D29D716A0FFCEEA55E62C4E1 /* DotEnvLoader.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
