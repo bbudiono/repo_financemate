@@ -15,12 +15,14 @@ struct GmailView: View {
 
     var body: some View {
         VStack(spacing: 20) {
-            // Header with auto-refresh toggle
+            // Header with auto-refresh and archive toggles
             HStack {
                 Text("Gmail Receipts")
                     .font(.largeTitle)
                     .fontWeight(.bold)
                 Spacer()
+                Toggle("Show Archived", isOn: $viewModel.showArchivedEmails)
+                    .toggleStyle(.switch)
                 Toggle("Auto-refresh", isOn: $autoRefresh)
                     .toggleStyle(.switch)
             }

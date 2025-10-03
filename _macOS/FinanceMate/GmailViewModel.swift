@@ -11,6 +11,7 @@ class GmailViewModel: ObservableObject {
     @Published var errorMessage: String?
     @Published var showCodeInput = false
     @Published var authCode = ""
+    @Published var showArchivedEmails = false // BLUEPRINT Line 102: Toggle for archived items
 
     private let viewContext: NSManagedObjectContext
     private let cacheService = EmailCacheService()
@@ -113,6 +114,15 @@ class GmailViewModel: ObservableObject {
         importTracker.filterUnprocessed(extractedTransactions)
     }
 
+    // BLUEPRINT Line 149: Filter emails by status
+    var filteredEmails: [GmailEmail] {
+        if showArchivedEmails {
+            return emails
+        } else {
+            return emails.filter { $0.status == .needsReview }
+        }
+    }
+
     var paginatedTransactions: [ExtractedTransaction] {
         paginationManager.paginatedResults(unprocessedEmails)
     }
@@ -123,6 +133,21 @@ class GmailViewModel: ObservableObject {
 
     func loadNextPage() {
         paginationManager.loadNextPage(totalCount: unprocessedEmails.count)
+    }
+
+    // MARK: - Status Management
+
+    func archiveEmail(id: String) {
+        if let index = emails.firstIndex(where: { $0.id == id }) {
+            emails[index].status = .archived
+        }
+    }
+
+    func archiveSelectedEmails() {
+        for id in selectedIDs {
+            archiveEmail(id: id)
+        }
+        selectedIDs.removeAll()
     }
 
     func extractTransactionsFromEmails() async {

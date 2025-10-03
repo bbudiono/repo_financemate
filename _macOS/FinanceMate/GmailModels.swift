@@ -1,11 +1,19 @@
 import Foundation
 
+// MARK: - Email Status Enum (BLUEPRINT Line 149)
+enum EmailStatus: String, Codable {
+    case needsReview = "Needs Review"
+    case transactionCreated = "Transaction Created"
+    case archived = "Archived"
+}
+
 struct GmailEmail: Identifiable, Codable {
     let id: String
     let subject: String
     let sender: String
     let date: Date
     let snippet: String
+    var status: EmailStatus = .needsReview
 }
 
 struct TokenResponse: Codable {
