@@ -65,12 +65,15 @@ To be the central command center for personal and family wealth, empowering user
   * Use `bernhardbudiono@gmail.com` as the primary E2E test account.
   * Every line item from a parsed email/receipt must be created as a distinct record in the transaction table.
   * Gmail Receipts should be displayed in an interactive, detailed, comprehensive table. It needs to be filterable, sortable and best practice.
-  * Gmail Receipts Table should be information dense and `spreadsheet-like` with the ability to edit in-line, and structured, data typed and allows for user `confirmation` (like a database/spreadsheet). Ensure Gmail Receipt items are able to be deleted/edited within the table.
+  * Gmail Receipts Table should be compact, information dense and `spreadsheet-like` with the ability to edit in-line, and structured, data typed and allows for user `confirmation` (like a database/spreadsheet). Ensure Gmail Receipt items are able to be deleted/edited within the table.
   * Gmail Receipts Table should allow a user to quick delete/edit/process emails
   * Gmail Receipts Table would be extremely large, and therefore appropriate pagination, filters, and UI/UX all in line with best practice to ensure appropriate handling
   * Gmail Receipts Table should handle a robust, and complex filtering control system that is able to handle large API calls (i.e. 5 years of information), therefore `best practice` rate limiting, pagination, etc, needs to be implemented. We need a robust `rules` system, similar to frontier `email managers` and robust filtering to assist in automation and identification.
   * Gmail Receipts Table should store and capture complex user patterns and allow users to store easily editable "memory" that also has robust infrastructure to allow Machine Learning and diagnostic information to allow an AI/LLM to suggest automatic filtering rules and automate processing of new emails, etc. I.e. So the app can "learn" how a user operates and the "types" of emails that often become processable "transactions."
   * Gmail Receipts Table should only "auto-refresh" when "auto-refresh" is set to `true` (or checked).
+  * Gmail Receipts Table should always cache to improve performance and reduce the "load times". Use `best practice` to implement a rolling/phased solution that will balance performance, speed and compute.
+  * Gmail Receipts Table should always be formatted with a `user-focus` and should allow `best practice` implementations; such as multi-select; multi-delete, multi-edit. Sort, Filter, Auto-compact column widths based on content; ensuring that a user can always see all actions available (i.e. delete, etc). Think of a user experience similar to `Microsoft Excel` spreadsheets.
+  * Gmail Receipts Table should always `hide` or `archive` items that have been `processed` or added to the `transactions` table. Ensure that every item is considered as `unique` (ALWAYS STORE UUID's) so that we DO NOT `DUPLICATE` items.
 * **MANDATORY:** **Email Transaction Filtering (BUG FIX):** The current email ingestion is filtering incorrectly. This must be fixed. The system MUST correctly parse and display all relevant financial transactions from the test email account.
 * **MANDATORY:** **Long-term Email Span:** Ensure we search through "All Emails" and not just the "Inbox" within an email. This should identify (At minimum) 5 years worth of rolling information, however, if an email is "converted" to a transaction it becomes static and stored in the database.
 * **MANDATORY:** **Unified Transaction Table:**
@@ -78,12 +81,15 @@ To be the central command center for personal and family wealth, empowering user
   * The UI will provide filtered "views" of this table for "expenses," "income," etc.
   * The table MUST be performant, filterable, searchable, and sortable in real-time.
   * Transactions Table should be displayed in an interactive, detailed, comprehensive table. It needs to be filterable, sortable and best practice.
-  * Transactions Table should be information dense and `spreadsheet-like` with the ability to edit in-line, and structured, data typed and allows for user `confirmation` (like a database/spreadsheet). Ensure Transaction items are able to be deleted/edited within the table.
+  * Transactions Table should be compact, information dense and `spreadsheet-like` with the ability to edit in-line, and structured, data typed and allows for user `confirmation` (like a database/spreadsheet). Ensure Transaction items are able to be deleted/edited within the table.
   * Transactions Table should allow a user to quick delete/edit/process transactions that are extracted from the "emails" in the "Gmail Receipts" table.
   * Transactions Table would be extremely large, and therefore appropriate pagination, filters, and UI/UX all in line with best practice to ensure appropriate handling
   * Transactions Table should handle a robust, and complex filtering control system that is able to handle large API calls (i.e. 5 years of information), therefore `best practice` rate limiting, pagination, etc, needs to be implemented. We need a robust `rules` system, similar to frontier `email managers` and robust filtering to assist in automation and identification.
   * Transactions Table should store and capture complex user patterns and allow users to store easily editable "memory" that also has robust infrastructure to allow Machine Learning and diagnostic information to allow an AI/LLM to suggest automatic filtering rules and automate processing of new transactions, etc. I.e. So the app can "learn" how a user operates and the "types" of transactions that are processed.
   * Transactions Table should only "auto-refresh" when "auto-refresh" is set to `true` (or checked).
+  * Transactions Table should always cache to improve performance and reduce the "load times". Use `best practice` to implement a rolling/phased solution that will balance performance, speed and compute.
+  * Transactions Table should always be formatted with a `user-focus` and should allow `best practice` implementations; such as multi-select; multi-delete, multi-edit. Sort, Filter, Auto-compact column widths based on content; ensuring that a user can always see all actions available (i.e. delete, etc). Think of a user experience similar to `Microsoft Excel` spreadsheets.
+  * Transactions Table should always be able to be edited as `income`, `expense`, `transfer` (and anything else based on accounting or ledge best practice).
 * **MANDATORY:** **Multi-Currency Support:** The system must handle multiple currencies, with Australian Dollars (AUD) as the default. All UI displays must use locale-correct currency formatting.
 
 #### **3.1.2. User Management, Security & SSO (MVP)**
