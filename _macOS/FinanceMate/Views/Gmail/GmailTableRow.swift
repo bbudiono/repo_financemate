@@ -1,9 +1,9 @@
 import SwiftUI
 
-/// BLUEPRINT Lines 67-69: Individual table row with 8-column layout and expandable detail
+/// BLUEPRINT Lines 67-69: Individual table row with comprehensive column layout and expandable detail
 /// Extracted from GmailReceiptsTableView for KISS compliance (<200 lines per file)
 struct GmailTableRow: View {
-    let transaction: ExtractedTransaction
+    @ObservedObject var transaction: ExtractedTransaction
     @ObservedObject var viewModel: GmailViewModel
     @Binding var expandedID: String?
 
@@ -31,6 +31,26 @@ struct GmailTableRow: View {
                     .font(.caption.monospaced())
                     .frame(width: 70, alignment: .leading)
 
+                // Merchant (AI-extracted) - BLUEPRINT Line 73: Show all extracted data
+                TextField("Merchant", text: $transaction.merchant)
+                    .textFieldStyle(.plain)
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    .frame(width: 140, alignment: .leading)
+                    .help("AI-extracted merchant name (editable)")
+
+                // Category (Inferred) - BLUEPRINT Line 74: Category badge
+                Text(transaction.category)
+                    .font(.caption2)
+                    .fontWeight(.medium)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 2)
+                    .background(categoryColor(transaction.category))
+                    .foregroundColor(.white)
+                    .cornerRadius(4)
+                    .frame(width: 90, alignment: .center)
+                    .help("AI-inferred category")
+
                 // From (Domain)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(extractDomain(from: transaction.emailSender))
@@ -53,7 +73,50 @@ struct GmailTableRow: View {
                 Text(transaction.amount, format: .currency(code: "AUD"))
                     .font(.caption.monospaced())
                     .fontWeight(.bold)
+                    .foregroundColor(.red)
                     .frame(width: 90, alignment: .trailing)
+
+                // GST - BLUEPRINT Line 76: Australian tax compliance
+                if let gst = transaction.gstAmount {
+                    Text(gst, format: .currency(code: "AUD"))
+                        .font(.caption2.monospaced())
+                        .foregroundColor(.orange)
+                        .frame(width: 70, alignment: .trailing)
+                } else {
+                    Text("-")
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                        .frame(width: 70, alignment: .center)
+                }
+
+                // Invoice# - BLUEPRINT Line 79: Business expense tracking
+                if let invoice = transaction.invoiceNumber, !invoice.isEmpty {
+                    Text(invoice)
+                        .font(.caption2.monospaced())
+                        .foregroundColor(.purple)
+                        .lineLimit(1)
+                        .truncationMode(.middle)
+                        .frame(width: 90, alignment: .leading)
+                } else {
+                    Text("-")
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                        .frame(width: 90, alignment: .center)
+                }
+
+                // Payment Method - BLUEPRINT Line 80
+                if let payment = transaction.paymentMethod, !payment.isEmpty {
+                    Text(payment)
+                        .font(.caption2)
+                        .foregroundColor(.green)
+                        .lineLimit(1)
+                        .frame(width: 70, alignment: .leading)
+                } else {
+                    Text("-")
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                        .frame(width: 70, alignment: .center)
+                }
 
                 // Items count
                 Text("\(transaction.items.count)")
@@ -126,6 +189,17 @@ struct GmailTableRow: View {
     }
 
     // MARK: - Helper Methods
+
+    private func categoryColor(_ category: String) -> Color {
+        switch category.lowercased() {
+        case "groceries": return .blue
+        case "transport": return .purple
+        case "utilities": return .orange
+        case "retail", "hardware": return .green
+        case "dining": return .red
+        default: return .gray
+        }
+    }
 
     private func deleteEmail() {
         viewModel.extractedTransactions.removeAll(where: { $0.id == transaction.id })

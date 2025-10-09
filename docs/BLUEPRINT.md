@@ -66,6 +66,23 @@ To be the central command center for personal and family wealth, empowering user
   * Every line item from a parsed email/receipt must be created as a distinct record in the transaction table.
   * Gmail Receipts should be displayed in an interactive, detailed, comprehensive table. It needs to be filterable, sortable and best practice.
   * Gmail Receipts Table should be compact, information dense and `spreadsheet-like` with the ability to edit in-line, and structured, data typed and allows for user `confirmation` (like a database/spreadsheet). Ensure Gmail Receipt items are able to be deleted/edited within the table.
+* **MANDATORY:** **Comprehensive Gmail Table Column Layout:** The Gmail Receipts table MUST display ALL extracted email information in the collapsed row to enable users to validate AI extraction accuracy at a glance. The table MUST include the following 13 columns in a spreadsheet-like layout:
+  * Column 1: Selection checkbox for multi-select operations
+  * Column 2: Expand/collapse indicator (►/▼) for detail panel
+  * Column 3: Transaction date (sortable, filterable by date range)
+  * Column 4: **AI-Extracted Merchant** (editable inline, sortable, filterable with search) - CRITICAL for validating BNPL intermediary detection (e.g., Afterpay→Bunnings)
+  * Column 5: **Inferred Category** (editable badge with color coding, multi-select filter) - Must show AI categorization immediately
+  * Column 6: Amount (editable, sortable, range filter)
+  * Column 7: **GST Amount** (sortable, Yes/No filter) - Australian tax compliance, must be visible in main row
+  * Column 8: Email sender domain (sortable, dropdown filter)
+  * Column 9: Email subject (flexible width, text search filter)
+  * Column 10: **Invoice/Receipt Number** (sortable, text search) - Critical for business expense tracking
+  * Column 11: **Payment Method** (sortable, multi-select filter) - Visa/Mastercard/PayPal/etc visibility
+  * Column 12: Line items count (sortable, count filter)
+  * Column 13: Confidence score with traffic light indicator (sortable, range filter)
+  * Column 14: Action buttons (Delete, Import)
+* **MANDATORY:** **Excel-Like Table Interactions:** The Gmail Receipts table MUST support Microsoft Excel-equivalent functionality including: multi-select via checkboxes and Shift/Cmd-click, inline editing of merchant/category/amount fields via double-click, column sorting via header clicks, per-column filtering with appropriate controls (dropdowns, range pickers, search boxes), automatic column width adjustment based on content, right-click context menus for batch operations, keyboard navigation (arrow keys, Tab, Enter), and responsive column hiding on smaller screens.
+* **MANDATORY:** **Inline Field Editing:** Merchant, Category, and Amount fields MUST be editable directly in the table row without requiring a separate modal or form. Changes must be persisted immediately to the ExtractedTransaction model and visually confirmed with subtle animation feedback.
   * Gmail Receipts Table should allow a user to quick delete/edit/process emails
   * Gmail Receipts Table would be extremely large, and therefore appropriate pagination, filters, and UI/UX all in line with best practice to ensure appropriate handling
   * Gmail Receipts Table should handle a robust, and complex filtering control system that is able to handle large API calls (i.e. 5 years of information), therefore `best practice` rate limiting, pagination, etc, needs to be implemented. We need a robust `rules` system, similar to frontier `email managers` and robust filtering to assist in automation and identification.

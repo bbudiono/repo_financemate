@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		935499355AB947B48CF5A0C7 /* TransactionDescriptionBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1F2B5F9BF56462989FC06EA /* TransactionDescriptionBuilder.swift */; };
 		08F06BC3769A8A9F49B8B5AE /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA76140EE4946838694BF9A2 /* KeychainHelper.swift */; };
 		0A1B2C3D4E5F6A7B8C9D0E1F /* TransactionQueryHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F0E9D8C7B6A5F4E3D2C1B0A /* TransactionQueryHelper.swift */; };
 		0A5D945D9848B184FD19BAED /* Services/EmailCacheService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 779F3E7AB1C78B0F65C81E1C /* Services/EmailCacheService.swift */; };
@@ -67,6 +68,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B1F2B5F9BF56462989FC06EA /* TransactionDescriptionBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/TransactionDescriptionBuilder.swift; sourceTree = "<group>"; };
 		0462096396F23463327279A7 /* AuthenticationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationManager.swift; sourceTree = "<group>"; };
 		0A7B5D2F9E4C1A6B8D0F3E5A /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
 		0F6F07E70896D0F653D8125A /* TransactionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsView.swift; sourceTree = "<group>"; };
@@ -148,7 +150,8 @@
 				7B916069084EF2A41A5E413C /* Services/ImportTracker.swift */,
 				D9435EE1D00C96FD41DB3986 /* Services/PaginationManager.swift */,
 				71BCE3AE60C68983B30B2975 /* Services/TransactionBuilder.swift */,
-			);
+			
+				B1F2B5F9BF56462989FC06EA /* TransactionDescriptionBuilder.swift */,);
 			name = Services;
 			sourceTree = "<group>";
 		};
@@ -360,7 +363,8 @@
 				D98C753D59370BDFEC7AE7FD /* Services/PaginationManager.swift in Sources */,
 				4B969654D27AC3C2BA466EBE /* Services/TransactionBuilder.swift in Sources */,
 				51CE43FDB2EA09991CD6D22C /* SettingsViewModel.swift in Sources */,
-			);
+			
+				935499355AB947B48CF5A0C7 /* TransactionDescriptionBuilder.swift in Sources */,);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */

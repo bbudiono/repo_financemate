@@ -22,7 +22,8 @@ class TransactionBuilder {
         let transaction = Transaction(context: viewContext)
         transaction.id = UUID()
         transaction.amount = extracted.amount
-        transaction.itemDescription = extracted.merchant
+        // BLUEPRINT Line 211: Use formatted description with all extracted data
+        transaction.itemDescription = TransactionDescriptionBuilder.buildDescription(from: extracted)
         transaction.category = extracted.category
         transaction.taxCategory = TaxCategory.personal.rawValue
         transaction.date = extracted.date
