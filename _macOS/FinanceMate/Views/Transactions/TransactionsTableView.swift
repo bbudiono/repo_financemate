@@ -70,7 +70,7 @@ struct TransactionsTableView: View {
                             .lineLimit(1)
 
                         if let note = transaction.note, !note.isEmpty {
-                            Text(formatMetadata(note))
+                            Text(TransactionsTableHelpers.formatMetadata(note))
                                 .font(.caption2)
                                 .foregroundColor(.secondary)
                                 .lineLimit(1)
@@ -113,19 +113,29 @@ struct TransactionsTableView: View {
                 }
                 .width(min: 80, ideal: 90)
 
-                // COLUMN 8: Tax Category
+                // COLUMN 8: Invoice# (for grouping - extracted from note)
+                TableColumn("Invoice#") { transaction in
+                    let invoice = TransactionsTableHelpers.extractInvoice(from: transaction.note)
+                    Text(invoice.isEmpty ? "-" : invoice)
+                        .font(.caption.monospaced())
+                        .foregroundColor(invoice.isEmpty ? .secondary : .purple)
+                        .lineLimit(1)
+                }
+                .width(min: 100, ideal: 120)
+
+                // COLUMN 9: Tax Category
                 TableColumn("Tax Category", value: \.taxCategory) { transaction in
                     Text(transaction.taxCategory)
                         .font(.caption)
                         .padding(.horizontal, 8)
                         .padding(.vertical, 2)
-                        .background(taxCategoryColor(transaction.taxCategory).opacity(0.2))
-                        .foregroundColor(taxCategoryColor(transaction.taxCategory))
+                        .background(TransactionsTableHelpers.taxCategoryColor(transaction.taxCategory).opacity(0.2))
+                        .foregroundColor(TransactionsTableHelpers.taxCategoryColor(transaction.taxCategory))
                         .cornerRadius(4)
                 }
                 .width(min: 120, ideal: 140)
 
-                // COLUMN 9: Note Summary (shows if has invoice details)
+                // COLUMN 10: Note Summary
                 TableColumn("Note") { transaction in
                     if let note = transaction.note, !note.isEmpty {
                         Text(note)
@@ -170,45 +180,6 @@ struct TransactionsTableView: View {
 
     private func saveChanges() {
         viewModel.saveContext()
-    }
-
-    private func taxCategoryColor(_ category: String) -> Color {
-        switch category {
-        case "Personal": return .blue
-        case "Business": return .purple
-        case "Investment": return .green
-        case "Property Investment": return .orange
-        default: return .gray
-        }
-    }
-
-    // Parse note field for structured display (GST, ABN, Invoice#, Payment Method)
-    private func parseNoteComponents(_ note: String) -> [(key: String, value: String)] {
-        // Note format: "Email: ... | From: ... | GST: $X | ABN: XXX | Invoice#: XXX | Payment: XXX"
-        let components = note.components(separatedBy: " | ")
-        return components.compactMap { component in
-            let parts = component.components(separatedBy: ": ")
-            guard parts.count == 2 else { return nil }
-            return (key: parts[0], value: parts[1])
-        }
-    }
-
-    // Format metadata for compact display (GST + Invoice + Payment)
-    private func formatMetadata(_ note: String) -> String {
-        let components = parseNoteComponents(note)
-        var parts: [String] = []
-
-        if let gst = components.first(where: { $0.key == "GST" }) {
-            parts.append("GST: \(gst.value)")
-        }
-        if let invoice = components.first(where: { $0.key == "Invoice#" }) {
-            parts.append("#\(invoice.value)")
-        }
-        if let payment = components.first(where: { $0.key == "Payment" }) {
-            parts.append(payment.value)
-        }
-
-        return parts.isEmpty ? note : parts.joined(separator: " • ")
     }
 
     private func editTransaction(_ transaction: Transaction) {
