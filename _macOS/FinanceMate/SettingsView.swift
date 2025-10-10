@@ -58,6 +58,8 @@ struct SettingsView: View {
                         ConnectionsSection(viewModel: viewModel)
                     case .automation:
                         AutomationSection(viewModel: viewModel)
+                    case .extractionHealth:
+                        ExtractionHealthSection()
                     }
                 }
                 .padding()
@@ -256,5 +258,60 @@ struct AutomationSection: View {
                 }
             }
         }
+    }
+}
+
+// MARK: - Extraction Health Section
+struct ExtractionHealthSection: View {
+    @Environment(\.managedObjectContext) private var context
+    @StateObject private var analytics: ExtractionHealthViewModel
+
+    init() {
+        _analytics = StateObject(wrappedValue: ExtractionHealthViewModel(context: PersistenceController.shared.container.viewContext))
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Extraction Health").font(.largeTitle).fontWeight(.bold)
+            Text("Foundation Models extraction analytics (macOS 26+)").foregroundColor(.secondary)
+
+            HStack(spacing: 12) {
+                StatCard(title: "Auto-Approved", value: "\(Int(analytics.autoApprovedPercent * 100))%", color: .green)
+                StatCard(title: "Needs Review", value: "\(Int(analytics.needsReviewPercent * 100))%", color: .yellow)
+                StatCard(title: "Manual", value: "\(Int(analytics.manualReviewPercent * 100))%", color: .red)
+            }
+
+            LabeledContent("Total Extractions (30 days)") {
+                Text("\(analytics.totalExtractions)").fontWeight(.semibold)
+            }
+
+            if !analytics.topCorrectedMerchants.isEmpty {
+                Text("Most Corrected Merchants").font(.headline)
+                ForEach(analytics.topCorrectedMerchants.indices, id: \.self) { i in
+                    HStack {
+                        Text("\(i + 1). \(analytics.topCorrectedMerchants[i].merchant)")
+                        Spacer()
+                        Text("\(analytics.topCorrectedMerchants[i].count) corrections").foregroundColor(.secondary)
+                    }
+                }
+            }
+
+            Button("Export Feedback Data") { analytics.exportFeedbackData() }.buttonStyle(.borderedProminent)
+        }
+        .onAppear { analytics.loadAnalytics() }
+    }
+}
+
+struct StatCard: View {
+    let title: String
+    let value: String
+    let color: Color
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(title).font(.caption).foregroundColor(.secondary)
+            Text(value).font(.title2).fontWeight(.bold).foregroundColor(color)
+        }
+        .padding().frame(maxWidth: .infinity, alignment: .leading).background(.ultraThinMaterial).cornerRadius(8)
     }
 }

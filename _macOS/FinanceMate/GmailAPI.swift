@@ -119,14 +119,15 @@ struct GmailAPI {
 
     // MARK: - Transaction Extraction
 
-    /// Extract transactions from email - returns array per BLUEPRINT Line 66
-    static func extractTransactions(from email: GmailEmail) -> [ExtractedTransaction] {
-        return GmailTransactionExtractor.extract(from: email)
+    /// Extract transactions using intelligent 3-tier pipeline
+    /// BLUEPRINT Section 3.1.1.4: Regex → Foundation Models → Manual
+    static func extractTransactions(from email: GmailEmail) async -> [ExtractedTransaction] {
+        return await IntelligentExtractionService.extract(from: email)
     }
 
     /// Legacy method - kept for compatibility but delegates to extractTransactions
     @available(*, deprecated, message: "Use extractTransactions for BLUEPRINT Line 66 compliance")
-    static func extractTransaction(from email: GmailEmail) -> ExtractedTransaction? {
-        return extractTransactions(from: email).first
+    static func extractTransaction(from email: GmailEmail) async -> ExtractedTransaction? {
+        return await extractTransactions(from: email).first
     }
 }

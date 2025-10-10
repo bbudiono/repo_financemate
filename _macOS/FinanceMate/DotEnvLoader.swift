@@ -20,11 +20,11 @@ struct DotEnvLoader {
     static func load() {
         // Use desktop for debug log (accessible even with sandboxing)
         let debugLog = NSHomeDirectory() + "/Desktop/financemate_debug.log"
-        var log = "=== DotEnvLoader.load() START ===\n"
+        var log = "=== DotEnvLoader.load() START [\(Date())] ===\n"
         log += "Bundle path: \(Bundle.main.bundlePath)\n"
         log += "Current directory: \(FileManager.default.currentDirectoryPath)\n"
 
-        print("=== DotEnvLoader.load() START ===")
+        print("=== DotEnvLoader.load() START [\(Date())] ===")
         print("Bundle path: \(Bundle.main.bundlePath)")
         print("Current directory: \(FileManager.default.currentDirectoryPath)")
 
@@ -51,20 +51,22 @@ struct DotEnvLoader {
                 log += "=== SUCCESS: Loaded .env from path [\(index + 1)] ===\n"
                 log += "Credentials in memory: \(credentials.keys.sorted())\n"
                 log += "Client ID: \(credentials["GOOGLE_OAUTH_CLIENT_ID"]?.prefix(20) ?? "NOT FOUND")\n"
+                log += "Client Secret: \(credentials["GOOGLE_OAUTH_CLIENT_SECRET"] != nil ? "LOADED" : "MISSING")\n"
 
-                print("=== SUCCESS: Loaded .env from path [\(index + 1)] ===")
-                print("Credentials in memory: \(credentials.keys.sorted())")
-                print("Client ID: \(credentials["GOOGLE_OAUTH_CLIENT_ID"]?.prefix(20) ?? "NOT FOUND")")
+                print(" SUCCESS: Loaded .env from path [\(index + 1)]")
+                print(" Credentials in memory: \(credentials.keys.sorted())")
+                print(" Client ID: \(credentials["GOOGLE_OAUTH_CLIENT_ID"]?.prefix(20) ?? "NOT FOUND")")
+                print(" Client Secret: \(credentials["GOOGLE_OAUTH_CLIENT_SECRET"] != nil ? "LOADED" : "MISSING")")
 
                 try? log.write(toFile: debugLog, atomically: true, encoding: .utf8)
                 return
             }
         }
 
-        log += "=== FAILED: .env file not found in any location ===\n"
+        log += "️ WARNING: .env file not found in any location - using embedded fallback\n"
         log += "Credentials dict is empty: \(credentials.isEmpty)\n"
-        print("=== FAILED: .env file not found in any location ===")
-        print("Credentials dict is empty: \(credentials.isEmpty)")
+        print("️ WARNING: .env file not found in any location")
+        print("️ Credentials dict is empty: \(credentials.isEmpty)")
 
         try? log.write(toFile: debugLog, atomically: true, encoding: .utf8)
     }

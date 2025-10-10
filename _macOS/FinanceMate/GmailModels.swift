@@ -81,13 +81,13 @@ class ExtractedTransaction: Identifiable, ObservableObject {
     let emailSender: String
     let gstAmount: Double?
     let abn: String?
-    let invoiceNumber: String?
+    let invoiceNumber: String  // MANDATORY - always has value (uses email ID as fallback)
     let paymentMethod: String?
 
     init(id: String, merchant: String, amount: Double, date: Date, category: String,
          items: [GmailLineItem], confidence: Double, rawText: String,
          emailSubject: String, emailSender: String, gstAmount: Double? = nil,
-         abn: String? = nil, invoiceNumber: String? = nil, paymentMethod: String? = nil) {
+         abn: String? = nil, invoiceNumber: String, paymentMethod: String? = nil) {
         self.id = id
         self.merchant = merchant
         self.amount = amount
@@ -105,7 +105,8 @@ class ExtractedTransaction: Identifiable, ObservableObject {
     }
 }
 
-struct GmailLineItem {
+struct GmailLineItem: Identifiable {
+    let id = UUID()  // Unique ID to prevent ForEach crashes
     let description: String
     let quantity: Int
     let price: Double

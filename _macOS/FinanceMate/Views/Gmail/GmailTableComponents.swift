@@ -45,27 +45,23 @@ struct InvoiceDetailPanel: View {
                     }
                 }
 
-                // Invoice tracking
+                // Invoice tracking (MANDATORY fields per user requirement)
                 VStack(alignment: .leading, spacing: 6) {
-                    if let invoice = transaction.invoiceNumber {
-                        InvoiceDetailRow(label: "Invoice#", value: invoice, color: .purple)
-                    }
-                    if let payment = transaction.paymentMethod {
-                        InvoiceDetailRow(label: "Payment", value: payment, color: .green)
-                    }
+                    InvoiceDetailRow(label: "Invoice#", value: transaction.invoiceNumber, color: .purple)
+                    InvoiceDetailRow(label: "Payment", value: transaction.paymentMethod ?? "-", color: .green)
                 }
             }
 
-            // Full item breakdown
-            if !transaction.items.isEmpty {
-                Divider()
-                Text("Purchase Details")
-                    .font(.caption)
-                    .fontWeight(.semibold)
-                    .foregroundColor(.secondary)
-                    .padding(.top, 4)
+            // Full item breakdown (MANDATORY per user requirement)
+            Divider()
+            Text("Purchase Details")
+                .font(.caption)
+                .fontWeight(.semibold)
+                .foregroundColor(.secondary)
+                .padding(.top, 4)
 
-                ForEach(transaction.items, id: \.description) { item in
+            if !transaction.items.isEmpty {
+                ForEach(transaction.items) { item in
                     HStack {
                         Text("\(item.quantity)×")
                             .font(.caption2)
@@ -79,6 +75,13 @@ struct InvoiceDetailPanel: View {
                             .fontWeight(.medium)
                     }
                 }
+            } else {
+                // Fallback: Show email snippet if no items extracted
+                Text(transaction.rawText)
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+                    .lineLimit(5)
+                    .padding(.vertical, 4)
             }
         }
         .padding(12)

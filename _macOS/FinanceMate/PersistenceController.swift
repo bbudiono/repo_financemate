@@ -171,7 +171,103 @@ struct PersistenceController {
         transactionEntity.properties.append(lineItemsRelationship)
         lineItemEntity.properties.append(transactionRelationship)
 
-        model.entities = [transactionEntity, lineItemEntity]
+        // MARK: - ExtractionFeedback Entity (BLUEPRINT Section 3.1.1.4)
+
+        let feedbackEntity = NSEntityDescription()
+        feedbackEntity.name = "ExtractionFeedback"
+        feedbackEntity.managedObjectClassName = "ExtractionFeedback"
+
+        let fbID = NSAttributeDescription()
+        fbID.name = "id"
+        fbID.attributeType = .UUIDAttributeType
+        fbID.isOptional = false
+
+        let fbEmailID = NSAttributeDescription()
+        fbEmailID.name = "emailID"
+        fbEmailID.attributeType = .stringAttributeType
+        fbEmailID.isOptional = false
+
+        let fbFieldName = NSAttributeDescription()
+        fbFieldName.name = "fieldName"
+        fbFieldName.attributeType = .stringAttributeType
+        fbFieldName.isOptional = false
+
+        let fbOriginal = NSAttributeDescription()
+        fbOriginal.name = "originalValue"
+        fbOriginal.attributeType = .stringAttributeType
+        fbOriginal.isOptional = false
+
+        let fbCorrected = NSAttributeDescription()
+        fbCorrected.name = "correctedValue"
+        fbCorrected.attributeType = .stringAttributeType
+        fbCorrected.isOptional = false
+
+        let fbMerchant = NSAttributeDescription()
+        fbMerchant.name = "merchant"
+        fbMerchant.attributeType = .stringAttributeType
+        fbMerchant.isOptional = false
+
+        let fbTimestamp = NSAttributeDescription()
+        fbTimestamp.name = "timestamp"
+        fbTimestamp.attributeType = .dateAttributeType
+        fbTimestamp.isOptional = false
+
+        let fbHallucination = NSAttributeDescription()
+        fbHallucination.name = "wasHallucination"
+        fbHallucination.attributeType = .booleanAttributeType
+        fbHallucination.isOptional = false
+        fbHallucination.defaultValue = false
+
+        let fbConfidence = NSAttributeDescription()
+        fbConfidence.name = "confidence"
+        fbConfidence.attributeType = .doubleAttributeType
+        fbConfidence.isOptional = false
+        fbConfidence.defaultValue = 0.0
+
+        let fbTier = NSAttributeDescription()
+        fbTier.name = "extractionTier"
+        fbTier.attributeType = .stringAttributeType
+        fbTier.isOptional = false
+        fbTier.defaultValue = "regex"
+
+        feedbackEntity.properties = [fbID, fbEmailID, fbFieldName, fbOriginal, fbCorrected, fbMerchant, fbTimestamp, fbHallucination, fbConfidence, fbTier]
+
+        // MARK: - SplitAllocation Entity (BLUEPRINT Section 3.1.3 - Tax Splitting)
+
+        let splitEntity = NSEntityDescription()
+        splitEntity.name = "SplitAllocation"
+        splitEntity.managedObjectClassName = "SplitAllocation"
+
+        let splitID = NSAttributeDescription()
+        splitID.name = "id"
+        splitID.attributeType = .UUIDAttributeType
+        splitID.isOptional = false
+
+        let splitLineItemID = NSAttributeDescription()
+        splitLineItemID.name = "lineItemID"
+        splitLineItemID.attributeType = .UUIDAttributeType
+        splitLineItemID.isOptional = false
+
+        let splitTaxCategory = NSAttributeDescription()
+        splitTaxCategory.name = "taxCategory"
+        splitTaxCategory.attributeType = .stringAttributeType
+        splitTaxCategory.isOptional = false
+
+        let splitPercentage = NSAttributeDescription()
+        splitPercentage.name = "percentage"
+        splitPercentage.attributeType = .doubleAttributeType
+        splitPercentage.isOptional = false
+        splitPercentage.defaultValue = 100.0
+
+        let splitAmount = NSAttributeDescription()
+        splitAmount.name = "amount"
+        splitAmount.attributeType = .doubleAttributeType
+        splitAmount.isOptional = false
+        splitAmount.defaultValue = 0.0
+
+        splitEntity.properties = [splitID, splitLineItemID, splitTaxCategory, splitPercentage, splitAmount]
+
+        model.entities = [transactionEntity, lineItemEntity, feedbackEntity, splitEntity]
         return model
     }
 }

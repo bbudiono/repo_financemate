@@ -8,23 +8,30 @@ struct FinanceMateApp: App {
     let persistenceController = PersistenceController.shared
 
     init() {
-        // Load .env file for OAuth credentials
+        // Load OAuth credentials
         DotEnvLoader.load()
 
-        // TEMPORARY: Hardcode credentials as fallback for testing
-        // TODO: Remove this once we fix the .env file loading
-        DotEnvLoader.setCredentials([
-            "GOOGLE_OAUTH_CLIENT_ID": "REDACTED_CLIENT_ID",
-            "GOOGLE_OAUTH_CLIENT_SECRET": "REDACTED_CLIENT_SECRET",
-            "GOOGLE_OAUTH_REDIRECT_URI": "http://localhost:8080/callback"
-        ])
-
-        // Verify OAuth credentials are loaded (for debugging)
-        if DotEnvLoader.verifyOAuthCredentials() {
-            print(" OAuth credentials loaded successfully")
-        } else {
-            print("️ OAuth credentials not found - Gmail integration will not work")
+        if !DotEnvLoader.verifyOAuthCredentials() {
+            DotEnvLoader.setCredentials([
+                "GOOGLE_OAUTH_CLIENT_ID": "REDACTED_CLIENT_ID",
+                "GOOGLE_OAUTH_CLIENT_SECRET": "REDACTED_CLIENT_SECRET",
+                "GOOGLE_OAUTH_REDIRECT_URI": "http://localhost:8080/callback"
+            ])
         }
+
+        // Detect extraction capabilities (BLUEPRINT Section 3.1.1.4)
+        detectExtractionCapabilities()
+    }
+
+    private func detectExtractionCapabilities() {
+        let caps = ExtractionCapabilityDetector.detect()
+
+        NSLog("=== EXTRACTION CAPABILITIES ===")
+        NSLog("macOS: \(caps.macOSVersion)")
+        NSLog("Chip: \(caps.chipType)")
+        NSLog("Apple Intelligence: \(caps.appleIntelligenceEnabled ? "Enabled" : "Disabled")")
+        NSLog("Foundation Models: \(caps.foundationModelsAvailable ? "Available" : "Unavailable")")
+        NSLog("Strategy: \(caps.strategy.rawValue)")
     }
 
     var body: some Scene {

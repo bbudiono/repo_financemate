@@ -151,26 +151,27 @@ class GmailViewModel: ObservableObject {
     }
 
     func extractTransactionsFromEmails() async {
-        NSLog("=== EXTRACTION DEBUG ===")
-        NSLog("Total emails fetched: \(emails.count)")
-
-        // Debug: Save email content for analysis
+        NSLog("=== EXTRACTION START ===")
+        NSLog("Total emails: \(emails.count)")
         GmailDebugLogger.saveEmailsForDebug(emails)
 
-        // BLUEPRINT Line 66: Each line item becomes a distinct transaction
-        let allExtracted = emails.flatMap { GmailAPI.extractTransactions(from: $0) }
-        NSLog("Total transactions extracted (before filter): \(allExtracted.count)")
+        // Use intelligent 3-tier extraction (async)
+        var allExtracted: [ExtractedTransaction] = []
+        for email in emails {
+            let extracted = await IntelligentExtractionService.extract(from: email)
+            allExtracted.append(contentsOf: extracted)
+        }
+
+        NSLog("Extracted: \(allExtracted.count) transactions")
 
         extractedTransactions = allExtracted
-            .filter { $0.confidence >= 0.6 } // Only show 60%+ confidence
+            .filter { $0.confidence >= 0.6 }
             .sorted { $0.confidence > $1.confidence }
 
-        NSLog("After confidence filter (≥0.6): \(extractedTransactions.count) transactions")
-        NSLog("Filtered out: \(allExtracted.count - extractedTransactions.count) low-confidence transactions")
+        NSLog("After filter (≥0.6): \(extractedTransactions.count)")
 
-        // Log first few for debugging
-        for (index, transaction) in extractedTransactions.prefix(3).enumerated() {
-            NSLog("Transaction \(index + 1): \(transaction.merchant) - $\(transaction.amount) (conf: \(transaction.confidence))")
+        for (i, tx) in extractedTransactions.prefix(3).enumerated() {
+            NSLog("\(i+1). \(tx.merchant) $\(tx.amount) (\(Int(tx.confidence*100))%)")
         }
     }
 

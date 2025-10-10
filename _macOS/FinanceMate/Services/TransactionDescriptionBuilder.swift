@@ -20,8 +20,8 @@ class TransactionDescriptionBuilder {
         components.append(transaction.merchant)
 
         // 2. Invoice/Receipt number if available
-        if let invoice = transaction.invoiceNumber, !invoice.isEmpty {
-            components.append("Invoice #\(invoice)")
+        if !transaction.invoiceNumber.isEmpty {
+            components.append("Invoice #\(transaction.invoiceNumber)")
         }
 
         // 3. GST amount if available (Australian tax compliance)
@@ -52,8 +52,8 @@ class TransactionDescriptionBuilder {
     /// - Returns: Short formatted description
     static func buildShortDescription(from transaction: ExtractedTransaction) -> String {
         var result = transaction.merchant
-        if let invoice = transaction.invoiceNumber, !invoice.isEmpty {
-            result += " #\(invoice)"
+        if !transaction.invoiceNumber.isEmpty && !transaction.invoiceNumber.starts(with: "EMAIL-") {
+            result += " #\(transaction.invoiceNumber)"
         }
         return result
     }

@@ -34,6 +34,7 @@ class SettingsViewModel: ObservableObject {
         case apiKeys = "API Keys"
         case connections = "Connections"
         case automation = "Automation Rules"
+        case extractionHealth = "Extraction Health"
 
         var icon: String {
             switch self {
@@ -42,6 +43,7 @@ class SettingsViewModel: ObservableObject {
             case .apiKeys: return "key.fill"
             case .connections: return "link.circle.fill"
             case .automation: return "gearshape.2.fill"
+            case .extractionHealth: return "chart.bar.doc.horizontal.fill"
             }
         }
     }

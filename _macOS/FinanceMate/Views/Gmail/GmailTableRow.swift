@@ -90,8 +90,8 @@ struct GmailTableRow: View {
                 }
 
                 // Invoice# - BLUEPRINT Line 79: Business expense tracking
-                if let invoice = transaction.invoiceNumber, !invoice.isEmpty {
-                    Text(invoice)
+                if !transaction.invoiceNumber.isEmpty {
+                    Text(transaction.invoiceNumber)
                         .font(.caption2.monospaced())
                         .foregroundColor(.purple)
                         .lineLimit(1)

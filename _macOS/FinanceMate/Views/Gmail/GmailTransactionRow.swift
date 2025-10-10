@@ -76,12 +76,12 @@ struct ExtractedTransactionRow: View {
                         }
                     }
 
-                    if let invoice = extracted.invoiceNumber {
+                    if !extracted.invoiceNumber.isEmpty {
                         VStack(alignment: .leading, spacing: 2) {
                             Text("Invoice")
                                 .font(.caption2)
                                 .foregroundColor(.secondary)
-                            Text(invoice)
+                            Text(extracted.invoiceNumber)
                                 .font(.caption)
                                 .fontWeight(.medium)
                         }

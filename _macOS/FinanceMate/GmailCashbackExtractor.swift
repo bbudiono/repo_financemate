@@ -27,7 +27,7 @@ struct GmailCashbackExtractor {
                 emailSender: email.sender,
                 gstAmount: nil,
                 abn: nil,
-                invoiceNumber: nil,
+                invoiceNumber: GmailTransactionExtractor.extractInvoiceNumber(from: email.snippet, emailID: email.id),
                 paymentMethod: "Cashback"
             )
         }

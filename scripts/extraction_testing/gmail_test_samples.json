@@ -1,0 +1,38 @@
+[
+  {
+    "id": "test-001-bunnings",
+    "subject": "Your Bunnings Receipt",
+    "sender": "noreply@bunnings.com.au",
+    "snippet": "TAX INVOICE 123456\nBunnings Warehouse\nABN 52 093 533 107\n\nDate: 09/10/2025\n\nItem: Power Drill $129.00\nItem: Screws (100pk) $15.50\n\nSubtotal: $144.50\nGST (10%): $14.45\nTotal: $158.95\n\nPaid via Visa ending 4242"
+  },
+  {
+    "id": "test-002-woolworths",
+    "subject": "Your Woolworths eReceipt",
+    "sender": "receipts@woolworths.com.au",
+    "snippet": "WOOLWORTHS SUPERMARKETS\nStore 1234 - Sydney CBD\nABN 88 000 014 675\n\nTax Invoice: WW-789012\nDate: 08/10/2025\n\nBread 2x $4.50\nMilk 1x $3.20\nApples 1kg $5.80\n\nSubtotal: $13.50\nGST Included: $1.23\nTotal: $13.50\n\nMastercard x-1234"
+  },
+  {
+    "id": "test-003-afterpay-bunnings",
+    "subject": "Afterpay Purchase Confirmation",
+    "sender": "noreply@afterpay.com",
+    "snippet": "Purchase via Afterpay\n\nMerchant: Bunnings Warehouse\nOrder Total: $450.00\n\nYour payment schedule:\nToday: $112.50\n2 weeks: $112.50\n4 weeks: $112.50\n6 weeks: $112.50\n\nOrder details:\nPower Tools Bundle - $450.00"
+  },
+  {
+    "id": "test-004-officeworks",
+    "sender": "noreply@officeworks.com.au",
+    "subject": "Tax Invoice from Officeworks",
+    "snippet": "OFFICEWORKS Tax Invoice #OFF-2025-9876 ABN 63 000 898 542 Date 10/10/2025 HP Laptop - $899.00 Mouse - $25.00 Keyboard - $45.00 Subtotal: $969.00 GST (10%): $96.90 Total Inc GST: $1,065.90 Payment: Visa Debit"
+  },
+  {
+    "id": "test-005-uber",
+    "subject": "Your trip with Uber",
+    "sender": "uber.receipts@uber.com",
+    "snippet": "Thanks for riding with Uber\n\nTrip on Oct 7, 2025\nFrom: 123 George St\nTo: Sydney Airport\n\nBase fare: $45.50\nTime & distance: $28.30\nTotal: $73.80\n\nMastercard ending in 5678"
+  },
+  {
+    "id": "test-006-shopback-coles",
+    "subject": "ShopBack Cashback Confirmed",
+    "sender": "hello@info.shopback.com.au",
+    "snippet": "Cashback Confirmed!\n\nFrom Coles Online\n$8.50 Eligible Purchase Amount $170.00\n\nFrom Woolworths\n$5.20 Eligible Purchase Amount $104.00\n\nYour cashback will be available in 60-90 days."
+  }
+]

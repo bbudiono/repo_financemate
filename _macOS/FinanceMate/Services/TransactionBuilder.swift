@@ -71,8 +71,8 @@ class TransactionBuilder {
         if let abn = extracted.abn {
             components.append("ABN: \(abn)")
         }
-        if let invoice = extracted.invoiceNumber {
-            components.append("Invoice#: \(invoice)")
+        if !extracted.invoiceNumber.isEmpty {
+            components.append("Invoice#: \(extracted.invoiceNumber)")
         }
         if let payment = extracted.paymentMethod {
             components.append("Payment: \(payment)")

@@ -25,7 +25,7 @@ struct GmailStandardTransactionExtractor {
             emailSender: email.sender,
             gstAmount: GmailTransactionExtractor.extractGST(from: email.snippet),
             abn: GmailTransactionExtractor.extractABN(from: email.snippet),
-            invoiceNumber: GmailTransactionExtractor.extractInvoiceNumber(from: email.snippet),
+            invoiceNumber: GmailTransactionExtractor.extractInvoiceNumber(from: email.snippet, emailID: email.id),
             paymentMethod: GmailTransactionExtractor.extractPaymentMethod(from: email.snippet)
         )
     }

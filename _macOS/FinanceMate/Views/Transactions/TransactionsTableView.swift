@@ -62,12 +62,23 @@ struct TransactionsTableView: View {
                 }
                 .width(80)
 
-                // COLUMN 4: Description
+                // COLUMN 4: Rich Description (BLUEPRINT Lines 102-110: Show merchant + metadata)
                 TableColumn("Description", value: \.itemDescription) { transaction in
-                    Text(transaction.itemDescription)
-                        .lineLimit(1)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(transaction.itemDescription)
+                            .font(.system(.body, weight: .medium))
+                            .lineLimit(1)
+
+                        if let note = transaction.note, !note.isEmpty {
+                            Text(formatMetadata(note))
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                                .lineLimit(1)
+                        }
+                    }
+                    .padding(.vertical, 2)
                 }
-                .width(min: 150, ideal: 200)
+                .width(min: 200, ideal: 280)
 
                 // COLUMN 5: Amount
                 TableColumn("Amount", value: \.amount) { transaction in
@@ -180,6 +191,24 @@ struct TransactionsTableView: View {
             guard parts.count == 2 else { return nil }
             return (key: parts[0], value: parts[1])
         }
+    }
+
+    // Format metadata for compact display (GST + Invoice + Payment)
+    private func formatMetadata(_ note: String) -> String {
+        let components = parseNoteComponents(note)
+        var parts: [String] = []
+
+        if let gst = components.first(where: { $0.key == "GST" }) {
+            parts.append("GST: \(gst.value)")
+        }
+        if let invoice = components.first(where: { $0.key == "Invoice#" }) {
+            parts.append("#\(invoice.value)")
+        }
+        if let payment = components.first(where: { $0.key == "Payment" }) {
+            parts.append(payment.value)
+        }
+
+        return parts.isEmpty ? note : parts.joined(separator: " • ")
     }
 
     private func editTransaction(_ transaction: Transaction) {
