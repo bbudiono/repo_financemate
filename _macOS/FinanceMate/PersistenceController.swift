@@ -267,7 +267,85 @@ struct PersistenceController {
 
         splitEntity.properties = [splitID, splitLineItemID, splitTaxCategory, splitPercentage, splitAmount]
 
-        model.entities = [transactionEntity, lineItemEntity, feedbackEntity, splitEntity]
+        // MARK: - ExtractionMetrics Entity (BLUEPRINT Line 192)
+
+        let metricsEntity = NSEntityDescription()
+        metricsEntity.name = "ExtractionMetrics"
+        metricsEntity.managedObjectClassName = "ExtractionMetrics"
+
+        let metricsDate = NSAttributeDescription()
+        metricsDate.name = "date"
+        metricsDate.attributeType = .dateAttributeType
+        metricsDate.isOptional = false
+
+        let metricsTotalExtractions = NSAttributeDescription()
+        metricsTotalExtractions.name = "totalExtractions"
+        metricsTotalExtractions.attributeType = .integer32AttributeType
+        metricsTotalExtractions.isOptional = false
+        metricsTotalExtractions.defaultValue = 0
+
+        let metricsTier1Count = NSAttributeDescription()
+        metricsTier1Count.name = "tier1Count"
+        metricsTier1Count.attributeType = .integer32AttributeType
+        metricsTier1Count.isOptional = false
+        metricsTier1Count.defaultValue = 0
+
+        let metricsTier2Count = NSAttributeDescription()
+        metricsTier2Count.name = "tier2Count"
+        metricsTier2Count.attributeType = .integer32AttributeType
+        metricsTier2Count.isOptional = false
+        metricsTier2Count.defaultValue = 0
+
+        let metricsTier3Count = NSAttributeDescription()
+        metricsTier3Count.name = "tier3Count"
+        metricsTier3Count.attributeType = .integer32AttributeType
+        metricsTier3Count.isOptional = false
+        metricsTier3Count.defaultValue = 0
+
+        let metricsAvgExtractionTime = NSAttributeDescription()
+        metricsAvgExtractionTime.name = "avgExtractionTime"
+        metricsAvgExtractionTime.attributeType = .doubleAttributeType
+        metricsAvgExtractionTime.isOptional = false
+        metricsAvgExtractionTime.defaultValue = 0.0
+
+        let metricsAvgConfidence = NSAttributeDescription()
+        metricsAvgConfidence.name = "avgConfidence"
+        metricsAvgConfidence.attributeType = .doubleAttributeType
+        metricsAvgConfidence.isOptional = false
+        metricsAvgConfidence.defaultValue = 0.0
+
+        let metricsHallucinationCount = NSAttributeDescription()
+        metricsHallucinationCount.name = "hallucinationCount"
+        metricsHallucinationCount.attributeType = .integer32AttributeType
+        metricsHallucinationCount.isOptional = false
+        metricsHallucinationCount.defaultValue = 0
+
+        let metricsErrorCount = NSAttributeDescription()
+        metricsErrorCount.name = "errorCount"
+        metricsErrorCount.attributeType = .integer32AttributeType
+        metricsErrorCount.isOptional = false
+        metricsErrorCount.defaultValue = 0
+
+        let metricsCacheHitRate = NSAttributeDescription()
+        metricsCacheHitRate.name = "cacheHitRate"
+        metricsCacheHitRate.attributeType = .doubleAttributeType
+        metricsCacheHitRate.isOptional = false
+        metricsCacheHitRate.defaultValue = 0.0
+
+        metricsEntity.properties = [
+            metricsDate,
+            metricsTotalExtractions,
+            metricsTier1Count,
+            metricsTier2Count,
+            metricsTier3Count,
+            metricsAvgExtractionTime,
+            metricsAvgConfidence,
+            metricsHallucinationCount,
+            metricsErrorCount,
+            metricsCacheHitRate
+        ]
+
+        model.entities = [transactionEntity, lineItemEntity, feedbackEntity, splitEntity, metricsEntity]
         return model
     }
 }
