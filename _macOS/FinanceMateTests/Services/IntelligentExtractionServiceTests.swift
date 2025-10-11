@@ -214,4 +214,103 @@ final class IntelligentExtractionServiceTests: XCTestCase {
         // Should handle gracefully without crash
         XCTAssertNotNil(results[0].merchant)
     }
+
+    // MARK: - Email Hash Caching Tests (BLUEPRINT Line 151)
+
+    /// Test cache hit skips re-extraction (<0.1s vs 1.7s baseline)
+    func testCacheHitSkipsReExtraction() async throws {
+        let context = PersistenceController.preview.container.viewContext
+
+        // Clear any existing test data
+        let deleteRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Transaction")
+        deleteRequest.predicate = NSPredicate(format: "sourceEmailID == %@", "test-cache-hit")
+        let deleteAll = NSBatchDeleteRequest(fetchRequest: deleteRequest)
+        try context.execute(deleteAll)
+        try context.save()
+
+        // Given: Email to extract
+        let email = GmailEmail(
+            id: "test-cache-hit",
+            subject: "Bunnings Receipt",
+            sender: "noreply@bunnings.com.au",
+            date: Date(),
+            snippet: "Total: $158.95 GST: $14.45 Invoice: ABC123"
+        )
+
+        // When: First extraction (cache miss)
+        let firstResults = await IntelligentExtractionService.extract(from: email)
+        XCTAssertEqual(firstResults.count, 1)
+
+        // Save to Core Data to populate cache with email snippet for hash
+        let manager = CoreDataManager(context: context)
+        _ = try await manager.saveTransaction(firstResults[0], emailSnippet: email.snippet)
+
+        // When: Second extraction (cache hit)
+        let startTime = Date()
+        let cachedResults = await IntelligentExtractionService.extract(from: email)
+        let duration = Date().timeIntervalSince(startTime)
+
+        // Then: Should return instantly from cache (<0.1s vs 1.7s baseline = 94% speedup)
+        XCTAssertLessThan(duration, 0.1, "Cache hit should be <100ms, got \(duration)s")
+        XCTAssertEqual(cachedResults.count, 1)
+        XCTAssertEqual(cachedResults[0].merchant, firstResults[0].merchant)
+        XCTAssertEqual(cachedResults[0].amount, firstResults[0].amount)
+    }
+
+    /// Test cache miss triggers full extraction when content changes
+    func testCacheMissWhenContentChanges() async throws {
+        let context = PersistenceController.preview.container.viewContext
+
+        // Clear test data
+        let deleteRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Transaction")
+        deleteRequest.predicate = NSPredicate(format: "sourceEmailID == %@", "test-cache-miss")
+        let deleteAll = NSBatchDeleteRequest(fetchRequest: deleteRequest)
+        try context.execute(deleteAll)
+        try context.save()
+
+        // Given: Original email
+        let originalEmail = GmailEmail(
+            id: "test-cache-miss",
+            subject: "Receipt",
+            sender: "test@bunnings.com.au",
+            date: Date(),
+            snippet: "Total: $100.00"
+        )
+
+        let firstResults = await IntelligentExtractionService.extract(from: originalEmail)
+        let manager = CoreDataManager(context: context)
+        _ = try await manager.saveTransaction(firstResults[0], emailSnippet: originalEmail.snippet)
+
+        // When: Same email ID but different content (cache miss)
+        let modifiedEmail = GmailEmail(
+            id: "test-cache-miss",
+            subject: "Receipt",
+            sender: "test@bunnings.com.au",
+            date: Date(),
+            snippet: "Total: $250.00 GST: $25.00"  // Changed content
+        )
+
+        let newResults = await IntelligentExtractionService.extract(from: modifiedEmail)
+
+        // Then: Should re-extract due to hash mismatch
+        XCTAssertNotEqual(newResults[0].amount, firstResults[0].amount)
+        XCTAssertEqual(newResults[0].amount, 250.0)
+    }
+
+    /// Test cache query does not interfere with normal extraction flow
+    func testCacheQueryDoesNotBreakExtraction() async {
+        let email = GmailEmail(
+            id: "test-no-cache",
+            subject: "New Receipt",
+            sender: "test@woolworths.com.au",
+            date: Date(),
+            snippet: "Total: $75.50"
+        )
+
+        // Should extract normally even with cache check
+        let results = await IntelligentExtractionService.extract(from: email)
+
+        XCTAssertEqual(results.count, 1)
+        XCTAssertGreaterThan(results[0].confidence, 0.0)
+    }
 }

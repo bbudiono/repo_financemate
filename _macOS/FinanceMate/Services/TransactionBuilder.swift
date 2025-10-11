@@ -11,10 +11,12 @@ class TransactionBuilder {
     }
 
     /// Create a transaction from extracted Gmail data
-    /// - Parameter extracted: Extracted transaction data from email
+    /// - Parameters:
+    ///   - extracted: Extracted transaction data from email
+    ///   - emailSnippet: Email snippet for content hash calculation (BLUEPRINT Line 151)
     /// - Returns: Created transaction or nil on failure
     @discardableResult
-    func createTransaction(from extracted: ExtractedTransaction) -> Transaction? {
+    func createTransaction(from extracted: ExtractedTransaction, emailSnippet: String? = nil) -> Transaction? {
         NSLog("=== CREATE TRANSACTION CALLED ===")
         NSLog("Merchant: %@", extracted.merchant)
         NSLog("Amount: %.2f", extracted.amount)
@@ -29,6 +31,8 @@ class TransactionBuilder {
         transaction.date = extracted.date
         transaction.source = "gmail"
         transaction.sourceEmailID = extracted.id
+        // BLUEPRINT Line 151: Store content hash for cache validation
+        transaction.contentHash = Int64(emailSnippet?.hashValue ?? extracted.rawText.hashValue)
         transaction.importedDate = Date()
         transaction.note = buildTransactionNote(from: extracted)
 

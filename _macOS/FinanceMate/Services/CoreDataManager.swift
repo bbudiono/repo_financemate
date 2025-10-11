@@ -11,8 +11,14 @@ class CoreDataManager {
     }
 
     /// Save transaction to Core Data
-    func saveTransaction(_ extractedTransaction: ExtractedTransaction) async throws -> Bool {
-        let transaction = TransactionBuilder(context: viewContext).createTransaction(from: extractedTransaction)
+    /// - Parameters:
+    ///   - extractedTransaction: Extracted transaction to save
+    ///   - emailSnippet: Email snippet for content hash (BLUEPRINT Line 151)
+    func saveTransaction(_ extractedTransaction: ExtractedTransaction, emailSnippet: String? = nil) async throws -> Bool {
+        let transaction = TransactionBuilder(context: viewContext).createTransaction(
+            from: extractedTransaction,
+            emailSnippet: emailSnippet
+        )
         guard transaction != nil else { return false }
 
         do {

@@ -22,6 +22,7 @@ public class Transaction: NSManagedObject, Identifiable {
     @NSManaged public var taxCategory: String
     @NSManaged public var note: String?
     @NSManaged public var sourceEmailID: String?
+    @NSManaged public var contentHash: Int64  // BLUEPRINT Line 151: Email content hash for cache validation
     @NSManaged public var importedDate: Date?
     @NSManaged public var transactionType: String
 
