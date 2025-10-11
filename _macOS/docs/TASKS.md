@@ -2845,3 +2845,63 @@ Following comprehensive risk assessment and security validation treating Finance
 - **Template**: ~/.claude/templates/project_repo/docs/NAVIGATION_TEMPLATE.md
 - **Created**: 2025-10-11 12:38:11
 
+
+### TECH-DEBT-446f2cee: Document Navigation Structure
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: mandatory_sitemap_enforcer_hook.sh
+- **File**: FinanceMateTests/ExtractionMetricsTests.swift
+- **Description**: Routes/views detected but sitemap missing
+- **Requirements**:
+  - Document all routes/pages/views
+  - Define navigation flows
+  - Specify authentication requirements
+  - Map API integrations
+- **Template**: ~/.claude/templates/project_repo/docs/NAVIGATION_TEMPLATE.md
+- **Created**: 2025-10-11 13:19:37
+
+
+### TECH-DEBT-bf9895a0: Document Navigation Structure
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: mandatory_sitemap_enforcer_hook.sh
+- **File**: FinanceMate/Models/ExtractionMetrics.swift
+- **Description**: Routes/views detected but sitemap missing
+- **Requirements**:
+  - Document all routes/pages/views
+  - Define navigation flows
+  - Specify authentication requirements
+  - Map API integrations
+- **Template**: ~/.claude/templates/project_repo/docs/NAVIGATION_TEMPLATE.md
+- **Created**: 2025-10-11 13:19:45
+
+
+### TECH-DEBT-097bb56c: Document Navigation Structure
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: mandatory_sitemap_enforcer_hook.sh
+- **File**: FinanceMateTests/Services/FieldValidatorTests.swift
+- **Description**: Routes/views detected but sitemap missing
+- **Requirements**:
+  - Document all routes/pages/views
+  - Define navigation flows
+  - Specify authentication requirements
+  - Map API integrations
+- **Template**: ~/.claude/templates/project_repo/docs/NAVIGATION_TEMPLATE.md
+- **Created**: 2025-10-11 13:25:05
+
+
+### TECH-DEBT-7a1be2a9: Document Navigation Structure
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: mandatory_sitemap_enforcer_hook.sh
+- **File**: FinanceMate/Services/FieldValidator.swift
+- **Description**: Routes/views detected but sitemap missing
+- **Requirements**:
+  - Document all routes/pages/views
+  - Define navigation flows
+  - Specify authentication requirements
+  - Map API integrations
+- **Template**: ~/.claude/templates/project_repo/docs/NAVIGATION_TEMPLATE.md
+- **Created**: 2025-10-11 13:25:31
+

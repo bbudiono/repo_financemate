@@ -10,7 +10,66 @@ struct GmailStandardTransactionExtractor {
 
         let items = GmailTransactionExtractor.extractLineItems(from: email.snippet)
         let category = GmailTransactionExtractor.inferCategory(from: merchant)
-        let confidence = calculateConfidence(merchant: merchant, amount: amount, items: items)
+        let gstAmount = GmailTransactionExtractor.extractGST(from: email.snippet)
+        let abn = GmailTransactionExtractor.extractABN(from: email.snippet)
+        let invoiceNumber = GmailTransactionExtractor.extractInvoiceNumber(from: email.snippet, emailID: email.id)
+        let paymentMethod = GmailTransactionExtractor.extractPaymentMethod(from: email.snippet)
+        var confidence = calculateConfidence(merchant: merchant, amount: amount, items: items)
+
+        // BLUEPRINT Line 196: Apply field validation to regex extraction
+        var totalPenalty: Double = 0.0
+        var validationFailures: [String] = []
+
+        // Validate all 7 fields
+        let amountResult = FieldValidator.validateAmount(amount)
+        if !amountResult.isValid {
+            totalPenalty += amountResult.confidencePenalty
+            validationFailures.append("Amount")
+        }
+
+        let gstResult = FieldValidator.validateGST(gst: gstAmount, amount: amount)
+        if !gstResult.isValid {
+            totalPenalty += gstResult.confidencePenalty
+            validationFailures.append("GST")
+        }
+
+        let abnResult = FieldValidator.validateABN(abn)
+        if !abnResult.isValid {
+            totalPenalty += abnResult.confidencePenalty
+            validationFailures.append("ABN")
+        }
+
+        let invoiceResult = FieldValidator.validateInvoiceNumber(invoiceNumber)
+        if !invoiceResult.isValid {
+            totalPenalty += invoiceResult.confidencePenalty
+            validationFailures.append("Invoice")
+        }
+
+        let dateResult = FieldValidator.validateDate(email.date, emailDate: email.date)
+        if !dateResult.isValid {
+            totalPenalty += dateResult.confidencePenalty
+            validationFailures.append("Date")
+        }
+
+        let categoryResult = FieldValidator.validateCategory(category)
+        if !categoryResult.isValid {
+            totalPenalty += categoryResult.confidencePenalty
+            validationFailures.append("Category")
+        }
+
+        let paymentResult = FieldValidator.validatePaymentMethod(paymentMethod)
+        if !paymentResult.isValid {
+            totalPenalty += paymentResult.confidencePenalty
+            validationFailures.append("Payment")
+        }
+
+        // Apply confidence penalty
+        confidence = max(0.0, confidence - totalPenalty)
+
+        // Log validation results if failures
+        if !validationFailures.isEmpty {
+            NSLog("[REGEX-VALIDATION] \(validationFailures.count) failures - Penalty: \(totalPenalty) - Confidence: \(confidence)")
+        }
 
         return ExtractedTransaction(
             id: email.id,
@@ -19,14 +78,14 @@ struct GmailStandardTransactionExtractor {
             date: email.date,
             category: category,
             items: items,
-            confidence: confidence,
+            confidence: confidence,  // Adjusted confidence after validation
             rawText: email.snippet,
             emailSubject: email.subject,
             emailSender: email.sender,
-            gstAmount: GmailTransactionExtractor.extractGST(from: email.snippet),
-            abn: GmailTransactionExtractor.extractABN(from: email.snippet),
-            invoiceNumber: GmailTransactionExtractor.extractInvoiceNumber(from: email.snippet, emailID: email.id),
-            paymentMethod: GmailTransactionExtractor.extractPaymentMethod(from: email.snippet)
+            gstAmount: gstAmount,
+            abn: abn,
+            invoiceNumber: invoiceNumber,
+            paymentMethod: paymentMethod
         )
     }
 

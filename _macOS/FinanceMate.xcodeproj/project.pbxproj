@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8D19954AD0AE407884953A80 /* FieldValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80D8BD2A3F8041F981DB403E /* FieldValidator.swift */; };
 		75D9F5147C391CBA5AA8053D /* ExtractionConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 800BFBAFBDCD9E66EA3343EF /* ExtractionConstants.swift */; };
 
 		BLDE3CA34361C054FB3B77F3 /* CapabilityWarningBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAPD87671274C264340BDCC9 /* CapabilityWarningBanner.swift */; };
@@ -84,6 +85,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		80D8BD2A3F8041F981DB403E /* FieldValidator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FieldValidator.swift; path = FinanceMate/Services/FieldValidator.swift; sourceTree = SOURCE_ROOT; };
 		CAPD87671274C264340BDCC9 /* CapabilityWarningBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapabilityWarningBanner.swift; sourceTree = "<group>"; };
 		0462096396F23463327279A7 /* AuthenticationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationManager.swift; sourceTree = "<group>"; };
 		0A7B5D2F9E4C1A6B8D0F3E5A /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
@@ -184,7 +186,7 @@
 				71BCE3AE60C68983B30B2975 /* TransactionBuilder.swift */,
 				B1F2B5F9BF56462989FC06EA /* TransactionDescriptionBuilder.swift */,
 				800BFBAFBDCD9E66EA3343EF /* ExtractionConstants.swift */,
-			);
+				80D8BD2A3F8041F981DB403E /* FieldValidator.swift */,);
 			name = Services;
 			sourceTree = "<group>";
 		};
@@ -433,7 +435,7 @@
 				D96893FC538D5A8488145FF7 /* TransactionsTableHelpers.swift in Sources */,
 				BLDE3CA34361C054FB3B77F3 /* CapabilityWarningBanner.swift in Sources */,
 				75D9F5147C391CBA5AA8053D /* ExtractionConstants.swift in Sources */,
-			);
+				8D19954AD0AE407884953A80 /* FieldValidator.swift in Sources */,);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
