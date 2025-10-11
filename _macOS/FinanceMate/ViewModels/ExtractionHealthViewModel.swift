@@ -40,9 +40,9 @@ class ExtractionHealthViewModel: ObservableObject {
 
         // Confidence distribution (BLUEPRINT Line 156)
         if !feedbacks.isEmpty {
-            let autoApproved = feedbacks.filter { $0.confidence > 0.9 }.count
-            let needsReview = feedbacks.filter { $0.confidence >= 0.7 && $0.confidence <= 0.9 }.count
-            let manual = feedbacks.filter { $0.confidence < 0.7 }.count
+            let autoApproved = feedbacks.filter { $0.confidence > ExtractionConstants.autoApprovedThreshold }.count
+            let needsReview = feedbacks.filter { $0.confidence >= ExtractionConstants.needsReviewThreshold && $0.confidence <= ExtractionConstants.autoApprovedThreshold }.count
+            let manual = feedbacks.filter { $0.confidence < ExtractionConstants.needsReviewThreshold }.count
 
             autoApprovedPercent = Double(autoApproved) / Double(feedbacks.count)
             needsReviewPercent = Double(needsReview) / Double(feedbacks.count)

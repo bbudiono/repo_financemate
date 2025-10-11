@@ -12,7 +12,7 @@ class IntelligentExtractionService {
 
         // TIER 1: Fast regex baseline (<100ms)
         let regexResult = tryRegexExtraction(email)
-        if let quick = regexResult, quick.confidence > 0.8 {
+        if let quick = regexResult, quick.confidence > ExtractionConstants.tier1ConfidenceThreshold {
             NSLog("[EXTRACT-TIER1] SUCCESS - Confidence: \(quick.confidence)")
             return [quick]
         }
@@ -23,7 +23,7 @@ class IntelligentExtractionService {
         if #available(macOS 26.0, *) {
             do {
                 let intelligent = try await tryFoundationModelsExtraction(email)
-                if intelligent.confidence > 0.7 {
+                if intelligent.confidence > ExtractionConstants.tier2ConfidenceThreshold {
                     NSLog("[EXTRACT-TIER2] SUCCESS - Confidence: \(intelligent.confidence)")
                     return [intelligent]
                 }
@@ -66,7 +66,7 @@ class IntelligentExtractionService {
                 date: email.date,
                 category: "Other",
                 items: [],
-                confidence: 0.3,
+                confidence: ExtractionConstants.manualReviewConfidence,
                 rawText: email.snippet,
                 emailSubject: email.subject,
                 emailSender: email.sender,
@@ -87,7 +87,7 @@ class IntelligentExtractionService {
             date: email.date,
             category: "Other",
             items: [],
-            confidence: 0.3,  // Low confidence - needs review
+            confidence: ExtractionConstants.manualReviewConfidence,  // Low confidence - needs review
             rawText: email.snippet,
             emailSubject: email.subject,
             emailSender: email.sender,

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		75D9F5147C391CBA5AA8053D /* ExtractionConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 800BFBAFBDCD9E66EA3343EF /* ExtractionConstants.swift */; };
+
 		BLDE3CA34361C054FB3B77F3 /* CapabilityWarningBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAPD87671274C264340BDCC9 /* CapabilityWarningBanner.swift */; };
 		08F06BC3769A8A9F49B8B5AE /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA76140EE4946838694BF9A2 /* KeychainHelper.swift */; };
 		0A1B2C3D4E5F6A7B8C9D0E1F /* TransactionQueryHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F0E9D8C7B6A5F4E3D2C1B0A /* TransactionQueryHelper.swift */; };
@@ -157,6 +159,7 @@
 		F7A67DE18ED946FCBF0CE117 /* GmailEmailFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GmailEmailFetcher.swift; sourceTree = "<group>"; };
 		FB450CF228F541ACBECDC36B /* AnthropicAPIModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnthropicAPIModels.swift; sourceTree = "<group>"; };
 		FD1B108972E6DE4F2BB3E4BE /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
+		800BFBAFBDCD9E66EA3343EF /* ExtractionConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/ExtractionConstants.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -180,6 +183,7 @@
 				D9435EE1D00C96FD41DB3986 /* PaginationManager.swift */,
 				71BCE3AE60C68983B30B2975 /* TransactionBuilder.swift */,
 				B1F2B5F9BF56462989FC06EA /* TransactionDescriptionBuilder.swift */,
+				800BFBAFBDCD9E66EA3343EF /* ExtractionConstants.swift */,
 			);
 			name = Services;
 			sourceTree = "<group>";
@@ -427,7 +431,8 @@
 				473CF7431334D43949EAE193 /* ExtractionCapabilityDetector.swift in Sources */,
 				8AF71B97ABD032EA304D794D /* SplitAllocation.swift in Sources */,
 				D96893FC538D5A8488145FF7 /* TransactionsTableHelpers.swift in Sources */,
-							BLDE3CA34361C054FB3B77F3 /* CapabilityWarningBanner.swift in Sources */,
+				BLDE3CA34361C054FB3B77F3 /* CapabilityWarningBanner.swift in Sources */,
+				75D9F5147C391CBA5AA8053D /* ExtractionConstants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
