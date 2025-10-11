@@ -1,0 +1,96 @@
+[
+  {
+    "id": "sample-bunnings-001",
+    "subject": "Your Bunnings Tax Invoice",
+    "sender": "noreply@bunnings.com.au",
+    "date": "2025-10-01",
+    "snippet": "TAX INVOICE 123456\nBunnings Warehouse\nABN: 63 008 672 179\n\n2x Power Drill - $129.00\n1x Safety Glasses - $15.50\nSubtotal: $144.50\nGST (10%): $14.45\nTotal: $158.95\n\nPayment Method: Visa ending 4242",
+    "expected": {
+      "merchant": "Bunnings",
+      "amount": 158.95,
+      "gstAmount": 14.45,
+      "abn": "63 008 672 179",
+      "invoiceNumber": "123456",
+      "paymentMethod": "Visa",
+      "category": "Retail",
+      "confidence_min": 0.85
+    }
+  },
+  {
+    "id": "sample-woolworths-001",
+    "subject": "Woolworths eReceipt",
+    "sender": "receipts@woolworths.com.au",
+    "date": "2025-09-28",
+    "snippet": "Woolworths Supermarket\nReceipt #: WW-789012\n\nMilk 2L - $4.50\nBread - $3.20\nApples 1kg - $5.80\nChicken breast - $12.00\nTotal Inc GST: $25.50\n\nPaid by Mastercard",
+    "expected": {
+      "merchant": "Woolworths",
+      "amount": 25.50,
+      "gstAmount": null,
+      "invoiceNumber": "WW-789012",
+      "paymentMethod": "Mastercard",
+      "category": "Groceries",
+      "confidence_min": 0.80
+    }
+  },
+  {
+    "id": "sample-afterpay-bnpl-001",
+    "subject": "Afterpay Purchase Confirmation",
+    "sender": "noreply@afterpay.com",
+    "date": "2025-09-25",
+    "snippet": "Thank you for your Afterpay purchase\n\nMerchant: Bunnings Warehouse\nOrder Total: $450.00\nInstallment 1 of 4: $112.50 due today\n\nYour order details:\n- Garden Hose 30m\n- Potting Mix 25L\n- Gloves\n\nPaid via Afterpay",
+    "expected": {
+      "merchant": "Bunnings",
+      "amount": 450.00,
+      "paymentMethod": "Afterpay",
+      "category": "Retail",
+      "confidence_min": 0.70,
+      "note": "BNPL semantic test - must extract TRUE merchant (Bunnings) not intermediary (Afterpay)"
+    }
+  },
+  {
+    "id": "sample-officeworks-001",
+    "subject": "Officeworks Order Confirmation",
+    "sender": "orders@officeworks.com.au",
+    "date": "2025-09-20",
+    "snippet": "Order #: OW-2025-987654\nOfficeworks Australia\n\nHP Printer Ink - $89.95\nA4 Paper Ream - $8.50\nSubtotal: $98.45\nGST: $9.85\nTotal: $108.30\n\nPayment: Amex",
+    "expected": {
+      "merchant": "Officeworks",
+      "amount": 108.30,
+      "gstAmount": 9.85,
+      "invoiceNumber": "OW-2025-987654",
+      "paymentMethod": "Amex",
+      "category": "Retail",
+      "confidence_min": 0.85
+    }
+  },
+  {
+    "id": "sample-uber-001",
+    "subject": "Your Uber trip receipt",
+    "sender": "receipts@uber.com",
+    "date": "2025-09-15",
+    "snippet": "Thanks for riding with Uber\n\nTrip from: 123 Main St\nTrip to: 456 Park Ave\nFare: $32.50\nService Fee: $2.50\nGST: $3.50\nTotal: $38.50\n\nVisa ****1234",
+    "expected": {
+      "merchant": "Uber",
+      "amount": 38.50,
+      "gstAmount": 3.50,
+      "paymentMethod": "Visa",
+      "category": "Transport",
+      "confidence_min": 0.75
+    }
+  },
+  {
+    "id": "sample-shopback-cashback-001",
+    "subject": "ShopBack Cashback Confirmed",
+    "sender": "rewards@shopback.com.au",
+    "date": "2025-09-10",
+    "snippet": "Congratulations! Your cashback is confirmed\n\nMerchant: The Iconic\nPurchase Amount: $149.95\nCashback Earned: $7.50 (5%)\nTracking ID: SB-2025-456789\n\nPurchase via PayPal",
+    "expected": {
+      "merchant": "The Iconic",
+      "amount": 149.95,
+      "paymentMethod": "PayPal",
+      "category": "Retail",
+      "confidence_min": 0.65,
+      "note": "Cashback intermediary - extract merchant not ShopBack"
+    }
+  }
+]

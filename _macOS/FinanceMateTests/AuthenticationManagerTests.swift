@@ -230,7 +230,7 @@ final class AuthenticationManagerTests: XCTestCase {
         // Given
         let authManager = AuthenticationManager()
         let appleIDCredential = createMockAppleIDCredential()
-        let authorization = ASAuthorization Apple ID: appleIDCredential
+        let authorization = ASAuthorization(appleIDCredential: appleIDCredential)
 
         // When
         await authManager.handleAppleSignIn(result: .success(authorization))
@@ -492,7 +492,7 @@ final class AuthenticationManagerTests: XCTestCase {
 
         // First sign in with Apple
         let appleCredential = createMockAppleIDCredential(email: appleEmail)
-        await authManager.handleAppleSignIn(result: .success(ASAuthorization Apple ID: appleCredential))
+        await authManager.handleAppleSignIn(result: .success(ASAuthorization(appleIDCredential: appleCredential)))
 
         // Then
         XCTAssertEqual(authManager.userEmail, appleEmail, "Should have Apple email")

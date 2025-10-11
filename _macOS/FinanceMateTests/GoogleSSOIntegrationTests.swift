@@ -289,7 +289,7 @@ final class GoogleSSOIntegrationTests: XCTestCase {
 
         // Test Apple authentication first
         let mockAppleCredential = createMockAppleIDCredential()
-        await authManager.handleAppleSignIn(result: .success(ASAuthorization Apple ID: mockAppleCredential))
+        await authManager.handleAppleSignIn(result: .success(ASAuthorization(appleIDCredential: mockAppleCredential)))
 
         // Test switching to Google
         authManager.signOut(from: .apple)

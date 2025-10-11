@@ -80,7 +80,7 @@ final class AuthenticationManagerCompilationTests: XCTestCase {
 
         // Mock Apple ID credential
         let credential = MockAppleIDCredential()
-        let authorization = ASAuthorization Apple ID: credential
+        let authorization = ASAuthorization(appleIDCredential: credential)
 
         // When: Handling successful Apple Sign In
         // This should fail compilation - tokenStorage methods not accessible

@@ -97,7 +97,7 @@ final class AuthTypesTests: XCTestCase {
 
     // MARK: - AuthUser Tests
 
-    func testAuthUser Initialization_ValidData_CreatesUserSuccessfully() {
+    func testAuthUser_Initialization_ValidData_CreatesUserSuccessfully() {
         // Given
         let id = "user123"
         let email = "test@example.com"
@@ -114,7 +114,7 @@ final class AuthTypesTests: XCTestCase {
         XCTAssertEqual(user.provider, provider, "User provider should match")
     }
 
-    func testAuthUser Initialization_GoogleProvider_CreatesUserSuccessfully() {
+    func testAuthUser_Initialization_GoogleProvider_CreatesUserSuccessfully() {
         // Given
         let id = "google456"
         let email = "user@gmail.com"
@@ -129,7 +129,7 @@ final class AuthTypesTests: XCTestCase {
         XCTAssertEqual(user.email, email, "Email should match")
     }
 
-    func testAuthUser Equality_SameData_ReturnsTrue() {
+    func testAuthUser_Equality_SameData_ReturnsTrue() {
         // Given
         let user1 = AuthUser(id: "123", email: "test@example.com", name: "Test", provider: .apple)
         let user2 = AuthUser(id: "123", email: "test@example.com", name: "Test", provider: .apple)
@@ -138,7 +138,7 @@ final class AuthTypesTests: XCTestCase {
         XCTAssertEqual(user1, user2, "Users with same data should be equal")
     }
 
-    func testAuthUser Equality_DifferentID_ReturnsFalse() {
+    func testAuthUser_Equality_DifferentID_ReturnsFalse() {
         // Given
         let user1 = AuthUser(id: "123", email: "test@example.com", name: "Test", provider: .apple)
         let user2 = AuthUser(id: "456", email: "test@example.com", name: "Test", provider: .apple)
@@ -147,7 +147,7 @@ final class AuthTypesTests: XCTestCase {
         XCTAssertNotEqual(user1, user2, "Users with different IDs should not be equal")
     }
 
-    func testAuthUser Hashable_SameData_SameHashValue() {
+    func testAuthUser_Hashable_SameData_SameHashValue() {
         // Given
         let user1 = AuthUser(id: "123", email: "test@example.com", name: "Test", provider: .apple)
         let user2 = AuthUser(id: "123", email: "test@example.com", name: "Test", provider: .apple)
@@ -162,7 +162,7 @@ final class AuthTypesTests: XCTestCase {
 
     // MARK: - AuthState Tests
 
-    func testAuthState UnknownState_CorrectProperties() {
+    func testAuthState_UnknownState_CorrectProperties() {
         // Given
         let state = AuthState.unknown
 
@@ -173,7 +173,7 @@ final class AuthTypesTests: XCTestCase {
         XCTAssertNil(state.error, "Unknown state should have no error")
     }
 
-    func testAuthState AuthenticatingState_CorrectProperties() {
+    func testAuthState_AuthenticatingState_CorrectProperties() {
         // Given
         let state = AuthState.authenticating
 
@@ -184,7 +184,7 @@ final class AuthTypesTests: XCTestCase {
         XCTAssertNil(state.error, "Authenticating state should have no error")
     }
 
-    func testAuthState AuthenticatedState_CorrectProperties() {
+    func testAuthState_AuthenticatedState_CorrectProperties() {
         // Given
         let user = AuthUser(id: "123", email: "test@example.com", name: "Test", provider: .apple)
         let state = AuthState.authenticated(user)
@@ -196,7 +196,7 @@ final class AuthTypesTests: XCTestCase {
         XCTAssertNil(state.error, "Authenticated state should have no error")
     }
 
-    func testAuthState SignedOutState_CorrectProperties() {
+    func testAuthState_SignedOutState_CorrectProperties() {
         // Given
         let state = AuthState.signedOut
 
@@ -207,7 +207,7 @@ final class AuthTypesTests: XCTestCase {
         XCTAssertNil(state.error, "Signed out state should have no error")
     }
 
-    func testAuthState ErrorState_CorrectProperties() {
+    func testAuthState_ErrorState_CorrectProperties() {
         // Given
         let error = AuthError.networkError
         let state = AuthState.error(error)
@@ -221,7 +221,7 @@ final class AuthTypesTests: XCTestCase {
 
     // MARK: - AuthProvider Tests
 
-    func testAuthProvider AppleProvider_CorrectDisplayName() {
+    func testAuthProvider_AppleProvider_CorrectDisplayName() {
         // Given
         let provider = AuthProvider.apple
 
@@ -229,7 +229,7 @@ final class AuthTypesTests: XCTestCase {
         XCTAssertEqual(provider.displayName, "Apple", "Apple provider should have correct display name")
     }
 
-    func testAuthProvider GoogleProvider_CorrectDisplayName() {
+    func testAuthProvider_GoogleProvider_CorrectDisplayName() {
         // Given
         let provider = AuthProvider.google
 
@@ -237,7 +237,7 @@ final class AuthTypesTests: XCTestCase {
         XCTAssertEqual(provider.displayName, "Google", "Google provider should have correct display name")
     }
 
-    func testAuthProvider CaseIterable_AllProvidersIncluded() {
+    func testAuthProvider_CaseIterable_AllProvidersIncluded() {
         // Given
         let allProviders = AuthProvider.allCases
 
@@ -249,7 +249,7 @@ final class AuthTypesTests: XCTestCase {
 
     // MARK: - AuthError Tests
 
-    func testAuthError NetworkError_CorrectDescription() {
+    func testAuthError_NetworkError_CorrectDescription() {
         // Given
         let error = AuthError.networkError
 
@@ -258,7 +258,7 @@ final class AuthTypesTests: XCTestCase {
         XCTAssertEqual(error.errorCode, 1001, "Network error should have correct error code")
     }
 
-    func testAuthError InvalidCredentials_CorrectDescription() {
+    func testAuthError_InvalidCredentials_CorrectDescription() {
         // Given
         let error = AuthError.invalidCredentials
 
@@ -267,7 +267,7 @@ final class AuthTypesTests: XCTestCase {
         XCTAssertEqual(error.errorCode, 1002, "Invalid credentials error should have correct error code")
     }
 
-    func testAuthError CancelledByUser_CorrectDescription() {
+    func testAuthError_CancelledByUser_CorrectDescription() {
         // Given
         let error = AuthError.cancelledByUser
 
@@ -276,7 +276,7 @@ final class AuthTypesTests: XCTestCase {
         XCTAssertEqual(error.errorCode, 1003, "Cancelled error should have correct error code")
     }
 
-    func testAuthError TokenExpired_CorrectDescription() {
+    func testAuthError_TokenExpired_CorrectDescription() {
         // Given
         let error = AuthError.tokenExpired
 
@@ -285,7 +285,7 @@ final class AuthTypesTests: XCTestCase {
         XCTAssertEqual(error.errorCode, 1004, "Token expired error should have correct error code")
     }
 
-    func testAuthError CustomError_CorrectDescription() {
+    func testAuthError_CustomError_CorrectDescription() {
         // Given
         let customMessage = "Custom error message"
         let error = AuthError.custom(customMessage)
@@ -295,7 +295,7 @@ final class AuthTypesTests: XCTestCase {
         XCTAssertEqual(error.errorCode, 9999, "Custom error should have custom error code")
     }
 
-    func testAuthError Equatable_SameError_ReturnsTrue() {
+    func testAuthError_Equatable_SameError_ReturnsTrue() {
         // Given
         let error1 = AuthError.networkError
         let error2 = AuthError.networkError
@@ -304,7 +304,7 @@ final class AuthTypesTests: XCTestCase {
         XCTAssertEqual(error1, error2, "Same errors should be equal")
     }
 
-    func testAuthError Equatable_DifferentError_ReturnsFalse() {
+    func testAuthError_Equatable_DifferentError_ReturnsFalse() {
         // Given
         let error1 = AuthError.networkError
         let error2 = AuthError.invalidCredentials
@@ -313,7 +313,7 @@ final class AuthTypesTests: XCTestCase {
         XCTAssertNotEqual(error1, error2, "Different errors should not be equal")
     }
 
-    func testAuthError CustomErrorEquatable_SameMessage_ReturnsTrue() {
+    func testAuthError_CustomErrorEquatable_SameMessage_ReturnsTrue() {
         // Given
         let error1 = AuthError.custom("Test message")
         let error2 = AuthError.custom("Test message")
@@ -322,7 +322,7 @@ final class AuthTypesTests: XCTestCase {
         XCTAssertEqual(error1, error2, "Custom errors with same message should be equal")
     }
 
-    func testAuthError CustomErrorEquatable_DifferentMessage_ReturnsFalse() {
+    func testAuthError_CustomErrorEquatable_DifferentMessage_ReturnsFalse() {
         // Given
         let error1 = AuthError.custom("Message 1")
         let error2 = AuthError.custom("Message 2")

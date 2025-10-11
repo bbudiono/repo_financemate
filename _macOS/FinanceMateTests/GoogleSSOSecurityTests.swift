@@ -252,7 +252,7 @@ final class GoogleSSOSecurityTests: XCTestCase {
         setenv("GOOGLE_OAUTH_CLIENT_SECRET", "test_client_secret", 1)
 
         // When - First authenticate with Apple
-        let appleCredential = ASAuthorization Apple ID: createMockAppleIDCredential(email: "user@icloud.com")
+        let appleCredential = ASAuthorization(appleIDCredential: createMockAppleIDCredential)(email: "user@icloud.com")
         await authManager.handleAppleSignIn(result: .success(appleCredential))
         let appleEmail = authManager.userEmail
 
