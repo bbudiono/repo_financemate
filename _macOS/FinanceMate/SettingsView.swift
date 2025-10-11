@@ -275,16 +275,30 @@ struct ExtractionHealthSection: View {
             Text("Extraction Health").font(.largeTitle).fontWeight(.bold)
             Text("Foundation Models extraction analytics (macOS 26+)").foregroundColor(.secondary)
 
+            // BLUEPRINT Line 156.2: Confidence Distribution
             HStack(spacing: 12) {
                 StatCard(title: "Auto-Approved", value: "\(Int(analytics.autoApprovedPercent * 100))%", color: .green)
                 StatCard(title: "Needs Review", value: "\(Int(analytics.needsReviewPercent * 100))%", color: .yellow)
                 StatCard(title: "Manual", value: "\(Int(analytics.manualReviewPercent * 100))%", color: .red)
             }
 
+            // BLUEPRINT Line 156.1: Total Extractions
             LabeledContent("Total Extractions (30 days)") {
                 Text("\(analytics.totalExtractions)").fontWeight(.semibold)
             }
 
+            // BLUEPRINT Line 156.5: Field-level Accuracy
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Field-Level Accuracy").font(.headline)
+                HStack(spacing: 12) {
+                    AccuracyCard(field: "Merchant", accuracy: analytics.merchantAccuracy)
+                    AccuracyCard(field: "Amount", accuracy: analytics.amountAccuracy)
+                    AccuracyCard(field: "GST", accuracy: analytics.gstAccuracy)
+                    AccuracyCard(field: "Invoice", accuracy: analytics.invoiceAccuracy)
+                }
+            }
+
+            // BLUEPRINT Line 156.3: Top Corrected Merchants
             if !analytics.topCorrectedMerchants.isEmpty {
                 Text("Most Corrected Merchants").font(.headline)
                 ForEach(analytics.topCorrectedMerchants.indices, id: \.self) { i in
@@ -296,9 +310,30 @@ struct ExtractionHealthSection: View {
                 }
             }
 
+            // BLUEPRINT Line 156.6: Export Button
             Button("Export Feedback Data") { analytics.exportFeedbackData() }.buttonStyle(.borderedProminent)
         }
         .onAppear { analytics.loadAnalytics() }
+    }
+}
+
+// MARK: - Accuracy Card (BLUEPRINT Line 156.5)
+struct AccuracyCard: View {
+    let field: String
+    let accuracy: Double
+
+    var color: Color {
+        if accuracy >= 90 { return .green }
+        if accuracy >= 70 { return .yellow }
+        return .red
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(field).font(.caption).foregroundColor(.secondary)
+            Text("\(Int(accuracy))%").font(.title3).fontWeight(.bold).foregroundColor(color)
+        }
+        .padding().frame(maxWidth: .infinity, alignment: .leading).background(.ultraThinMaterial).cornerRadius(8)
     }
 }
 
