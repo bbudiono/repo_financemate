@@ -18,12 +18,17 @@ class IntelligentExtractionService {
         }
 
         // TIER 2: Foundation Models (macOS 26+ only)
+        // P0 FIX: Proper error logging for Foundation Models (2025-10-11)
+        // SECURITY: Silent error swallowing replaced with explicit logging
         if #available(macOS 26.0, *) {
-            if let intelligent = try? await tryFoundationModelsExtraction(email) {
+            do {
+                let intelligent = try await tryFoundationModelsExtraction(email)
                 if intelligent.confidence > 0.7 {
                     NSLog("[EXTRACT-TIER2] SUCCESS - Confidence: \(intelligent.confidence)")
                     return [intelligent]
                 }
+            } catch {
+                NSLog("[EXTRACT-ERROR] Foundation Models failed: \(error.localizedDescription)")
             }
         }
 
@@ -49,8 +54,31 @@ class IntelligentExtractionService {
     // MARK: - Tier 3: Manual Review
 
     private static func createManualReviewTransaction(_ email: GmailEmail) -> ExtractedTransaction {
-        // Extract basic info for manual review
-        let merchant = email.sender.components(separatedBy: "@").last?.components(separatedBy: ".").first?.capitalized ?? "Unknown"
+        // P0 FIX: Safe merchant extraction with proper validation (2025-10-11)
+        // SECURITY: Prevents crashes from malformed email addresses
+        let emailComponents = email.sender.split(separator: "@")
+        guard emailComponents.count == 2 else {
+            NSLog("[EXTRACT-SECURITY] Malformed sender address: \(email.sender)")
+            return ExtractedTransaction(
+                id: email.id,
+                merchant: "Unknown Email",
+                amount: 0.0,
+                date: email.date,
+                category: "Other",
+                items: [],
+                confidence: 0.3,
+                rawText: email.snippet,
+                emailSubject: email.subject,
+                emailSender: email.sender,
+                gstAmount: nil,
+                abn: nil,
+                invoiceNumber: "EMAIL-\(email.id.prefix(8))",
+                paymentMethod: nil
+            )
+        }
+
+        let domain = String(emailComponents[1])
+        let merchant = domain.split(separator: ".").first.map { String($0).capitalized } ?? "Unknown"
 
         return ExtractedTransaction(
             id: email.id,

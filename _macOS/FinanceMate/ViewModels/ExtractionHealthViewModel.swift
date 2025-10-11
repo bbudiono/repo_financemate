@@ -24,7 +24,13 @@ class ExtractionHealthViewModel: ObservableObject {
     }
 
     func loadAnalytics() {
-        let thirtyDaysAgo = Calendar.current.date(byAdding: .day, value: -30, to: Date())!
+        // P0 FIX: Safe Calendar operations (2025-10-11)
+        // SECURITY: Prevents crashes if Calendar date computation fails
+        guard let thirtyDaysAgo = Calendar.current.date(byAdding: .day, value: -30, to: Date()) else {
+            NSLog("[ANALYTICS-ERROR] Failed to compute 30-day window")
+            return
+        }
+
         let request = ExtractionFeedback.fetchRequest()
         request.predicate = NSPredicate(format: "timestamp > %@", thirtyDaysAgo as NSDate)
 

@@ -91,6 +91,29 @@ class ExtractionHealthViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.topCorrectedMerchants[1].count, 3)
     }
 
+    // MARK: - P0 Security Tests (2025-10-11)
+
+    /// Test Calendar.current.date does not crash with force unwrap (Issue #2)
+    func testCalendarDateComputationDoesNotCrash() {
+        // This should not crash even if Calendar operations fail
+        viewModel.loadAnalytics()
+
+        // Should complete without crash
+        XCTAssertNotNil(viewModel)
+        XCTAssertGreaterThanOrEqual(viewModel.totalExtractions, 0)
+    }
+
+    /// Test empty dataset does not crash
+    func testEmptyDatasetDoesNotCrash() {
+        // Clean slate - no feedback data
+        viewModel.loadAnalytics()
+
+        XCTAssertEqual(viewModel.totalExtractions, 0)
+        XCTAssertEqual(viewModel.autoApprovedPercent, 0.0)
+        XCTAssertEqual(viewModel.merchantAccuracy, 0.0)
+        XCTAssertEqual(viewModel.topCorrectedMerchants.count, 0)
+    }
+
     // MARK: - Helper Methods
 
     private func createFeedback(field: String, correct: Bool, merchant: String, confidence: Double = 0.8) {

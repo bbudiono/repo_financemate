@@ -162,4 +162,56 @@ final class IntelligentExtractionServiceTests: XCTestCase {
         XCTAssertFalse(caps.chipType.isEmpty)
         XCTAssertTrue(caps.chipType.contains("M") || caps.chipType == "Unknown")
     }
+
+    // MARK: - P0 Security Tests (2025-10-11)
+
+    /// Test malformed email sender does not crash (Issue #1)
+    func testMalformedEmailSenderDoesNotCrash() async {
+        let badEmail = GmailEmail(
+            id: "test-malformed",
+            subject: "Test",
+            sender: "malformed",  // No @ symbol
+            date: Date(),
+            snippet: "test"
+        )
+
+        let results = await IntelligentExtractionService.extract(from: badEmail)
+
+        XCTAssertEqual(results.count, 1)
+        XCTAssertEqual(results[0].merchant, "Unknown Email")  // Safe fallback
+        XCTAssertEqual(results[0].confidence, 0.3)  // Manual review
+    }
+
+    /// Test empty email sender does not crash
+    func testEmptyEmailSenderDoesNotCrash() async {
+        let badEmail = GmailEmail(
+            id: "test-empty",
+            subject: "Test",
+            sender: "",
+            date: Date(),
+            snippet: "test"
+        )
+
+        let results = await IntelligentExtractionService.extract(from: badEmail)
+
+        XCTAssertEqual(results.count, 1)
+        XCTAssertEqual(results[0].merchant, "Unknown Email")
+    }
+
+    /// Test multiple @ symbols in sender does not crash
+    func testMultipleAtSymbolsSenderDoesNotCrash() async {
+        let badEmail = GmailEmail(
+            id: "test-multiple-at",
+            subject: "Test",
+            sender: "test@@example.com",
+            date: Date(),
+            snippet: "test"
+        )
+
+        let results = await IntelligentExtractionService.extract(from: badEmail)
+
+        XCTAssertEqual(results.count, 1)
+        // Should handle gracefully without crash
+        XCTAssertNotNil(results[0].merchant)
+    }
 }
