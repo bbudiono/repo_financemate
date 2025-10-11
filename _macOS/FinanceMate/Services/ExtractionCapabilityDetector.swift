@@ -76,4 +76,14 @@ struct ExtractionCapabilityDetector {
         if chipString.contains("M4") { return "M4" }
         return "Unknown"
     }
+
+    /// Persist detection results (BLUEPRINT Line 161: Store alert shown flag)
+    static func persistDetectionResults(_ capabilities: Capabilities) {
+        UserDefaults.standard.set(true, forKey: "HasShownCapabilityAlert")
+    }
+
+    /// Check if capability alert has been shown
+    static func hasShownCapabilityAlert() -> Bool {
+        return UserDefaults.standard.bool(forKey: "HasShownCapabilityAlert")
+    }
 }

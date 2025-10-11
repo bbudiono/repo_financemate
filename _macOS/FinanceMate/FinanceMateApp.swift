@@ -32,6 +32,11 @@ struct FinanceMateApp: App {
         NSLog("Apple Intelligence: \(caps.appleIntelligenceEnabled ? "Enabled" : "Disabled")")
         NSLog("Foundation Models: \(caps.foundationModelsAvailable ? "Available" : "Unavailable")")
         NSLog("Strategy: \(caps.strategy.rawValue)")
+
+        // Persist detection results on first launch (BLUEPRINT Line 161)
+        if !ExtractionCapabilityDetector.hasShownCapabilityAlert() {
+            ExtractionCapabilityDetector.persistDetectionResults(caps)
+        }
     }
 
     var body: some Scene {
