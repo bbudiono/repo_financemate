@@ -6,6 +6,7 @@ struct GmailView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @StateObject private var viewModel: GmailViewModel
     @AppStorage("gmail_auto_refresh") private var autoRefresh = false
+    @State private var capabilities = ExtractionCapabilityDetector.detect()
 
     init() {
         // Initialize GmailViewModel with Core Data context
@@ -15,6 +16,10 @@ struct GmailView: View {
 
     var body: some View {
         VStack(spacing: 20) {
+            // BLUEPRINT Line 161: Show capability warning if Foundation Models unavailable
+            CapabilityWarningBanner(capabilities: capabilities)
+
+
             // Header with auto-refresh and archive toggles
             HStack {
                 Text("Gmail Receipts")
