@@ -212,3 +212,18 @@ func extractTransactionsFromEmails() async {  // Already async!
 - **Template**: ~/.claude/templates/project_repo/docs/NAVIGATION_TEMPLATE.md
 - **Created**: 2025-10-10 18:51:05
 
+
+### TECH-DEBT-aabdacb5: Document Navigation Structure
+- **Type**:  TECH DEBT (Hook Violation)
+- **Priority**: BLOCKER
+- **Blocked By**: mandatory_sitemap_enforcer_hook.sh
+- **File**: docs/ARCHITECTURE.md
+- **Description**: Routes/views detected but sitemap missing
+- **Requirements**:
+  - Document all routes/pages/views
+  - Define navigation flows
+  - Specify authentication requirements
+  - Map API integrations
+- **Template**: ~/.claude/templates/project_repo/docs/NAVIGATION_TEMPLATE.md
+- **Created**: 2025-10-13 09:36:20
+
