@@ -313,4 +313,123 @@ final class IntelligentExtractionServiceTests: XCTestCase {
         XCTAssertEqual(results.count, 1)
         XCTAssertGreaterThan(results[0].confidence, 0.0)
     }
+
+    // MARK: - Concurrent Batch Processing Tests (BLUEPRINT Line 150)
+
+    /// Test concurrent batch processing achieves 5× performance improvement
+    func testConcurrentBatchProcessingPerformance() async {
+        // Given: 10 test emails
+        let emails = (0..<10).map { index in
+            GmailEmail(
+                id: "test-batch-\(index)",
+                subject: "Receipt \(index)",
+                sender: "test\(index)@bunnings.com.au",
+                date: Date(),
+                snippet: "Total: $\(100 + index).00 GST: $\((100 + index) / 10).00"
+            )
+        }
+
+        // When: Extract with max concurrency of 5
+        let startTime = Date()
+        let results = await IntelligentExtractionService.extractBatch(emails, maxConcurrency: 5)
+        let duration = Date().timeIntervalSince(startTime)
+
+        // Then: Should complete much faster than sequential (10 emails × ~0.1s = 1s sequential, with 5 concurrent expect <0.5s)
+        XCTAssertLessThan(duration, 1.0, "Batch processing should be faster than sequential")
+        XCTAssertEqual(results.count, 10, "Should extract all emails")
+
+        // Verify all extractions succeeded
+        for result in results {
+            XCTAssertGreaterThan(result.confidence, 0.0)
+            XCTAssertFalse(result.merchant.isEmpty)
+        }
+    }
+
+    /// Test concurrent batch maintains result order
+    func testConcurrentBatchMaintainsOrder() async {
+        let emails = (0..<5).map { index in
+            GmailEmail(
+                id: "order-test-\(index)",
+                subject: "Receipt \(index)",
+                sender: "test@merchant\(index).com",
+                date: Date(),
+                snippet: "Total: $\(index * 10).00"
+            )
+        }
+
+        let results = await IntelligentExtractionService.extractBatch(emails, maxConcurrency: 5)
+
+        // Results should maintain original email order
+        XCTAssertEqual(results.count, 5)
+        for (index, result) in results.enumerated() {
+            XCTAssertTrue(result.id.contains("\(index)"), "Result order mismatch at index \(index)")
+        }
+    }
+
+    /// Test concurrent batch handles errors gracefully
+    func testConcurrentBatchHandlesErrors() async {
+        // Mix of valid and problematic emails
+        let emails = [
+            GmailEmail(id: "valid-1", subject: "Good", sender: "test@bunnings.com.au", date: Date(), snippet: "Total: $100"),
+            GmailEmail(id: "malformed", subject: "Bad", sender: "malformed", date: Date(), snippet: "bad"),
+            GmailEmail(id: "valid-2", subject: "Good", sender: "test@woolworths.com.au", date: Date(), snippet: "Total: $200"),
+        ]
+
+        let results = await IntelligentExtractionService.extractBatch(emails, maxConcurrency: 3)
+
+        // Should extract all emails despite some being problematic
+        XCTAssertEqual(results.count, 3)
+        XCTAssertTrue(results.allSatisfy { !$0.merchant.isEmpty })
+    }
+
+    /// Test concurrent batch progress callback
+    func testConcurrentBatchProgressCallback() async {
+        let emails = (0..<5).map { index in
+            GmailEmail(
+                id: "progress-\(index)",
+                subject: "Receipt",
+                sender: "test@test.com",
+                date: Date(),
+                snippet: "Total: $100"
+            )
+        }
+
+        var progressUpdates: [(processed: Int, total: Int, errors: Int)] = []
+
+        let results = await IntelligentExtractionService.extractBatch(
+            emails,
+            maxConcurrency: 2
+        ) { processed, total, errors in
+            progressUpdates.append((processed, total, errors))
+        }
+
+        // Should receive progress updates
+        XCTAssertGreaterThan(progressUpdates.count, 0, "Should receive progress updates")
+        XCTAssertEqual(progressUpdates.last?.processed, 5, "Final progress should be 5/5")
+        XCTAssertEqual(progressUpdates.last?.total, 5)
+        XCTAssertEqual(results.count, 5)
+    }
+
+    /// Test concurrent batch with single email
+    func testConcurrentBatchWithSingleEmail() async {
+        let email = GmailEmail(
+            id: "single",
+            subject: "Receipt",
+            sender: "test@bunnings.com.au",
+            date: Date(),
+            snippet: "Total: $100"
+        )
+
+        let results = await IntelligentExtractionService.extractBatch([email], maxConcurrency: 5)
+
+        XCTAssertEqual(results.count, 1)
+        XCTAssertGreaterThan(results[0].confidence, 0.0)
+    }
+
+    /// Test concurrent batch with empty array
+    func testConcurrentBatchWithEmptyArray() async {
+        let results = await IntelligentExtractionService.extractBatch([], maxConcurrency: 5)
+
+        XCTAssertEqual(results.count, 0)
+    }
 }

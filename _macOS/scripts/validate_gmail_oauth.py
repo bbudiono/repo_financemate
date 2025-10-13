@@ -66,7 +66,7 @@ def validate_env_file():
             print_error(f"{var} missing")
 
     # Check for bernhardbudiono@gmail.com specific config
-    if "228508661428-1scglc58uoun7f8n3js2a6rsi6rlj8qv" in content:
+    if "352456903923-2ldm2iqntfpkvucstnmk00tf0s8ah6lu" in content:
         print_success("OAuth Client ID matches bernhardbudiono@gmail.com configuration")
     else:
         print_warning("OAuth Client ID may not be configured for bernhardbudiono@gmail.com")

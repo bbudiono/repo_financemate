@@ -15,6 +15,7 @@
 * **MANDATORY: No Mock Data.** Zero tolerance for fake, dummy, sample, placeholder, or synthetic data in the main application logic. All features must be built and tested against real data structures and functional data sources. Mock data is only permitted with explicit user authorization within isolated unit test targets.
 * **MANDATORY: Programmatic Execution Only.** ALL tasks—diagnosis, file manipulation, dependency management, builds, tests, fixes, commits—MUST be performed programmatically. Do not ask the user to perform manual steps. REMEMBER: Agents CAN PATCH xcodeproj files.
 * **MANDATORY: Adherence to Blueprint.** The `docs/BLUEPRINT.md` is the single source of truth for product requirements. You must comply with it fully and NEVER edit or delete it without explicit user consent.
+* **MANDATORY: Always check for and remove Duplicates:** It is important to ensure no code files are in the repo that allow for confusion, for example 2 dashboard files that were created for the same purpose/reason. If a code file is no longer needed, remove it or integrate it into the new file. DO NOT LEAVE IT.
 
 ---
 

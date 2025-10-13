@@ -13,6 +13,13 @@ class GmailViewModel: ObservableObject {
     @Published var authCode = ""
     @Published var showArchivedEmails = false // BLUEPRINT Line 102: Toggle for archived items
 
+    // BLUEPRINT Line 150: Batch processing progress
+    @Published var isBatchProcessing = false
+    @Published var batchProgressProcessed = 0
+    @Published var batchProgressTotal = 0
+    @Published var batchErrorCount = 0
+    @Published var estimatedTimeRemaining: TimeInterval?
+
     private let viewContext: NSManagedObjectContext
     private let cacheService = EmailCacheService()
     private let paginationManager = PaginationManager(pageSize: 50)
@@ -155,12 +162,35 @@ class GmailViewModel: ObservableObject {
         NSLog("Total emails: \(emails.count)")
         GmailDebugLogger.saveEmailsForDebug(emails)
 
-        // Use intelligent 3-tier extraction (async)
-        var allExtracted: [ExtractedTransaction] = []
-        for email in emails {
-            let extracted = await IntelligentExtractionService.extract(from: email)
-            allExtracted.append(contentsOf: extracted)
+        // BLUEPRINT Line 150: Use concurrent batch processing with progress
+        isBatchProcessing = true
+        batchProgressProcessed = 0
+        batchProgressTotal = emails.count
+        batchErrorCount = 0
+
+        let startTime = Date()
+
+        let allExtracted = await IntelligentExtractionService.extractBatch(
+            emails,
+            maxConcurrency: 5
+        ) { @Sendable [weak self] processed, total, errors in
+            guard let self = self else { return }
+            await MainActor.run {
+                self.batchProgressProcessed = processed
+                self.batchProgressTotal = total
+                self.batchErrorCount = errors
+
+                // Calculate estimated time remaining
+                let elapsed = Date().timeIntervalSince(startTime)
+                if processed > 0 {
+                    let avgTimePerEmail = elapsed / Double(processed)
+                    let remaining = Double(total - processed) * avgTimePerEmail
+                    self.estimatedTimeRemaining = remaining
+                }
+            }
         }
+
+        isBatchProcessing = false
 
         NSLog("Extracted: \(allExtracted.count) transactions")
 

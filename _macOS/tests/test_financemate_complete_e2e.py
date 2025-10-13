@@ -287,9 +287,9 @@ def test_core_data_model():
             return False
 
         # Check for SplitAllocation model class (critical for tax splitting functionality)
-        split_allocation_file = MACOS_ROOT / "FinanceMate/SplitAllocation.swift"
+        split_allocation_file = MACOS_ROOT / "FinanceMate/Models/SplitAllocation.swift"
         if not split_allocation_file.exists():
-            logger.log("CORE_DATA_MODEL", "FAIL", "SplitAllocation.swift not found")
+            logger.log("CORE_DATA_MODEL", "FAIL", "SplitAllocation.swift not found in Models/ directory")
             return False
 
         with open(split_allocation_file, 'r') as f:
