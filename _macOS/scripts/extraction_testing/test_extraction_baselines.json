@@ -1,0 +1,45 @@
+{
+  "baseline_version": "1.0.0",
+  "test_date": "2025-10-11",
+  "approved_by": "System",
+  "hardware": "M4 Max",
+  "macos_version": "26.0.1",
+  "foundation_models_version": "~3B",
+
+  "accuracy_metrics": {
+    "overall_accuracy": 0.83,
+    "field_completeness": 0.90,
+    "hallucination_rate": 0.05,
+    "comment": "Validated on 6 Australian test samples (Bunnings, Woolworths, Afterpay, Officeworks, Uber, ShopBack)"
+  },
+
+  "performance_metrics": {
+    "avg_extraction_time_seconds": 1.72,
+    "tier1_avg_time_ms": 50,
+    "tier2_avg_time_seconds": 1.7,
+    "tier3_avg_time_ms": 20,
+    "max_memory_usage_mb": 512,
+    "cache_hit_rate": 0.95
+  },
+
+  "regression_thresholds": {
+    "accuracy_min": 0.78,
+    "accuracy_drop_tolerance": 0.05,
+    "field_completeness_min": 0.80,
+    "completeness_drop_tolerance": 0.10,
+    "hallucination_rate_max": 0.10,
+    "hallucination_increase_tolerance": 0.05,
+    "extraction_time_max_seconds": 2.5,
+    "extraction_time_increase_tolerance": 0.50,
+    "memory_max_mb": 4096,
+    "memory_increase_tolerance": 0.30
+  },
+
+  "test_samples": {
+    "total": 6,
+    "merchants": ["Bunnings", "Woolworths", "Bunnings (via Afterpay)", "Officeworks", "Uber", "The Iconic (via ShopBack)"],
+    "bnpl_semantic_test": true,
+    "pdf_ocr_test": false,
+    "image_ocr_test": false
+  }
+}
