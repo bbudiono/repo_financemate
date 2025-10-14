@@ -145,7 +145,13 @@ struct PersistenceController {
         transactionTypeAttr.isOptional = false
         transactionTypeAttr.defaultValue = "expense"
 
-        transactionEntity.properties = [idAttr, amountAttr, descAttr, dateAttr, sourceAttr, categoryAttr, noteAttr, taxCategoryAttr, sourceEmailIDAttr, importedDateAttr, transactionTypeAttr]
+        let contentHashAttr = NSAttributeDescription()
+        contentHashAttr.name = "contentHash"
+        contentHashAttr.attributeType = .integer64AttributeType
+        contentHashAttr.isOptional = false
+        contentHashAttr.defaultValue = 0
+
+        transactionEntity.properties = [idAttr, amountAttr, descAttr, dateAttr, sourceAttr, categoryAttr, noteAttr, taxCategoryAttr, sourceEmailIDAttr, importedDateAttr, transactionTypeAttr, contentHashAttr]
 
         // MARK: - Relationships
 
