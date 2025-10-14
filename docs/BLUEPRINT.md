@@ -55,6 +55,19 @@ To be the central command center for personal and family wealth, empowering user
 
 *Focus: Establish the core application with foundational data aggregation, a functional user management system, and the primary line-item splitting feature.*
 
+#### **3.1.0. Example Extraction from Email** **MANDATORY**
+
+* 2025-10-14: Email From: "City of Gold Coast" | Sender Email: "<noreply@goldcoast.qld.gov.au>" | Order Number (Email): "" | Attachment Name: "05416335.pdf" | Invoice/Receipt Number: "69804724" | External Reference: "PY-4189085" | Company/Vendor: "City of Gold Coast" |
+  * Line Item Description:"Rates Assessment: UNIT 1, 173, Olsen Avenue, LABRADOR QLD 4215: 235608361" | Amount/Value: "500.00" | GST: "0.00" | Total: "0.00" | Qty: "" (Assume 1)
+ | Qty: "" (Assume 1)  * Line Item Description: "Merchant Service Fee" | Amount/Value: "3.40" | GST: "0.00" | Total: "0.00"
+  * Additional Notes: *""*
+* 2025-10-01: Email From "Our Sage" | Semder Email: "<OurSage@automedsystems-syd.com.au>" | Order Number (Email): "" | Attachment Name: "Receipt-249589.pdf" | Invoice/Receipt Number: "249589" | External Reference: "" | Company/Vendor: "Our Sage" |
+  * Line Item Description: "7. Script - Repeat" | Amount/Value: "21.00" | GST: "0.00" | Total: "21.00" | Qty: "" (Assume 1)
+  * Additional Notes: *PDF Attachment requires password - this needs to be escalated to the user*
+* 2025-09-26: Email From "Bunnings Marketplace" | Sender Email: "<noreply@marketplace-comms.bunnings.com.au>" | Order Number (Email): "" | Attachment Name: "Invoice-IN2134A-7931.pdf" | Invoice/Receipt Number: "IN2134A-7931" | External Reference: "12091b53-13b0-41f6-b604-f8efc0a68892" | Company/Vendor: "Sello Products Pty.Ltd." |
+  * Line Item Description: "Centra Adjustable Parallel Dip Bar" | Amount/Value: "$71.00" | GST: "$6.45" | Qty: "1"
+  * Line Item Description: "Shipping" | Amount/Value: "$7.42" | GST: "$0.67" | Qty: "1"
+
 #### **3.1.1. Core Functionality & Data Aggregation (MVP)**
 
 * **MANDATORY:** **Bank API Integration:**

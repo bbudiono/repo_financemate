@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AFAF4C178E7A4CAA9F71E39B /* PDFTestDataBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9E794EAEDC4C75BAFD86D3 /* PDFTestDataBuilder.swift */; };
+		7E7365C019764008B6152DC4 /* PDFLineItemParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23D45140B014693BAF80EA3 /* PDFLineItemParser.swift */; };
+		BD987DE93A22463BA4B2989E /* PDFOCRProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = FECD3BC13B6143F8A2FD8227 /* PDFOCRProcessor.swift */; };
+		0D8238A320C040D2B2943111 /* PDFExtractionTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82CD2A8451E448E9F698C30 /* PDFExtractionTypes.swift */; };
 		08F06BC3769A8A9F49B8B5AE /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA76140EE4946838694BF9A2 /* KeychainHelper.swift */; };
 		0A1B2C3D4E5F6A7B8C9D0E1F /* TransactionQueryHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F0E9D8C7B6A5F4E3D2C1B0A /* TransactionQueryHelper.swift */; };
 		0A5D945D9848B184FD19BAED /* EmailCacheService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 779F3E7AB1C78B0F65C81E1C /* EmailCacheService.swift */; };
@@ -90,6 +94,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		CD9E794EAEDC4C75BAFD86D3 /* PDFTestDataBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFTestDataBuilder.swift; sourceTree = "<group>"; };
+		C23D45140B014693BAF80EA3 /* PDFLineItemParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFLineItemParser.swift; sourceTree = "<group>"; };
+		FECD3BC13B6143F8A2FD8227 /* PDFOCRProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFOCRProcessor.swift; sourceTree = "<group>"; };
+		D82CD2A8451E448E9F698C30 /* PDFExtractionTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFExtractionTypes.swift; sourceTree = "<group>"; };
 		0462096396F23463327279A7 /* AuthenticationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationManager.swift; sourceTree = "<group>"; };
 		0A7B5D2F9E4C1A6B8D0F3E5A /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
 		0E2B3E9D26484C9E074EF1FA /* ExtractionPromptBuilder.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExtractionPromptBuilder.swift; path = FinanceMate/Services/ExtractionPromptBuilder.swift; sourceTree = "<group>"; };
