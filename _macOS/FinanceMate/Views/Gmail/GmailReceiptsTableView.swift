@@ -12,6 +12,9 @@ struct GmailReceiptsTableView: View {
             // Header with batch actions
             headerView
 
+            // BLUEPRINT Line 150: Batch extraction progress (shown during processing)
+            BatchExtractionProgressView(viewModel: viewModel)
+
             // NATIVE TABLE - BLUEPRINT Line 75: "Microsoft Excel spreadsheets"
             tableView
 
