@@ -94,7 +94,17 @@ struct GmailAPI {
         // Extract full email body for better transaction extraction
         let fullBody = GmailEmailFetcher.getEmailText(from: message.payload)
 
-        return GmailEmail(id: messageId, subject: subject, sender: from, date: date, snippet: fullBody)
+        // Parse attachments (Phase 3.3)
+        let attachments = parseAttachments(from: message.payload)
+
+        return GmailEmail(
+            id: messageId,
+            subject: subject,
+            sender: from,
+            date: date,
+            snippet: fullBody,
+            attachments: attachments
+        )
     }
 
     // MARK: - Date Parsing

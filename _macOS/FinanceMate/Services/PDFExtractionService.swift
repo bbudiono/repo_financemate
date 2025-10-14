@@ -64,8 +64,15 @@ class PDFExtractionService {
     }
 
     private func extractTextFromPage(_ pdfDocument: PDFDocument, pageIndex: Int) async throws -> String? {
-        guard let page = pdfDocument.page(at: pageIndex),
-              let cgImage = page.thumbnail(of: page.bounds(for: .mediaBox).size, for: .mediaBox) else {
+        guard let page = pdfDocument.page(at: pageIndex) else {
+            return nil
+        }
+
+        // Generate thumbnail image from PDF page
+        let thumbnail = page.thumbnail(of: page.bounds(for: .mediaBox).size, for: .mediaBox)
+
+        // Convert NSImage to CGImage
+        guard let cgImage = thumbnail.cgImage(forProposedRect: nil, context: nil, hints: nil) else {
             return nil
         }
 
