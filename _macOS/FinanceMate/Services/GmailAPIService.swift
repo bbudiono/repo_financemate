@@ -120,4 +120,13 @@ class GmailAPIService {
 
 extension GmailAPIError {
     static let notAuthenticated = GmailAPIError.invalidURL("No access token available")
+    static func networkError(_ message: String) -> GmailAPIError {
+        return .invalidURL("Network error: \(message)")
+    }
+    static func apiError(_ statusCode: Int, _ message: String) -> GmailAPIError {
+        return .invalidURL("API error (\(statusCode)): \(message)")
+    }
+    static func invalidData(_ message: String) -> GmailAPIError {
+        return .invalidURL("Invalid data: \(message)")
+    }
 }

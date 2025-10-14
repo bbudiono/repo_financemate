@@ -7,6 +7,30 @@ enum EmailStatus: String, Codable {
     case archived = "Archived"
 }
 
+// MARK: - Gmail Attachment Model
+/// Represents a Gmail attachment with metadata
+struct GmailAttachment: Codable, Identifiable, Equatable {
+    let id: String  // Gmail attachment ID
+    let filename: String
+    let mimeType: String
+    let size: Int  // Size in bytes
+
+    /// Check if attachment is a PDF
+    var isPDF: Bool {
+        return mimeType == "application/pdf" || filename.lowercased().hasSuffix(".pdf")
+    }
+
+    /// Check if attachment is an image
+    var isImage: Bool {
+        return mimeType.hasPrefix("image/")
+    }
+
+    /// Check if attachment should be processed for extraction
+    var shouldProcess: Bool {
+        return isPDF || isImage
+    }
+}
+
 struct GmailEmail: Identifiable, Codable {
     let id: String
     let subject: String
@@ -14,6 +38,7 @@ struct GmailEmail: Identifiable, Codable {
     let date: Date
     let snippet: String
     var status: EmailStatus = .needsReview
+    var attachments: [GmailAttachment] = []
 }
 
 struct TokenResponse: Codable {

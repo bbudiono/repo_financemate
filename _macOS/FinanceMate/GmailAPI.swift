@@ -1,16 +1,5 @@
 import Foundation
 
-/// Gmail API error types
-enum GmailAPIError: LocalizedError {
-    case invalidURL(String)
-
-    var errorDescription: String? {
-        switch self {
-        case .invalidURL(let url): return "Invalid URL: \(url)"
-        }
-    }
-}
-
 /// Gmail API client - OAuth authentication and email fetching
 /// Security: Uses proper URL encoding to prevent injection attacks
 struct GmailAPI {

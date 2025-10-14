@@ -28,4 +28,21 @@ class EmailCacheService {
         // Future implementation if needed
         // EmailCacheManager doesn't expose clear() yet
     }
+
+    // MARK: - Attachment Caching (Delegates to AttachmentCacheService)
+
+    /// Cache attachment data
+    func cacheAttachment(_ data: Data, for messageId: String, filename: String) {
+        AttachmentCacheService.shared.cache(data, for: messageId, filename: filename)
+    }
+
+    /// Retrieve cached attachment data
+    func getCachedAttachment(for messageId: String, filename: String) -> Data? {
+        return AttachmentCacheService.shared.get(for: messageId, filename: filename)
+    }
+
+    /// Clear cached attachments older than specified age
+    func clearOldAttachments(maxAge: TimeInterval = 86400) {
+        AttachmentCacheService.shared.clearOld(maxAge: maxAge)
+    }
 }
