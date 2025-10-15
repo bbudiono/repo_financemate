@@ -6,10 +6,12 @@ import XCTest
 /// properly sorts the table data with visual indication of sort direction
 final class GmailTableSortingTests: XCTestCase {
     var viewModel: GmailViewModel!
+    var context: NSManagedObjectContext!
 
     override func setUp() {
         super.setUp()
-        viewModel = GmailViewModel()
+        context = PersistenceController.preview.container.viewContext
+        viewModel = GmailViewModel(context: context)
 
         // Create test transactions with varied data for sorting validation
         let transaction1 = ExtractedTransaction(
@@ -53,6 +55,7 @@ final class GmailTableSortingTests: XCTestCase {
 
     override func tearDown() {
         viewModel = nil
+        context = nil
         super.tearDown()
     }
 

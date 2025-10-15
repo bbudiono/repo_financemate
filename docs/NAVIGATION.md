@@ -352,7 +352,32 @@ python3 ~/.claude/hooks/sitemap_structure_validator.py docs/NAVIGATION.md macos
 
 ---
 
-**Document Version**: 1.0
-**Last Modified**: 2025-10-02
+**Document Version**: 1.1
+**Last Modified**: 2025-10-15
 **Platform**: macOS (SwiftUI)
 **Architecture**: MVVM with TabView Navigation + Overlay Drawer
+
+---
+
+## 14. Recent Service Architecture Updates (2025-10-15)
+
+### New Services Added:
+- **GmailBatchProcessor.swift**: Batch email extraction with progress tracking (BLUEPRINT Line 150)
+- **Enhanced EmailCacheService**: Added invalidate() method for force refresh
+- **BatchExtractionProgressView**: Real-time progress UI with ETA calculation
+
+### Gmail UX Enhancements (ATOMIC CYCLES 1-5):
+- ✅ Force refresh: EmailCacheManager.clear() before fetch
+- ✅ Visual feedback: Toast notifications for cache operations
+- ✅ Progress tracking: Real-time batch processing with percentage/ETA
+- ✅ Success confirmation: Green toast showing extraction count
+
+### Navigation Flow Updates:
+**Flow 3 Enhancement** (Gmail Receipt Extraction):
+```
+Step 2b: User clicks "Extract & Refresh Emails"
+  ↓ Blue toast: "Cache cleared, refreshing emails..."
+  ↓ Progress bar: "Processing 45/100 emails (45%)... ETA 2m 15s"
+  ↓ Green toast: "✓ Extracted 87 transactions"
+  ✅ Complete UX feedback loop implemented
+```
