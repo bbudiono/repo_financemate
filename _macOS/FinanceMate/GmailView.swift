@@ -8,6 +8,8 @@ struct GmailView: View {
     @AppStorage("gmail_auto_refresh") private var autoRefresh = false
     @State private var capabilities = ExtractionCapabilityDetector.detect()
     @State private var showCacheClearMessage = false
+    @State private var showSuccessMessage = false
+    @State private var successMessageText = ""
 
     init() {
         // Initialize GmailViewModel with Core Data context
@@ -97,11 +99,20 @@ struct GmailView: View {
                             EmailCacheManager.clear()  // Force refresh by clearing cache
                             showCacheClearMessage = true
 
-                            // Auto-dismiss toast after 2 seconds
+                            // Auto-dismiss cache clear toast after 2 seconds
                             try? await Task.sleep(nanoseconds: 2_000_000_000)
                             showCacheClearMessage = false
 
                             await viewModel.fetchEmails()
+
+                            // Show success notification after extraction completes
+                            let count = viewModel.extractedTransactions.count
+                            successMessageText = "✓ Extracted \(count) transaction\(count == 1 ? "" : "s")"
+                            showSuccessMessage = true
+
+                            // Auto-dismiss success toast after 3 seconds
+                            try? await Task.sleep(nanoseconds: 3_000_000_000)
+                            showSuccessMessage = false
                         }
                     }
                     .accessibilityLabel("Extract transactions from emails")
@@ -118,17 +129,30 @@ struct GmailView: View {
             }
         }
         .overlay(alignment: .top) {
-            if showCacheClearMessage {
-                Text("Cache cleared, refreshing emails...")
-                    .padding()
-                    .background(Color.blue.opacity(0.8))
-                    .foregroundColor(.white)
-                    .cornerRadius(8)
-                    .padding(.top, 60)
-                    .transition(.move(edge: .top).combined(with: .opacity))
+            ZStack {
+                if showCacheClearMessage {
+                    Text("Cache cleared, refreshing emails...")
+                        .padding()
+                        .background(Color.blue.opacity(0.8))
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
+                        .padding(.top, 60)
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                }
+
+                if showSuccessMessage {
+                    Text(successMessageText)
+                        .padding()
+                        .background(Color.green.opacity(0.8))
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
+                        .padding(.top, 60)
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                }
             }
         }
         .animation(.easeInOut, value: showCacheClearMessage)
+        .animation(.easeInOut, value: showSuccessMessage)
         .task {
             await viewModel.checkAuthentication()
             if viewModel.isAuthenticated && autoRefresh {
