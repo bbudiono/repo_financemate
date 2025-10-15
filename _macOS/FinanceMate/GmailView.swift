@@ -34,6 +34,9 @@ struct GmailView: View {
             }
             .padding()
 
+            // BLUEPRINT Line 150: Real-time batch extraction progress
+            BatchExtractionProgressView(viewModel: viewModel)
+
             if !viewModel.isAuthenticated {
                 VStack(spacing: 16) {
                     Image(systemName: "envelope.circle")
