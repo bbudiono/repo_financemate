@@ -89,7 +89,10 @@ struct GmailView: View {
                     Text("No transactions detected in emails")
                         .foregroundColor(.secondary)
                     Button("Extract & Refresh Emails") {
-                        Task { await viewModel.fetchEmails() }
+                        Task {
+                            EmailCacheManager.clear()  // Force refresh by clearing cache
+                            await viewModel.fetchEmails()
+                        }
                     }
                     .accessibilityLabel("Extract transactions from emails")
                 } else {

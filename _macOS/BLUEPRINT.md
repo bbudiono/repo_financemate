@@ -65,6 +65,7 @@ To be the central command center for personal and family wealth, empowering user
   * Use `bernhardbudiono@gmail.com` as the primary E2E test account.
   * Every line item from a parsed email/receipt must be created as a distinct record in the transaction table.
   * Gmail Receipts should be displayed in an interactive, detailed, comprehensive table. It needs to be filterable, sortable and best practice.
+  * **MANDATORY:** **Column Header Sorting:** Gmail Receipts Table MUST support interactive column header sorting. Clicking on any sortable column header (Date, Merchant, Category, Amount, Confidence) MUST sort the table data by that column, with visual indication of sort direction (ascending/descending). The sorting must be responsive and apply to all displayed data.
   * Gmail Receipts Table should be compact, information dense and `spreadsheet-like` with the ability to edit in-line, and structured, data typed and allows for user `confirmation` (like a database/spreadsheet). Ensure Gmail Receipt items are able to be deleted/edited within the table.
   * Gmail Receipts Table should allow a user to quick delete/edit/process emails
   * Gmail Receipts Table would be extremely large, and therefore appropriate pagination, filters, and UI/UX all in line with best practice to ensure appropriate handling

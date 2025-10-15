@@ -40,4 +40,9 @@ class EmailCacheManager {
         UserDefaults.standard.removeObject(forKey: cacheKey)
         NSLog("️ Cache cleared")
     }
+
+    /// Invalidate the current cache (alias for clear)
+    static func invalidate() {
+        clear()
+    }
 }

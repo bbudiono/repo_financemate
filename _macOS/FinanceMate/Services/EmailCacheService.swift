@@ -25,8 +25,12 @@ class EmailCacheService {
 
     /// Clear the email cache
     func clearCache() {
-        // Future implementation if needed
-        // EmailCacheManager doesn't expose clear() yet
+        cacheManager.clear()
+    }
+
+    /// Invalidate the email cache (alias for clearCache)
+    func invalidateCache() {
+        cacheManager.invalidate()
     }
 
     // MARK: - Attachment Caching (Delegates to AttachmentCacheService)

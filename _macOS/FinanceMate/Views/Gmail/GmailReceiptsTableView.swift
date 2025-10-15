@@ -7,6 +7,11 @@ struct GmailReceiptsTableView: View {
     @State private var sortOrder = [KeyPathComparator(\ExtractedTransaction.date, order: .reverse)]
     @State private var selectedTransaction: ExtractedTransaction?
 
+    /// BLUEPRINT: Apply sorting to paginated transactions based on column header clicks
+    private var sortedTransactions: [ExtractedTransaction] {
+        viewModel.paginatedTransactions.sorted(using: sortOrder)
+    }
+
     var body: some View {
         VStack(spacing: 0) {
             // Header with batch actions
@@ -52,7 +57,7 @@ struct GmailReceiptsTableView: View {
     }
 
     private var tableView: some View {
-        Table(viewModel.paginatedTransactions, selection: $viewModel.selectedIDs, sortOrder: $sortOrder) {
+        Table(sortedTransactions, selection: $viewModel.selectedIDs, sortOrder: $sortOrder) {
             coreColumns
             metadataColumns
             statusColumns
