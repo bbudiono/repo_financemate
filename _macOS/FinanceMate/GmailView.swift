@@ -7,6 +7,7 @@ struct GmailView: View {
     @StateObject private var viewModel: GmailViewModel
     @AppStorage("gmail_auto_refresh") private var autoRefresh = false
     @State private var capabilities = ExtractionCapabilityDetector.detect()
+    @State private var showCacheClearMessage = false
 
     init() {
         // Initialize GmailViewModel with Core Data context
@@ -91,6 +92,12 @@ struct GmailView: View {
                     Button("Extract & Refresh Emails") {
                         Task {
                             EmailCacheManager.clear()  // Force refresh by clearing cache
+                            showCacheClearMessage = true
+
+                            // Auto-dismiss toast after 2 seconds
+                            try? await Task.sleep(nanoseconds: 2_000_000_000)
+                            showCacheClearMessage = false
+
                             await viewModel.fetchEmails()
                         }
                     }
@@ -107,6 +114,18 @@ struct GmailView: View {
                     .padding()
             }
         }
+        .overlay(alignment: .top) {
+            if showCacheClearMessage {
+                Text("Cache cleared, refreshing emails...")
+                    .padding()
+                    .background(Color.blue.opacity(0.8))
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
+                    .padding(.top, 60)
+                    .transition(.move(edge: .top).combined(with: .opacity))
+            }
+        }
+        .animation(.easeInOut, value: showCacheClearMessage)
         .task {
             await viewModel.checkAuthentication()
             if viewModel.isAuthenticated && autoRefresh {
