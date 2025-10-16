@@ -21,6 +21,21 @@ import AppKit
  * Last Updated: 2025-10-06
  */
 
+/// Authentication-specific errors
+enum AuthenticationError: LocalizedError {
+    case nonceGenerationFailed(Int32)
+    case noPresentationAnchor
+
+    var errorDescription: String? {
+        switch self {
+        case .nonceGenerationFailed(let code):
+            return "Unable to generate secure nonce (Error code: \(code))"
+        case .noPresentationAnchor:
+            return "Unable to find window for authentication"
+        }
+    }
+}
+
 /// Authentication ViewModel for managing authentication state and UI interactions
 @MainActor
 public class AuthenticationViewModel: ObservableObject {
@@ -86,7 +101,14 @@ public class AuthenticationViewModel: ObservableObject {
     public func handleAppleSignInRequest(_ request: ASAuthorizationAppleIDRequest) {
         // Configure the request
         request.requestedScopes = [.fullName, .email]
-        request.nonce = generateNonce()
+
+        // Generate and set nonce (use fallback if generation fails)
+        if let nonce = generateNonce() {
+            request.nonce = nonce
+        } else {
+            logger.warning("Failed to generate secure nonce, using fallback UUID")
+            request.nonce = UUID().uuidString
+        }
     }
 
     /// Handle Apple Sign In result
@@ -251,20 +273,22 @@ public class AuthenticationViewModel: ObservableObject {
     // MARK: - Authentication Flow Helpers
 
     /// Generate nonce for Apple Sign In
-    private func generateNonce(length: Int = 32) -> String {
+    private func generateNonce(length: Int = 32) -> String? {
         precondition(length > 0)
         let charset: [Character] = Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
         var result = ""
         var remainingLength = length
 
         while remainingLength > 0 {
-            let randoms: [UInt8] = (0..<16).map { _ in
+            var randoms: [UInt8] = []
+            for _ in 0..<16 {
                 var random: UInt8 = 0
                 let errorCode = SecRandomCopyBytes(kSecRandomDefault, 1, &random)
                 if errorCode != errSecSuccess {
-                    fatalError("Unable to generate nonce. SecRandomCopyBytes failed with OSStatus \(errorCode)")
+                    logger.error("Unable to generate nonce. SecRandomCopyBytes failed with OSStatus \(errorCode)")
+                    return nil
                 }
-                return random
+                randoms.append(random)
             }
 
             randoms.forEach { random in
@@ -333,9 +357,26 @@ extension AuthenticationViewModel: ASAuthorizationControllerPresentationContextP
     /// Provide presentation context for Apple Sign In
     public func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
         // For macOS, we need to return the key window
-        guard let window = NSApplication.shared.keyWindow else {
-            fatalError("Unable to find presentation anchor")
+        if let window = NSApplication.shared.keyWindow {
+            return window
         }
+
+        // Fallback: Try to find any available window
+        if let window = NSApplication.shared.windows.first {
+            logger.warning("Using first available window as presentation anchor")
+            return window
+        }
+
+        // Last resort: Create a minimal window for authentication
+        logger.error("No windows available for authentication, creating minimal window")
+        let window = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 400, height: 300),
+            styleMask: [.titled, .closable],
+            backing: .buffered,
+            defer: false
+        )
+        window.center()
+        window.makeKeyAndOrderFront(nil)
         return window
     }
 }
