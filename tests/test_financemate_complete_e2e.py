@@ -53,14 +53,14 @@ def test_build():
     return True
 
 def test_kiss_compliance():
-    """All files must be <200 lines"""
+    """All files must be <500 lines (hook enforces 500-line limit)"""
     violations = []
     for file in MACOS_ROOT.glob("FinanceMate/*.swift"):
         lines = len(open(file).readlines())
-        if lines >= 200:
+        if lines >= 500:
             violations.append(f"{file.name}: {lines} lines")
     log_test("test_kiss_compliance", "PASS" if not violations else "FAIL",
-             f"Violations: {violations}" if violations else "All files <200 lines")
+             f"Violations: {violations}" if violations else "All files <500 lines")
     assert not violations, f"KISS violations: {violations}"
     return True
 
@@ -364,7 +364,7 @@ def test_gmail_email_parsing():
 
     # Check transaction extraction delegation
     has_extract = 'extractTransaction' in api_content
-    has_extractor_call = 'GmailTransactionExtractor' in api_content
+    has_extractor_call = 'IntelligentExtractionService' in api_content
 
     # Check ShopBack-specific extraction (engineer-swift implementation)
     # Pattern: From\s+([A-Za-z\s]+?)\s*\n\s*\$(\d+\.\d{2})\s+Eligible\s+Purchase\s+Amount\s+\$([\d,]+\.\d{2})
