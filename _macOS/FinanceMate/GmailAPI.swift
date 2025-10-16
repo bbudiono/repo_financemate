@@ -33,7 +33,7 @@ struct GmailAPI {
 
     static func fetchEmails(accessToken: String, maxResults: Int) async throws -> [GmailEmail] {
         // BLUEPRINT Line 72: Search ALL emails (not just Inbox) for 5-year financial history
-        let fiveYearsAgo = Calendar.current.date(byAdding: .year, value: -5, to: Date())!
+        let fiveYearsAgo = Calendar.current.date(byAdding: .year, value: -5, to: Date()) ?? Date().addingTimeInterval(-5 * 365 * 24 * 60 * 60)
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy/MM/dd"
         let afterDate = dateFormatter.string(from: fiveYearsAgo)

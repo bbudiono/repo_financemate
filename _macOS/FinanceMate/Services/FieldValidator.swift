@@ -94,19 +94,19 @@ struct FieldValidator {
     /// Validates date is within email date ±30 days and not >5 years old (Rule 5)
     static func validateDate(_ date: Date, emailDate: Date) -> ValidationResult {
         // Check if date is more than 5 years old
-        let fiveYearsAgo = Calendar.current.date(byAdding: .year, value: -5, to: Date())!
+        let fiveYearsAgo = Calendar.current.date(byAdding: .year, value: -5, to: Date()) ?? Date().addingTimeInterval(-5 * 365 * 24 * 60 * 60)
         guard date >= fiveYearsAgo else {
             return .invalid(penalty: 0.2, reason: "Date is more than 5 years old")
         }
 
         // Check if date is in the future (allow 1 day tolerance per BLUEPRINT)
-        let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: emailDate)!
+        let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: emailDate) ?? emailDate.addingTimeInterval(24 * 60 * 60)
         guard date <= tomorrow else {
             return .invalid(penalty: 0.2, reason: "Date is in the future")
         }
 
         // Check if date is within ±30 days of email date
-        let thirtyDaysBefore = Calendar.current.date(byAdding: .day, value: -30, to: emailDate)!
+        let thirtyDaysBefore = Calendar.current.date(byAdding: .day, value: -30, to: emailDate) ?? emailDate.addingTimeInterval(-30 * 24 * 60 * 60)
         guard date >= thirtyDaysBefore else {
             return .invalid(penalty: 0.2, reason: "Date outside valid range (email date ±30 days)")
         }

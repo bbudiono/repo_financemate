@@ -24,7 +24,7 @@ extension ExtractionFeedback {
 
     /// Fetch corrections for specific merchant in last 30 days
     static func recentCorrections(merchant: String, context: NSManagedObjectContext) -> [ExtractionFeedback] {
-        let thirtyDaysAgo = Calendar.current.date(byAdding: .day, value: -30, to: Date())!
+        let thirtyDaysAgo = Calendar.current.date(byAdding: .day, value: -30, to: Date()) ?? Date().addingTimeInterval(-30 * 24 * 60 * 60)
         let request = fetchRequest()
         request.predicate = NSPredicate(format: "merchant == %@ AND timestamp > %@", merchant, thirtyDaysAgo as NSDate)
         request.sortDescriptors = [NSSortDescriptor(key: "timestamp", ascending: false)]

@@ -1,0 +1,9 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild test -project FinanceMate.xcodeproj -scheme FinanceMate -configuration Debug
+
+--- xcodebuild: WARNING: Using the first of multiple matching destinations:
+{ platform:macOS, arch:arm64, id:00006041-000409643480801C, name:My Mac }
+{ platform:macOS, arch:x86_64, id:00006041-000409643480801C, name:My Mac }
+{ platform:macOS, name:Any Mac }
+2025-10-15 21:02:40.628 xcodebuild[91502:38580381] Writing error result bundle to /var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/ResultBundle_2025-15-10_21-02-0040.xcresult
+xcodebuild: error: Failed to build project FinanceMate with scheme FinanceMate.: There are no test bundles available to test.

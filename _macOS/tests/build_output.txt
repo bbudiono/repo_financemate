@@ -1,0 +1,5 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project FinanceMate.xcodeproj -scheme FinanceMate -configuration Debug clean build
+
+2025-10-15 21:02:01.030 xcodebuild[90011:38575442] Writing error result bundle to /var/folders/sb/jc81m0v50q77b37cwmgb7_zc0000gn/T/ResultBundle_2025-15-10_21-02-0001.xcresult
+xcodebuild: error: 'FinanceMate.xcodeproj' does not exist.
