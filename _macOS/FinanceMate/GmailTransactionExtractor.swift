@@ -82,34 +82,41 @@ struct GmailTransactionExtractor {
         // but the SENDER is who actually sent the receipt/invoice
         if let atIndex = sender.firstIndex(of: "@") {
             let domain = String(sender[sender.index(after: atIndex)...])
+                .replacingOccurrences(of: ">", with: "")  // Remove closing bracket if present
+                .trimmingCharacters(in: .whitespaces)
 
-            // Extract meaningful merchant name from domain
+            // PRIORITY 1: Check for known brand domains (handles subdomains correctly)
+            if domain.contains("binance.com") { return "Binance" }
+            if domain.contains("nintendo.com") { return "Nintendo" }
+            if domain.contains("paypal.com") { return "PayPal" }
+            if domain.contains("afterpay.com") { return "Afterpay" }
+            if domain.contains("bunnings.com") { return "Bunnings" }
+            if domain.contains("woolworths.com") { return "Woolworths" }
+            if domain.contains("coles.com") { return "Coles" }
+            if domain.contains("klook.com") { return "Klook" }
+            if domain.contains("umart.com") { return "Umart" }
+
+            // PRIORITY 2: Parse domain intelligently
             let parts = domain.components(separatedBy: ".")
 
-            // Skip common prefixes (noreply, info, etc.) and common suffixes (.com, .au)
-            let skipPrefixes = ["noreply", "no-reply", "info", "mail", "hello", "support", "receipts", "orders"]
-            let skipSuffixes = ["com", "au", "co", "net", "org"]
+            // Skip common prefixes and suffixes
+            let skipPrefixes = ["noreply", "no-reply", "info", "mail", "hello", "support", "receipts", "orders", "donotreply", "do_not_reply", "service", "accounts", "mgdirectmail"]
+            let skipSuffixes = ["com", "au", "co", "net", "org", "io"]
 
             // Find first meaningful part
             for part in parts where !skipPrefixes.contains(part.lowercased()) && !skipSuffixes.contains(part.lowercased()) && part.count > 2 {
-                // Handle special cases for known merchants
-                let merchantName = part.capitalized
-
-                // Map domain variations to clean merchant names
-                switch merchantName.lowercased() {
-                case "klook": return "Klook"
-                case "bunnings": return "Bunnings"
-                case "clevarea", "clevarea.com": return "Clevarea"
+                // Map known merchant variations
+                switch part.lowercased() {
                 case "gymandfitness": return "Gym and Fitness"
-                case "woolworths", "woolies": return "Woolworths"
-                case "coles": return "Coles"
-                case "afterpay": return "Afterpay"
+                case "clevarea": return "Clevarea"
                 case "tryhuboox", "huboox": return "Huboox"
-                default: return merchantName
+                case "activepipe": return "ActivePipe"
+                case "loanmarket": return "Loan Market"
+                default: return part.capitalized
                 }
             }
 
-            // Fallback: Use first part of domain before first dot
+            // Fallback: Use first non-skipped part
             return parts.first?.capitalized ?? "Unknown"
         }
 

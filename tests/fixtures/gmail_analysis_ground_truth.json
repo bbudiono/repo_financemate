@@ -1,0 +1,106 @@
+{
+  "analyzed_at": "2025-10-17T09:48:01.113056",
+  "total_analyzed": 10,
+  "ground_truth": [
+    {
+      "email_number": 1,
+      "email_id": "199eeeccfa678715",
+      "expected_merchant": "Gmail",
+      "expected_amount": 0.0,
+      "expected_payment_method": null,
+      "sender": "Bernhard Budiono <bernhardbudiono@gmail.com>",
+      "subject": "Re: 80269822 Vehicle Fund Closure Payout Advice",
+      "snippet_preview": "Hi there, This has been paid out, can you please review and close out the account. Please confirm that there are no outstanding balances. Thank you in advance Kindest Regards, Bernhard Budiono Persona..."
+    },
+    {
+      "email_number": 2,
+      "email_id": "199eeec76d191276",
+      "expected_merchant": "Gmail",
+      "expected_amount": 0.0,
+      "expected_payment_method": null,
+      "sender": "Bernhard Budiono <bernhardbudiono@gmail.com>",
+      "subject": "Re: 80269822 Vehicle Fund Closure Payout Advice",
+      "snippet_preview": "Hi there, This has been paid out, can you please review and close out the account. Please confirm that there are no outstanding balances. Thank you in advance Kindest Regards, Bernhard Budiono Persona..."
+    },
+    {
+      "email_number": 3,
+      "email_id": "199eee0cdc1b23f8",
+      "expected_merchant": "Umart",
+      "expected_amount": 0.0,
+      "expected_payment_method": null,
+      "sender": "Umart Online <support@umart.com.au>",
+      "subject": "Thanks for your order \u2013 We are waiting for your feedback",
+      "snippet_preview": "My Orders My Account Help Hot Deals! Tell us what you think! Thank you for your order. We hope you are enjoying your purchase and we would love to hear what you think. Order # 7502387 How would you"
+    },
+    {
+      "email_number": 4,
+      "email_id": "199eea08c36eec62",
+      "expected_merchant": "Afterpay",
+      "expected_amount": 519.65,
+      "expected_payment_method": null,
+      "sender": "Afterpay <donotreply@afterpay.com>",
+      "subject": "Thanks for your payment!",
+      "snippet_preview": "Hi Bernhard Budiono Thank you for your recent payment. Please find further details below. Payment confirmation Total amount paid $519.65 Payment date Fri, 17 Oct 2025 Repayments Payment method"
+    },
+    {
+      "email_number": 5,
+      "email_id": "199ed52d5b05c641",
+      "expected_merchant": "Mgdirectmail",
+      "expected_amount": 0.0,
+      "expected_payment_method": null,
+      "sender": "Binance <do_not_reply@mgdirectmail.binance.com>",
+      "subject": "Recurring Buy Deduction Reminder - 2025-10-16 14:00:32 (UTC)",
+      "snippet_preview": "Recurring Buy Deduction Reminder Your recurring plan is about to be charged tomorrow, to avoid investment failure, please make sure your bank account has enough balance. Repeat on: Every week, Friday"
+    },
+    {
+      "email_number": 6,
+      "email_id": "199ecd39169de15c",
+      "expected_merchant": "PayPal",
+      "expected_amount": 0.0,
+      "expected_payment_method": null,
+      "sender": "\"service@paypal.com.au\" <service@paypal.com.au>",
+      "subject": "You've authorised a payment to Nintendo",
+      "snippet_preview": "WARNING: This email originated from outside of the organization. DO NOT click links, open attachments, or respond unless you recognize the sender and know the content is safe. Bernhard Budiono, thanks"
+    },
+    {
+      "email_number": 7,
+      "email_id": "199ecd30e4bed65e",
+      "expected_merchant": "Accounts",
+      "expected_amount": 0.0,
+      "expected_payment_method": null,
+      "sender": "Nintendo <no-reply@accounts.nintendo.com>",
+      "subject": "Thank you for your Nintendo eShop purchase",
+      "snippet_preview": "Tax Invoice -------------------- Date 16/10/2025 22:41:15 (AEDT) -------------------- Nintendo Australia Pty Limited 804 Stud Road Scoresby VIC 3179 Australia ABN: 43 060 566 083 http://www.nintendo."
+    },
+    {
+      "email_number": 8,
+      "email_id": "199ecd270d57972b",
+      "expected_merchant": "PayPal",
+      "expected_amount": 0.0,
+      "expected_payment_method": null,
+      "sender": "\"service@paypal.com.au\" <service@paypal.com.au>",
+      "subject": "You've authorised a payment to Nintendo",
+      "snippet_preview": "WARNING: This email originated from outside of the organization. DO NOT click links, open attachments, or respond unless you recognize the sender and know the content is safe. Bernhard Budiono, thanks"
+    },
+    {
+      "email_number": 9,
+      "email_id": "199ecd23859b4b88",
+      "expected_merchant": "Accounts",
+      "expected_amount": 0.0,
+      "expected_payment_method": null,
+      "sender": "Nintendo <no-reply@accounts.nintendo.com>",
+      "subject": "Thank you for your Nintendo eShop purchase",
+      "snippet_preview": "Tax Invoice -------------------- Date 16/10/2025 22:40:20 (AEDT) -------------------- Nintendo Australia Pty Limited 804 Stud Road Scoresby VIC 3179 Australia ABN: 43 060 566 083 http://www.nintendo."
+    },
+    {
+      "email_number": 10,
+      "email_id": "199ec1a1ea52bc99",
+      "expected_merchant": "ActivePipe",
+      "expected_amount": 0.0,
+      "expected_payment_method": null,
+      "sender": "Steve Orme <steve.orme@activepipe.loanmarket.com.au>",
+      "subject": "Make this summer yours \ud83c\udfd6",
+      "snippet_preview": "Hi Bernhard, As the days get longer, the summer wish list starts growing. A new motorbike, a jet ski, maybe that caravan you&#39;ve been eyeing off, why wait until everyone else is buying? Getting you..."
+    }
+  ]
+}

@@ -47,15 +47,32 @@ struct GmailReceiptsTableView: View {
                 .font(.headline)
             Spacer()
 
-            // Force re-extraction button
+            // Force re-extraction button (clears BOTH caches)
             Button("Re-Extract All") {
                 Task {
+                    // CRITICAL: Clear BOTH email cache AND Core Data extraction cache
                     EmailCacheManager.clear()
+
+                    // Clear Core Data Transaction cache (where bad merchant data persists)
+                    let context = PersistenceController.shared.container.viewContext
+                    let deleteRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Transaction")
+                    deleteRequest.predicate = NSPredicate(format: "sourceEmailID != nil")
+                    let batchDelete = NSBatchDeleteRequest(fetchRequest: deleteRequest)
+
+                    do {
+                        try context.execute(batchDelete)
+                        try context.save()
+                        NSLog("[CACHE-CLEAR] ✓ Cleared Core Data extraction cache")
+                    } catch {
+                        NSLog("[CACHE-CLEAR] ❌ Failed to clear Core Data: \(error)")
+                    }
+
+                    // Now fetch and re-extract with NEW logic
                     await viewModel.fetchEmails()
                 }
             }
             .buttonStyle(.bordered)
-            .help("Clear cache and re-extract with latest logic")
+            .help("Clear ALL caches (email + extractions) and re-extract")
 
             if !viewModel.selectedIDs.isEmpty {
                 Text("\(viewModel.selectedIDs.count) selected")
