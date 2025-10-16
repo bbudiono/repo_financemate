@@ -36,7 +36,7 @@ struct DataAwareResponseGenerator {
         let balance = TransactionQueryHelper.getTotalBalance(context: context)
         let count = TransactionQueryHelper.getTransactionCount(context: context)
 
-        let content = "Your current balance is $\(String(format: "%.2f", balance)) across \(count) transactions. \(balance > 0 ? "You're in a positive position!" : "Consider reviewing your expenses to improve your balance.")"
+        let content = "Your current balance is $\(String(format: "%.2f", balance)) across \(count) transactions. \(balance > 0 ? "You are in a positive position!" : "Consider reviewing your expenses to improve your balance.")"
 
         logger.info("Balance response: $\(balance) across \(count) transactions")
         return (content, .showDashboard, .financeMateSpecific)

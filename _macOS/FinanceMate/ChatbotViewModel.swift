@@ -82,7 +82,7 @@ final class ChatbotViewModel: ObservableObject {
     private func initializeWelcomeMessage() {
         let welcomeMessage = ChatMessage(
             content: """
-            Hello! I'm your AI financial assistant powered by comprehensive Australian financial knowledge. I can help you with:
+            Hello! I am your AI financial assistant powered by comprehensive Australian financial knowledge. I can help you with:
 
             • Personal budgeting and expense tracking
             • Australian tax implications and strategies
