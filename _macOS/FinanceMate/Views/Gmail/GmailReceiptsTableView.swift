@@ -58,6 +58,9 @@ struct GmailReceiptsTableView: View {
 
     private var tableView: some View {
         Table(sortedTransactions, selection: $viewModel.selectedIDs, sortOrder: $sortOrder) {
+            // BLUEPRINT Column 1: Selection checkbox (MANDATORY)
+            checkboxColumn
+
             coreColumns
             metadataColumns
             statusColumns
@@ -71,6 +74,22 @@ struct GmailReceiptsTableView: View {
                 viewModel.extractedTransactions.first { $0.id == id }
             }
         }
+    }
+
+    // MARK: - BLUEPRINT Column 1: Selection Checkbox
+
+    @TableColumnBuilder<ExtractedTransaction, KeyPathComparator<ExtractedTransaction>>
+    private var checkboxColumn: some TableColumnContent<ExtractedTransaction, KeyPathComparator<ExtractedTransaction>> {
+        TableColumn("☑", value: \.id) { tx in
+            Button(action: {
+                toggleSelection(for: tx.id)
+            }) {
+                Image(systemName: viewModel.selectedIDs.contains(tx.id) ? "checkmark.square.fill" : "square")
+                    .foregroundColor(viewModel.selectedIDs.contains(tx.id) ? .blue : .secondary)
+            }
+            .buttonStyle(.plain)
+        }
+        .width(30)
     }
 
     @TableColumnBuilder<ExtractedTransaction, KeyPathComparator<ExtractedTransaction>>
@@ -185,6 +204,15 @@ struct GmailReceiptsTableView: View {
     }
 
     // MARK: - Helper Methods
+
+    /// BLUEPRINT Column 1: Toggle checkbox selection
+    private func toggleSelection(for id: String) {
+        if viewModel.selectedIDs.contains(id) {
+            viewModel.selectedIDs.remove(id)
+        } else {
+            viewModel.selectedIDs.insert(id)
+        }
+    }
 
     private func importSelected() {
         for id in viewModel.selectedIDs {
