@@ -77,12 +77,42 @@ struct GmailTransactionExtractor {
     }
 
     static func extractMerchant(from subject: String, sender: String) -> String? {
-        if let range = subject.range(of: #"(from|at) ([A-Za-z\s]+)"#, options: .regularExpression) {
-            return String(subject[range]).replacingOccurrences(of: "from ", with: "").replacingOccurrences(of: "at ", with: "").trimmingCharacters(in: .whitespaces)
-        }
+        // FIX: ALWAYS use email sender domain as merchant - it's the authoritative source
+        // Subject lines can mention other merchants (e.g., "Klook booking for Bunnings")
+        // but the SENDER is who actually sent the receipt/invoice
         if let atIndex = sender.firstIndex(of: "@") {
-            return sender[sender.index(after: atIndex)...].split(separator: ".").first.map(String.init)?.capitalized
+            let domain = String(sender[sender.index(after: atIndex)...])
+
+            // Extract meaningful merchant name from domain
+            let parts = domain.components(separatedBy: ".")
+
+            // Skip common prefixes (noreply, info, etc.) and common suffixes (.com, .au)
+            let skipPrefixes = ["noreply", "no-reply", "info", "mail", "hello", "support", "receipts", "orders"]
+            let skipSuffixes = ["com", "au", "co", "net", "org"]
+
+            // Find first meaningful part
+            for part in parts where !skipPrefixes.contains(part.lowercased()) && !skipSuffixes.contains(part.lowercased()) && part.count > 2 {
+                // Handle special cases for known merchants
+                let merchantName = part.capitalized
+
+                // Map domain variations to clean merchant names
+                switch merchantName.lowercased() {
+                case "klook": return "Klook"
+                case "bunnings": return "Bunnings"
+                case "clevarea", "clevarea.com": return "Clevarea"
+                case "gymandfitness": return "Gym and Fitness"
+                case "woolworths", "woolies": return "Woolworths"
+                case "coles": return "Coles"
+                case "afterpay": return "Afterpay"
+                case "tryhuboox", "huboox": return "Huboox"
+                default: return merchantName
+                }
+            }
+
+            // Fallback: Use first part of domain before first dot
+            return parts.first?.capitalized ?? "Unknown"
         }
+
         return nil
     }
 
