@@ -432,4 +432,146 @@ final class IntelligentExtractionServiceTests: XCTestCase {
 
         XCTAssertEqual(results.count, 0)
     }
+
+    // MARK: - FIX: Extraction Isolation Tests (Race Condition Prevention)
+
+    /// CRITICAL TEST: Validate no data corruption across concurrent extractions
+    /// Tests fix for: Merchant "Bunnings" mixed with Sender "smai.com.au" + Payment "Afterpay"
+    func testExtractionIsolation() async {
+        // Given: 10 emails with distinct, easily verifiable data
+        let testEmails = [
+            GmailEmail(id: "email-1", subject: "Bunnings Receipt", sender: "noreply@bunnings.com.au", date: Date(), snippet: "Total: $100 Payment: Visa"),
+            GmailEmail(id: "email-2", subject: "SMAI Order", sender: "orders@smai.com.au", date: Date(), snippet: "Total: $200 Payment: Mastercard"),
+            GmailEmail(id: "email-3", subject: "Afterpay Payment", sender: "noreply@afterpay.com", date: Date(), snippet: "Merchant: Officeworks Total: $300 Payment: Afterpay"),
+            GmailEmail(id: "email-4", subject: "Defence Invoice", sender: "noreply@defence.gov.au", date: Date(), snippet: "Total: $400 Payment: Direct Debit"),
+            GmailEmail(id: "email-5", subject: "Woolworths Receipt", sender: "receipts@woolworths.com.au", date: Date(), snippet: "Total: $500 Payment: PayPal"),
+            GmailEmail(id: "email-6", subject: "JB Hi-Fi Order", sender: "orders@jbhifi.com.au", date: Date(), snippet: "Total: $600 Payment: Amex"),
+            GmailEmail(id: "email-7", subject: "Kmart Purchase", sender: "noreply@kmart.com.au", date: Date(), snippet: "Total: $700 Payment: Visa"),
+            GmailEmail(id: "email-8", subject: "Coles Receipt", sender: "receipts@coles.com.au", date: Date(), snippet: "Total: $800 Payment: Mastercard"),
+            GmailEmail(id: "email-9", subject: "Target Order", sender: "orders@target.com.au", date: Date(), snippet: "Total: $900 Payment: PayPal"),
+            GmailEmail(id: "email-10", subject: "Big W Purchase", sender: "noreply@bigw.com.au", date: Date(), snippet: "Total: $1000 Payment: Zip")
+        ]
+
+        // When: Process all emails concurrently (5 at a time)
+        let results = await IntelligentExtractionService.extractBatch(testEmails, maxConcurrency: 5)
+
+        // Then: CRITICAL - Every transaction must match its source email exactly
+        XCTAssertEqual(results.count, 10, "Should extract all 10 emails")
+
+        for tx in results {
+            // Find the source email
+            guard let sourceEmail = testEmails.first(where: { $0.id == tx.id }) else {
+                XCTFail("Transaction ID \(tx.id) does not match any source email ID")
+                continue
+            }
+
+            // CRITICAL: Validate no cross-contamination of email fields
+            XCTAssertEqual(tx.emailSender, sourceEmail.sender,
+                          "❌ DATA CORRUPTION: Email sender mismatch for \(tx.id)\nExpected: \(sourceEmail.sender)\nGot: \(tx.emailSender)\nMerchant: \(tx.merchant)")
+
+            XCTAssertEqual(tx.emailSubject, sourceEmail.subject,
+                          "❌ DATA CORRUPTION: Email subject mismatch for \(tx.id)\nExpected: \(sourceEmail.subject)\nGot: \(tx.emailSubject)")
+
+            XCTAssertEqual(tx.id, sourceEmail.id,
+                          "❌ DATA CORRUPTION: Transaction ID mismatch\nExpected: \(sourceEmail.id)\nGot: \(tx.id)")
+
+            // Validate extracted data makes sense for the source
+            // Example: Email from bunnings.com.au should not have merchant "SMAI"
+            if sourceEmail.sender.contains("bunnings") {
+                XCTAssertFalse(tx.emailSender.contains("smai"), "Bunnings email should not have SMAI sender")
+                XCTAssertFalse(tx.emailSender.contains("afterpay"), "Bunnings email should not have Afterpay sender")
+                XCTAssertFalse(tx.emailSender.contains("defence"), "Bunnings email should not have Defence sender")
+            }
+
+            if sourceEmail.sender.contains("smai") {
+                XCTAssertFalse(tx.emailSender.contains("bunnings"), "SMAI email should not have Bunnings sender")
+                XCTAssertFalse(tx.emailSender.contains("afterpay"), "SMAI email should not have Afterpay sender")
+            }
+
+            // Log for manual verification
+            NSLog("[TEST-VALIDATED] ✓ Transaction \(tx.id) - Merchant: \(tx.merchant) - Sender: \(tx.emailSender) - Amount: $\(tx.amount)")
+        }
+
+        // Additional validation: Check for specific known corruption patterns from user's screenshot
+        let email1Result = results.first(where: { $0.id == "email-1" })
+        XCTAssertNotNil(email1Result)
+        XCTAssertTrue(email1Result!.emailSender.contains("bunnings.com.au"), "Email 1 must be from Bunnings")
+        XCTAssertFalse(email1Result!.emailSender.contains("smai"), "Email 1 must NOT contain SMAI")
+        XCTAssertFalse(email1Result!.emailSender.contains("afterpay"), "Email 1 must NOT contain Afterpay")
+
+        let email2Result = results.first(where: { $0.id == "email-2" })
+        XCTAssertNotNil(email2Result)
+        XCTAssertTrue(email2Result!.emailSender.contains("smai.com.au"), "Email 2 must be from SMAI")
+        XCTAssertFalse(email2Result!.emailSender.contains("bunnings"), "Email 2 must NOT contain Bunnings")
+    }
+
+    /// Test isolation with rapid concurrent extraction (stress test)
+    func testRapidConcurrentExtractionIsolation() async {
+        // Given: 20 emails to stress-test the concurrent system
+        let emails = (1...20).map { index in
+            GmailEmail(
+                id: "rapid-\(index)",
+                subject: "Order \(index)",
+                sender: "sender\(index)@merchant\(index).com",
+                date: Date(),
+                snippet: "Total: $\(index * 10).00"
+            )
+        }
+
+        // When: Extract with maximum concurrency
+        let results = await IntelligentExtractionService.extractBatch(emails, maxConcurrency: 10)
+
+        // Then: Every transaction must perfectly match its source
+        XCTAssertEqual(results.count, 20)
+
+        for (index, tx) in results.enumerated() {
+            let expectedSender = "sender\(index + 1)@merchant\(index + 1).com"
+            XCTAssertTrue(tx.emailSender.contains("sender\(index + 1)") || tx.emailSender.contains("merchant\(index + 1)"),
+                         "Transaction \(index) has wrong sender: \(tx.emailSender), expected pattern: \(expectedSender)")
+        }
+    }
+
+    /// Test that transaction fields cannot leak across concurrent tasks
+    func testNoFieldLeakageBetweenConcurrentTasks() async {
+        // Given: Two very different emails processed concurrently
+        let bunningsEmail = GmailEmail(
+            id: "bunnings-test",
+            subject: "Your Bunnings Receipt #123",
+            sender: "noreply@bunnings.com.au",
+            date: Date(),
+            snippet: "Total: $158.95 GST: $14.45 Payment: Visa Invoice: BUN-123"
+        )
+
+        let afterpayEmail = GmailEmail(
+            id: "afterpay-test",
+            subject: "Afterpay Payment Confirmation",
+            sender: "noreply@afterpay.com",
+            date: Date(),
+            snippet: "Merchant: SMAI Order Total: $89.50 Payment: Afterpay Order: AP-456"
+        )
+
+        // When: Process both simultaneously multiple times (10 iterations to catch race conditions)
+        for iteration in 1...10 {
+            let results = await IntelligentExtractionService.extractBatch([bunningsEmail, afterpayEmail], maxConcurrency: 2)
+
+            XCTAssertEqual(results.count, 2, "Iteration \(iteration): Should extract both emails")
+
+            let bunningsResult = results.first(where: { $0.id == "bunnings-test" })
+            let afterpayResult = results.first(where: { $0.id == "afterpay-test" })
+
+            XCTAssertNotNil(bunningsResult, "Iteration \(iteration): Bunnings result missing")
+            XCTAssertNotNil(afterpayResult, "Iteration \(iteration): Afterpay result missing")
+
+            // CRITICAL: Bunnings transaction must NOT contain Afterpay data
+            XCTAssertTrue(bunningsResult!.emailSender.contains("bunnings"), "Iteration \(iteration): Bunnings sender corrupted: \(bunningsResult!.emailSender)")
+            XCTAssertFalse(bunningsResult!.emailSender.contains("afterpay"), "Iteration \(iteration): Bunnings has Afterpay sender!")
+            XCTAssertFalse(bunningsResult!.emailSender.contains("smai"), "Iteration \(iteration): Bunnings has SMAI sender!")
+
+            // CRITICAL: Afterpay transaction must NOT contain Bunnings data
+            XCTAssertTrue(afterpayResult!.emailSender.contains("afterpay"), "Iteration \(iteration): Afterpay sender corrupted: \(afterpayResult!.emailSender)")
+            XCTAssertFalse(afterpayResult!.emailSender.contains("bunnings"), "Iteration \(iteration): Afterpay has Bunnings sender!")
+
+            NSLog("[TEST-ISOLATION-\(iteration)] ✓ No leakage - Bunnings: \(bunningsResult!.emailSender) | Afterpay: \(afterpayResult!.emailSender)")
+        }
+    }
 }

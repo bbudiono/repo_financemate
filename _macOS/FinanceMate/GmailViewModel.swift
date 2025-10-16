@@ -194,14 +194,47 @@ class GmailViewModel: ObservableObject {
 
         NSLog("Extracted: \(allExtracted.count) transactions")
 
-        extractedTransactions = allExtracted
+        // FIX: Validate ALL extracted transactions against source emails BEFORE assignment
+        var validatedTransactions: [ExtractedTransaction] = []
+        var corruptedCount = 0
+
+        for tx in allExtracted {
+            // Find source email by ID
+            guard let sourceEmail = emails.first(where: { $0.id == tx.id }) else {
+                NSLog("[GMAIL-CORRUPTION] CRITICAL - No source email found for transaction ID: \(tx.id)")
+                corruptedCount += 1
+                continue
+            }
+
+            // Validate transaction fields match source email
+            guard tx.emailSender == sourceEmail.sender else {
+                NSLog("[GMAIL-CORRUPTION] CRITICAL - Sender mismatch | Email: \(sourceEmail.sender) | Transaction: \(tx.emailSender) | Merchant: \(tx.merchant)")
+                corruptedCount += 1
+                continue
+            }
+
+            guard tx.emailSubject == sourceEmail.subject else {
+                NSLog("[GMAIL-CORRUPTION] CRITICAL - Subject mismatch | Email: \(sourceEmail.subject) | Transaction: \(tx.emailSubject)")
+                corruptedCount += 1
+                continue
+            }
+
+            // Transaction is valid
+            validatedTransactions.append(tx)
+        }
+
+        if corruptedCount > 0 {
+            NSLog("[GMAIL-CORRUPTION] WARNING - Rejected \(corruptedCount) corrupted transactions out of \(allExtracted.count)")
+        }
+
+        extractedTransactions = validatedTransactions
             .filter { $0.confidence >= 0.6 }
             .sorted { $0.confidence > $1.confidence }
 
-        NSLog("After filter (≥0.6): \(extractedTransactions.count)")
+        NSLog("After validation & filter (≥0.6): \(extractedTransactions.count)")
 
         for (i, tx) in extractedTransactions.prefix(3).enumerated() {
-            NSLog("\(i+1). \(tx.merchant) $\(tx.amount) (\(Int(tx.confidence*100))%)")
+            NSLog("\(i+1). \(tx.merchant) $\(tx.amount) (\(Int(tx.confidence*100))%) | From: \(tx.emailSender)")
         }
     }
 

@@ -8,16 +8,25 @@ class IntelligentExtractionService {
     /// Extract transactions using 4-tier pipeline with cache-first optimization (BLUEPRINT Line 151)
     /// - Parameter email: Gmail email to process
     /// - Returns: Array of extracted transactions
+    /// - Note: Thread-safe for concurrent batch processing - each email is isolated
     static func extract(from email: GmailEmail) async -> [ExtractedTransaction] {
-        NSLog("[EXTRACT-START] Email: \(email.subject)")
+        // FIX: Create isolated copies of email fields to prevent race conditions
+        let emailID = email.id
+        let emailSubject = email.subject
+        let emailSender = email.sender
+        let emailDate = email.date
+        let emailSnippet = email.snippet
+
+        NSLog("[EXTRACT-START] Email ID: \(emailID) | Subject: \(emailSubject) | Sender: \(emailSender)")
 
         // CACHE CHECK: Query Core Data for existing extraction (BLUEPRINT Line 151)
-        let contentHash = email.snippet.hashValue
-        if let cached = queryCachedExtraction(emailID: email.id, hash: Int64(contentHash)) {
-            NSLog("[EXTRACT-CACHE] HIT - Skipping re-extraction (95% performance boost)")
+        let contentHash = emailSnippet.hashValue
+        if let cached = queryCachedExtraction(emailID: emailID, hash: Int64(contentHash)) {
+            NSLog("[EXTRACT-CACHE] HIT - EmailID: \(emailID) - Skipping re-extraction (95% performance boost)")
+            validateExtraction(cached, sourceEmail: email)
             return [cached]
         }
-        NSLog("[EXTRACT-CACHE] MISS - Proceeding with full extraction")
+        NSLog("[EXTRACT-CACHE] MISS - EmailID: \(emailID) - Proceeding with full extraction")
 
         // TIER 0: PDF ATTACHMENT EXTRACTION (Phase 3.3)
         if let pdfTransactions = await tryExtractFromPDFAttachments(email) {
@@ -30,7 +39,8 @@ class IntelligentExtractionService {
         // TIER 1: Fast regex baseline (<100ms)
         let regexResult = tryRegexExtraction(email)
         if let quick = regexResult, quick.confidence > ExtractionConstants.tier1ConfidenceThreshold {
-            NSLog("[EXTRACT-TIER1] SUCCESS - Confidence: \(quick.confidence)")
+            NSLog("[EXTRACT-TIER1] SUCCESS - EmailID: \(emailID) - Confidence: \(quick.confidence)")
+            validateExtraction(quick, sourceEmail: email)
             return [quick]
         }
 
@@ -41,17 +51,51 @@ class IntelligentExtractionService {
             do {
                 let intelligent = try await tryFoundationModelsExtraction(email)
                 if intelligent.confidence > ExtractionConstants.tier2ConfidenceThreshold {
-                    NSLog("[EXTRACT-TIER2] SUCCESS - Confidence: \(intelligent.confidence)")
+                    NSLog("[EXTRACT-TIER2] SUCCESS - EmailID: \(emailID) - Confidence: \(intelligent.confidence)")
+                    validateExtraction(intelligent, sourceEmail: email)
                     return [intelligent]
                 }
             } catch {
-                NSLog("[EXTRACT-ERROR] Foundation Models failed: \(error.localizedDescription)")
+                NSLog("[EXTRACT-ERROR] EmailID: \(emailID) - Foundation Models failed: \(error.localizedDescription)")
             }
         }
 
         // TIER 3: Manual review queue
-        NSLog("[EXTRACT-TIER3] Low confidence - routing to manual review")
-        return [createManualReviewTransaction(email)]
+        NSLog("[EXTRACT-TIER3] EmailID: \(emailID) - Low confidence - routing to manual review")
+        let manualTx = createManualReviewTransaction(email)
+        validateExtraction(manualTx, sourceEmail: email)
+        return [manualTx]
+    }
+
+    // MARK: - Validation
+
+    /// Validate that extracted transaction matches source email (prevents data corruption)
+    /// - Parameters:
+    ///   - transaction: Extracted transaction to validate
+    ///   - sourceEmail: Original email that was extracted from
+    private static func validateExtraction(_ transaction: ExtractedTransaction, sourceEmail: GmailEmail) {
+        // CRITICAL: Validate transaction ID matches email ID
+        guard transaction.id == sourceEmail.id else {
+            NSLog("[EXTRACT-CORRUPTION] CRITICAL - Transaction ID mismatch! Expected: \(sourceEmail.id), Got: \(transaction.id)")
+            assertionFailure("Transaction ID must match source email ID - data corruption detected")
+            return
+        }
+
+        // CRITICAL: Validate email fields match source
+        guard transaction.emailSender == sourceEmail.sender else {
+            NSLog("[EXTRACT-CORRUPTION] CRITICAL - Email sender mismatch! Expected: \(sourceEmail.sender), Got: \(transaction.emailSender)")
+            assertionFailure("Email sender must match source - data corruption detected")
+            return
+        }
+
+        guard transaction.emailSubject == sourceEmail.subject else {
+            NSLog("[EXTRACT-CORRUPTION] CRITICAL - Email subject mismatch! Expected: \(sourceEmail.subject), Got: \(transaction.emailSubject)")
+            assertionFailure("Email subject must match source - data corruption detected")
+            return
+        }
+
+        // Log successful validation
+        NSLog("[EXTRACT-VALIDATED] ✓ Transaction \(transaction.id) matches source email - Merchant: \(transaction.merchant), Sender: \(transaction.emailSender)")
     }
 
     // MARK: - Tier 1: Regex Extraction

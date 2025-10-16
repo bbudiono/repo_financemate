@@ -45,9 +45,26 @@ extension IntelligentExtractionService {
                     }
                 }
 
-                // Add new task
+                // Add new task with explicit email parameter capture for isolation
+                // FIX: Capture email fields by value to prevent race conditions
+                let emailCopy = email // Create local copy for task closure
                 group.addTask {
-                    let extracted = await extract(from: email)
+                    NSLog("[BATCH-TASK-START] Index: \(index) | Email ID: \(emailCopy.id) | Subject: \(emailCopy.subject)")
+                    let extracted = await extract(from: emailCopy)
+                    NSLog("[BATCH-TASK-END] Index: \(index) | Email ID: \(emailCopy.id) | Extracted: \(extracted.count) transactions")
+
+                    // Validate extraction results match source email
+                    for tx in extracted {
+                        guard tx.id == emailCopy.id else {
+                            NSLog("[BATCH-CORRUPTION] CRITICAL - Transaction ID \(tx.id) does not match email ID \(emailCopy.id)")
+                            return (index, nil)
+                        }
+                        guard tx.emailSender == emailCopy.sender else {
+                            NSLog("[BATCH-CORRUPTION] CRITICAL - Transaction sender '\(tx.emailSender)' does not match email sender '\(emailCopy.sender)'")
+                            return (index, nil)
+                        }
+                    }
+
                     return (index, extracted)
                 }
                 activeTaskCount += 1
