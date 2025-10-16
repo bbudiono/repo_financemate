@@ -69,6 +69,9 @@ struct GmailReceiptsTableView: View {
             coreColumns
             metadataColumns
             statusColumns
+
+            // BLUEPRINT Column 14: Action buttons (MANDATORY)
+            actionButtonsColumn
         }
         .tableStyle(.inset)
         .contextMenu(forSelectionType: ExtractedTransaction.ID.self) { ids in
@@ -212,6 +215,36 @@ struct GmailReceiptsTableView: View {
         .width(70)
     }
 
+    // MARK: - BLUEPRINT Column 14: Action Buttons
+
+    @TableColumnBuilder<ExtractedTransaction, KeyPathComparator<ExtractedTransaction>>
+    private var actionButtonsColumn: some TableColumnContent<ExtractedTransaction, KeyPathComparator<ExtractedTransaction>> {
+        TableColumn("Actions", value: \.id) { tx in
+            HStack(spacing: 4) {
+                // Import button
+                Button(action: {
+                    importTransaction(tx)
+                }) {
+                    Image(systemName: "square.and.arrow.down")
+                        .foregroundColor(.blue)
+                }
+                .buttonStyle(.plain)
+                .help("Import to Transactions")
+
+                // Delete button
+                Button(action: {
+                    deleteTransaction(tx)
+                }) {
+                    Image(systemName: "trash")
+                        .foregroundColor(.red)
+                }
+                .buttonStyle(.plain)
+                .help("Delete")
+            }
+        }
+        .width(70)
+    }
+
     private var paginationButton: some View {
         HStack {
             Spacer()
@@ -241,6 +274,23 @@ struct GmailReceiptsTableView: View {
             expandedRowId = nil  // Collapse if already expanded
         } else {
             expandedRowId = id  // Expand (only one row at a time)
+        }
+    }
+
+    /// BLUEPRINT Column 14: Import single transaction
+    private func importTransaction(_ transaction: ExtractedTransaction) {
+        viewModel.createTransaction(from: transaction)
+        viewModel.selectedIDs.remove(transaction.id)  // Remove from selection after import
+    }
+
+    /// BLUEPRINT Column 14: Delete single transaction
+    private func deleteTransaction(_ transaction: ExtractedTransaction) {
+        if let index = viewModel.extractedTransactions.firstIndex(where: { $0.id == transaction.id }) {
+            viewModel.extractedTransactions.remove(at: index)
+        }
+        viewModel.selectedIDs.remove(transaction.id)
+        if expandedRowId == transaction.id {
+            expandedRowId = nil  // Collapse if was expanded
         }
     }
 
