@@ -6,6 +6,7 @@ struct GmailReceiptsTableView: View {
     @ObservedObject var viewModel: GmailViewModel
     @State private var sortOrder = [KeyPathComparator(\ExtractedTransaction.date, order: .reverse)]
     @State private var selectedTransaction: ExtractedTransaction?
+    @State private var expandedRowId: String? // BLUEPRINT Column 2: Track expanded row
 
     /// BLUEPRINT: Apply sorting to paginated transactions based on column header clicks
     private var sortedTransactions: [ExtractedTransaction] {
@@ -23,8 +24,9 @@ struct GmailReceiptsTableView: View {
             // NATIVE TABLE - BLUEPRINT Line 75: "Microsoft Excel spreadsheets"
             tableView
 
-            // Detail panel below table when row selected
-            if let transaction = selectedTransaction {
+            // BLUEPRINT Column 2: Detail panel shown when row expanded
+            if let expandedId = expandedRowId,
+               let transaction = sortedTransactions.first(where: { $0.id == expandedId }) {
                 Divider()
                 InvoiceDetailPanel(transaction: transaction)
                     .frame(height: 300)
@@ -61,6 +63,9 @@ struct GmailReceiptsTableView: View {
             // BLUEPRINT Column 1: Selection checkbox (MANDATORY)
             checkboxColumn
 
+            // BLUEPRINT Column 2: Expand/collapse indicator (MANDATORY)
+            expandCollapseColumn
+
             coreColumns
             metadataColumns
             statusColumns
@@ -86,6 +91,22 @@ struct GmailReceiptsTableView: View {
             }) {
                 Image(systemName: viewModel.selectedIDs.contains(tx.id) ? "checkmark.square.fill" : "square")
                     .foregroundColor(viewModel.selectedIDs.contains(tx.id) ? .blue : .secondary)
+            }
+            .buttonStyle(.plain)
+        }
+        .width(30)
+    }
+
+    // MARK: - BLUEPRINT Column 2: Expand/Collapse Indicator
+
+    @TableColumnBuilder<ExtractedTransaction, KeyPathComparator<ExtractedTransaction>>
+    private var expandCollapseColumn: some TableColumnContent<ExtractedTransaction, KeyPathComparator<ExtractedTransaction>> {
+        TableColumn("▼", value: \.id) { tx in
+            Button(action: {
+                toggleExpanded(for: tx.id)
+            }) {
+                Image(systemName: expandedRowId == tx.id ? "chevron.down.circle.fill" : "chevron.right.circle")
+                    .foregroundColor(expandedRowId == tx.id ? .blue : .secondary)
             }
             .buttonStyle(.plain)
         }
@@ -211,6 +232,15 @@ struct GmailReceiptsTableView: View {
             viewModel.selectedIDs.remove(id)
         } else {
             viewModel.selectedIDs.insert(id)
+        }
+    }
+
+    /// BLUEPRINT Column 2: Toggle row expansion
+    private func toggleExpanded(for id: String) {
+        if expandedRowId == id {
+            expandedRowId = nil  // Collapse if already expanded
+        } else {
+            expandedRowId = id  // Expand (only one row at a time)
         }
     }
 
