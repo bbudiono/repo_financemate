@@ -30,7 +30,7 @@ class EnhancedSearchFilterService: ObservableObject {
             return indexedResults
         }
 
-        let request: NSFetchRequest<Transaction> = Transaction.fetchRequest() as! NSFetchRequest<Transaction>
+        let request = NSFetchRequest<Transaction>(entityName: "Transaction")
         request.predicate = NSPredicate(format: "itemDescription CONTAINS[cd] %@ OR source CONTAINS[cd] %@", query, query)
 
         do {
@@ -46,7 +46,7 @@ class EnhancedSearchFilterService: ObservableObject {
 
     /// Search specifically in real extracted Gmail descriptions
     func realDescriptionSearch(query: String) -> [Transaction] {
-        let request: NSFetchRequest<Transaction> = Transaction.fetchRequest() as! NSFetchRequest<Transaction>
+        let request = NSFetchRequest<Transaction>(entityName: "Transaction")
 
         // Focus on Gmail transactions with real extracted descriptions
         let gmailPredicate = NSPredicate(format: "source == %@", "gmail")
@@ -78,7 +78,7 @@ class EnhancedSearchFilterService: ObservableObject {
         allResults.append(contentsOf: manualResults)
 
         // Remove duplicates while preserving order
-        let uniqueResults = Array(NSOrderedSet(array: allResults)) as! [Transaction]
+        let uniqueResults = Array(NSOrderedSet(array: allResults)).compactMap { $0 as? Transaction }
         return uniqueResults
     }
 
@@ -103,7 +103,7 @@ class EnhancedSearchFilterService: ObservableObject {
 
     /// Search within a specific data source
     private func searchInSource(source: String, query: String) -> [Transaction] {
-        let request: NSFetchRequest<Transaction> = Transaction.fetchRequest() as! NSFetchRequest<Transaction>
+        let request = NSFetchRequest<Transaction>(entityName: "Transaction")
         request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
             NSPredicate(format: "source == %@", source),
             NSPredicate(format: "itemDescription CONTAINS[cd] %@", query)
