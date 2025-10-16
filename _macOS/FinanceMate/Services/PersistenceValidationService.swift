@@ -27,12 +27,13 @@ class PersistenceValidationService: ObservableObject {
 
         for i in 1...3 {
             let transaction = Transaction(context: context)
-            transaction.id = UUID()
+            let transactionId = UUID()
+            transaction.id = transactionId
             transaction.itemDescription = "\(testIdentifier)Test Transaction \(i)"
             transaction.amount = Double(i * 10.0)
             transaction.date = Date()
             transaction.source = "persistence_test"
-            testTransactionIds.append(transaction.id!)
+            testTransactionIds.append(transactionId)
         }
 
         do {
@@ -47,7 +48,7 @@ class PersistenceValidationService: ObservableObject {
 
     /// Validates data persistence across app restarts
     func validateDataPersistence(expectedIds: [UUID]) -> Bool {
-        let request: NSFetchRequest<Transaction> = Transaction.fetchRequest() as! NSFetchRequest<Transaction>
+        let request = NSFetchRequest<Transaction>(entityName: "Transaction")
         request.predicate = NSPredicate(format: "itemDescription BEGINSWITH %@", testIdentifier)
 
         do {
@@ -63,7 +64,7 @@ class PersistenceValidationService: ObservableObject {
 
     /// Cleans up test data after validation
     func cleanupTestData() -> Bool {
-        let request: NSFetchRequest<Transaction> = Transaction.fetchRequest() as! NSFetchRequest<Transaction>
+        let request = NSFetchRequest<Transaction>(entityName: "Transaction")
         request.predicate = NSPredicate(format: "itemDescription BEGINSWITH %@", testIdentifier)
 
         do {
@@ -83,7 +84,7 @@ class PersistenceValidationService: ObservableObject {
     /// Validates Core Data store integrity
     func validateCoreDataIntegrity() -> Bool {
         do {
-            let request: NSFetchRequest<Transaction> = Transaction.fetchRequest() as! NSFetchRequest<Transaction>
+            let request = NSFetchRequest<Transaction>(entityName: "Transaction")
             let count = try context.count(for: request)
             return count >= 0
         } catch {
