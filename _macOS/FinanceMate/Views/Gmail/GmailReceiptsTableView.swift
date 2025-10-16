@@ -46,6 +46,17 @@ struct GmailReceiptsTableView: View {
             Text("\(viewModel.unprocessedEmails.count) emails to review")
                 .font(.headline)
             Spacer()
+
+            // Force re-extraction button
+            Button("Re-Extract All") {
+                Task {
+                    EmailCacheManager.clear()
+                    await viewModel.fetchEmails()
+                }
+            }
+            .buttonStyle(.bordered)
+            .help("Clear cache and re-extract with latest logic")
+
             if !viewModel.selectedIDs.isEmpty {
                 Text("\(viewModel.selectedIDs.count) selected")
                     .foregroundColor(.secondary)
