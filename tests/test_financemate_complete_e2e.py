@@ -81,8 +81,9 @@ def test_security_hardening():
         # Skip != operator
         if '!=' in line:
             continue
-        # Skip string literals with apostrophes (more comprehensive check)
-        if re.search(r'["\'].*\w+[\'"].*[\'"]', line):
+        # Skip string literals containing exclamation marks
+        # Check if the line contains a string with ! inside quotes
+        if re.search(r'["\'][^"\']*![^"\']*["\']', line):
             continue
         # Skip specific known false positives
         if any(x in line for x in ['hasSuffix("!")', 'hasPrefix("!")', "I'm", "you're", "it's", "You're", "we're", "they're"]):

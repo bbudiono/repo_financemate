@@ -50,7 +50,7 @@ class CrossSourceDataValidationService: ObservableObject {
         return CrossSourceValidationResult(
             isValid: issue == nil,
             sourceType: transaction.source,
-            issues: issue != nil ? [issue!] : []
+            issues: issue.map { [$0] } ?? []
         )
     }
 
