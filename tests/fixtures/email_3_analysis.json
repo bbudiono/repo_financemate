@@ -1,0 +1,50 @@
+{
+  "email_number": 3,
+  "email_id": "199eee0cdc1b23f8",
+  "original_email": {
+    "id": "199eee0cdc1b23f8",
+    "subject": "Thanks for your order \u2013 We are waiting for your feedback",
+    "sender": "Umart Online <support@umart.com.au>",
+    "date": "Thu, 16 Oct 2025 21:15:32 +0000",
+    "snippet": "My Orders My Account Help Hot Deals! Tell us what you think! Thank you for your order. We hope you are enjoying your purchase and we would love to hear what you think. Order # 7502387 How would you",
+    "raw_headers": {
+      "Delivered-To": "bernhardbudiono@gmail.com",
+      "Received": "from c130-86.smtp-out.ap-southeast-2.amazonses.com (c130-86.smtp-out.ap-southeast-2.amazonses.com. [76.223.130.86])        by mx.google.com with ESMTPS id d9443c01a7336-290c6309029si7285455ad.277.2025.10.16.14.15.32        for <bernhardbudiono@gmail.com>        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);        Thu, 16 Oct 2025 14:15:34 -0700 (PDT)",
+      "X-Google-Smtp-Source": "AGHT+IHkiQbLxHR8KQ3i+tPrlKwTDDKpScQ0+5AUFBPt9+MUJN5oudjz1Spw+lTtItBFQe+aP41G",
+      "X-Received": "by 2002:a17:902:d50b:b0:24e:3cf2:2453 with SMTP id d9443c01a7336-290cbc3f1b3mr16047905ad.61.1760649334076;        Thu, 16 Oct 2025 14:15:34 -0700 (PDT)",
+      "ARC-Seal": "i=1; a=rsa-sha256; t=1760649334; cv=none;        d=google.com; s=arc-20240605;        b=ezUlffpbW56rzvTINDWLFTZRKb8wi1jYQ9dOtpEyYypHNpUdDZBy/qNV5QsYesANQD         WIann3IRXaIFHniYHsx2OEoIRv34fiXwApr+TzT9bRpIoLbmSdi9v03Vp1fLp78o1asT         BGsbQtd+X+SanNrMvE+/Ex2Lmzkh7Y31s/3bvmynwLU6YVwyPBtzlHUMVxj4Xaf34pc3         ewofaTPo362Cz552okUz+JqoBGQIoZR/jpY5vL+DzFB+dpwwkenO1n5yTrtKuCuIjOiT         5KC2J8Zp1L5/RiR+51BS2gHC17VniJGVUhLYscfulbb2wRoa1IC0pOzpR/y0kpxahpdD         hZlg==",
+      "ARC-Message-Signature": "i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;        h=feedback-id:content-transfer-encoding:mime-version:message-id         :subject:from:to:date:dkim-signature:dkim-signature;        bh=/ztJ+PF3ay9O0HJMwtfYjVEkHQA8o6tMpELNRFfBCc8=;        fh=HgV2OwwIc2pGKkyK3E8/B/ub/jYWmGaNs5Q7AGiha4E=;        b=FjS+i6dl0YZrQKyk/4FDaGhIKlgfgtgY6C+TxqBPmS2GvqazkRvvA9vRvmqL4kFgLN         2TKTBLlWXczOgrzGCxUNiu+Hduwv0xVXOMN8mMivL/jfBg7Lj+5Gl7VY6datPunDTfFK         6jZqFQD7qiDs3c5QlLho7k4dFKiug7jVJcq6joJDa/m2RqAbReP591KCxQjLiHvVAsL8         FLVl0B60M07JcIXmpX9Am3KJ8J/LACPXb69EGEHHwgzQpNeck1vo+8xbJ+GXXW1W4S5D         H/WbCB6YmhFA8Lh25HnDsiCANbKmlX2AbfjoQlAvajy35TctzA+vfPxSqUCqsy1WJBRw         ba+Q==;        dara=google.com",
+      "ARC-Authentication-Results": "i=1; mx.google.com;       dkim=pass header.i=@umart.com.au header.s=hauowiwu4wyvk6rkcrkn6c65tikkixhb header.b=aTaULVke;       dkim=pass header.i=@amazonses.com header.s=o6ptibvfbllhpdhtxr7klizy2riobquz header.b=GUzhUE8w;       spf=pass (google.com: domain of 01080199eee0c777-c887ff31-6adc-45fe-85ce-5a58dc4148b5-000000@ses-email-ap-southeast-2.umart.com.au designates 76.223.130.86 as permitted sender) smtp.mailfrom=01080199eee0c777-c887ff31-6adc-45fe-85ce-5a58dc4148b5-000000@ses-email-ap-southeast-2.umart.com.au;       dmarc=pass (p=QUARANTINE sp=QUARANTINE dis=NONE) header.from=umart.com.au",
+      "Return-Path": "<01080199eee0c777-c887ff31-6adc-45fe-85ce-5a58dc4148b5-000000@ses-email-ap-southeast-2.umart.com.au>",
+      "Received-SPF": "pass (google.com: domain of 01080199eee0c777-c887ff31-6adc-45fe-85ce-5a58dc4148b5-000000@ses-email-ap-southeast-2.umart.com.au designates 76.223.130.86 as permitted sender) client-ip=76.223.130.86;",
+      "Authentication-Results": "mx.google.com;       dkim=pass header.i=@umart.com.au header.s=hauowiwu4wyvk6rkcrkn6c65tikkixhb header.b=aTaULVke;       dkim=pass header.i=@amazonses.com header.s=o6ptibvfbllhpdhtxr7klizy2riobquz header.b=GUzhUE8w;       spf=pass (google.com: domain of 01080199eee0c777-c887ff31-6adc-45fe-85ce-5a58dc4148b5-000000@ses-email-ap-southeast-2.umart.com.au designates 76.223.130.86 as permitted sender) smtp.mailfrom=01080199eee0c777-c887ff31-6adc-45fe-85ce-5a58dc4148b5-000000@ses-email-ap-southeast-2.umart.com.au;       dmarc=pass (p=QUARANTINE sp=QUARANTINE dis=NONE) header.from=umart.com.au",
+      "DKIM-Signature": "v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple; s=o6ptibvfbllhpdhtxr7klizy2riobquz; d=amazonses.com; t=1760649332; h=Date:To:From:Subject:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding:Feedback-ID; bh=KNGGAhaseR5f17yULdZJujB4to0pGDakHNavmxkGTio=; b=GUzhUE8wZSadql4jvdj7b0QQFzB+V3n/8vrLBSEcIgebGz+Z8zuQR1D2J01O8uSi 3CfudA+56GBOqPrKsGLrIhKGWdAORU7uEw/Y24K6HglLGk1s7P9jX7nZYUZADG5XuVc J9IAA4XgM8r+X4ml44L4nmwZ8knF5CJLPh5tzbIo=",
+      "Date": "Thu, 16 Oct 2025 21:15:32 +0000",
+      "To": "bernhardbudiono@gmail.com",
+      "From": "Umart Online <support@umart.com.au>",
+      "Subject": "Thanks for your order \u2013 We are waiting for your feedback",
+      "Message-ID": "<01080199eee0c777-c887ff31-6adc-45fe-85ce-5a58dc4148b5-000000@ap-southeast-2.amazonses.com>",
+      "MIME-Version": "1.0",
+      "Content-Type": "text/html; charset=UTF-8",
+      "Content-Transfer-Encoding": "8bit",
+      "Feedback-ID": "::1.ap-southeast-2.9/UWNP4jRUo2/inMuuLKFv/vs342p8Nrj+f9Ll233I8=:AmazonSES",
+      "X-SES-Outgoing": "2025.10.16-76.223.130.86"
+    }
+  },
+  "ground_truth": {
+    "id": "199eee0cdc1b23f8",
+    "merchant": "Umart",
+    "amount": 0.0,
+    "date": "Thu, 16 Oct 2025 21:15:32 +0000",
+    "category": "Other",
+    "items": 0,
+    "confidence": 0.3,
+    "rawText": "My Orders My Account Help Hot Deals! Tell us what you think! Thank you for your order. We hope you are enjoying your purchase and we would love to hear what you think. Order # 7502387 How would you...",
+    "emailSubject": "Thanks for your order \u2013 We are waiting for your feedback",
+    "emailSender": "Umart Online <support@umart.com.au>",
+    "gstAmount": null,
+    "abn": null,
+    "invoiceNumber": "7502387",
+    "paymentMethod": null
+  }
+}

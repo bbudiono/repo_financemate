@@ -58,10 +58,31 @@ struct LineItemExtractor {
 struct MerchantCategorizer {
     static func infer(from merchant: String) -> String {
         let m = merchant.lowercased()
-        if ["woolworths", "coles", "aldi"].contains(where: { m.contains($0) }) { return "Groceries" }
-        if ["uber", "taxi", "bp"].contains(where: { m.contains($0) }) { return "Transport" }
-        if ["bunnings", "kmart", "jb"].contains(where: { m.contains($0) }) { return "Retail" }
-        if ["telstra", "optus", "agl"].contains(where: { m.contains($0) }) { return "Utilities" }
+
+        // Groceries
+        if ["woolworths", "coles", "aldi", "iga"].contains(where: { m.contains($0) }) { return "Groceries" }
+
+        // Transport
+        if ["uber", "taxi", "bp", "shell", "caltex", "petrol"].contains(where: { m.contains($0) }) { return "Transport" }
+
+        // Retail
+        if ["bunnings", "kmart", "jb", "target", "big w", "officeworks", "umart"].contains(where: { m.contains($0) }) { return "Retail" }
+
+        // Utilities
+        if ["telstra", "optus", "agl", "energy", "amigo"].contains(where: { m.contains($0) }) { return "Utilities" }
+
+        // Finance
+        if ["afterpay", "zip", "paypal", "anz", "nab", "commonwealth", "westpac"].contains(where: { m.contains($0) }) { return "Finance" }
+
+        // Investment
+        if ["binance", "coinbase", "stake", "commsec", "crypto"].contains(where: { m.contains($0) }) { return "Investment" }
+
+        // Gaming
+        if ["nintendo", "playstation", "xbox", "steam", "epic"].contains(where: { m.contains($0) }) { return "Gaming" }
+
+        // Dining
+        if ["pizza", "restaurant", "cafe", "menulog", "ubereats", "doordash"].contains(where: { m.contains($0) }) { return "Dining" }
+
         return "Other"
     }
 }

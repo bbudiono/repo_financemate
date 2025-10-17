@@ -178,4 +178,169 @@ final class RealGmailExtractionTests: XCTestCase {
         let nintendoResult = results.first(where: { $0.id == "199ecd30e4bed65e" })
         XCTAssertEqual(nintendoResult?.merchant, "Nintendo", "❌ Nintendo subdomain bug")
     }
+
+    // MARK: - COMPREHENSIVE 13-FIELD VALIDATION TESTS
+
+    /// Email 4: Afterpay - ALL 13 FIELDS validated
+    func testEmail4_Afterpay_All13Fields() async {
+        let email = GmailEmail(
+            id: "199eea08c36eec62",
+            subject: "Thanks for your payment!",
+            sender: "Afterpay <donotreply@afterpay.com>",
+            date: Date(),
+            snippet: "Hi Bernhard Budiono Thank you for your recent payment. Please find further details below. Payment confirmation Total amount paid $519.65 Payment date Fri, 17 Oct 2025 Repayments Payment method"
+        )
+
+        let results = await IntelligentExtractionService.extract(from: email)
+        XCTAssertEqual(results.count, 1)
+        let tx = results[0]
+
+        // Field 1: ID
+        XCTAssertEqual(tx.id, "199eea08c36eec62")
+
+        // Field 2: Merchant
+        XCTAssertEqual(tx.merchant, "Afterpay")
+
+        // Field 3: Amount
+        XCTAssertEqual(tx.amount, 519.65, accuracy: 0.01, "Should extract 'Total amount paid $519.65'")
+
+        // Field 4: Date
+        XCTAssertNotNil(tx.date)
+
+        // Field 5: Category
+        XCTAssertEqual(tx.category, "Finance", "Afterpay should be categorized as Finance")
+
+        // Field 6: Items
+        // (No line items in payment confirmation)
+
+        // Field 7: Confidence
+        XCTAssertGreaterThan(tx.confidence, 0.6, "Should have reasonable confidence with merchant + amount")
+
+        // Field 8: Email Subject
+        XCTAssertEqual(tx.emailSubject, "Thanks for your payment!")
+
+        // Field 9: Email Sender
+        XCTAssertEqual(tx.emailSender, "Afterpay <donotreply@afterpay.com>")
+
+        // Field 10: GST
+        XCTAssertNil(tx.gstAmount, "Afterpay payment has no GST")
+
+        // Field 11: ABN
+        XCTAssertNil(tx.abn, "No ABN in this email")
+
+        // Field 12: Invoice Number
+        XCTAssertTrue(tx.invoiceNumber.starts(with: "EMAIL-"), "Should use fallback invoice number")
+
+        // Field 13: Payment Method
+        XCTAssertNil(tx.paymentMethod, "Payment method not specified in snippet")
+    }
+
+    /// Email 5: Binance - ALL 13 FIELDS with subdomain edge case
+    func testEmail5_Binance_All13Fields() async {
+        let email = GmailEmail(
+            id: "199ed52d5b05c641",
+            subject: "Recurring Buy Deduction Reminder - 2025-10-16 14:00:32 (UTC)",
+            sender: "Binance <do_not_reply@mgdirectmail.binance.com>",
+            date: Date(),
+            snippet: "Recurring Buy Deduction Reminder Your recurring plan is about to be charged tomorrow, to avoid investment failure, please make sure your bank account has enough balance. Repeat on: Every week, Friday"
+        )
+
+        let results = await IntelligentExtractionService.extract(from: email)
+        XCTAssertEqual(results.count, 1)
+        let tx = results[0]
+
+        // Field 1: ID
+        XCTAssertEqual(tx.id, "199ed52d5b05c641")
+
+        // Field 2: Merchant - CRITICAL EDGE CASE
+        XCTAssertEqual(tx.merchant, "Binance", "❌ Domain 'mgdirectmail.binance.com' MUST extract 'Binance' not 'Mgdirectmail'")
+
+        // Field 3: Amount
+        XCTAssertEqual(tx.amount, 0.0, "Reminder email has no transaction amount")
+
+        // Field 4: Date
+        XCTAssertNotNil(tx.date)
+
+        // Field 5: Category
+        XCTAssertEqual(tx.category, "Investment", "Binance should be Investment category")
+
+        // Field 6: Items
+        XCTAssertEqual(tx.items.count, 0)
+
+        // Field 7: Confidence
+        XCTAssertLessThan(tx.confidence, 0.7, "Reminder with no amount should have low confidence")
+
+        // Field 8: Email Subject
+        XCTAssertEqual(tx.emailSubject, "Recurring Buy Deduction Reminder - 2025-10-16 14:00:32 (UTC)")
+
+        // Field 9: Email Sender
+        XCTAssertEqual(tx.emailSender, "Binance <do_not_reply@mgdirectmail.binance.com>")
+
+        // Field 10: GST
+        XCTAssertNil(tx.gstAmount)
+
+        // Field 11: ABN
+        XCTAssertNil(tx.abn)
+
+        // Field 12: Invoice Number
+        XCTAssertTrue(tx.invoiceNumber.starts(with: "EMAIL-"))
+
+        // Field 13: Payment Method
+        XCTAssertNil(tx.paymentMethod)
+    }
+
+    /// Email 7: Nintendo with ABN - ALL 13 FIELDS including ABN extraction
+    func testEmail7_Nintendo_All13FieldsWithABN() async {
+        let email = GmailEmail(
+            id: "199ecd30e4bed65e",
+            subject: "Thank you for your Nintendo eShop purchase",
+            sender: "Nintendo <no-reply@accounts.nintendo.com>",
+            date: Date(),
+            snippet: "Tax Invoice -------------------- Date 16/10/2025 22:41:15 (AEDT) -------------------- Nintendo Australia Pty Limited 804 Stud Road Scoresby VIC 3179 Australia ABN: 43 060 566 083 http://www.nintendo."
+        )
+
+        let results = await IntelligentExtractionService.extract(from: email)
+        XCTAssertEqual(results.count, 1)
+        let tx = results[0]
+
+        // Field 1: ID
+        XCTAssertEqual(tx.id, "199ecd30e4bed65e")
+
+        // Field 2: Merchant - CRITICAL EDGE CASE
+        XCTAssertEqual(tx.merchant, "Nintendo", "❌ Domain 'accounts.nintendo.com' MUST extract 'Nintendo' not 'Accounts'")
+
+        // Field 3: Amount
+        // (Amount might be 0 if not in snippet preview)
+
+        // Field 4: Date
+        XCTAssertNotNil(tx.date)
+
+        // Field 5: Category
+        XCTAssertEqual(tx.category, "Gaming", "Nintendo should be Gaming category")
+
+        // Field 6: Items
+        // (May or may not have items)
+
+        // Field 7: Confidence
+        XCTAssertGreaterThan(tx.confidence, 0.6, "Tax invoice with ABN should have decent confidence")
+
+        // Field 8: Email Subject
+        XCTAssertEqual(tx.emailSubject, "Thank you for your Nintendo eShop purchase")
+
+        // Field 9: Email Sender
+        XCTAssertEqual(tx.emailSender, "Nintendo <no-reply@accounts.nintendo.com>")
+
+        // Field 10: GST
+        // (May or may not be present)
+
+        // Field 11: ABN - CRITICAL TEST
+        XCTAssertEqual(tx.abn, "43 060 566 083", "❌ Should extract ABN from email snippet")
+
+        // Field 12: Invoice Number
+        // (Should extract or use fallback)
+        XCTAssertFalse(tx.invoiceNumber.isEmpty)
+
+        // Field 13: Payment Method
+        // (Likely none in eShop receipt)
+    }
 }

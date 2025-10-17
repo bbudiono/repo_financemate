@@ -33,17 +33,24 @@ def get_keychain_value(account: str) -> str:
         return None
 
 
-def fetch_gmail_messages(access_token: str, max_results: int = 10) -> List[str]:
-    """Fetch message IDs from Gmail API"""
+def fetch_gmail_messages(access_token: str, max_results: int = 10, label_filter: str = None) -> List[str]:
+    """Fetch message IDs from Gmail API with optional label filtering"""
     # Search last 6 months of financial emails
     six_months_ago = datetime.now() - timedelta(days=180)
     after_date = six_months_ago.strftime("%Y/%m/%d")
 
-    query = f"in:anywhere after:{after_date} (receipt OR invoice OR payment OR order)"
+    # Build query with optional label
+    if label_filter:
+        query = f"label:{label_filter} after:{after_date}"
+        print(f"📋 Filtering by label: {label_filter}")
+    else:
+        query = f"in:anywhere after:{after_date} (receipt OR invoice OR payment OR order)"
 
     url = "https://gmail.googleapis.com/gmail/v1/users/me/messages"
     headers = {"Authorization": f"Bearer {access_token}"}
     params = {"maxResults": max_results, "q": query}
+
+    print(f"🔍 Query: {query}")
 
     try:
         response = requests.get(url, headers=headers, params=params)
@@ -85,6 +92,12 @@ def fetch_email_details(message_id: str, access_token: str) -> Dict[str, Any]:
 
 
 def main():
+    import sys
+
+    # Check for label filter argument
+    label_filter = sys.argv[1] if len(sys.argv) > 1 else None
+    output_suffix = f"_{label_filter}" if label_filter else ""
+
     print("🔐 Retrieving Gmail access token from Keychain...")
     access_token = get_keychain_value("gmail_access_token")
 
@@ -92,8 +105,8 @@ def main():
         print("❌ No access token found. Please authenticate in FinanceMate first.")
         return
 
-    print("📧 Fetching 10 real Gmail emails...")
-    message_ids = fetch_gmail_messages(access_token, max_results=10)
+    print(f"📧 Fetching 10 real Gmail emails{f' with label: {label_filter}' if label_filter else ''}...")
+    message_ids = fetch_gmail_messages(access_token, max_results=10, label_filter=label_filter)
 
     if not message_ids:
         print("❌ No messages found or API error")
@@ -110,12 +123,13 @@ def main():
             print(f"    ✓ From: {email['sender'][:40]}")
             print(f"    ✓ Subject: {email['subject'][:60]}")
 
-    # Save to JSON fixture
-    output_file = "/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/tests/fixtures/real_gmail_samples.json"
+    # Save to JSON fixture with label suffix
+    output_file = f"/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/tests/fixtures/real_gmail_samples{output_suffix}.json"
 
     with open(output_file, 'w') as f:
         json.dump({
             "fetched_at": datetime.now().isoformat(),
+            "label_filter": label_filter,
             "total_emails": len(emails),
             "emails": emails
         }, f, indent=2)

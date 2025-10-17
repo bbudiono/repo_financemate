@@ -1,0 +1,53 @@
+{
+  "email_number": 5,
+  "email_id": "199ed52d5b05c641",
+  "original_email": {
+    "id": "199ed52d5b05c641",
+    "subject": "Recurring Buy Deduction Reminder - 2025-10-16 14:00:32 (UTC)",
+    "sender": "Binance <do_not_reply@mgdirectmail.binance.com>",
+    "date": "Thu, 16 Oct 2025 14:00:33 +0000 (UTC)",
+    "snippet": "Recurring Buy Deduction Reminder Your recurring plan is about to be charged tomorrow, to avoid investment failure, please make sure your bank account has enough balance. Repeat on: Every week, Friday",
+    "raw_headers": {
+      "Delivered-To": "bernhardbudiono@gmail.com",
+      "Received": "from message-9b8795bdf-x9jdd (ec2-13-230-19-97.ap-northeast-1.compute.amazonaws.com [13.230.19.97]) by 4143de26b51f8d611cfa02ea5fd5718dee4a66f83b4d85923bf7c5853605edd4 with SMTP id 68f0fa81d78c60b699be944b (version=TLS1.3, cipher=TLS_AES_128_GCM_SHA256); Thu, 16 Oct 2025 14:00:33 GMT",
+      "X-Google-Smtp-Source": "AGHT+IH5zrafEFOZjsE/GN8DvEzczrklNrlTVwxcLYk9lkI25QPSbaQ1rZVx534CKCGfvqQU5bbj",
+      "X-Received": "by 2002:a05:6a20:394b:b0:2ea:41f1:d53a with SMTP id adf61e73a8af0-334a8620170mr8988637.41.1760623252873;        Thu, 16 Oct 2025 07:00:52 -0700 (PDT)",
+      "ARC-Seal": "i=1; a=rsa-sha256; t=1760623252; cv=none;        d=google.com; s=arc-20240605;        b=FhHow14q7HI0UHAtX6jMQfAMEDo0kHd+qEiN2rDNQoxjZ8eLv44G+UyHDv5SSKruGt         lC/MOXMz2k7KRofWHUMenMQbh9WELlNKGqjuEEunIc8UVeZzm8KmNi1g2M8vEckC5ioH         Wo8VjkhaUvzerOZqMOBRQz6Nw6v5YakdaT8RWwOJ9JEQuTqkAtxakHT0pWLiVKF7OcAE         K382heEIR9h6fb/FwlmDOBttG/jlPJEEmd0c6jJVce1DjrrkacFRY6RBEXKXsICBYbfn         CWZW/xAoxeDrVqdri2urx++5rIZNOja4KjcbzuV7a6XSKO3XIf2J6Z+syJFntanC0l+p         TD0w==",
+      "ARC-Message-Signature": "i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;        h=content-transfer-encoding:mime-version:subject:message-id:to:from         :date:sender:dkim-signature:dkim-signature;        bh=bVOUUV76WPl3NM77z1/f3/EkJE+Cc/dkhIHCJtXJy1s=;        fh=HgV2OwwIc2pGKkyK3E8/B/ub/jYWmGaNs5Q7AGiha4E=;        b=Tu5MqpKCXxOiYstYmXKY6fVPR9RMExhaUH+13WgzEWqADZtT/u71yfLbt6F+ZtNSg2         xqRpcNBU+cn+aBZXmOW8h7VeU5kGdEu+9x1Mp2XNsUzlhba7OXM2WJws4HVGUbXeedR9         ZsmHBTroDa42rRj3u0rprTh0oDPrRDPIYdtOswR7+GCS4dlH35e9OD9DXQMneQ077AAI         NcVjaXHaExpLSzw5EqLE3MOZzATphwGyEqjCPgVZjohc4Sop4OI16n/0Wmf1tZrux+ck         /9Q9Nooi/c6gJJcGF5W1JgqUIQ1kD/rSRkdYZ1NLel+b19jgwDmGLT2imwU5vwkqGx43         oJVA==;        dara=google.com",
+      "ARC-Authentication-Results": "i=1; mx.google.com;       dkim=pass header.i=@mgdirectmail.binance.com header.s=mailo header.b=ZKdPdL2a;       dkim=pass header.i=@mailgun.org header.s=mg header.b=MQjv1u3r;       spf=pass (google.com: domain of bounce+e07c36.015027-bernhardbudiono=gmail.com@mgdirectmail.binance.com designates 159.135.234.146 as permitted sender) smtp.mailfrom=\"bounce+e07c36.015027-bernhardbudiono=gmail.com@mgdirectmail.binance.com\";       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=mgdirectmail.binance.com",
+      "Return-Path": "<bounce+e07c36.015027-bernhardbudiono=gmail.com@mgdirectmail.binance.com>",
+      "Received-SPF": "pass (google.com: domain of bounce+e07c36.015027-bernhardbudiono=gmail.com@mgdirectmail.binance.com designates 159.135.234.146 as permitted sender) client-ip=159.135.234.146;",
+      "Authentication-Results": "mx.google.com;       dkim=pass header.i=@mgdirectmail.binance.com header.s=mailo header.b=ZKdPdL2a;       dkim=pass header.i=@mailgun.org header.s=mg header.b=MQjv1u3r;       spf=pass (google.com: domain of bounce+e07c36.015027-bernhardbudiono=gmail.com@mgdirectmail.binance.com designates 159.135.234.146 as permitted sender) smtp.mailfrom=\"bounce+e07c36.015027-bernhardbudiono=gmail.com@mgdirectmail.binance.com\";       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=mgdirectmail.binance.com",
+      "DKIM-Signature": "a=rsa-sha256; v=1; c=relaxed/relaxed; d=mailgun.org; q=dns/txt; s=mg; t=1760623252; x=1760630452; h=Content-Type: Content-Transfer-Encoding: MIME-Version: Subject: Subject: Message-ID: To: To: From: From: Date: Sender: Sender: X-Feedback-Id; bh=bVOUUV76WPl3NM77z1/f3/EkJE+Cc/dkhIHCJtXJy1s=; b=MQjv1u3rIpBs1rsmMmrGNGOJFxZHr2S5HpCvXwJSCGslvmudxoZJyoDUl0WcbPy1Vgs7t1BKFJOipEUnGE/sK4etzIA6mgH87dDiXHR56PVm6XNHdbVg+wvn4jj9I+Cc+heIbU5O0trnrTWJQG1eDmTZjLV3fyVH7FikNrVWUXc=",
+      "X-Mailgun-Sid": "WyI2MDhkZCIsImJlcm5oYXJkYnVkaW9ub0BnbWFpbC5jb20iLCIwMTUwMjciXQ==",
+      "X-Feedback-Id": "do_not_reply@mgdirectmail.binance.com::617258dfd77a9419c20215a9:mailgun",
+      "X-Mailgun-Sending-Ip": "159.135.234.146",
+      "Sender": "do_not_reply@mgdirectmail.binance.com",
+      "Date": "Thu, 16 Oct 2025 14:00:33 +0000 (UTC)",
+      "From": "Binance <do_not_reply@mgdirectmail.binance.com>",
+      "To": "bernhardbudiono@gmail.com",
+      "Message-ID": "<231586333.314865.1760623233871@message-9b8795bdf-x9jdd>",
+      "Subject": "Recurring Buy Deduction Reminder - 2025-10-16 14:00:32 (UTC)",
+      "MIME-Version": "1.0",
+      "Content-Transfer-Encoding": "base64",
+      "X-Mailgun-Variables": "{\"messageId\":\"1760623232849-b02eadf7c73142528eee6962e97bdc52\",\"authToken\":\"2400bdb1981ef3da29767d11b1c03c0ea7a5302a593c755c43b93b09811821430d2506ce1f5c5d2919330b0a227b03fc963ff25922dc0d59669c9be812728389\"}",
+      "Content-Type": "text/html; charset=\"utf-8\""
+    }
+  },
+  "ground_truth": {
+    "id": "199ed52d5b05c641",
+    "merchant": "Binance",
+    "amount": 0.0,
+    "date": "Thu, 16 Oct 2025 14:00:33 +0000 (UTC)",
+    "category": "Investment",
+    "items": 0,
+    "confidence": 0.3,
+    "rawText": "Recurring Buy Deduction Reminder Your recurring plan is about to be charged tomorrow, to avoid investment failure, please make sure your bank account has enough balance. Repeat on: Every week, Friday...",
+    "emailSubject": "Recurring Buy Deduction Reminder - 2025-10-16 14:00:32 (UTC)",
+    "emailSender": "Binance <do_not_reply@mgdirectmail.binance.com>",
+    "gstAmount": null,
+    "abn": null,
+    "invoiceNumber": "EMAIL-199ed52d",
+    "paymentMethod": null
+  }
+}

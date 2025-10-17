@@ -1,0 +1,51 @@
+{
+  "email_number": 4,
+  "email_id": "199eea08c36eec62",
+  "original_email": {
+    "id": "199eea08c36eec62",
+    "subject": "Thanks for your payment!",
+    "sender": "Afterpay <donotreply@afterpay.com>",
+    "date": "Thu, 16 Oct 2025 20:05:23 +0000 (UTC)",
+    "snippet": "Hi Bernhard Budiono Thank you for your recent payment. Please find further details below. Payment confirmation Total amount paid $519.65 Payment date Fri, 17 Oct 2025 Repayments Payment method",
+    "raw_headers": {
+      "Delivered-To": "bernhardbudiono@gmail.com",
+      "Received": "from MTM2ODY0OQ (unknown) by geopod-ismtpd-0 (SG) with HTTP id 3klmnoJxSe-Xi8hUOoBKQA Thu, 16 Oct 2025 20:05:22.900 +0000 (UTC)",
+      "X-Google-Smtp-Source": "AGHT+IEv2P8qqw/euXR5poX3D9dKW3XgYMoBzkOU27xXMzNPtiJsZ8rhuh6YgXfVoRTirrWq77uC",
+      "X-Received": "by 2002:a05:620a:468e:b0:84b:db25:4f0 with SMTP id af79cd13be357-8906ee83453mr182418485a.38.1760645123412;        Thu, 16 Oct 2025 13:05:23 -0700 (PDT)",
+      "ARC-Seal": "i=1; a=rsa-sha256; t=1760645123; cv=none;        d=google.com; s=arc-20240605;        b=delu87dtDO7HVPhl8eBuH5solE/oEWu4e3MHW6E/dTRzNdhdtoprDV5/EV4PVBRfr9         5y2gFNqQYylEc3WGRdIr7fRzXuuvDMXL1Y6qYeruClgjzN2un9+Z5l/Zgnn6r4J269AH         Pm6/v0Q3YdVQ5SBtUYBmHxd50tUqrw+Eci4S289Mk9/o4ZETflVitxPWko8fdHKcAXBF         aNh4uh+J2CA/OHBuv9jyiaaBVxVqVdFlb0bftf2MKd9122rgwRVl38tg0PzoCbDYfNHU         AYYZUD3oOQbhZbN9Hal9W0wcES2Xv4HSOlUg5hhUsl+uVtUdAmtE5NJtRKRkfU3oxo38         gI/w==",
+      "ARC-Message-Signature": "i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;        h=to:subject:message-id:mime-version:from:date         :content-transfer-encoding:dkim-signature:dkim-signature;        bh=MdJkKZEMEKuJiofi++0S3sIgpgrd/0vB2REeOJh2dVU=;        fh=HgV2OwwIc2pGKkyK3E8/B/ub/jYWmGaNs5Q7AGiha4E=;        b=JF+AeZd6S8O7r30yqmvuaofBXRn1n9arMfdXfrGAEe/Yoz06r1UhQb9xTRvqQGZ+YE         o6m9elfofXrbaSa+OZhn5yn8++wE/tGQt2U5Pi2TAdXO6AkUqEYWLcgDquuIsFP2cIwR         MUcmIpUDdZFpTvS+XBrmJYJvQs75nRwlULme3J9i2ybtcyXahhJ+x3ccx7EFJOTDevGR         /wwGz2n47Eci5yUpPhFZt5oY15SW1Lezb1acgWy1xRDi6Jsv4ehFATLf4p3fQfcLVvIu         28Zy1+MwpwcJTMJw2qLwDCNKPI8gJXIKuWcImCDnbCtdGlT80S8w0vkURQSlOuhX4+Dv         XMfw==;        dara=google.com",
+      "ARC-Authentication-Results": "i=1; mx.google.com;       dkim=pass header.i=@afterpay.com header.s=s1 header.b=\"vQ+AT7f/\";       dkim=pass header.i=@sendgrid.info header.s=smtpapi header.b=eD2jWv7D;       spf=pass (google.com: domain of bounces+1368649-7e60-bernhardbudiono=gmail.com@em6881.afterpay.com designates 168.245.115.7 as permitted sender) smtp.mailfrom=\"bounces+1368649-7e60-bernhardbudiono=gmail.com@em6881.afterpay.com\";       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=afterpay.com",
+      "Return-Path": "<bounces+1368649-7e60-bernhardbudiono=gmail.com@em6881.afterpay.com>",
+      "Received-SPF": "pass (google.com: domain of bounces+1368649-7e60-bernhardbudiono=gmail.com@em6881.afterpay.com designates 168.245.115.7 as permitted sender) client-ip=168.245.115.7;",
+      "Authentication-Results": "mx.google.com;       dkim=pass header.i=@afterpay.com header.s=s1 header.b=\"vQ+AT7f/\";       dkim=pass header.i=@sendgrid.info header.s=smtpapi header.b=eD2jWv7D;       spf=pass (google.com: domain of bounces+1368649-7e60-bernhardbudiono=gmail.com@em6881.afterpay.com designates 168.245.115.7 as permitted sender) smtp.mailfrom=\"bounces+1368649-7e60-bernhardbudiono=gmail.com@em6881.afterpay.com\";       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=afterpay.com",
+      "DKIM-Signature": "v=1; a=rsa-sha256; c=relaxed/relaxed; d=sendgrid.info; h=content-transfer-encoding:content-type:date:from:mime-version:subject: to:cc:content-type:date:feedback-id:from:subject:to; s=smtpapi; bh=MdJkKZEMEKuJiofi++0S3sIgpgrd/0vB2REeOJh2dVU=; b=eD2jWv7DhXzh85GqrsgC8E9fVmKbIA4IAo0Ua65edH5/qqRCuzaYnS5+iGnxjR2WxG4N aYwR+BHUOg4Zy9MaMyZyMYoGUFI32QFGsahzu2tsVWUczU4K1t/+mxcK2fQpZoVudguZsY PCcjRxpWLJU4Xp1UQ9JyiV52ExMZCzhKY=",
+      "Content-Transfer-Encoding": "quoted-printable",
+      "Content-Type": "text/html; charset=utf-8",
+      "Date": "Thu, 16 Oct 2025 20:05:23 +0000 (UTC)",
+      "From": "Afterpay <donotreply@afterpay.com>",
+      "Mime-Version": "1.0",
+      "Message-ID": "<3klmnoJxSe-Xi8hUOoBKQA@geopod-ismtpd-0>",
+      "Subject": "Thanks for your payment!",
+      "X-SG-EID": "u001.eQ3LyV/5oVozlhIXDcbZCzS36X758Ap9/FwUVyRN9BhdI/+7dYVxarh66BFWdAvnOCh0tiAqfAo+vFTo/oamy9+1khJ8T36duOEJq40kzLC13WRNqXCcfk+31Lca9vOaFrBysORBYurXYrOoj8DkfwpU0FFlVDPRRy6CIBDxJuAgzdgmnLMOTDV42IY0c29HLNE44LW8UDm8XH6mb3HjrlIKwlDOkdFwckB6jXNMdgz+zuC7/LGMC+lMvuO//npq",
+      "X-SG-ID": "u001.SdBcvi+Evd/bQef8eZF3BpIvDyPmB29YtesdHB1RHZm74+FvyHwrP93nOVDjiheO36Ig1uSovLvDFFrKCkvvPMUReHAQOLZtAYiM+Ryls0sqDTAtKnF02fIjuF8t5LEj",
+      "To": "bernhardbudiono@gmail.com",
+      "X-Entity-ID": "u001./jnFsTV/Du7E/XMp2p1sag=="
+    }
+  },
+  "ground_truth": {
+    "id": "199eea08c36eec62",
+    "merchant": "Afterpay",
+    "amount": 519.65,
+    "date": "Thu, 16 Oct 2025 20:05:23 +0000 (UTC)",
+    "category": "Finance",
+    "items": 0,
+    "confidence": 0.6,
+    "rawText": "Hi Bernhard Budiono Thank you for your recent payment. Please find further details below. Payment confirmation Total amount paid $519.65 Payment date Fri, 17 Oct 2025 Repayments Payment method...",
+    "emailSubject": "Thanks for your payment!",
+    "emailSender": "Afterpay <donotreply@afterpay.com>",
+    "gstAmount": null,
+    "abn": null,
+    "invoiceNumber": "EMAIL-199eea08",
+    "paymentMethod": null
+  }
+}
