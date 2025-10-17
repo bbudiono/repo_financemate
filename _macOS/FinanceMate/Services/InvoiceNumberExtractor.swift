@@ -59,14 +59,28 @@ struct MerchantCategorizer {
     static func infer(from merchant: String) -> String {
         let m = merchant.lowercased()
 
-        // Groceries
+        // PRIORITY ORDER MATTERS - Specific before generic to prevent mis-categorization
+
+        // Hardware (MUST be BEFORE Retail/Groceries) - Screenshot showed Bunnings as "Groceries"
+        if ["bunnings", "mitre"].contains(where: { m.contains($0) }) { return "Hardware" }
+
+        // Office Supplies (MUST be BEFORE Retail/Groceries) - Screenshot showed Officeworks as "Groceries"
+        if ["officeworks", "staples"].contains(where: { m.contains($0) }) { return "Office Supplies" }
+
+        // Finance/BNPL (MUST be BEFORE Utilities) - Screenshot showed Zip as "Utilities"
+        if ["afterpay", "zip", "zipmoney", "paypal", "anz", "nab", "commonwealth", "westpac", "shopback"].contains(where: { m.contains($0) }) { return "Finance" }
+
+        // Investment (specific) - Screenshot showed BrickX as "Retail"
+        if ["binance", "coinbase", "stake", "commsec", "crypto", "brickx", "raiz"].contains(where: { m.contains($0) }) { return "Investment" }
+
+        // Transport (petrol stations) - Ampol should be Transport
+        if ["uber", "taxi", "linkt", "toll", "ampol", "bp", "shell", "caltex", "7-eleven"].contains(where: { m.contains($0) }) { return "Transport" }
+
+        // Groceries (ACTUAL supermarkets ONLY)
         if ["woolworths", "coles", "aldi", "iga"].contains(where: { m.contains($0) }) { return "Groceries" }
 
-        // Transport
-        if ["uber", "taxi", "bp", "shell", "caltex", "petrol", "linkt", "toll"].contains(where: { m.contains($0) }) { return "Transport" }
-
-        // Retail
-        if ["bunnings", "kmart", "jb", "target", "big w", "officeworks", "umart", "amazon"].contains(where: { m.contains($0) }) { return "Retail" }
+        // Retail (department stores)
+        if ["kmart", "jb", "target", "big w", "myer", "amazon", "umart"].contains(where: { m.contains($0) }) { return "Retail" }
 
         // Utilities
         if ["telstra", "optus", "agl", "energy", "amigo"].contains(where: { m.contains($0) }) { return "Utilities" }
