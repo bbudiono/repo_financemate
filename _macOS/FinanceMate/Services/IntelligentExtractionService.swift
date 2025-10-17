@@ -174,6 +174,19 @@ class IntelligentExtractionService {
 
         do {
             let results = try context.fetch(request)
+
+            // CRITICAL FIX: Check for duplicates and clean up if found
+            if results.count > 1 {
+                NSLog("[EXTRACT-CACHE] WARNING - Found \(results.count) duplicate cached extractions for emailID: \(emailID)")
+                // Delete all but the most recent
+                let sorted = results.sorted { ($0.importedDate ?? Date.distantPast) > ($1.importedDate ?? Date.distantPast) }
+                for duplicate in sorted.dropFirst() {
+                    context.delete(duplicate)
+                    NSLog("[EXTRACT-CACHE] Deleted duplicate cached extraction")
+                }
+                try? context.save()
+            }
+
             guard let transaction = results.first else { return nil }
 
             // Convert Core Data Transaction to ExtractedTransaction

@@ -153,6 +153,11 @@ struct PersistenceController {
 
         transactionEntity.properties = [idAttr, amountAttr, descAttr, dateAttr, sourceAttr, categoryAttr, noteAttr, taxCategoryAttr, sourceEmailIDAttr, importedDateAttr, transactionTypeAttr, contentHashAttr]
 
+        // CRITICAL FIX: Add unique constraint on sourceEmailID to prevent duplicate Gmail extractions
+        // This prevents the same email being cached multiple times with different extracted data
+        let uniquenessConstraint = [sourceEmailIDAttr]
+        transactionEntity.uniquenessConstraints = [uniquenessConstraint]
+
         // MARK: - Relationships
 
         let lineItemsRelationship = NSRelationshipDescription()
