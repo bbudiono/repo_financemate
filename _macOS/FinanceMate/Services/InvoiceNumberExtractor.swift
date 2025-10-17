@@ -81,7 +81,13 @@ struct MerchantCategorizer {
         if ["nintendo", "playstation", "xbox", "steam", "epic"].contains(where: { m.contains($0) }) { return "Gaming" }
 
         // Dining
-        if ["pizza", "restaurant", "cafe", "menulog", "ubereats", "doordash"].contains(where: { m.contains($0) }) { return "Dining" }
+        if ["pizza", "restaurant", "cafe", "menulog", "ubereats", "doordash", "huboox"].contains(where: { m.contains($0) }) { return "Dining" }
+
+        // Sports & Fitness
+        if ["gym", "fitness", "smai"].contains(where: { m.contains($0) }) { return "Health & Fitness" }
+
+        // Entertainment
+        if ["apple", "google play", "itunes"].contains(where: { m.contains($0) }) { return "Entertainment" }
 
         return "Other"
     }

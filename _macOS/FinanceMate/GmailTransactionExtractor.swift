@@ -86,15 +86,50 @@ struct GmailTransactionExtractor {
                 .trimmingCharacters(in: .whitespaces)
 
             // PRIORITY 1: Check for known brand domains (handles subdomains correctly)
+            // Finance & Investment
             if domain.contains("binance.com") { return "Binance" }
-            if domain.contains("nintendo.com") { return "Nintendo" }
-            if domain.contains("paypal.com") { return "PayPal" }
             if domain.contains("afterpay.com") { return "Afterpay" }
+            if domain.contains("zip.co") { return "Zip" }
+            if domain.contains("paypal.com") { return "PayPal" }
+            if domain.contains("anz.com") { return "Anz" }
+            if domain.contains("nab.com") { return "NAB" }
+            if domain.contains("commbank.com") { return "CommBank" }
+            if domain.contains("westpac.com") { return "Westpac" }
+
+            // Retail
             if domain.contains("bunnings.com") { return "Bunnings" }
             if domain.contains("woolworths.com") { return "Woolworths" }
             if domain.contains("coles.com") { return "Coles" }
-            if domain.contains("klook.com") { return "Klook" }
+            if domain.contains("kmart.com") { return "Kmart" }
+            if domain.contains("target.com") { return "Target" }
+            if domain.contains("officeworks.com") { return "Officeworks" }
             if domain.contains("umart.com") { return "Umart" }
+
+            // Gaming & Entertainment
+            if domain.contains("nintendo.com") { return "Nintendo" }
+            if domain.contains("playstation.com") { return "PlayStation" }
+            if domain.contains("xbox.com") { return "Xbox" }
+            if domain.contains("steam") { return "Steam" }
+            if domain.contains("apple.com") { return "Apple" }
+
+            // Marketplaces & Intermediaries
+            if domain.contains("klook.com") { return "Klook" }
+            if domain.contains("clevarea.com") { return "Clevarea" }
+            if domain.contains("huboox.com") { return "Huboox" }
+
+            // Sports & Fitness
+            if domain.contains("gymandfitness.com") { return "Gym and Fitness" }
+            if domain.contains("smai.com") { return "Smai" }
+
+            // Utilities
+            if domain.contains("amigoenergy.com") { return "Amigoenergy" }
+            if domain.contains("agl.com") { return "AGL" }
+            if domain.contains("origin") { return "Origin" }
+
+            // Dining
+            if domain.contains("ubereats.com") { return "Uber Eats" }
+            if domain.contains("menulog.com") { return "Menulog" }
+            if domain.contains("doordash.com") { return "DoorDash" }
 
             // PRIORITY 2: Parse domain intelligently
             let parts = domain.components(separatedBy: ".")

@@ -1,0 +1,50 @@
+{
+  "email_number": 9,
+  "email_id": "199ecd23859b4b88",
+  "original_email": {
+    "id": "199ecd23859b4b88",
+    "subject": "Thank you for your Nintendo eShop purchase",
+    "sender": "Nintendo <no-reply@accounts.nintendo.com>",
+    "date": "Thu, 16 Oct 2025 11:40:23 +0000",
+    "snippet": "Tax Invoice -------------------- Date 16/10/2025 22:40:20 (AEDT) -------------------- Nintendo Australia Pty Limited 804 Stud Road Scoresby VIC 3179 Australia ABN: 43 060 566 083 http://www.nintendo.",
+    "raw_headers": {
+      "Delivered-To": "bernhardbudiono@gmail.com",
+      "Received": "from a57-83.smtp-out.us-west-2.amazonses.com (a57-83.smtp-out.us-west-2.amazonses.com. [54.240.57.83])        by mx.google.com with ESMTPS id 41be03b00d2f7-b6a22b20634si1307435a12.630.2025.10.16.04.40.24        for <bernhardbudiono@gmail.com>        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);        Thu, 16 Oct 2025 04:40:24 -0700 (PDT)",
+      "X-Google-Smtp-Source": "AGHT+IFNNtXVcCub8DKNxLjJq101KKFHAdH0gw3hUrPZuXFRzrG4FznfgMGOKyE4YIHWodvHFS7I",
+      "X-Received": "by 2002:a05:6a20:7493:b0:30f:7840:2c96 with SMTP id adf61e73a8af0-32da83e5e98mr41284559637.47.1760614824195;        Thu, 16 Oct 2025 04:40:24 -0700 (PDT)",
+      "ARC-Seal": "i=1; a=rsa-sha256; t=1760614824; cv=none;        d=google.com; s=arc-20240605;        b=OKtOaaHH8z3ycYppRg5OiU3cIpQbQkWxtbQ/5iXGsOf3BCnIZfVcq/umH9RVpjPB7Z         Yjw0vjowe3czaKYMRu5hQ8D5MdGxYauAvPpYLEJbveo3hmPiExPB10VP+vlN01nOb0AB         PPZcFc2C6T/SwrwQdOWyUkG4Ua/700/hvLwzvkdjMv4rrm9NRyJsEN8+d7FO8L7c2F9Q         8S8CnaUcERJ2nvkQay+AVllDy0ojHkSXlNL4uWt2RVC5ISOpKIiJmjDgM6TxY59F2O3h         WI78klV38CNB+fau9rXDpt3tzT83QJYefQvpjuYvwVT1O+o5EZQzM6pShJF/HJnehDYm         4Jcg==",
+      "ARC-Message-Signature": "i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;        h=feedback-id:date:message-id:content-transfer-encoding:mime-version         :subject:to:from:dkim-signature:dkim-signature;        bh=KnsUd4lYF8zKQVzr2iKXCPdrGPUJjqxzJI3WMLZlMIk=;        fh=HgV2OwwIc2pGKkyK3E8/B/ub/jYWmGaNs5Q7AGiha4E=;        b=QKLKQLoaL9OW/oFXPad+xmhhl8FXP7NbSyl8bTfEYitzYZd50J4vEAFXht88dkiYa5         GvXqR/SLKs7qZr2NQjTgLyVxgvA9krIHlTAE7efPXSxf0Cdj8MkraQIXUq0n0SdebjgS         Gi1DhksoLbMPojMYzXmlGb4hWu2XylP/96K7WCciZNHJDyogUHVqdDR4wVitdwLXZgbB         FcOzdcWf+sUmbtv0DSdkzPi7QosUpsSd3PKHriVyvOh3r+lB/vX7NIWPrg2yBC7jea8P         Wxu3OsQL18jfWufx20m3rdUevLJXp6VcFqRhAK+UQptvRqtbH3XvucbSsIupbMKNun80         vL1g==;        dara=google.com",
+      "ARC-Authentication-Results": "i=1; mx.google.com;       dkim=pass header.i=@accounts.nintendo.com header.s=xxfmhyli3wr726yshgfkfcxc6uchnbxu header.b=upgEbEY9;       dkim=pass header.i=@amazonses.com header.s=gdwg2y3kokkkj5a55z2ilkup5wp5hhxx header.b=T1A2CldT;       spf=pass (google.com: domain of 01010199ecd2378f-0af5288a-9126-4f1a-9a7a-979b650804fe-000000@us-west-2.amazonses.com designates 54.240.57.83 as permitted sender) smtp.mailfrom=01010199ecd2378f-0af5288a-9126-4f1a-9a7a-979b650804fe-000000@us-west-2.amazonses.com;       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=nintendo.com",
+      "Return-Path": "<01010199ecd2378f-0af5288a-9126-4f1a-9a7a-979b650804fe-000000@us-west-2.amazonses.com>",
+      "Received-SPF": "pass (google.com: domain of 01010199ecd2378f-0af5288a-9126-4f1a-9a7a-979b650804fe-000000@us-west-2.amazonses.com designates 54.240.57.83 as permitted sender) client-ip=54.240.57.83;",
+      "Authentication-Results": "mx.google.com;       dkim=pass header.i=@accounts.nintendo.com header.s=xxfmhyli3wr726yshgfkfcxc6uchnbxu header.b=upgEbEY9;       dkim=pass header.i=@amazonses.com header.s=gdwg2y3kokkkj5a55z2ilkup5wp5hhxx header.b=T1A2CldT;       spf=pass (google.com: domain of 01010199ecd2378f-0af5288a-9126-4f1a-9a7a-979b650804fe-000000@us-west-2.amazonses.com designates 54.240.57.83 as permitted sender) smtp.mailfrom=01010199ecd2378f-0af5288a-9126-4f1a-9a7a-979b650804fe-000000@us-west-2.amazonses.com;       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=nintendo.com",
+      "DKIM-Signature": "v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple; s=gdwg2y3kokkkj5a55z2ilkup5wp5hhxx; d=amazonses.com; t=1760614823; h=From:To:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Date:Feedback-ID; bh=KnsUd4lYF8zKQVzr2iKXCPdrGPUJjqxzJI3WMLZlMIk=; b=T1A2CldTnC19IHX0umpujH6qVsBDXfZDnA81CjEEMBuy8jTjvxuYBjeWQXpG4tlH adm6XddQp2l2xbbQpsVnn0pCeI4G0Fj6PwshPBkZ2GbxgG7SqL+KiZF40RQbViDw9mE +WZB9aZzoTjNyuu6bDTNqRNl2x4Qo+6ZmK+FlDwY=",
+      "From": "Nintendo <no-reply@accounts.nintendo.com>",
+      "To": "bernhardbudiono@gmail.com",
+      "Subject": "Thank you for your Nintendo eShop purchase",
+      "MIME-Version": "1.0",
+      "Content-Type": "text/plain; charset=UTF-8",
+      "Content-Transfer-Encoding": "quoted-printable",
+      "Message-ID": "<01010199ecd2378f-0af5288a-9126-4f1a-9a7a-979b650804fe-000000@us-west-2.amazonses.com>",
+      "Date": "Thu, 16 Oct 2025 11:40:23 +0000",
+      "Feedback-ID": "::1.us-west-2.9VoxOnUfe+X0ZHT1CPTInDLHXLN92ivp37lKZLtpkW0=:AmazonSES",
+      "X-SES-Outgoing": "2025.10.16-54.240.57.83"
+    }
+  },
+  "ground_truth": {
+    "id": "199ecd23859b4b88",
+    "merchant": "Nintendo",
+    "amount": 0.0,
+    "date": "Thu, 16 Oct 2025 11:40:23 +0000",
+    "category": "Gaming",
+    "items": 0,
+    "confidence": 0.7,
+    "rawText": "Tax Invoice -------------------- Date 16/10/2025 22:40:20 (AEDT) -------------------- Nintendo Australia Pty Limited 804 Stud Road Scoresby VIC 3179 Australia ABN: 43 060 566 083 http://www.nintendo....",
+    "emailSubject": "Thank you for your Nintendo eShop purchase",
+    "emailSender": "Nintendo <no-reply@accounts.nintendo.com>",
+    "gstAmount": null,
+    "abn": "43 060 566 083",
+    "invoiceNumber": "--------------------",
+    "paymentMethod": null
+  }
+}

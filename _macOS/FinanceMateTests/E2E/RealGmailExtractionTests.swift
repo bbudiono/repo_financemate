@@ -343,4 +343,157 @@ final class RealGmailExtractionTests: XCTestCase {
         // Field 13: Payment Method
         // (Likely none in eShop receipt)
     }
+
+    // MARK: - MARKETPLACE INTERMEDIARY TESTS (Critical Edge Cases)
+
+    /// Email: Klook Marketplace Order - Bunnings mentioned in subject/body
+    /// CRITICAL: Subject may say "Bunnings" but sender IS Klook
+    func testMarketplace_Klook_BunningsOrder_All13Fields() async {
+        let email = GmailEmail(
+            id: "test-klook-bunnings",
+            subject: "Your Klook booking confirmed - Bunnings Warehouse",
+            sender: "noreply@klook.com",
+            date: Date(),
+            snippet: "Thank you for booking with Klook. Merchant: Bunnings Warehouse. Total: $123.45 GST: $11.23"
+        )
+
+        let results = await IntelligentExtractionService.extract(from: email)
+        XCTAssertEqual(results.count, 1)
+        let tx = results[0]
+
+        // CRITICAL: Merchant MUST be "Klook" (who sent the email)
+        // NOT "Bunnings" (mentioned in subject/body)
+        XCTAssertEqual(tx.merchant, "Klook", "❌ MARKETPLACE BUG: Klook email MUST show merchant as Klook, not Bunnings from subject")
+        XCTAssertEqual(tx.emailSender, "noreply@klook.com")
+        XCTAssertEqual(tx.amount, 123.45, accuracy: 0.01)
+        XCTAssertEqual(tx.gstAmount, 11.23, accuracy: 0.01)
+        XCTAssertNotEqual(tx.merchant, "Bunnings", "❌ Must NOT extract Bunnings from subject when sender is Klook")
+    }
+
+    /// Email: Clevarea Marketplace - Bunnings product
+    func testMarketplace_Clevarea_BunningsProduct_All13Fields() async {
+        let email = GmailEmail(
+            id: "test-clevarea-bunnings",
+            subject: "Order confirmation - Bunnings item",
+            sender: "orders@ma.clevarea.com.au",
+            date: Date(),
+            snippet: "Your order from Bunnings is confirmed. Total: $145.60 GST: $11.15"
+        )
+
+        let results = await IntelligentExtractionService.extract(from: email)
+        XCTAssertEqual(results.count, 1)
+        let tx = results[0]
+
+        // CRITICAL: Merchant MUST be "Clevarea"
+        XCTAssertEqual(tx.merchant, "Clevarea", "❌ Clevarea marketplace email showing wrong merchant")
+        XCTAssertTrue(tx.emailSender.contains("clevarea"), "Sender must contain clevarea domain")
+        XCTAssertEqual(tx.amount, 145.60, accuracy: 0.01)
+        XCTAssertNotEqual(tx.merchant, "Bunnings", "❌ Must NOT extract Bunnings from body when sender is Clevarea")
+    }
+
+    /// Email: Huboox Marketplace - Three Kings Pizza
+    func testMarketplace_Huboox_ThreeKingsPizza_All13Fields() async {
+        let email = GmailEmail(
+            id: "test-huboox-pizza",
+            subject: "Three Kings Pizza - Order confirmed",
+            sender: "notify@tryhuboox.com",
+            date: Date(),
+            snippet: "Your Three Kings Pizza order is ready. Total: $123.00 GST: $11.18"
+        )
+
+        let results = await IntelligentExtractionService.extract(from: email)
+        XCTAssertEqual(results.count, 1)
+        let tx = results[0]
+
+        // Edge case: Should merchant be "Huboox" (sender) or "Three Kings Pizza" (actual restaurant)?
+        // Decision: Use SENDER domain as authoritative (Huboox)
+        XCTAssertEqual(tx.merchant, "Huboox", "❌ Marketplace platform (Huboox) is the sender, should be merchant")
+        XCTAssertTrue(tx.emailSender.contains("huboox"))
+        XCTAssertEqual(tx.amount, 123.00, accuracy: 0.01)
+        XCTAssertEqual(tx.category, "Dining", "Huboox should be Dining category")
+    }
+
+    /// Email: SMAI with BlueBet mention
+    func testEmail_SMAI_BlueBetConfusion_All13Fields() async {
+        let email = GmailEmail(
+            id: "test-smai-bluebet",
+            subject: "BlueBet partnership offer",
+            sender: "marketing@smai.com.au",
+            date: Date(),
+            snippet: "Special BlueBet offer for SMAI customers. Total: $123.45"
+        )
+
+        let results = await IntelligentExtractionService.extract(from: email)
+        XCTAssertEqual(results.count, 1)
+        let tx = results[0]
+
+        // CRITICAL: Merchant MUST be "SMAI" (sender)
+        XCTAssertEqual(tx.merchant, "Smai", "❌ SMAI sender showing wrong merchant")
+        XCTAssertTrue(tx.emailSender.contains("smai"))
+        XCTAssertNotEqual(tx.merchant, "BlueBet", "❌ BlueBet mentioned in subject but SMAI is sender")
+    }
+
+    /// Email: ANZ Corporate Name
+    func testEmail_ANZ_CorporateName_All13Fields() async {
+        let email = GmailEmail(
+            id: "test-anz-corporate",
+            subject: "ANZ Group Holdings Ltd - Statement",
+            sender: "noreply@anz.com.au",
+            date: Date(),
+            snippet: "ANZ Group Holdings Ltd. Account statement for October. Total fees: $112.30 GST: $10.21"
+        )
+
+        let results = await IntelligentExtractionService.extract(from: email)
+        XCTAssertEqual(results.count, 1)
+        let tx = results[0]
+
+        // Field validations
+        XCTAssertEqual(tx.merchant, "Anz", "❌ ANZ domain should extract as ANZ")
+        XCTAssertEqual(tx.emailSender, "noreply@anz.com.au")
+        XCTAssertEqual(tx.amount, 112.30, accuracy: 0.01)
+        XCTAssertEqual(tx.gstAmount, 10.21, accuracy: 0.01)
+        XCTAssertEqual(tx.category, "Finance", "ANZ should be Finance category")
+    }
+
+    /// Email: Apple Store Purchase
+    func testEmail_Apple_StorePurchase_All13Fields() async {
+        let email = GmailEmail(
+            id: "test-apple-store",
+            subject: "Your receipt from Apple",
+            sender: "no_reply@email.apple.com",
+            date: Date(),
+            snippet: "Thank you for your purchase. Total: $165.50 GST: $47.03"
+        )
+
+        let results = await IntelligentExtractionService.extract(from: email)
+        XCTAssertEqual(results.count, 1)
+        let tx = results[0]
+
+        XCTAssertEqual(tx.merchant, "Apple", "❌ Apple domain must extract as Apple")
+        XCTAssertTrue(tx.emailSender.contains("apple"))
+        XCTAssertEqual(tx.amount, 165.50, accuracy: 0.01)
+        XCTAssertEqual(tx.gstAmount, 47.03, accuracy: 0.01, "Should extract GST amount")
+    }
+
+    /// Email: Amigo Energy Utility Bill
+    func testEmail_AmigoEnergy_UtilityBill_All13Fields() async {
+        let email = GmailEmail(
+            id: "test-amigo-energy",
+            subject: "Your Amigo Energy Electricity bill",
+            sender: "billing@amigoenergy.com.au",
+            date: Date(),
+            snippet: "Your electricity bill is ready. Amount Due: $132.65 GST: $11.98"
+        )
+
+        let results = await IntelligentExtractionService.extract(from: email)
+        XCTAssertEqual(results.count, 1)
+        let tx = results[0]
+
+        XCTAssertEqual(tx.merchant, "Amigoenergy", "❌ Amigo Energy domain extraction")
+        XCTAssertTrue(tx.emailSender.contains("amigoenergy"))
+        XCTAssertEqual(tx.amount, 132.65, accuracy: 0.01)
+        XCTAssertEqual(tx.gstAmount, 11.98, accuracy: 0.01)
+        XCTAssertEqual(tx.category, "Utilities", "Energy company should be Utilities")
+    }
 }
+

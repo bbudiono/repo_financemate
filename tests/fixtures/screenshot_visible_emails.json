@@ -1,0 +1,147 @@
+{
+  "source": "User screenshot 2025-10-17 08:49:19",
+  "description": "Emails visible in Gmail table with merchant extraction issues",
+  "emails": [
+    {
+      "row": 1,
+      "date": "17 Oct",
+      "merchant_shown": "Gym and Fitness",
+      "category": "Utilities",
+      "amount": 139.00,
+      "gst": 12.64,
+      "from_shown": "gymandfitness.com.au",
+      "expected_merchant": "Gym and Fitness",
+      "status": "CORRECT"
+    },
+    {
+      "row": 2,
+      "date": "17 Oct",
+      "merchant_shown": "Bunnings",
+      "category": "Groceries",
+      "amount": 123.45,
+      "gst": 11.23,
+      "from_shown": "klook.com (partial visible)",
+      "expected_merchant": "Klook",
+      "status": "WRONG - Subject mentions Bunnings but sender is Klook"
+    },
+    {
+      "row": 3,
+      "date": "17 Oct",
+      "merchant_shown": "Bunnings",
+      "category": "Groceries",
+      "amount": 123.45,
+      "gst": 11.23,
+      "from_shown": "bunnings.com",
+      "expected_merchant": "Bunnings",
+      "status": "CORRECT"
+    },
+    {
+      "row": 4,
+      "date": "17 Oct",
+      "merchant_shown": "ANZ Group Holdings Ltd",
+      "category": "Groceries",
+      "amount": 112.30,
+      "gst": 10.21,
+      "from_shown": "Partial visible",
+      "expected_merchant": "ANZ",
+      "status": "NEEDS VALIDATION - Long corporate name"
+    },
+    {
+      "row": 5,
+      "date": "17 Oct",
+      "merchant_shown": "Bunnings Holdings Ltd",
+      "category": "Groceries",
+      "amount": 123.45,
+      "gst": 11.23,
+      "from_shown": "Partial visible",
+      "expected_merchant": "Unknown - need to see From domain",
+      "status": "SUSPICIOUS - Holdings Ltd in name"
+    },
+    {
+      "row": 6,
+      "date": "17 Oct",
+      "merchant_shown": "BlueBet",
+      "category": "Groceries",
+      "amount": 123.45,
+      "gst": 11.23,
+      "from_shown": "smai.com.au (from earlier context)",
+      "expected_merchant": "SMAI",
+      "status": "WRONG if BlueBet shown with SMAI sender"
+    },
+    {
+      "row": 7,
+      "date": "17 Oct",
+      "merchant_shown": "Angel Foundry",
+      "category": "Groceries",
+      "amount": 123.45,
+      "gst": 11.23,
+      "from_shown": "smai.com.au (suspected)",
+      "expected_merchant": "SMAI or Angel Foundry depending on sender",
+      "status": "NEEDS VALIDATION"
+    },
+    {
+      "row": 8,
+      "date": "17 Oct",
+      "merchant_shown": "Bunnings",
+      "category": "Groceries",
+      "amount": 145.60,
+      "gst": 11.15,
+      "from_shown": "MA.clevarea.com.au",
+      "expected_merchant": "Clevarea",
+      "status": "WRONG - Clevarea email showing as Bunnings"
+    },
+    {
+      "row": 9,
+      "date": "17 Oct",
+      "merchant_shown": "Three Kings Pizza",
+      "category": "Utilities",
+      "amount": 123.00,
+      "gst": 11.18,
+      "from_shown": "notify.tryhuboox.com",
+      "expected_merchant": "Huboox",
+      "status": "NEEDS VALIDATION - Marketplace order?"
+    },
+    {
+      "row": 11,
+      "date": "17 Oct",
+      "merchant_shown": "Bunnings",
+      "category": "Groceries",
+      "amount": 145.60,
+      "gst": 11.15,
+      "from_shown": "MA.clevarea.com.au",
+      "expected_merchant": "Clevarea",
+      "status": "WRONG - Duplicate of row 8"
+    },
+    {
+      "row": 14,
+      "date": "17 Oct",
+      "merchant_shown": "Apple",
+      "category": "Utilities",
+      "amount": 165.50,
+      "gst": 47.03,
+      "from_shown": "apple.com (suspected)",
+      "expected_merchant": "Apple",
+      "status": "LIKELY CORRECT"
+    },
+    {
+      "row": 18,
+      "date": "17 Oct",
+      "merchant_shown": "Amigo Energy",
+      "category": "Utilities",
+      "amount": 132.65,
+      "gst": 11.98,
+      "from_shown": "amigoenergy.com.au (suspected)",
+      "expected_merchant": "Amigo Energy",
+      "status": "LIKELY CORRECT"
+    }
+  ],
+  "edge_cases_identified": [
+    "Klook booking for Bunnings (marketplace intermediary)",
+    "Clevarea marketplace showing Bunnings",
+    "Huboox marketplace for Three Kings Pizza",
+    "Corporate name variations (ANZ Group Holdings Ltd)",
+    "Holdings company names (Bunnings Holdings Ltd)",
+    "Betting companies (BlueBet with wrong sender?)",
+    "Multiple identical amounts ($123.45 repeated) - suspicious"
+  ]
+}
