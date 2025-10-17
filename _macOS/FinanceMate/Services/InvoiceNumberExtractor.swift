@@ -63,10 +63,10 @@ struct MerchantCategorizer {
         if ["woolworths", "coles", "aldi", "iga"].contains(where: { m.contains($0) }) { return "Groceries" }
 
         // Transport
-        if ["uber", "taxi", "bp", "shell", "caltex", "petrol"].contains(where: { m.contains($0) }) { return "Transport" }
+        if ["uber", "taxi", "bp", "shell", "caltex", "petrol", "linkt", "toll"].contains(where: { m.contains($0) }) { return "Transport" }
 
         // Retail
-        if ["bunnings", "kmart", "jb", "target", "big w", "officeworks", "umart"].contains(where: { m.contains($0) }) { return "Retail" }
+        if ["bunnings", "kmart", "jb", "target", "big w", "officeworks", "umart", "amazon"].contains(where: { m.contains($0) }) { return "Retail" }
 
         // Utilities
         if ["telstra", "optus", "agl", "energy", "amigo"].contains(where: { m.contains($0) }) { return "Utilities" }
@@ -84,10 +84,13 @@ struct MerchantCategorizer {
         if ["pizza", "restaurant", "cafe", "menulog", "ubereats", "doordash", "huboox"].contains(where: { m.contains($0) }) { return "Dining" }
 
         // Sports & Fitness
-        if ["gym", "fitness", "smai"].contains(where: { m.contains($0) }) { return "Health & Fitness" }
+        if ["gym", "fitness", "smai", "biotek", "protein", "supplements"].contains(where: { m.contains($0) }) { return "Health & Fitness" }
 
         // Entertainment
         if ["apple", "google play", "itunes"].contains(where: { m.contains($0) }) { return "Entertainment" }
+
+        // Government
+        if ["government", "council", "goldcoast", ".gov"].contains(where: { m.contains($0) }) { return "Government" }
 
         return "Other"
     }

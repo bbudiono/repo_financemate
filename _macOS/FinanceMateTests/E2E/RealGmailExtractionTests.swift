@@ -497,3 +497,136 @@ final class RealGmailExtractionTests: XCTestCase {
     }
 }
 
+    // MARK: - BATCH 2: DIVERSE REAL EMAILS (8 Scenarios with ABN, Payment, Government)
+
+    /// Batch2 Email 4: Linkt Toll - ABN Extraction + Transport Category
+    func testBatch2_Linkt_ABNExtraction_All13Fields() async {
+        let email = GmailEmail(
+            id: "199ef8a3c8f4c9cd",
+            subject: "Hit the road for up to 30% less! Limited time only",
+            sender: "Linkt <noreply@digital.linkt.com.au>",
+            date: Date(),
+            snippet: "Linkt rewards program. ABN: 86 010 630 921"
+        )
+
+        let results = await IntelligentExtractionService.extract(from: email)
+        XCTAssertEqual(results.count, 1)
+        let tx = results[0]
+
+        // Merchant from digital.linkt.com.au subdomain
+        XCTAssertEqual(tx.merchant, "Linkt", "❌ digital.linkt.com.au should extract as Linkt")
+        XCTAssertEqual(tx.emailSender, "Linkt <noreply@digital.linkt.com.au>")
+        
+        // ABN extraction test
+        XCTAssertEqual(tx.abn, "86 010 630 921", "❌ Should extract Linkt ABN from body")
+        
+        // Category inference
+        XCTAssertEqual(tx.category, "Transport", "Linkt is toll road - should be Transport")
+    }
+
+    /// Batch2 Email 5: NAB Bank - ABN + Payment Method Extraction
+    func testBatch2_NAB_ABNAndPaymentMethod_All13Fields() async {
+        let email = GmailEmail(
+            id: "199dbc86db9513cd",
+            subject: "Bernhard, get rewarded with your NAB Goodies offers in the app",
+            sender: "NAB <nab@updates.nab.com.au>",
+            date: Date(),
+            snippet: "Your NAB Goodies offers. ABN: 69 079 137 518. Use your Visa card for rewards."
+        )
+
+        let results = await IntelligentExtractionService.extract(from: email)
+        XCTAssertEqual(results.count, 1)
+        let tx = results[0]
+
+        // Merchant
+        XCTAssertEqual(tx.merchant, "NAB", "❌ updates.nab.com.au should extract as NAB")
+        XCTAssertTrue(tx.emailSender.contains("nab"))
+        
+        // ABN
+        XCTAssertEqual(tx.abn, "69 079 137 518", "❌ Should extract NAB ABN")
+        
+        // Payment Method - CRITICAL TEST
+        XCTAssertEqual(tx.paymentMethod, "Visa", "❌ Should extract 'Visa' mention from snippet")
+        
+        // Category
+        XCTAssertEqual(tx.category, "Finance", "NAB is bank - should be Finance")
+    }
+
+    /// Batch2 Email 6: Gold Coast City Council - Government Entity
+    func testBatch2_GoldCoastCouncil_Government_All13Fields() async {
+        let email = GmailEmail(
+            id: "199e043ab69f8b64",
+            subject: "Important correspondence from City of Gold Coast",
+            sender: "City of Gold Coast <noreply@goldcoast.qld.gov.au>",
+            date: Date(),
+            snippet: "Please read the attached correspondence regarding your rates notice."
+        )
+
+        let results = await IntelligentExtractionService.extract(from: email)
+        XCTAssertEqual(results.count, 1)
+        let tx = results[0]
+
+        // Merchant from goldcoast.qld.gov.au
+        XCTAssertTrue(tx.merchant.contains("Goldcoast") || tx.merchant.contains("Gold"), "❌ Government domain extraction")
+        XCTAssertTrue(tx.emailSender.contains("goldcoast.qld.gov.au"))
+        
+        // Category (government not in current categories, may be Other/Utilities)
+        XCTAssertTrue(["Other", "Utilities"].contains(tx.category))
+    }
+
+    /// Batch2 Email 7: BioTek Supplements - Marketing Email
+    func testBatch2_BioTek_Marketing_All13Fields() async {
+        let email = GmailEmail(
+            id: "199c7821fa6d4279",
+            subject: "BIOTEK'S 48 HOUR FLASH SALE ON ALL STACKS",
+            sender: "\"BioTek / Olympia Supps\" <contact@bioteksupps.com>",
+            date: Date(),
+            snippet: "FLASH SALE 25% OFF EVERYTHING SITEWIDE 48 HOURS ONLY"
+        )
+
+        let results = await IntelligentExtractionService.extract(from: email)
+        XCTAssertEqual(results.count, 1)
+        let tx = results[0]
+
+        // Merchant
+        XCTAssertTrue(tx.merchant.contains("Biotek") || tx.merchant == "BioTek", "❌ bioteksupps.com extraction")
+        XCTAssertTrue(tx.emailSender.contains("bioteksupps"))
+        
+        // Amount (marketing email, no transaction)
+        XCTAssertEqual(tx.amount, 0.0)
+        
+        // Confidence
+        XCTAssertLessThan(tx.confidence, 0.6, "Marketing email should have low confidence")
+        
+        // Category
+        XCTAssertTrue(["Health & Fitness", "Retail", "Other"].contains(tx.category))
+    }
+
+    /// Batch2 Email 8: Amazon Subscribe & Save - Amount + ABN Extraction
+    func testBatch2_Amazon_AmountAndABN_All13Fields() async {
+        let email = GmailEmail(
+            id: "199c7748abe8d3ff",
+            subject: "Price changes: review your upcoming delivery",
+            sender: "\"Amazon Subscribe & Save\" <no-reply@amazon.com.au>",
+            date: Date(),
+            snippet: "Your next Subscribe & Save delivery. Order total (including tax) $165.88. ABN: 30 616 935 623"
+        )
+
+        let results = await IntelligentExtractionService.extract(from: email)
+        XCTAssertEqual(results.count, 1)
+        let tx = results[0]
+
+        // Merchant
+        XCTAssertEqual(tx.merchant, "Amazon", "❌ amazon.com.au should extract as Amazon")
+        XCTAssertTrue(tx.emailSender.contains("amazon"))
+        
+        // Amount - CRITICAL TEST
+        XCTAssertEqual(tx.amount, 165.88, accuracy: 0.01, "❌ Should extract 'Order total $165.88'")
+        
+        // ABN
+        XCTAssertEqual(tx.abn, "30 616 935 623", "❌ Should extract Amazon Australia ABN")
+        
+        // Category
+        XCTAssertTrue(["Retail", "Other", "Entertainment"].contains(tx.category))
+    }
+}

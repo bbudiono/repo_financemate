@@ -131,12 +131,29 @@ struct GmailTransactionExtractor {
             if domain.contains("menulog.com") { return "Menulog" }
             if domain.contains("doordash.com") { return "DoorDash" }
 
+            // Transport
+            if domain.contains("linkt.com") { return "Linkt" }
+            if domain.contains("uber.com") { return "Uber" }
+
+            // Supplements & Health
+            if domain.contains("bioteksupps.com") { return "Biotek" }
+
+            // E-commerce
+            if domain.contains("amazon.com") { return "Amazon" }
+
+            // Government (.gov.au domains)
+            if domain.contains(".gov.au") || domain.contains(".qld.gov") {
+                // Extract council/government name
+                if domain.contains("goldcoast") { return "Goldcoast" }
+                return "Government"
+            }
+
             // PRIORITY 2: Parse domain intelligently
             let parts = domain.components(separatedBy: ".")
 
             // Skip common prefixes and suffixes
-            let skipPrefixes = ["noreply", "no-reply", "info", "mail", "hello", "support", "receipts", "orders", "donotreply", "do_not_reply", "service", "accounts", "mgdirectmail"]
-            let skipSuffixes = ["com", "au", "co", "net", "org", "io"]
+            let skipPrefixes = ["noreply", "no-reply", "info", "mail", "hello", "support", "receipts", "orders", "donotreply", "do_not_reply", "service", "accounts", "mgdirectmail", "digital", "updates", "contact", "notify", "email"]
+            let skipSuffixes = ["com", "au", "co", "net", "org", "io", "gov"]
 
             // Find first meaningful part
             for part in parts where !skipPrefixes.contains(part.lowercased()) && !skipSuffixes.contains(part.lowercased()) && part.count > 2 {
