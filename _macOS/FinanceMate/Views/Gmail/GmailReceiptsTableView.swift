@@ -62,7 +62,8 @@ struct GmailReceiptsTableView: View {
                     do {
                         try context.execute(batchDelete)
                         try context.save()
-                        NSLog("[CACHE-CLEAR] ✓ Cleared Core Data extraction cache")
+                        context.reset()  // Force Core Data to refresh in-memory objects
+                        NSLog("[CACHE-CLEAR] ✓ Cleared Core Data extraction cache + reset context")
                     } catch {
                         NSLog("[CACHE-CLEAR] ❌ Failed to clear Core Data: \(error)")
                     }
