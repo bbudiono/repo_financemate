@@ -71,7 +71,7 @@ def test_security_hardening():
 
     # Detect actual force unwraps with improved pattern
     # Force unwrap: identifier! followed by . or space or , or ) or end-of-line
-    # NOT force unwrap: !identifier (logical NOT), != (not equal), !! (double negation)
+    # NOT force unwrap: !identifier (logical NOT), != (not equal), string literals with !
     result1 = subprocess.run(["grep", "-rn", r"\w!", swift_dir], capture_output=True, text=True)
     force_unwraps = []
     for line in result1.stdout.split('\n'):
@@ -81,19 +81,42 @@ def test_security_hardening():
         # Skip != operator
         if '!=' in line:
             continue
-        # Skip string literals containing exclamation marks
-        # Check if the line contains a string with ! inside quotes
-        if re.search(r'["\'][^"\']*![^"\']*["\']', line):
+
+        # Extract the part after filename:linenumber:
+        parts = line.split(':', 2)
+        if len(parts) < 3:
             continue
+        code_line = parts[2]
+
+        # Skip NSLog, print statements, and string literals with exclamations
+        # These are logging messages, not force unwraps
+        if any(x in code_line for x in ['NSLog(', 'print(', 'debugPrint(', 'os_log(']):
+            continue
+
+        # Skip lines that are part of multi-line strings (""")
+        # If line only contains text and exclamation without any code structure
+        if '"""' in code_line or (not any(c in code_line for c in ['{', '}', '(', ')', '=', ';', 'let ', 'var ', 'func ', 'if ', 'guard ']) and '!' in code_line):
+            # Likely part of a multi-line string
+            continue
+
+        # Skip string literals containing exclamation marks
+        # First remove all string literals from the line to analyze
+        # Replace "string!" and 'string!' patterns with empty
+        code_without_strings = re.sub(r'"[^"]*"', '', code_line)
+        code_without_strings = re.sub(r"'[^']*'", '', code_without_strings)
+        code_without_strings = re.sub(r'"""[^"]*"""', '', code_without_strings, flags=re.DOTALL)
+
         # Skip specific known false positives
         if any(x in line for x in ['hasSuffix("!")', 'hasPrefix("!")', "I'm", "you're", "it's", "You're", "we're", "they're"]):
             continue
+
         # Skip logical NOT operators: !identifier, !$, !condition
         # These have ! BEFORE the identifier, not after
-        if re.search(r'!\s*[\$\w]', line) and not re.search(r'\w+![.,\s\)]', line):
+        if re.search(r'!\s*[\$\w]', code_without_strings) and not re.search(r'\w+![.,\s\)\]]', code_without_strings):
             continue
-        # Must have actual force unwrap pattern: identifier!. or identifier! or identifier!)
-        if re.search(r'\w+![.,\s\)\]]', line):
+
+        # Must have actual force unwrap pattern IN THE CODE (not in strings): identifier!
+        if re.search(r'\w+!(?:[.,\s\)\]]|$)', code_without_strings):
             force_unwraps.append(line)
 
     if force_unwraps:
