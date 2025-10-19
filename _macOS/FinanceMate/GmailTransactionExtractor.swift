@@ -84,7 +84,9 @@ struct GmailTransactionExtractor {
             let displayName = String(sender[..<angleBracket]).trimmingCharacters(in: .whitespaces)
             // Filter out personal names (keep business names)
             if !displayName.isEmpty && !displayName.contains("Bernhard") && !displayName.contains("Budiono") {
-                return displayName
+                // Normalize verbose business names to brand name only
+                let normalized = normalizeDisplayName(displayName)
+                return normalized
             }
         }
 
@@ -198,6 +200,48 @@ struct GmailTransactionExtractor {
         }
 
         return nil
+    }
+
+    /// Normalize verbose display names to short brand names
+    /// "Bunnings Warehouse" → "Bunnings", "ANZ Group Holdings Ltd" → "ANZ"
+    private static func normalizeDisplayName(_ displayName: String) -> String {
+        let name = displayName.trimmingCharacters(in: .whitespaces)
+
+        // Remove common business suffixes
+        var normalized = name
+            .replacingOccurrences(of: " Pty Ltd", with: "", options: .caseInsensitive)
+            .replacingOccurrences(of: " Pty. Ltd.", with: "", options: .caseInsensitive)
+            .replacingOccurrences(of: " Limited", with: "", options: .caseInsensitive)
+            .replacingOccurrences(of: " Ltd", with: "", options: .caseInsensitive)
+            .replacingOccurrences(of: " Group Holdings", with: "", options: .caseInsensitive)
+            .replacingOccurrences(of: ".com.au", with: "", options: .caseInsensitive)
+            .replacingOccurrences(of: ".com", with: "", options: .caseInsensitive)
+            .replacingOccurrences(of: " Online", with: "", options: .caseInsensitive)
+            .replacingOccurrences(of: " Prime", with: "", options: .caseInsensitive)
+            .trimmingCharacters(in: .whitespaces)
+
+        // Specific business name mappings
+        if normalized.lowercased().contains("bunnings warehouse") || normalized.lowercased() == "bunnings warehouse" {
+            return "Bunnings"
+        }
+        if normalized.lowercased().contains("anz") {
+            return "ANZ"
+        }
+        if normalized.lowercased().contains("amazon") {
+            return "Amazon"
+        }
+        if normalized.lowercased().contains("officeworks") {
+            return "Officeworks"
+        }
+
+        // Return first word for multi-word names (unless it's a known full name)
+        let words = normalized.components(separatedBy: " ")
+        if words.count > 2 && !["City of"].contains(where: { normalized.hasPrefix($0) }) {
+            // "ANZ Group" → "ANZ", but keep "City of Gold Coast"
+            return words[0]
+        }
+
+        return normalized
     }
 
     static func extractLineItems(from content: String) -> [GmailLineItem] {
