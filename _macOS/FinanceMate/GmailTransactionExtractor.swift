@@ -77,6 +77,31 @@ struct GmailTransactionExtractor {
     }
 
     static func extractMerchant(from subject: String, sender: String) -> String? {
+        // PRIORITY 0A: Check for display name before angle bracket
+        // "City of Gold Coast <noreply@goldcoast.qld.gov.au>" → "City of Gold Coast"
+        if let angleBracket = sender.firstIndex(of: "<"),
+           angleBracket != sender.startIndex {
+            let displayName = String(sender[..<angleBracket]).trimmingCharacters(in: .whitespaces)
+            // Filter out personal names (keep business names)
+            if !displayName.isEmpty && !displayName.contains("Bernhard") && !displayName.contains("Budiono") {
+                return displayName
+            }
+        }
+
+        // PRIORITY 0B: Check for business name in email username (before @)
+        // "OurSage@domain.com" → "OurSage" (business name)
+        // "noreply@domain.com" → Skip to domain parsing
+        if let atIndex = sender.firstIndex(of: "@") {
+            let username = String(sender[..<atIndex]).trimmingCharacters(in: .whitespaces)
+            let skipUsernames = ["noreply", "no-reply", "donotreply", "do_not_reply", "info", "support", "service", "hello", "contact", "billing", "receipts", "orders"]
+
+            // If username looks like a business name (not generic), use it
+            if !skipUsernames.contains(username.lowercased()) && username.count > 2 {
+                // Normalize: "OurSage" → "Oursage"
+                return username.capitalized
+            }
+        }
+
         // FIX: ALWAYS use email sender domain as merchant - it's the authoritative source
         // Subject lines can mention other merchants (e.g., "Klook booking for Bunnings")
         // but the SENDER is who actually sent the receipt/invoice
