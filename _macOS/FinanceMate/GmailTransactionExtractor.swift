@@ -77,6 +77,8 @@ struct GmailTransactionExtractor {
     }
 
     static func extractMerchant(from subject: String, sender: String) -> String? {
+        NSLog("[MERCHANT-EXTRACT] Subject: '\(subject.prefix(50))', Sender: '\(sender.prefix(80))'")
+
         // PRIORITY 0A: Check for display name before angle bracket
         // "City of Gold Coast <noreply@goldcoast.qld.gov.au>" → "City of Gold Coast"
         if let angleBracket = sender.firstIndex(of: "<"),
@@ -86,6 +88,7 @@ struct GmailTransactionExtractor {
             if !displayName.isEmpty && !displayName.contains("Bernhard") && !displayName.contains("Budiono") {
                 // Normalize verbose business names to brand name only
                 let normalized = normalizeDisplayName(displayName)
+                NSLog("[MERCHANT-EXTRACT] → Display name: '\(displayName)' → Normalized: '\(normalized)'")
                 return normalized
             }
         }
@@ -172,12 +175,15 @@ struct GmailTransactionExtractor {
             if domain.contains(".gov.au") || domain.contains(".qld.gov") {
                 // Extract department/agency name from domain (e.g., defence.gov.au → "Defence")
                 let parts = domain.components(separatedBy: ".")
+                NSLog("[MERCHANT-EXTRACT] GOV DOMAIN: '\(domain)' Parts: \(parts)")
 
                 // Get the first meaningful part (skip www, mail, noreply)
                 if let dept = parts.first, !["www", "mail", "noreply", "no-reply"].contains(dept.lowercased()) {
                     // Specific government entities - return full proper names
                     switch dept.lowercased() {
-                    case "defence": return "Department of Defence"
+                    case "defence":
+                        NSLog("[MERCHANT-EXTRACT] → Matched defence → Department of Defence")
+                        return "Department of Defence"
                     case "goldcoast": return "Gold Coast Council"
                     case "ato": return "Australian Taxation Office"
                     case "centrelink": return "Centrelink"
@@ -220,15 +226,19 @@ struct GmailTransactionExtractor {
             }
 
             // Fallback: Use first non-skipped part
-            return parts.first?.capitalized ?? "Unknown"
+            let fallback = parts.first?.capitalized ?? "Unknown"
+            NSLog("[MERCHANT-EXTRACT] → Fallback: '\(fallback)' from domain '\(domain)'")
+            return fallback
         }
 
+        NSLog("[MERCHANT-EXTRACT] → Returning nil (no merchant found)")
         return nil
     }
 
     /// Normalize verbose display names to short brand names
     /// "Bunnings Warehouse" → "Bunnings", "ANZ Group Holdings Ltd" → "ANZ"
     private static func normalizeDisplayName(_ displayName: String) -> String {
+        NSLog("[NORMALIZE] Input: '\(displayName)'")
         let name = displayName.trimmingCharacters(in: .whitespaces)
 
         // Remove common business suffixes
@@ -244,11 +254,15 @@ struct GmailTransactionExtractor {
             .replacingOccurrences(of: " Prime", with: "", options: .caseInsensitive)
             .trimmingCharacters(in: .whitespaces)
 
+        NSLog("[NORMALIZE] After suffix removal: '\(normalized)'")
+
         // Specific business name mappings
         if normalized.lowercased().contains("bunnings warehouse") || normalized.lowercased() == "bunnings warehouse" {
+            NSLog("[NORMALIZE] → Matched Bunnings Warehouse → Bunnings")
             return "Bunnings"
         }
         if normalized.lowercased().contains("anz") {
+            NSLog("[NORMALIZE] → Matched ANZ")
             return "ANZ"
         }
         if normalized.lowercased().contains("amazon") {
@@ -262,9 +276,11 @@ struct GmailTransactionExtractor {
         let words = normalized.components(separatedBy: " ")
         if words.count > 2 && !["City of"].contains(where: { normalized.hasPrefix($0) }) {
             // "ANZ Group" → "ANZ", but keep "City of Gold Coast"
+            NSLog("[NORMALIZE] → Multi-word, returning first: '\(words[0])'")
             return words[0]
         }
 
+        NSLog("[NORMALIZE] → Returning normalized: '\(normalized)'")
         return normalized
     }
 
