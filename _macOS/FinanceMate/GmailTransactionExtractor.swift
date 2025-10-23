@@ -170,8 +170,32 @@ struct GmailTransactionExtractor {
 
             // Government (.gov.au domains)
             if domain.contains(".gov.au") || domain.contains(".qld.gov") {
-                // Extract council/government name
-                if domain.contains("goldcoast") { return "Goldcoast" }
+                // Extract department/agency name from domain (e.g., defence.gov.au → "Defence")
+                let parts = domain.components(separatedBy: ".")
+
+                // Get the first meaningful part (skip www, mail, noreply)
+                if let dept = parts.first, !["www", "mail", "noreply", "no-reply"].contains(dept.lowercased()) {
+                    // Specific government entities - return full proper names
+                    switch dept.lowercased() {
+                    case "defence": return "Department of Defence"
+                    case "goldcoast": return "Gold Coast Council"
+                    case "ato": return "Australian Taxation Office"
+                    case "centrelink": return "Centrelink"
+                    case "qld": return "Queensland Government"
+                    case "nsw": return "New South Wales Government"
+                    case "vic": return "Victoria Government"
+                    case "wa": return "Western Australia Government"
+                    case "sa": return "South Australia Government"
+                    case "tas": return "Tasmania Government"
+                    case "act": return "Australian Capital Territory"
+                    case "nt": return "Northern Territory"
+                    default:
+                        // Capitalize generic government entity names
+                        return dept.capitalized + " Government"
+                    }
+                }
+
+                // Fallback for unusual structures
                 return "Government"
             }
 

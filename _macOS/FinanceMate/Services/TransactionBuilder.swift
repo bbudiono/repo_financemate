@@ -31,6 +31,7 @@ class TransactionBuilder {
         transaction.date = extracted.date
         transaction.source = "gmail"
         transaction.sourceEmailID = extracted.id
+        transaction.emailSource = extracted.emailSender  // CRITICAL FIX: Store sender for cache recovery
         // BLUEPRINT Line 151: Store content hash for cache validation
         transaction.contentHash = Int64(emailSnippet?.hashValue ?? extracted.rawText.hashValue)
         transaction.importedDate = Date()

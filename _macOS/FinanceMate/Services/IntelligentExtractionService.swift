@@ -190,9 +190,16 @@ class IntelligentExtractionService {
             guard let transaction = results.first else { return nil }
 
             // Convert Core Data Transaction to ExtractedTransaction
+            // CRITICAL FIX: Use proper merchant extraction instead of cached itemDescription
+            // itemDescription might be wrong if cache was poisoned - use authoritative email source
+            let merchant = GmailTransactionExtractor.extractMerchant(
+                from: transaction.note ?? "",
+                sender: transaction.emailSource ?? "unknown@unknown.com"
+            ) ?? "Unknown"
+
             return ExtractedTransaction(
                 id: emailID,
-                merchant: transaction.itemDescription.components(separatedBy: " - ").first ?? "Unknown",
+                merchant: merchant,  // Proper extraction, not itemDescription
                 amount: abs(transaction.amount),
                 date: transaction.date,
                 category: transaction.category,
@@ -200,7 +207,7 @@ class IntelligentExtractionService {
                 confidence: 0.9,  // Cached extractions are trusted
                 rawText: transaction.note ?? "",
                 emailSubject: transaction.note ?? "",
-                emailSender: "",
+                emailSender: transaction.emailSource ?? "",
                 gstAmount: nil,
                 abn: nil,
                 invoiceNumber: "CACHED-\(emailID.prefix(8))",
