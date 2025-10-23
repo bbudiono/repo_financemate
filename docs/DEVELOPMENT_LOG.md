@@ -11,6 +11,54 @@
 
 ---
 
+## 2025-10-24 07:50: CRITICAL FIX - Merchant Extraction Cache Poisoning (2 commits, 90 min)
+
+**CRITICAL P0 BUG FIXED**: defence.gov.au emails showing as "Bunnings" merchant
+
+### Root Cause Analysis:
+1. **Cache Poisoning**: Old cached Core Data transactions had wrong merchant values
+2. **Missing emailSource**: Old cache entries didn't store sender email (added in commit 98a583b8)
+3. **Cache Priority**: Cache check happened FIRST, so correct extraction logic never ran
+
+### Atomic TDD Fixes:
+
+**Commit 1: 98a583b8** (45 min)
+- Improved .gov.au domain extraction logic
+- Added 10+ government entity mappings (Defence, ATO, Centrelink, state govs)
+- Added emailSource field to Transaction entity
+- Populated emailSource in TransactionBuilder
+- Enhanced cache recovery to re-extract merchant from emailSource
+- Added 160 lines of unit tests (MerchantExtractionTests.swift)
+
+**Commit 2: 8d0a6cf5** (45 min)
+- Added automatic cache invalidation for old data (missing emailSource)
+- Enhanced test_gmail_transaction_extraction with REAL validation (not grep)
+- Test now verifies: defence.gov.au mapping, bunnings.com regression, cache guard
+- Deleted 6 useless report .md files (violated CLAUDE.md no-reports rule)
+- Build: ✅ GREEN | E2E: ✅ 20/20 (100%)
+
+### Technical Details:
+```swift
+// Before: Cache returned wrong merchant from itemDescription
+merchant: transaction.itemDescription.components(separatedBy: " - ").first
+
+// After: Auto-invalidate old cache, re-extract with correct logic
+guard let emailSource = transaction.emailSource else {
+    context.delete(transaction)  // Delete poisoned cache
+    return nil  // Force fresh extraction
+}
+let merchant = GmailTransactionExtractor.extractMerchant(..., sender: emailSource)
+```
+
+### Validation:
+- ✅ defence.gov.au → "Department of Defence" mapping verified in code
+- ✅ bunnings.com → "Bunnings" regression test passing
+- ✅ Cache invalidation guard clause present
+- ✅ Build GREEN, all 20 E2E tests passing
+- ⏳ **USER VERIFICATION PENDING**: Launch app → verify screenshot shows correct merchants
+
+---
+
 ## 2025-10-24: HONEST MVP RE-ASSESSMENT - Comprehensive Analysis Complete
 
 **CRITICAL FINDING:** Previous documentation claimed "33/33 (100%)" MVP complete, but systematic analysis reveals:

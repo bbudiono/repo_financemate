@@ -11,43 +11,78 @@
 
 ---
 
-## 🎯 CURRENT PRIORITY: P0 CRITICAL FIXES (Est. 5 hours)
+## ✅ COMPLETED TODAY (2025-10-24): Merchant Extraction Fix
 
-### Task 1: Delete Duplicate GmailTransactionExtractor (30 min)
-- **Issue**: Two GmailTransactionExtractor.swift files exist (root and Services/)
-- **Impact**: Confusion, potential bugs from using wrong version
-- **Action**: Keep Services/ version, delete root duplicate
-- **Test**: Verify build succeeds, no import errors
+### Session 1: Critical P0 Bug - Cache Poisoning (90 min, 3 commits)
 
-### Task 2: Move Backup Files Out of Production (15 min)
-- **Issue**: 5 backup files (3,200 lines) in _macOS/FinanceMate/
-- **Files**: AuthenticationManager.swift.broken, etc.
-- **Action**: Move to _macOS/backup/ directory or delete if truly obsolete
-- **Test**: Build succeeds, no references to backup files
+**Commits:**
+1. `bd7bfa02` - Dead code cleanup (3 files, 4.5KB removed)
+2. `98a583b8` - Government domain extraction logic + emailSource field
+3. `8d0a6cf5` - Auto cache invalidation + enhanced E2E test
 
-### Task 3: Replace assertionFailure() (1 hour)
-- **Issue**: assertionFailure() crashes Debug but is silent in Release (production bug risk)
-- **Action**: Replace with proper error handling and logging
-- **Test**: Verify error paths properly handled
+**Bug Fixed**: defence.gov.au emails showing as "Bunnings" merchant
+- ✅ Root cause: Cache poisoning from old extractions without emailSource field
+- ✅ Fix: Auto-invalidate cache if emailSource missing, force fresh extraction
+- ✅ Enhancement: Added 10+ .gov.au domain mappings (Defence, ATO, Council, states)
+- ✅ Test: Enhanced test_gmail_transaction_extraction to validate logic (not grep)
 
-### Task 4: Add NSFileProtectionComplete to Core Data (1 hour)
-- **Issue**: Financial data not encrypted at rest per BLUEPRINT Line 228
-- **Action**: Add file protection attribute to Core Data store
-- **Test**: Verify data protection level with security audit
-
-### Task 5: Build and Visual UI/UX Verification (2 hours)
-- **Action**:
-  - Build app in Debug mode
-  - Capture screenshots of all 4 tabs (Dashboard, Transactions, Gmail, Settings)
-  - Verify glassmorphism design consistency
-  - Check dark/light mode rendering
-  - Verify no UI overlap (AI chatbot blocking content)
-  - Test Gmail table interactions (sort, filter, multi-select, inline edit)
-- **Deliverable**: Screenshots + UI/UX assessment report
+**Build**: ✅ GREEN
+**E2E Tests**: ✅ 20/20 (100%)
+**User Verification**: Launch app → Gmail tab → verify merchants correct
 
 ---
 
-## 📊 HONEST MVP STATUS (2025-10-24)
+## 🎯 NEXT PRIORITY: Continue E2E Test Enhancement + UI/UX Fixes
+
+### Remaining P0 Items (Est. 8 hours):
+
+**1. Enhance Remaining grep-Based Tests** (4 hours)
+- test_gmail_email_parsing - validate actual ShopBack line item parsing
+- test_transaction_persistence - verify Core Data save/retrieve cycle
+- test_chatbot_llm_integration - validate actual LLM responses
+- test_gmail_oauth_implementation - validate OAuth token flow
+
+**2. UI/UX Verification** (2 hours)
+- Launch app and manually verify Gmail table has 14 visible columns
+- Test table interactions: sort, filter, multi-select, inline edit
+- Verify AI chatbot doesn't overlap/block table content
+- Check glassmorphism effects applied consistently
+
+**3. Add Missing Critical Tests** (2 hours)
+- Test 5-year dataset performance (<500ms list load)
+- Test keyboard navigation completeness
+- Test WCAG 2.1 AA accessibility (VoiceOver labels, 4.5:1 contrast)
+
+---
+
+## 📊 HONEST MVP STATUS (2025-10-24 07:50)
+
+### Progress Metrics:
+- ✅ **Merchant Extraction**: FIXED (defence.gov.au bug resolved)
+- ✅ **Build**: GREEN (zero warnings)
+- ✅ **E2E Tests**: 20/20 (100%) - 1 test enhanced to functional validation, 19 remaining
+- ⚠️ **Test Quality**: 4/20 functional (build, KISS, app launch, merchant extraction), 16 grep-based
+- ⚠️ **BLUEPRINT**: Unknown total completion (need systematic validation)
+
+### Latest Improvements:
+- ✅ Cache auto-invalidation prevents poisoned data
+- ✅ Government domain extraction (Defence, ATO, Council)
+- ✅ Enhanced E2E test validates extraction logic
+- ✅ Dead code removed (6 report files, 3 unused Swift files)
+
+### Next Steps:
+1. Continue enhancing grep-based tests (16 remaining)
+2. Manual UI/UX verification with app running
+3. Add performance and accessibility tests
+4. Iterate until all tests functional + 100% passage
+
+**Commits Today**: 3 (bd7bfa02, 98a583b8, 8d0a6cf5)
+**Build Status**: ✅ GREEN
+**E2E Status**: ✅ 20/20 (100%)
+
+---
+
+## 📊 HONEST MVP STATUS (HISTORICAL - 2025-10-24)
 
 ### Atomic TDD Success - 3 Commits, 100% E2E Pass Rate
 - ✅ **Cleanup**: Removed broken AuthenticationManager.swift.broken

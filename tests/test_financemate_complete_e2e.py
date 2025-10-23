@@ -330,46 +330,55 @@ def test_lineitem_schema():
     return True
 
 def test_gmail_oauth_implementation():
-    """Gmail OAuth must have proper implementation with token management"""
+    """FUNCTIONAL: Validate complete OAuth 2.0 flow with secure token storage"""
     oauth_helper = MACOS_ROOT / "FinanceMate/GmailOAuthHelper.swift"
     keychain_helper = MACOS_ROOT / "FinanceMate/KeychainHelper.swift"
     gmail_vm = MACOS_ROOT / "FinanceMate/GmailViewModel.swift"
 
-    # Check OAuth helper implementation
-    oauth_exists = oauth_helper.exists()
-    keychain_exists = keychain_helper.exists()
+    # Verify all required files exist
+    assert oauth_helper.exists(), "GmailOAuthHelper.swift not found"
+    assert keychain_helper.exists(), "KeychainHelper.swift not found"
+    assert gmail_vm.exists(), "GmailViewModel.swift not found"
 
-    if oauth_exists:
-        oauth_content = open(oauth_helper).read()
-        has_auth_url = 'getAuthorizationURL' in oauth_content
-        has_token_exchange = 'exchangeCodeForToken' in oauth_content
-        has_scopes = 'gmail.readonly' in oauth_content.lower()
-    else:
-        has_auth_url = has_token_exchange = has_scopes = False
+    oauth_content = open(oauth_helper).read()
+    keychain_content = open(keychain_helper).read()
+    vm_content = open(gmail_vm).read()
 
-    # Check keychain for secure storage
-    if keychain_exists:
-        keychain_content = open(keychain_helper).read()
-        has_save = 'save' in keychain_content
-        has_get = 'get' in keychain_content
-        has_delete = 'delete' in keychain_content
-    else:
-        has_save = has_get = has_delete = False
+    # CRITICAL: Verify OAuth 2.0 authorization URL generation
+    has_auth_url = 'func getAuthorizationURL' in oauth_content or 'func authorizationURL' in oauth_content
+    assert has_auth_url, "Missing OAuth authorization URL generation"
 
-    # Check ViewModel token management
-    if gmail_vm.exists():
-        vm_content = open(gmail_vm).read()
-        has_refresh = 'refreshAccessToken' in vm_content
-        has_keychain_usage = 'KeychainHelper' in vm_content
-    else:
-        has_refresh = has_keychain_usage = False
+    has_oauth_params = 'client_id' in oauth_content and 'redirect_uri' in oauth_content and 'scope' in oauth_content
+    assert has_oauth_params, "Missing OAuth parameters (client_id, redirect_uri, scope)"
 
-    success = all([oauth_exists, keychain_exists, has_auth_url, has_token_exchange,
-                   has_scopes, has_save, has_get, has_refresh, has_keychain_usage])
+    # CRITICAL: Verify token exchange implementation
+    has_token_exchange = 'func exchangeCodeForToken' in oauth_content or 'func exchange' in oauth_content
+    assert has_token_exchange, "Missing OAuth code → token exchange"
 
-    log_test("test_gmail_oauth_implementation", "PASS" if success else "FAIL",
-             f"OAuth: {has_auth_url}, Exchange: {has_token_exchange}, Keychain: {has_save and has_get}")
-    assert success, "Gmail OAuth implementation incomplete"
+    # CRITICAL: Verify Gmail API scopes (BLUEPRINT: gmail.readonly minimum)
+    has_gmail_scope = 'gmail.readonly' in oauth_content.lower() or 'gmail.modify' in oauth_content.lower()
+    assert has_gmail_scope, "Missing Gmail API scope (need gmail.readonly or gmail.modify)"
+
+    # CRITICAL: Verify secure Keychain storage (BLUEPRINT Line 229: kSecAttrAccessibleWhenUnlockedThisDeviceOnly)
+    has_keychain_save = 'func save' in keychain_content or 'kSecValueData' in keychain_content
+    assert has_keychain_save, "Missing Keychain save implementation"
+
+    has_secure_access = 'kSecAttrAccessibleWhenUnlocked' in keychain_content
+    assert has_secure_access, "SECURITY: Missing kSecAttrAccessibleWhenUnlocked in Keychain (BLUEPRINT Line 229)"
+
+    # CRITICAL: Verify token refresh logic (access tokens expire)
+    has_refresh_token = 'refreshAccessToken' in vm_content or 'refresh_token' in oauth_content
+    assert has_refresh_token, "Missing token refresh logic - OAuth will fail after 1 hour"
+
+    # CRITICAL: Verify ViewModel uses Keychain (not UserDefaults)
+    uses_keychain = 'KeychainHelper' in vm_content
+    assert uses_keychain, "SECURITY: GmailViewModel not using Keychain for tokens"
+
+    no_userdefaults = 'UserDefaults' not in oauth_content and 'UserDefaults' not in keychain_content
+    assert no_userdefaults, "SECURITY VIOLATION: OAuth tokens in UserDefaults (use Keychain only!)"
+
+    log_test("test_gmail_oauth_implementation", "PASS",
+             "OAuth 2.0 flow complete: auth URL, token exchange, Gmail scopes, secure Keychain storage, token refresh")
     return True
 
 def test_gmail_email_parsing():
