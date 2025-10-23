@@ -151,7 +151,13 @@ struct PersistenceController {
         contentHashAttr.isOptional = false
         contentHashAttr.defaultValue = 0
 
-        transactionEntity.properties = [idAttr, amountAttr, descAttr, dateAttr, sourceAttr, categoryAttr, noteAttr, taxCategoryAttr, sourceEmailIDAttr, importedDateAttr, transactionTypeAttr, contentHashAttr]
+        // CRITICAL FIX: Add emailSource to store sender email for cache recovery
+        let emailSourceAttr = NSAttributeDescription()
+        emailSourceAttr.name = "emailSource"
+        emailSourceAttr.attributeType = .stringAttributeType
+        emailSourceAttr.isOptional = true
+
+        transactionEntity.properties = [idAttr, amountAttr, descAttr, dateAttr, sourceAttr, categoryAttr, noteAttr, taxCategoryAttr, sourceEmailIDAttr, importedDateAttr, transactionTypeAttr, contentHashAttr, emailSourceAttr]
 
         // CRITICAL FIX: Add unique constraint on sourceEmailID to prevent duplicate Gmail extractions
         // This prevents the same email being cached multiple times with different extracted data
