@@ -199,8 +199,9 @@ def test_gmail_transaction_extraction():
     assert has_gov_handling, "Missing .gov.au domain handling"
 
     # CRITICAL: Verify defence.gov.au maps to Department of Defence (NOT Bunnings!)
-    has_defence_mapping = 'case "defence": return "Department of Defence"' in content
-    assert has_defence_mapping, "Missing defence.gov.au → 'Department of Defence' mapping - will show as wrong merchant!"
+    has_defence_case = 'case "defence"' in content
+    has_defence_return = 'return "Department of Defence"' in content
+    assert has_defence_case and has_defence_return, "Missing defence.gov.au → 'Department of Defence' mapping - will show as wrong merchant!"
 
     # CRITICAL: Verify bunnings.com.au maps correctly (regression test)
     has_bunnings_mapping = 'if domain.contains("bunnings.com") { return "Bunnings" }' in content
