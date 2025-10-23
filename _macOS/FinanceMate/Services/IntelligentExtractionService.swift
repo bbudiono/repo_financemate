@@ -199,12 +199,9 @@ class IntelligentExtractionService {
             }
 
             // Convert Core Data Transaction to ExtractedTransaction
-            // CRITICAL FIX: Use proper merchant extraction instead of cached itemDescription
-            // itemDescription might be wrong if cache was poisoned - use authoritative email source
-            let merchant = GmailTransactionExtractor.extractMerchant(
-                from: transaction.note ?? "",
-                sender: emailSource
-            ) ?? "Unknown"
+            // CRITICAL: Extract merchant from itemDescription (format: "Merchant - Invoice #XXX - GST: $X")
+            // itemDescription is built by TransactionDescriptionBuilder with merchant as first component
+            let merchant = transaction.itemDescription.components(separatedBy: " - ").first ?? transaction.itemDescription
 
             return ExtractedTransaction(
                 id: emailID,
