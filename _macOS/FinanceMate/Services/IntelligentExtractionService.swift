@@ -189,12 +189,21 @@ class IntelligentExtractionService {
 
             guard let transaction = results.first else { return nil }
 
+            // CRITICAL: If emailSource is missing, cache is from old version - invalidate it
+            guard let emailSource = transaction.emailSource, !emailSource.isEmpty else {
+                NSLog("[EXTRACT-CACHE] INVALIDATED - emailSource missing (old cache version)")
+                // Delete poisoned cache entry
+                context.delete(transaction)
+                try? context.save()
+                return nil  // Force fresh extraction
+            }
+
             // Convert Core Data Transaction to ExtractedTransaction
             // CRITICAL FIX: Use proper merchant extraction instead of cached itemDescription
             // itemDescription might be wrong if cache was poisoned - use authoritative email source
             let merchant = GmailTransactionExtractor.extractMerchant(
                 from: transaction.note ?? "",
-                sender: transaction.emailSource ?? "unknown@unknown.com"
+                sender: emailSource
             ) ?? "Unknown"
 
             return ExtractedTransaction(
