@@ -77,7 +77,7 @@ struct GmailTransactionExtractor {
     }
 
     static func extractMerchant(from subject: String, sender: String) -> String? {
-        NSLog("[MERCHANT-EXTRACT] Subject: '\(subject.prefix(50))', Sender: '\(sender.prefix(80))'")
+        NSLog("[MERCHANT-EXTRACT] START | Subject: '\(subject.prefix(50))', Sender: '\(sender.prefix(80))'")
 
         // PRIORITY 0A: Check for display name before angle bracket
         // "City of Gold Coast <noreply@goldcoast.qld.gov.au>" → "City of Gold Coast"
@@ -88,7 +88,7 @@ struct GmailTransactionExtractor {
             if !displayName.isEmpty && !displayName.contains("Bernhard") && !displayName.contains("Budiono") {
                 // Normalize verbose business names to brand name only
                 let normalized = normalizeDisplayName(displayName)
-                NSLog("[MERCHANT-EXTRACT] → Display name: '\(displayName)' → Normalized: '\(normalized)'")
+                NSLog("[MERCHANT-EXTRACT] ✓ Display name: '\(displayName)' → Normalized: '\(normalized)'")
                 return normalized
             }
         }
@@ -231,7 +231,7 @@ struct GmailTransactionExtractor {
             return fallback
         }
 
-        NSLog("[MERCHANT-EXTRACT] → Returning nil (no merchant found)")
+        NSLog("[MERCHANT-EXTRACT] ✗ FAILED - No merchant found in subject or sender")
         return nil
     }
 

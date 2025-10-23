@@ -5,8 +5,17 @@ struct GmailStandardTransactionExtractor {
 
     /// Extract standard transaction (receipts, invoices)
     static func extractStandardTransaction(from email: GmailEmail) -> ExtractedTransaction? {
-        guard let merchant = GmailTransactionExtractor.extractMerchant(from: email.subject, sender: email.sender),
-              let amount = GmailTransactionExtractor.extractAmount(from: email.snippet) else { return nil }
+        // CRITICAL: Add diagnostic logging to trace extraction failures
+        let merchantExtracted = GmailTransactionExtractor.extractMerchant(from: email.subject, sender: email.sender)
+        let amountExtracted = GmailTransactionExtractor.extractAmount(from: email.snippet)
+
+        NSLog("[TIER1-EXTRACT] EmailID: \(email.id.prefix(8)) | Subject: \(email.subject.prefix(40)) | Merchant: \(merchantExtracted ?? "NIL") | Amount: \(amountExtracted ?? 0.0)")
+
+        guard let merchant = merchantExtracted,
+              let amount = amountExtracted else {
+            NSLog("[TIER1-FAIL] EmailID: \(email.id.prefix(8)) | Reason: merchant=\(merchantExtracted == nil ? "NIL" : "OK"), amount=\(amountExtracted == nil ? "NIL" : "OK")")
+            return nil
+        }
 
         let items = GmailTransactionExtractor.extractLineItems(from: email.snippet)
         let category = GmailTransactionExtractor.inferCategory(from: merchant)
