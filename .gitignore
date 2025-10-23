@@ -171,3 +171,6 @@ test_results*.xcresult
 # Test Output
 test_output/
 _macOS/test_output/
+
+# Snyk Security Extension - AI Rules (auto-generated)
+.cursor/rules/snyk_rules.mdc
