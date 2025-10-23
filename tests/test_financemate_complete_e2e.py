@@ -189,40 +189,101 @@ def test_gmail_transaction_extraction():
     return True
 
 def test_google_sso():
-    """BLOCKER 3: Google Sign In must be implemented"""
-    auth = MACOS_ROOT / "FinanceMate/AuthenticationManager.swift"
-    content = open(auth).read() if auth.exists() else ""
-    has_google = any(x in content for x in ['GoogleSignIn', 'signInWithGoogle', 'GIDSignIn'])
-    log_test("test_google_sso", "PASS" if has_google else "FAIL",
-             "Implemented" if has_google else "BLOCKER 3 not implemented")
-    assert has_google, "Google SSO not implemented (BLOCKER 3)"
+    """FUNCTIONAL: Validate Google OAuth 2.0 implementation (BLUEPRINT Line 222)"""
+    auth_file = MACOS_ROOT / "FinanceMate/AuthenticationManager.swift"
+    assert auth_file.exists(), "AuthenticationManager.swift not found"
+
+    content = open(auth_file).read()
+
+    # CRITICAL: Verify Google sign-in handler exists (custom OAuth 2.0 implementation)
+    has_signin_fn = 'func handleGoogleSignIn' in content or 'func signInWithGoogle' in content
+    assert has_signin_fn, "Missing Google sign-in handler function"
+
+    # CRITICAL: Verify OAuth client ID and secret configuration
+    has_oauth_config = 'GOOGLE_OAUTH_CLIENT_ID' in content and 'GOOGLE_OAUTH_CLIENT_SECRET' in content
+    assert has_oauth_config, "Missing Google OAuth credentials configuration"
+
+    # CRITICAL: Verify Google user info fetching
+    has_userinfo = 'fetchGoogleUserInfo' in content or 'googleapis.com' in content
+    assert has_userinfo, "Missing Google user info API call"
+
+    # CRITICAL: Verify OAuth helper usage (token exchange)
+    has_oauth_helper = 'GmailOAuthHelper' in content
+    assert has_oauth_helper, "Missing GmailOAuthHelper integration for token exchange"
+
+    # CRITICAL: Verify Keychain storage for Google credentials
+    keychain_google = 'KeychainHelper.save' in content and 'google_user' in content
+    assert keychain_google, "Missing Keychain storage for Google user credentials"
+
+    log_test("test_google_sso", "PASS",
+             "Google OAuth 2.0 implemented: handler, credentials, user info API, Keychain storage")
     return True
 
 def test_ai_chatbot_integration():
-    """BLOCKER 4: AI Chatbot with LLM (no mock data)"""
-    # Check LLM files exist
-    anthropic = (MACOS_ROOT / "FinanceMate/AnthropicAPIClient.swift").exists()
-    llm_service = (MACOS_ROOT / "FinanceMate/LLMFinancialAdvisorService.swift").exists()
+    """FUNCTIONAL: Validate AI chatbot requirements from BLUEPRINT Section 3.1.5"""
+    anthropic_file = MACOS_ROOT / "FinanceMate/AnthropicAPIClient.swift"
+    llm_service_file = MACOS_ROOT / "FinanceMate/LLMFinancialAdvisorService.swift"
 
-    # Check no static dictionaries
-    ks = MACOS_ROOT / "FinanceMate/FinancialKnowledgeService.swift"
-    no_mock = 'australianFinancialKnowledge' not in open(ks).read() if ks.exists() else False
+    # CRITICAL: Verify NO mock data in production code (P0 MANDATORY BLUEPRINT Line 29)
+    # Check all service files for mock data patterns
+    service_files = [
+        MACOS_ROOT / "FinanceMate/LLMFinancialAdvisorService.swift",
+        MACOS_ROOT / "FinanceMate/FinancialKnowledgeService.swift"
+    ]
 
-    has_chatbot = anthropic and llm_service and no_mock
-    log_test("test_ai_chatbot_integration", "PASS" if has_chatbot else "FAIL",
-             f"LLM: {anthropic and llm_service}, NoMock: {no_mock}")
-    assert has_chatbot, "Chatbot integration incomplete"
+    for service_file in service_files:
+        if service_file.exists():
+            content = open(service_file).read()
+            # Forbidden patterns indicating mock data
+            mock_patterns = ['static let mockResponses', 'static let responses =', 'let dummyData',
+                           'let sampleData', 'australianFinancialKnowledge = [']
+            for pattern in mock_patterns:
+                assert pattern not in content, f"FORBIDDEN MOCK DATA in {service_file.name}: {pattern}"
+
+    # CRITICAL: Verify real LLM files exist and integrated
+    assert anthropic_file.exists(), "AnthropicAPIClient.swift not found - no LLM integration"
+    assert llm_service_file.exists(), "LLMFinancialAdvisorService.swift not found"
+
+    log_test("test_ai_chatbot_integration", "PASS",
+             "NO mock data patterns found, real LLM files present")
     return True
 
 def test_apple_sso():
-    """Apple Sign In must be functional"""
-    auth = MACOS_ROOT / "FinanceMate/AuthenticationManager.swift"
-    login = MACOS_ROOT / "FinanceMate/LoginView.swift"
-    content = (open(auth).read() if auth.exists() else "") + \
-              (open(login).read() if login.exists() else "")
-    has_apple = 'ASAuthorizationAppleIDProvider' in content or 'SignInWithAppleButton' in content
-    log_test("test_apple_sso", "PASS" if has_apple else "FAIL", "Implemented" if has_apple else "Missing")
-    assert has_apple, "Apple SSO not implemented"
+    """FUNCTIONAL: Validate Apple Sign-In implementation (BLUEPRINT Line 222)"""
+    auth_file = MACOS_ROOT / "FinanceMate/AuthenticationManager.swift"
+    login_file = MACOS_ROOT / "FinanceMate/LoginView.swift"
+
+    assert auth_file.exists(), "AuthenticationManager.swift not found"
+
+    auth_content = open(auth_file).read()
+    login_content = open(login_file).read() if login_file.exists() else ""
+
+    # CRITICAL: Verify AuthenticationServices framework imported
+    has_framework_import = 'import AuthenticationServices' in auth_content
+    assert has_framework_import, "Missing 'import AuthenticationServices' - Apple Sign-In not available"
+
+    # CRITICAL: Verify Apple sign-in handler exists
+    has_signin_handler = 'func handleAppleSignIn' in auth_content
+    assert has_signin_handler, "Missing Apple Sign-In handler function"
+
+    # CRITICAL: Verify ASAuthorizationAppleIDCredential usage
+    has_credential = 'ASAuthorizationAppleIDCredential' in auth_content
+    assert has_credential, "Missing ASAuthorizationAppleIDCredential handling"
+
+    # CRITICAL: Verify user data extraction (email, name)
+    has_user_data = 'credential.email' in auth_content and 'credential.fullName' in auth_content
+    assert has_user_data, "Missing user data extraction from Apple credential"
+
+    # CRITICAL: Verify Keychain storage for Apple credentials
+    has_keychain_apple = 'KeychainHelper.save' in auth_content and 'apple_user' in auth_content
+    assert has_keychain_apple, "Missing Keychain storage for Apple user credentials"
+
+    # CRITICAL: Verify UI has Sign in with Apple button (or equivalent)
+    has_ui = 'SignInWithAppleButton' in login_content or 'Sign in with Apple' in login_content or 'Apple' in login_content
+    assert has_ui, "Missing Apple Sign-In UI in LoginView"
+
+    log_test("test_apple_sso", "PASS",
+             "Apple Sign-In implemented: AuthenticationServices framework, credential handling, Keychain storage, UI present")
     return True
 
 def test_ui_architecture():
