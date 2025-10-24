@@ -30,12 +30,12 @@ struct DotEnvLoader {
 
         // Try multiple possible locations for .env file
         let possiblePaths = [
-            // Absolute path to project root (MOST RELIABLE)
+            // Absolute path to _macOS directory (WHERE .ENV ACTUALLY IS)
+            "/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/_macOS/.env",
+            // Fallback: project root (if .env moved there)
             "/Users/bernhardbudiono/Library/CloudStorage/Dropbox/_Documents - Apps (Working)/repos_github/Working/repo_financemate/.env",
             // Production path (app bundle)
-            Bundle.main.bundlePath + "/../../../../.env",
-            // Development path (relative to _macOS)
-            FileManager.default.currentDirectoryPath + "/../../.env"
+            Bundle.main.bundlePath + "/../../../../.env"
         ]
 
         log += "Trying \(possiblePaths.count) possible paths:\n"
