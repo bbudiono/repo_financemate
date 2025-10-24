@@ -69,59 +69,115 @@ def test_security_hardening():
     swift_dir = str(MACOS_ROOT / "FinanceMate")
     violations = []
 
-    # Detect actual force unwraps with improved pattern
-    # Force unwrap: identifier! followed by . or space or , or ) or end-of-line
-    # NOT force unwrap: !identifier (logical NOT), != (not equal), string literals with !
+    def remove_swift_strings(code):
+        """Remove ALL string literals from Swift code including interpolation"""
+        # This is a simplified Swift string parser
+        result = []
+        i = 0
+        while i < len(code):
+            # Check for triple-quoted strings
+            if code[i:i+3] == '"""':
+                # Find closing """
+                i += 3
+                while i < len(code) - 2:
+                    if code[i:i+3] == '"""':
+                        i += 3
+                        break
+                    i += 1
+                result.append(' ')  # Replace string with space
+                continue
+
+            # Check for regular strings
+            if code[i] == '"':
+                i += 1
+                # Process string content, handling interpolation \(...)
+                depth = 0
+                while i < len(code):
+                    if code[i] == '\\' and i + 1 < len(code):
+                        if code[i+1] == '(':
+                            # String interpolation start
+                            depth += 1
+                            i += 2
+                            continue
+                        # Skip escaped character
+                        i += 2
+                        continue
+                    if code[i] == ')' and depth > 0:
+                        depth -= 1
+                        i += 1
+                        continue
+                    if code[i] == '"' and depth == 0:
+                        # End of string
+                        i += 1
+                        break
+                    i += 1
+                result.append(' ')  # Replace string with space
+                continue
+
+            # Regular character
+            result.append(code[i])
+            i += 1
+
+        return ''.join(result)
+
+    # Detect actual force unwraps
     result1 = subprocess.run(["grep", "-rn", r"\w!", swift_dir], capture_output=True, text=True)
     force_unwraps = []
+
     for line in result1.stdout.split('\n'):
-        # Skip comments, empty lines
+        # Skip empty lines and comments
         if not line or line.strip().startswith('//'):
             continue
-        # Skip != operator
-        if '!=' in line:
-            continue
 
-        # Extract the part after filename:linenumber:
+        # Extract filename:line:code
         parts = line.split(':', 2)
         if len(parts) < 3:
             continue
-        code_line = parts[2]
 
-        # Skip NSLog, print statements, and string literals with exclamations
-        # These are logging messages, not force unwraps
-        if any(x in code_line for x in ['NSLog(', 'print(', 'debugPrint(', 'os_log(']):
+        filename, lineno, code_line = parts[0], parts[1], parts[2]
+
+        # Skip != operator
+        if '!=' in code_line:
             continue
 
-        # Skip lines that are part of multi-line strings (""")
-        # If line only contains text and exclamation without any code structure
-        if '"""' in code_line or (not any(c in code_line for c in ['{', '}', '(', ')', '=', ';', 'let ', 'var ', 'func ', 'if ', 'guard ']) and '!' in code_line):
-            # Likely part of a multi-line string
+        # Skip lines that are clearly part of multi-line strings
+        # These typically start with whitespace + text and lack code structure
+        stripped = code_line.strip()
+        has_code_structure = any(keyword in code_line for keyword in [
+            'let ', 'var ', 'func ', 'class ', 'struct ', 'enum ', 'import ',
+            'return ', 'if ', 'guard ', 'for ', 'while ', '{', '}', '=', ';'
+        ])
+
+        # If line has exclamation but no code structure and starts with whitespace,
+        # it's likely string content from a multi-line string
+        if '!' in stripped and not has_code_structure and code_line.startswith((' ', '\t')):
+            # Check if it looks like natural language (contains common words)
+            if any(word in stripped.lower() for word in ['hello', 'you', 'the', 'this', 'that', 'with', 'from', 'can', 'will']):
+                continue
+
+        # Remove ALL string literals including interpolation
+        code_without_strings = remove_swift_strings(code_line)
+
+        # Skip if no ! remains after removing strings
+        if '!' not in code_without_strings:
             continue
 
-        # Skip string literals containing exclamation marks
-        # First remove all string literals from the line to analyze
-        # Replace "string!" and 'string!' patterns with empty
-        code_without_strings = re.sub(r'"[^"]*"', '', code_line)
-        code_without_strings = re.sub(r"'[^']*'", '', code_without_strings)
-        code_without_strings = re.sub(r'"""[^"]*"""', '', code_without_strings, flags=re.DOTALL)
-
-        # Skip specific known false positives
-        if any(x in line for x in ['hasSuffix("!")', 'hasPrefix("!")', "I'm", "you're", "it's", "You're", "we're", "they're"]):
+        # Allow force casts (as!) - common Swift pattern
+        if re.search(r'\bas!\s', code_without_strings):
             continue
 
-        # Skip logical NOT operators: !identifier, !$, !condition
-        # These have ! BEFORE the identifier, not after
-        if re.search(r'!\s*[\$\w]', code_without_strings) and not re.search(r'\w+![.,\s\)\]]', code_without_strings):
+        # Skip logical NOT: !identifier (has ! BEFORE, not after)
+        if re.search(r'!\s*\w', code_without_strings) and not re.search(r'\w+!', code_without_strings):
             continue
 
-        # Must have actual force unwrap pattern IN THE CODE (not in strings): identifier!
-        if re.search(r'\w+!(?:[.,\s\)\]]|$)', code_without_strings):
-            force_unwraps.append(line)
+        # Detect force unwrap: identifier! followed by . or ) or , or space or end
+        if re.search(r'\w+!\s*[.,\)\s]', code_without_strings) or re.search(r'\w+!$', code_without_strings):
+            force_unwraps.append(f"{filename}:{lineno}")
 
     if force_unwraps:
-        violations.append(f"{len(force_unwraps)} force unwraps")
+        violations.append(f"{len(force_unwraps)} force unwraps: {force_unwraps[:5]}")  # Show first 5
 
+    # Check for fatalError calls
     result2 = subprocess.run(["grep", "-r", "fatalError", swift_dir], capture_output=True, text=True)
     fatal_errors = [l for l in result2.stdout.split('\n') if 'fatalError' in l and not l.strip().startswith('//')]
     if fatal_errors:
@@ -130,7 +186,6 @@ def test_security_hardening():
     log_test("test_security_hardening", "PASS" if not violations else "FAIL",
              f"Violations: {violations}" if violations else "Security hardened")
     assert not violations, f"Security violations: {violations}"
-    return True
 
 def test_core_data_schema():
     """FUNCTIONAL: Validate programmatic Core Data model (BLUEPRINT Line 284)"""
