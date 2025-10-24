@@ -24,9 +24,9 @@ struct DotEnvLoader {
         log += "Bundle path: \(Bundle.main.bundlePath)\n"
         log += "Current directory: \(FileManager.default.currentDirectoryPath)\n"
 
-        print("=== DotEnvLoader.load() START [\(Date())] ===")
-        print("Bundle path: \(Bundle.main.bundlePath)")
-        print("Current directory: \(FileManager.default.currentDirectoryPath)")
+        NSLog("=== DotEnvLoader.load() START [\(Date())] ===")
+        NSLog("Bundle path: \(Bundle.main.bundlePath)")
+        NSLog("Current directory: \(FileManager.default.currentDirectoryPath)")
 
         // Try multiple possible locations for .env file
         let possiblePaths = [
@@ -39,13 +39,13 @@ struct DotEnvLoader {
         ]
 
         log += "Trying \(possiblePaths.count) possible paths:\n"
-        print("Trying \(possiblePaths.count) possible paths:")
+        NSLog("Trying \(possiblePaths.count) possible paths:")
         for (index, path) in possiblePaths.enumerated() {
             log += "  [\(index + 1)] \(path)\n"
-            print("  [\(index + 1)] \(path)")
+            NSLog("  [\(index + 1)] \(path)")
             let exists = FileManager.default.fileExists(atPath: path)
             log += "      Exists: \(exists)\n"
-            print("      Exists: \(exists)")
+            NSLog("      Exists: \(exists)")
 
             if loadFromPath(path, log: &log) {
                 log += "=== SUCCESS: Loaded .env from path [\(index + 1)] ===\n"
@@ -53,10 +53,10 @@ struct DotEnvLoader {
                 log += "Client ID: \(credentials["GOOGLE_OAUTH_CLIENT_ID"]?.prefix(20) ?? "NOT FOUND")\n"
                 log += "Client Secret: \(credentials["GOOGLE_OAUTH_CLIENT_SECRET"] != nil ? "LOADED" : "MISSING")\n"
 
-                print(" SUCCESS: Loaded .env from path [\(index + 1)]")
-                print(" Credentials in memory: \(credentials.keys.sorted())")
-                print(" Client ID: \(credentials["GOOGLE_OAUTH_CLIENT_ID"]?.prefix(20) ?? "NOT FOUND")")
-                print(" Client Secret: \(credentials["GOOGLE_OAUTH_CLIENT_SECRET"] != nil ? "LOADED" : "MISSING")")
+                NSLog(" SUCCESS: Loaded .env from path [\(index + 1)]")
+                NSLog(" Credentials in memory: \(credentials.keys.sorted())")
+                NSLog(" Client ID: \(credentials["GOOGLE_OAUTH_CLIENT_ID"]?.prefix(20) ?? "NOT FOUND")")
+                NSLog(" Client Secret: \(credentials["GOOGLE_OAUTH_CLIENT_SECRET"] != nil ? "LOADED" : "MISSING")")
 
                 try? log.write(toFile: debugLog, atomically: true, encoding: .utf8)
                 return
@@ -65,8 +65,8 @@ struct DotEnvLoader {
 
         log += "️ WARNING: .env file not found in any location - using embedded fallback\n"
         log += "Credentials dict is empty: \(credentials.isEmpty)\n"
-        print("️ WARNING: .env file not found in any location")
-        print("️ Credentials dict is empty: \(credentials.isEmpty)")
+        NSLog("️ WARNING: .env file not found in any location")
+        NSLog("️ Credentials dict is empty: \(credentials.isEmpty)")
 
         try? log.write(toFile: debugLog, atomically: true, encoding: .utf8)
     }
@@ -75,21 +75,21 @@ struct DotEnvLoader {
     @discardableResult
     private static func loadFromPath(_ path: String, log: inout String) -> Bool {
         log += "    Attempting to load from: \(path)\n"
-        print("    Attempting to load from: \(path)")
+        NSLog("    Attempting to load from: \(path)")
 
         guard let contents = try? String(contentsOfFile: path, encoding: .utf8) else {
             log += "    FAILED: Could not read file\n"
-            print("    FAILED: Could not read file")
+            NSLog("    FAILED: Could not read file")
             return false
         }
 
         log += "    File read successfully, size: \(contents.count) bytes\n"
-        print("    File read successfully, size: \(contents.count) bytes")
+        NSLog("    File read successfully, size: \(contents.count) bytes")
 
         // Parse .env file line by line
         let lines = contents.components(separatedBy: .newlines)
         log += "    Parsing \(lines.count) lines...\n"
-        print("    Parsing \(lines.count) lines...")
+        NSLog("    Parsing \(lines.count) lines...")
 
         var keysFound = 0
         for line in lines {
@@ -111,7 +111,7 @@ struct DotEnvLoader {
 
                 if key.contains("OAUTH") {
                     log += "    Found OAuth key: \(key) = \(value.prefix(20))...\n"
-                    print("    Found OAuth key: \(key) = \(value.prefix(20))...")
+                    NSLog("    Found OAuth key: \(key) = \(value.prefix(20))...")
                 }
 
                 // Also try to set environment variable (may not work in sandbox)
@@ -120,7 +120,7 @@ struct DotEnvLoader {
         }
 
         log += "    Stored \(keysFound) credentials in memory\n"
-        print("    Stored \(keysFound) credentials in memory")
+        NSLog("    Stored \(keysFound) credentials in memory")
 
         // Verify critical OAuth variables were loaded
         let hasClientID = credentials["GOOGLE_OAUTH_CLIENT_ID"] != nil
@@ -128,8 +128,8 @@ struct DotEnvLoader {
 
         log += "    Has Client ID: \(hasClientID)\n"
         log += "    Has Client Secret: \(hasClientSecret)\n"
-        print("    Has Client ID: \(hasClientID)")
-        print("    Has Client Secret: \(hasClientSecret)")
+        NSLog("    Has Client ID: \(hasClientID)")
+        NSLog("    Has Client Secret: \(hasClientSecret)")
 
         return hasClientID && hasClientSecret
     }
@@ -141,15 +141,15 @@ struct DotEnvLoader {
 
         guard let id = clientID, !id.isEmpty,
               let secret = clientSecret, !secret.isEmpty else {
-            print(" OAuth credentials not found")
-            print("  GOOGLE_OAUTH_CLIENT_ID: \(clientID ?? "NOT SET")")
-            print("  GOOGLE_OAUTH_CLIENT_SECRET: \(clientSecret != nil ? "SET" : "NOT SET")")
-            print("  Available keys: \(credentials.keys.sorted())")
+            NSLog(" OAuth credentials not found")
+            NSLog("  GOOGLE_OAUTH_CLIENT_ID: \(clientID ?? "NOT SET")")
+            NSLog("  GOOGLE_OAUTH_CLIENT_SECRET: \(clientSecret != nil ? "SET" : "NOT SET")")
+            NSLog("  Available keys: \(credentials.keys.sorted())")
             return false
         }
 
-        print(" OAuth credentials loaded successfully")
-        print("  Client ID: \(String(id.prefix(20)))...")
+        NSLog(" OAuth credentials loaded successfully")
+        NSLog("  Client ID: \(String(id.prefix(20)))...")
         return true
     }
 }
