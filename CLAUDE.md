@@ -75,6 +75,7 @@
 * **MANDATORY:** For every feature, at least **one "negative path" test** must be implemented.
 * **MANDATORY:** All tests **must use dynamic data**, not hardcoded static values.
 * **MANDATORY:** Every test function **must include a metadata block or comment explicitly linking it to the requirement ID(s)** in `BLUEPRINT.md` that it covers.
+* **MANDATORY:** Email loading should *NOT* RESET every single time. You should *SAVE* the state and cache to prevent this. Rules for conversion should be applied *AFTER* THE FACT.
 
 ### **4.4. Visual Validation & Non-Intrusive Snapshots**
 

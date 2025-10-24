@@ -21,13 +21,14 @@ class GmailViewModel: ObservableObject {
     @Published var estimatedTimeRemaining: TimeInterval?
 
     private let viewContext: NSManagedObjectContext
-    private let cacheService = EmailCacheService()
+    private let emailRepository: GmailEmailRepository
     private let paginationManager = PaginationManager(pageSize: 50)
     private let importTracker: ImportTracker
     private let transactionBuilder: TransactionBuilder
 
     init(context: NSManagedObjectContext) {
         self.viewContext = context
+        self.emailRepository = GmailEmailRepository(context: context)
         self.importTracker = ImportTracker(context: context)
         self.transactionBuilder = TransactionBuilder(context: context)
     }
@@ -93,11 +94,18 @@ class GmailViewModel: ObservableObject {
     func fetchEmails() async {
         guard let accessToken = KeychainHelper.get(account: "gmail_access_token") else { return }
 
-        // BLUEPRINT Lines 74, 91: Try cache first
-        if let cachedEmails = cacheService.loadCachedEmails() {
-            emails = cachedEmails
-            await extractTransactionsFromEmails()
-            return
+        // BLUEPRINT Lines 74, 91: Load from permanent Core Data storage (replaces 1-hour cache)
+        do {
+            // Try loading from Core Data first
+            let cachedEmails = try emailRepository.loadAllEmails()
+            if !cachedEmails.isEmpty {
+                emails = cachedEmails
+                NSLog("[GmailViewModel] Loaded \(cachedEmails.count) emails from Core Data (no API call needed)")
+                await extractTransactionsFromEmails()
+                return
+            }
+        } catch {
+            NSLog("[GmailViewModel] Error loading cached emails: \(error)")
         }
 
         isLoading = true
@@ -105,8 +113,21 @@ class GmailViewModel: ObservableObject {
 
         do {
             // BLUEPRINT Line 71: Fetch 5 years of financial emails from "All Mail"
-            emails = try await GmailAPI.fetchEmails(accessToken: accessToken, maxResults: 500)
-            cacheService.saveEmailsToCache(emails)
+            // CRITICAL FIX: Use delta sync to only fetch NEW emails (not all 500 every time)
+            let apiQuery = emailRepository.buildDeltaSyncQuery()
+            emails = try await GmailAPI.fetchEmails(
+                accessToken: accessToken,
+                maxResults: 500,
+                query: apiQuery
+            )
+
+            // CRITICAL FIX: Save to Core Data (permanent storage, not 1-hour UserDefaults cache)
+            try emailRepository.saveEmails(emails)
+
+            // Reload all emails from repository (existing + new)
+            emails = try emailRepository.loadAllEmails()
+            NSLog("[GmailViewModel] Synced emails: \(emails.count) total (delta sync applied)")
+
             await extractTransactionsFromEmails()
         } catch {
             errorMessage = "Failed to fetch emails: \(error.localizedDescription)"
@@ -247,5 +268,17 @@ class GmailViewModel: ObservableObject {
     func createAllTransactions() {
         extractedTransactions.forEach { createTransaction(from: $0) }
         extractedTransactions.removeAll()
+    }
+
+    /// CLAUDE.md Line 77: Re-apply extraction rules to cached emails (don't delete data)
+    /// Correct approach: Update merchants using new logic, preserve downloaded emails
+    func reApplyExtractionRules() async {
+        NSLog("[RE-APPLY-RULES] Starting re-extraction of \(emails.count) cached emails")
+        NSLog("[RE-APPLY-RULES] CORRECT: Updating merchants, NOT deleting email cache")
+
+        // Re-run extraction on existing emails with NEW merchant logic
+        await extractTransactionsFromEmails()
+
+        NSLog("[RE-APPLY-RULES] Complete: \(extractedTransactions.count) transactions with updated merchants")
     }
 }

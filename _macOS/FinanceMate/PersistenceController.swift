@@ -284,6 +284,58 @@ struct PersistenceController {
 
         splitEntity.properties = [splitID, splitLineItemID, splitTaxCategory, splitPercentage, splitAmount]
 
+        // MARK: - GmailEmailEntity (BLUEPRINT Lines 74, 91: Permanent storage instead of 1-hour cache)
+
+        let gmailEmailEntity = NSEntityDescription()
+        gmailEmailEntity.name = "GmailEmailEntity"
+        gmailEmailEntity.managedObjectClassName = "GmailEmailEntity"
+
+        let gmailID = NSAttributeDescription()
+        gmailID.name = "id"
+        gmailID.attributeType = .stringAttributeType
+        gmailID.isOptional = false
+
+        let gmailSubject = NSAttributeDescription()
+        gmailSubject.name = "subject"
+        gmailSubject.attributeType = .stringAttributeType
+        gmailSubject.isOptional = false
+
+        let gmailSender = NSAttributeDescription()
+        gmailSender.name = "sender"
+        gmailSender.attributeType = .stringAttributeType
+        gmailSender.isOptional = false
+
+        let gmailDate = NSAttributeDescription()
+        gmailDate.name = "date"
+        gmailDate.attributeType = .dateAttributeType
+        gmailDate.isOptional = false
+
+        let gmailSnippet = NSAttributeDescription()
+        gmailSnippet.name = "snippet"
+        gmailSnippet.attributeType = .stringAttributeType
+        gmailSnippet.isOptional = false
+
+        let gmailStatus = NSAttributeDescription()
+        gmailStatus.name = "status"
+        gmailStatus.attributeType = .stringAttributeType
+        gmailStatus.isOptional = false
+        gmailStatus.defaultValue = "unprocessed"
+
+        let gmailFetchedAt = NSAttributeDescription()
+        gmailFetchedAt.name = "fetchedAt"
+        gmailFetchedAt.attributeType = .dateAttributeType
+        gmailFetchedAt.isOptional = false
+
+        let gmailAttachmentsData = NSAttributeDescription()
+        gmailAttachmentsData.name = "attachmentsData"
+        gmailAttachmentsData.attributeType = .binaryDataAttributeType
+        gmailAttachmentsData.isOptional = true
+
+        gmailEmailEntity.properties = [
+            gmailID, gmailSubject, gmailSender, gmailDate, gmailSnippet,
+            gmailStatus, gmailFetchedAt, gmailAttachmentsData
+        ]
+
         // MARK: - ExtractionMetrics Entity (BLUEPRINT Line 192)
 
         let metricsEntity = NSEntityDescription()
@@ -362,7 +414,7 @@ struct PersistenceController {
             metricsCacheHitRate
         ]
 
-        model.entities = [transactionEntity, lineItemEntity, feedbackEntity, splitEntity, metricsEntity]
+        model.entities = [transactionEntity, lineItemEntity, feedbackEntity, splitEntity, metricsEntity, gmailEmailEntity]
         return model
     }
 }

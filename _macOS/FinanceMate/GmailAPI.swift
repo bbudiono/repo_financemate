@@ -31,16 +31,32 @@ struct GmailAPI {
         return try JSONDecoder().decode(TokenResponse.self, from: data)
     }
 
-    static func fetchEmails(accessToken: String, maxResults: Int) async throws -> [GmailEmail] {
-        // BLUEPRINT Line 72: Search ALL emails (not just Inbox) for 5-year financial history
-        let fiveYearsAgo = Calendar.current.date(byAdding: .year, value: -5, to: Date()) ?? Date().addingTimeInterval(-5 * 365 * 24 * 60 * 60)
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy/MM/dd"
-        let afterDate = dateFormatter.string(from: fiveYearsAgo)
+    /// Fetch Gmail emails with optional delta sync query support
+    /// - Parameters:
+    ///   - accessToken: OAuth access token
+    ///   - maxResults: Maximum emails to fetch
+    ///   - query: Optional Gmail query (e.g., "after:2025-10-16") for delta sync. If nil, fetches 5-year history
+    /// - Returns: Array of GmailEmail objects
+    static func fetchEmails(accessToken: String, maxResults: Int, query: String? = nil) async throws -> [GmailEmail] {
+        // BLUEPRINT Lines 74, 91: Support delta sync (query param) or full 5-year history (nil)
+        let finalQuery: String
 
-        // Gmail query: All Mail + Financial keywords + 5-year range
-        let query = "in:anywhere after:\(afterDate) (receipt OR invoice OR payment OR order OR purchase OR cashback)"
-        guard let encodedQuery = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
+        if let deltaQuery = query {
+            // Delta sync: only fetch emails after lastSync date
+            let financialKeywords = "(receipt OR invoice OR payment OR order OR purchase OR cashback)"
+            finalQuery = "in:anywhere \(deltaQuery) \(financialKeywords)"
+            NSLog("[GmailAPI] Delta sync query: \(finalQuery)")
+        } else {
+            // Full sync: 5-year financial history
+            let fiveYearsAgo = Calendar.current.date(byAdding: .year, value: -5, to: Date()) ?? Date().addingTimeInterval(-5 * 365 * 24 * 60 * 60)
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy/MM/dd"
+            let afterDate = dateFormatter.string(from: fiveYearsAgo)
+            finalQuery = "in:anywhere after:\(afterDate) (receipt OR invoice OR payment OR order OR purchase OR cashback)"
+            NSLog("[GmailAPI] Full history query: \(finalQuery)")
+        }
+
+        guard let encodedQuery = finalQuery.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
             throw GmailAPIError.invalidURL("Failed to encode query")
         }
 
@@ -48,8 +64,7 @@ struct GmailAPI {
 
         // DEBUG: Log search parameters
         NSLog("=== GMAIL API SEARCH ===")
-        NSLog("Date Range: after:\(afterDate) (5 years from \(Date()))")
-        NSLog("Query: \(query)")
+        NSLog("Query: \(finalQuery)")
         NSLog("URL: \(urlString)")
         NSLog("MaxResults: \(maxResults)")
 

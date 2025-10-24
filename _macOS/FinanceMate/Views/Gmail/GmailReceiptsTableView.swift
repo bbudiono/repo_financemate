@@ -47,33 +47,16 @@ struct GmailReceiptsTableView: View {
                 .font(.headline)
             Spacer()
 
-            // Force re-extraction button (clears BOTH caches)
-            Button("Re-Extract All") {
+            // CLAUDE.md Line 77: Re-apply extraction rules WITHOUT deleting cached data
+            Button("Re-Apply Rules") {
                 Task {
-                    // CRITICAL: Clear BOTH email cache AND Core Data extraction cache
-                    EmailCacheManager.clear()
-
-                    // Clear Core Data Transaction cache (where bad merchant data persists)
-                    let context = PersistenceController.shared.container.viewContext
-                    let deleteRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Transaction")
-                    deleteRequest.predicate = NSPredicate(format: "sourceEmailID != nil")
-                    let batchDelete = NSBatchDeleteRequest(fetchRequest: deleteRequest)
-
-                    do {
-                        try context.execute(batchDelete)
-                        try context.save()
-                        context.reset()  // Force Core Data to refresh in-memory objects
-                        NSLog("[CACHE-CLEAR] ✓ Cleared Core Data extraction cache + reset context")
-                    } catch {
-                        NSLog("[CACHE-CLEAR] ❌ Failed to clear Core Data: \(error)")
-                    }
-
-                    // Now fetch and re-extract with NEW logic
-                    await viewModel.fetchEmails()
+                    // CORRECT: Re-extract from cached emails, UPDATE merchants (don't delete all data)
+                    // This preserves downloaded emails and only updates extraction results
+                    await viewModel.reApplyExtractionRules()
                 }
             }
             .buttonStyle(.bordered)
-            .help("Clear ALL caches (email + extractions) and re-extract")
+            .help("Re-apply extraction rules to cached emails (updates merchants, preserves data)")
 
             if !viewModel.selectedIDs.isEmpty {
                 Text("\(viewModel.selectedIDs.count) selected")
