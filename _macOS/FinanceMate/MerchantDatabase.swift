@@ -206,9 +206,36 @@ struct MerchantDatabase {
     private static func extractBrandFromDomain(domain: String) -> String? {
         let parts = domain.split(separator: ".").map { $0.lowercased() }
 
+        // Special handling for Australian government domains (.gov.au)
+        if domain.contains(".gov.au") || domain.contains(".qld.gov") {
+            // Get the first meaningful part (skip www, mail, noreply)
+            if let dept = parts.first, !["www", "mail", "noreply", "no-reply"].contains(dept) {
+                // Specific government entities - return full proper names
+                switch dept {
+                case "defence": return "Department of Defence"
+                case "goldcoast": return "Gold Coast Council"
+                case "ato": return "Australian Taxation Office"
+                case "centrelink": return "Centrelink"
+                case "qld": return "Queensland Government"
+                case "nsw": return "New South Wales Government"
+                case "vic": return "Victoria Government"
+                case "wa": return "Western Australia Government"
+                case "sa": return "South Australia Government"
+                case "tas": return "Tasmania Government"
+                case "act": return "Australian Capital Territory"
+                case "nt": return "Northern Territory"
+                default:
+                    // Capitalize generic government entity names
+                    return dept.prefix(1).uppercased() + dept.dropFirst() + " Government"
+                }
+            }
+            // Fallback for unusual structures
+            return "Government"
+        }
+
         // Remove common prefixes and suffixes
         let commonPrefixes = ["info", "noreply", "no-reply", "support", "contact", "hello", "team", "orders", "service", "mail", "email"]
-        let commonSuffixes = ["com", "com.au", "net", "org", "au", "online", "store", "shop"]
+        let commonSuffixes = ["com", "com.au", "net", "org", "au", "online", "store", "shop", "gov"]
 
         var brandParts: [String] = []
 

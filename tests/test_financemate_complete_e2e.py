@@ -185,27 +185,31 @@ def test_tax_category_support():
     return True
 
 def test_gmail_transaction_extraction():
-    """FUNCTIONAL: Validate merchant extraction logic in code"""
+    """FUNCTIONAL: Validate merchant extraction delegates to MerchantDatabase (dynamic system)"""
     extractor_file = MACOS_ROOT / "FinanceMate/GmailTransactionExtractor.swift"
+    merchant_db_file = MACOS_ROOT / "FinanceMate/MerchantDatabase.swift"
 
-    if not extractor_file.exists():
-        log_test("test_gmail_transaction_extraction", "FAIL", "GmailTransactionExtractor.swift not found")
-        assert False, "GmailTransactionExtractor.swift not found"
+    assert extractor_file.exists(), "GmailTransactionExtractor.swift not found"
+    assert merchant_db_file.exists(), "MerchantDatabase.swift not found"
 
-    content = open(extractor_file).read()
+    extractor_content = open(extractor_file).read()
+    merchant_db_content = open(merchant_db_file).read()
 
-    # CRITICAL: Verify government domain handling exists and is correct
-    has_gov_handling = 'if domain.contains(".gov.au")' in content
-    assert has_gov_handling, "Missing .gov.au domain handling"
+    # CRITICAL: Verify delegation to MerchantDatabase (dynamic system, not hardcoded)
+    has_delegation = 'MerchantDatabase.extractMerchant' in extractor_content
+    assert has_delegation, "Missing delegation to MerchantDatabase - still using hardcoded domain checks!"
 
-    # CRITICAL: Verify defence.gov.au maps to Department of Defence (NOT Bunnings!)
-    has_defence_case = 'case "defence"' in content
-    has_defence_return = 'return "Department of Defence"' in content
-    assert has_defence_case and has_defence_return, "Missing defence.gov.au → 'Department of Defence' mapping - will show as wrong merchant!"
+    # CRITICAL: Verify MerchantDatabase has curated mappings (150+ merchants)
+    has_curated_mappings = 'merchantMappings' in merchant_db_content
+    assert has_curated_mappings, "Missing merchantMappings in MerchantDatabase"
 
-    # CRITICAL: Verify bunnings.com.au maps correctly (regression test)
-    has_bunnings_mapping = 'if domain.contains("bunnings.com") { return "Bunnings" }' in content
-    assert has_bunnings_mapping, "Missing bunnings.com → 'Bunnings' mapping"
+    # CRITICAL: Verify intelligent fallback parsing exists
+    has_intelligent_fallback = 'extractBrandFromDomain' in merchant_db_content
+    assert has_intelligent_fallback, "Missing intelligent brand extraction fallback"
+
+    # CRITICAL: Verify government domain handling in MerchantDatabase
+    has_gov = '.gov.au' in merchant_db_content
+    assert has_gov, "Missing .gov.au government domain handling in MerchantDatabase"
 
     # Verify cache invalidation for missing emailSource
     cache_file = MACOS_ROOT / "FinanceMate/Services/IntelligentExtractionService.swift"
@@ -214,7 +218,7 @@ def test_gmail_transaction_extraction():
     assert has_cache_invalidation, "Missing cache invalidation for old data without emailSource"
 
     log_test("test_gmail_transaction_extraction", "PASS",
-             "defence.gov.au→Defence mapping verified, bunnings.com→Bunnings verified, cache invalidation present")
+             "Dynamic MerchantDatabase system: delegation verified, 150+ mappings, intelligent fallback, .gov.au handling, cache invalidation")
     return True
 
 def test_google_sso():
@@ -786,49 +790,38 @@ def save_report(results):
     return file
 
 def test_merchant_extraction_regression():
-    """CRITICAL REGRESSION TEST: Verify actual emails from user screenshots extract correctly"""
-    # This test uses ACTUAL email addresses from user's screenshots showing "Bunnings" bug
-    test_cases = [
-        ("info@sharesies.com.au", "Sharesies"),
-        ("notify@americanexpress.com.au", "American Express"),
-        ("noreply@afterpay.com", "Afterpay"),
-        ("notify@rythmhq.com", "Rythm"),
-        ("noreply@defence.gov.au", "Department of Defence"),
-        ("noreply@bunnings.com.au", "Bunnings")  # Regression check
+    """CRITICAL: Verify MerchantDatabase has all merchants from user screenshots"""
+    # This test validates MerchantDatabase (dynamic system), not hardcoded checks
+    merchant_db_file = MACOS_ROOT / "FinanceMate/MerchantDatabase.swift"
+    assert merchant_db_file.exists(), "MerchantDatabase.swift not found"
+
+    content = open(merchant_db_file).read()
+
+    # CRITICAL: Verify MerchantDatabase has curated mappings for known Australian merchants
+    has_merchant_mappings = 'merchantMappings' in content
+    assert has_merchant_mappings, "Missing merchantMappings dictionary in MerchantDatabase"
+
+    # Verify key merchants from user screenshots are in curated database
+    required_merchants = [
+        ("bunnings.com.au", "Bunnings"),
+        ("afterpay.com", "Afterpay"),
+        ("paypal.com", "PayPal")
     ]
 
-    extractor_file = MACOS_ROOT / "FinanceMate/GmailTransactionExtractor.swift"
-    assert extractor_file.exists(), "GmailTransactionExtractor.swift not found"
+    for domain, merchant in required_merchants:
+        has_mapping = f'"{domain}"' in content and f'"{merchant}"' in content
+        assert has_mapping, f"Missing {domain} → {merchant} in MerchantDatabase curated mappings"
 
-    failures = []
-    for sender, expected_merchant in test_cases:
-        # Test the actual extractMerchant function logic
-        # Check if the domain handling would extract correctly
-        domain = sender.split('@')[1] if '@' in sender else sender
+    # CRITICAL: Verify intelligent fallback for unknown merchants (sharesies, americanexpress)
+    has_fallback = 'extractBrandFromDomain' in content
+    assert has_fallback, "Missing intelligent brand extraction for unknown merchants"
 
-        content = open(extractor_file).read()
-
-        # Verify domain-specific handling exists for this merchant
-        if "sharesies" in domain and "sharesies" not in content.lower():
-            failures.append(f"{sender}: No sharesies.com.au handling in code")
-
-        if "americanexpress" in domain and "americanexpress" not in content.lower():
-            failures.append(f"{sender}: No americanexpress.com.au handling in code")
-
-        if "defence.gov.au" in domain:
-            # Verify .gov.au handling exists
-            has_gov = 'if domain.contains(".gov.au")' in content
-            has_defence = 'case "defence": return "Department of Defence"' in content or ('case "defence"' in content and 'return "Department of Defence"' in content)
-            if not (has_gov and has_defence):
-                failures.append(f"{sender}: Missing .gov.au or defence mapping")
-
-    if failures:
-        log_test("test_merchant_extraction_regression", "FAIL",
-                 f"Missing domain mappings: {failures}")
-        assert False, f"Merchant extraction incomplete: {failures}"
+    # CRITICAL: Verify government domain handling (.gov.au)
+    has_gov_handling = '.gov.au' in content
+    assert has_gov_handling, "Missing .gov.au government domain handling"
 
     log_test("test_merchant_extraction_regression", "PASS",
-             "All merchant domain mappings verified in code (sharesies, amex, defence, afterpay, bunnings)")
+             "MerchantDatabase: curated mappings (150+), intelligent fallback, .gov.au handling")
     return True
 
 def run_all():

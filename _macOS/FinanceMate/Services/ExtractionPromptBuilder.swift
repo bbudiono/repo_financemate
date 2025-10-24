@@ -20,10 +20,14 @@ struct ExtractionPromptBuilder {
         3. For BNPL emails (Afterpay/Zip/PayPal), extract TRUE merchant:
            - "Afterpay (Bunnings Warehouse)" → merchant: "Bunnings"
            - "via PayPal from Coles" → merchant: "Coles"
-        4. Normalize merchant names:
+        4. Normalize merchant names semantically (BLUEPRINT Line 159):
            - "Officework" → "Officeworks"
            - "Woollies" → "Woolworths"
            - "JB HI-FI" → "JB Hi-Fi"
+           - "sharesies.com.au" → "Sharesies"
+           - "americanexpress.com.au" → "American Express"
+           - "defence.gov.au" → "Department of Defence"
+           - Extract canonical brand name from domain, not abbreviations or email prefixes
         5. Set confidence honestly:
            - 0.9-1.0: All fields certain
            - 0.7-0.9: Some fields missing
