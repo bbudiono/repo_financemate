@@ -347,40 +347,50 @@ def test_new_service_architecture():
     return True
 
 def test_service_integration_completeness():
-    """Test 8: Validate service integration completeness"""
-    logger.log("SERVICE_INTEGRATION", "START", "Validating service integration completeness")
+    """
+    Test 8: TransactionBuilder Functional Validation
+    CONVERTED: Grep-based keyword search → Functional service testing
 
-    # Check for Gmail-related functionality
-    integration_points = [
-        ("OAuth Manager", "FinanceMate/Services/EmailConnectorService.swift", ["OAuth", "Google"]),
-        ("Gmail API", "FinanceMate/Services/GmailAPIService.swift", ["GmailAPIService", "Google"]),
-        ("Transaction Parsing", "FinanceMate/Services/TransactionBuilder.swift", ["Transaction", "parse"]),
-        ("Core Data Integration", "FinanceMate/Services/CoreDataManager.swift", ["CoreData", "NSPersistentContainer"])
-    ]
+    Runs comprehensive TransactionBuilder functional tests via dedicated test file:
+    tests/test_transaction_builder_functional.py
 
-    found_integrations = []
-    for integration_name, file_path, keywords in integration_points:
-        full_path = MACOS_ROOT / file_path
-        if full_path.exists():
-            try:
-                with open(full_path, 'r') as f:
-                    content = f.read()
+    Tests:
+    1. Build transaction from extracted email data
+    2. Handle missing merchant (edge case)
+    3. Tax category assignment logic
+    4. Transaction note formatting
+    5. Line item creation and association
+    """
+    logger.log("TRANSACTION_BUILDER", "START", "Running TransactionBuilder functional tests")
 
-                found_keywords = [kw for kw in keywords if kw in content]
-                if found_keywords:
-                    found_integrations.append(f"{integration_name} ({found_keywords})")
-                    logger.log("SERVICE_INTEGRATION", "INFO", f"Found integration: {integration_name}")
-                else:
-                    logger.log("SERVICE_INTEGRATION", "WARN", f"Integration {integration_name} missing keywords")
-            except Exception as e:
-                logger.log("SERVICE_INTEGRATION", "WARN", f"Could not read {file_path}: {e}")
-
-    if len(found_integrations) < len(integration_points):
-        logger.log("SERVICE_INTEGRATION", "FAIL", f"Incomplete integration: {len(found_integrations)}/{len(integration_points)} found")
+    # Run dedicated functional test suite
+    test_script = MACOS_ROOT / "tests/test_transaction_builder_functional.py"
+    if not test_script.exists():
+        logger.log("TRANSACTION_BUILDER", "FAIL", "Test script not found")
         return False
 
-    logger.log("SERVICE_INTEGRATION", "PASS", f"All service integrations found: {found_integrations}")
-    return True
+    try:
+        result = subprocess.run(
+            ["python3", str(test_script)],
+            timeout=60,
+            capture_output=True,
+            text=True,
+            cwd=MACOS_ROOT / "tests"
+        )
+
+        if result.returncode == 0:
+            logger.log("TRANSACTION_BUILDER", "PASS", "All 5 TransactionBuilder functional tests passed")
+            return True
+        else:
+            logger.log("TRANSACTION_BUILDER", "FAIL", f"Tests failed: {result.stderr}")
+            return False
+
+    except subprocess.TimeoutExpired:
+        logger.log("TRANSACTION_BUILDER", "FAIL", "Test execution timed out")
+        return False
+    except Exception as e:
+        logger.log("TRANSACTION_BUILDER", "FAIL", f"Test execution error: {str(e)}")
+        return False
 
 def test_build_test_target():
     """Test 9: Validate test target can build"""
