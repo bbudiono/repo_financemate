@@ -103,24 +103,23 @@ def run_command(cmd: List[str], timeout: int = 60, cwd: Optional[Path] = None) -
         return False, "", str(e)
 
 def test_xcode_project_structure():
-    """Test 1: Validate Xcode project structure and files exist"""
-    logger.log("XCODE_STRUCTURE", "START", "Validating Xcode project structure")
+    """Test 1: Xcode Project Functional Validation (delegates to functional suite)"""
+    logger.log("XCODE_STRUCTURE", "START", "Running functional Xcode project tests")
 
-    required_files = [
-        MACOS_ROOT / "FinanceMate.xcodeproj",
-        MACOS_ROOT / "FinanceMate.xcodeproj/project.pbxproj",
-        MACOS_ROOT / "FinanceMate/FinanceMateApp.swift",
-        MACOS_ROOT / "FinanceMate/ContentView.swift"
-    ]
+    test_file = TESTS_DIR / "test_xcode_project_functional.py"
+    result = subprocess.run(
+        ["python3", str(test_file)],
+        capture_output=True,
+        text=True,
+        timeout=60
+    )
 
-    missing_files = [f for f in required_files if not f.exists()]
-
-    if missing_files:
-        logger.log("XCODE_STRUCTURE", "FAIL", f"Missing files: {missing_files}")
+    if result.returncode == 0:
+        logger.log("XCODE_STRUCTURE", "PASS", "All functional Xcode tests passed")
+        return True
+    else:
+        logger.log("XCODE_STRUCTURE", "FAIL", f"Functional tests failed: {result.stderr[:200]}")
         return False
-
-    logger.log("XCODE_STRUCTURE", "PASS", "All required files found")
-    return True
 
 def test_build_compilation():
     """Test 2: Build the FinanceMate project"""
@@ -187,165 +186,80 @@ def test_app_launch():
     return True
 
 def test_swift_ui_structure():
-    """Test 4: Validate SwiftUI app structure and key components"""
-    logger.log("SWIFTUI_STRUCTURE", "START", "Validating SwiftUI app structure")
+    """Test 4: SwiftUI View Rendering Validation (delegates to functional suite)"""
+    logger.log("SWIFTUI_STRUCTURE", "START", "Running functional SwiftUI view tests")
 
-    required_swift_files = [
-        "FinanceMate/FinanceMateApp.swift",
-        "FinanceMate/ContentView.swift",
-        "FinanceMate/ViewModels/DashboardViewModel.swift",
-        "FinanceMate/ViewModels/TransactionsViewModel.swift",
-        "FinanceMate/Services/CoreDataManager.swift"
-    ]
+    test_file = TESTS_DIR / "test_swiftui_view_rendering.py"
+    result = subprocess.run(
+        ["python3", str(test_file)],
+        capture_output=True,
+        text=True,
+        timeout=60
+    )
 
-    missing_files = []
-    for file_path in required_swift_files:
-        full_path = MACOS_ROOT / file_path
-        if not full_path.exists():
-            missing_files.append(file_path)
-
-    if missing_files:
-        logger.log("SWIFTUI_STRUCTURE", "FAIL", f"Missing SwiftUI files: {missing_files}")
+    if result.returncode == 0:
+        logger.log("SWIFTUI_STRUCTURE", "PASS", "All functional SwiftUI tests passed")
+        return True
+    else:
+        logger.log("SWIFTUI_STRUCTURE", "FAIL", f"Functional tests failed: {result.stderr[:200]}")
         return False
-
-    logger.log("SWIFTUI_STRUCTURE", "PASS", "All SwiftUI structure files found")
-    return True
 
 def test_gmail_integration_files():
-    """Test 5: Validate Gmail integration files exist"""
-    logger.log("GMAIL_INTEGRATION", "START", "Validating Gmail integration files")
+    """Test 5: Gmail API Connectivity Validation (delegates to functional suite)"""
+    logger.log("GMAIL_INTEGRATION", "START", "Running functional Gmail API tests")
 
-    gmail_files = [
-        "FinanceMate/Services/EmailConnectorService.swift",
-        "FinanceMate/Services/GmailAPIService.swift"
-    ]
+    test_file = TESTS_DIR / "test_gmail_api_connectivity.py"
+    result = subprocess.run(
+        ["python3", str(test_file)],
+        capture_output=True,
+        text=True,
+        timeout=60
+    )
 
-    # Check for Gmail view components
-    gmail_view_directories = [
-        "FinanceMate/Views/Gmail"
-    ]
-
-    missing_files = []
-    for file_path in gmail_files:
-        full_path = MACOS_ROOT / file_path
-        if not full_path.exists():
-            missing_files.append(file_path)
-
-    # Check Gmail view directory
-    for view_dir in gmail_view_directories:
-        full_path = MACOS_ROOT / view_dir
-        if not full_path.exists():
-            missing_files.append(f"{view_dir}/ (Gmail views directory)")
-        else:
-            # Check for key Gmail view files
-            gmail_view_files = [
-                "GmailFilterBar.swift",
-                "GmailReceiptsTableView.swift",
-                "GmailTableRow.swift",
-                "GmailTransactionRow.swift"
-            ]
-
-            for view_file in gmail_view_files:
-                view_path = full_path / view_file
-                if view_path.exists():
-                    logger.log("GMAIL_INTEGRATION", "INFO", f"Found Gmail view: {view_file}")
-
-    if missing_files:
-        logger.log("GMAIL_INTEGRATION", "FAIL", f"Missing Gmail files: {missing_files}")
+    if result.returncode == 0:
+        logger.log("GMAIL_INTEGRATION", "PASS", "All functional Gmail tests passed")
+        return True
+    else:
+        logger.log("GMAIL_INTEGRATION", "FAIL", f"Functional tests failed: {result.stderr[:200]}")
         return False
-
-    logger.log("GMAIL_INTEGRATION", "PASS", "All Gmail integration files found")
-    return True
 
 def test_core_data_model():
-    """Test 6: Validate Core Data model exists (programmatic model with modular architecture)"""
-    logger.log("CORE_DATA_MODEL", "START", "Validating Core Data programmatic model")
+    """Test 6: Core Data Functional Validation (delegates to functional suite)"""
+    logger.log("CORE_DATA_MODEL", "START", "Running functional Core Data tests")
 
-    # Check for PersistenceController with programmatic model
-    persistence_file = MACOS_ROOT / "FinanceMate/PersistenceController.swift"
-    if not persistence_file.exists():
-        logger.log("CORE_DATA_MODEL", "FAIL", "PersistenceController.swift not found")
+    test_file = TESTS_DIR / "test_core_data_functional.py"
+    result = subprocess.run(
+        ["python3", str(test_file)],
+        capture_output=True,
+        text=True,
+        timeout=60
+    )
+
+    if result.returncode == 0:
+        logger.log("CORE_DATA_MODEL", "PASS", "All functional Core Data tests passed")
+        return True
+    else:
+        logger.log("CORE_DATA_MODEL", "FAIL", f"Functional tests failed: {result.stderr[:200]}")
         return False
-
-    # Check if PersistenceController contains programmatic model creation
-    try:
-        with open(persistence_file, 'r') as f:
-            persistence_content = f.read()
-
-        # Look for key indicators of programmatic model in PersistenceController
-        required_patterns = [
-            "createModel()",
-            "NSPersistentContainer",
-            "Transaction",
-            "SplitAllocation"
-        ]
-
-        found_patterns = [pattern for pattern in required_patterns if pattern in persistence_content]
-
-        if len(found_patterns) < len(required_patterns):
-            missing_patterns = set(required_patterns) - set(found_patterns)
-            logger.log("CORE_DATA_MODEL", "FAIL", f"Missing Core Data patterns in PersistenceController: {missing_patterns}")
-            return False
-
-        # Check for SplitAllocation model class (critical for tax splitting functionality)
-        split_allocation_file = MACOS_ROOT / "FinanceMate/Models/SplitAllocation.swift"
-        if not split_allocation_file.exists():
-            logger.log("CORE_DATA_MODEL", "FAIL", "SplitAllocation.swift not found in Models/ directory")
-            return False
-
-        with open(split_allocation_file, 'r') as f:
-            split_allocation_content = f.read()
-
-        # Look for SplitAllocation model patterns
-        split_allocation_patterns = [
-            "NSManagedObject",
-            "SplitAllocation",
-            "percentage",
-            "taxCategory"
-        ]
-
-        found_split_patterns = [pattern for pattern in split_allocation_patterns if pattern in split_allocation_content]
-        if len(found_split_patterns) < len(split_allocation_patterns):
-            missing_split_patterns = set(split_allocation_patterns) - set(found_split_patterns)
-            logger.log("CORE_DATA_MODEL", "FAIL", f"Missing SplitAllocation patterns: {missing_split_patterns}")
-            return False
-
-    except Exception as e:
-        logger.log("CORE_DATA_MODEL", "FAIL", f"Error reading PersistenceController: {e}")
-        return False
-
-    logger.log("CORE_DATA_MODEL", "PASS", f"Core Data programmatic model valid with patterns: {found_patterns}")
-    return True
 
 def test_new_service_architecture():
-    """Test 7: Validate new service architecture implementation"""
-    logger.log("NEW_SERVICE_ARCH", "START", "Validating new service architecture")
+    """Test 7: Service Instantiation Validation (delegates to functional suite)"""
+    logger.log("NEW_SERVICE_ARCH", "START", "Running functional service instantiation tests")
 
-    # Check for new services
-    new_services = [
-        ("EmailConnectorService", "FinanceMate/Services/EmailConnectorService.swift"),
-        ("GmailAPIService", "FinanceMate/Services/GmailAPIService.swift"),
-        ("CoreDataManager", "FinanceMate/Services/CoreDataManager.swift"),
-        ("EmailCacheService", "FinanceMate/Services/EmailCacheService.swift"),
-        ("TransactionBuilder", "FinanceMate/Services/TransactionBuilder.swift"),
-        ("PaginationManager", "FinanceMate/Services/PaginationManager.swift"),
-        ("ImportTracker", "FinanceMate/Services/ImportTracker.swift")
-    ]
+    test_file = TESTS_DIR / "test_service_instantiation.py"
+    result = subprocess.run(
+        ["python3", str(test_file)],
+        capture_output=True,
+        text=True,
+        timeout=60
+    )
 
-    missing_services = []
-    for service_name, service_path in new_services:
-        full_path = MACOS_ROOT / service_path
-        if not full_path.exists():
-            missing_services.append(service_name)
-        else:
-            logger.log("NEW_SERVICE_ARCH", "INFO", f"Found service: {service_name}")
-
-    if missing_services:
-        logger.log("NEW_SERVICE_ARCH", "FAIL", f"Missing services: {missing_services}")
+    if result.returncode == 0:
+        logger.log("NEW_SERVICE_ARCH", "PASS", "All functional service tests passed")
+        return True
+    else:
+        logger.log("NEW_SERVICE_ARCH", "FAIL", f"Functional tests failed: {result.stderr[:200]}")
         return False
-
-    logger.log("NEW_SERVICE_ARCH", "PASS", f"All new services found: {[s[0] for s in new_services]}")
-    return True
 
 def test_service_integration_completeness():
     """
