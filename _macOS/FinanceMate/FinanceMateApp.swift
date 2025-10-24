@@ -8,8 +8,12 @@ struct FinanceMateApp: App {
     let persistenceController = PersistenceController.shared
 
     init() {
+        NSLog("🚀 FinanceMateApp.init() STARTING")
+
         // Load OAuth credentials from .env file (BLUEPRINT Line 33: NO secrets in source code)
+        NSLog("📂 Calling DotEnvLoader.load()...")
         DotEnvLoader.load()
+        NSLog("✅ DotEnvLoader.load() COMPLETED")
 
         // Verify credentials loaded from .env (MANDATORY: No hardcoded fallback)
         if !DotEnvLoader.verifyOAuthCredentials() {
