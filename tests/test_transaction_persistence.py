@@ -48,14 +48,16 @@ def find_transaction_table(db_path):
         for table in tables:
             print(f"    - {table}")
 
-        # Find transaction table (Core Data uses ZTRANSACTION or similar)
+        # Find transaction table (Core Data uses ZTRANSACTION with Z-prefixed columns)
         transaction_table = None
         for table in tables:
-            if 'TRANSACTION' in table.upper() or table.upper().startswith('Z'):
+            if 'TRANSACTION' in table.upper():
                 cursor.execute(f"PRAGMA table_info({table})")
-                columns = [col[1] for col in cursor.fetchall()]
-                if any(c in columns for c in ['amount', 'id', 'itemDescription']):
+                columns = [col[1].upper() for col in cursor.fetchall()]
+                # Check for Core Data column names (Z-prefixed)
+                if any(c in columns for c in ['ZAMOUNT', 'ZID', 'ZITEMDESCRIPTION', 'ZCATEGORY']):
                     transaction_table = table
+                    print(f"[DEBUG] Found transaction table with Core Data columns: {table}")
                     break
 
         conn.close()
