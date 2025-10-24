@@ -2,10 +2,16 @@ import Foundation
 
 struct GmailOAuthHelper {
     static func getAuthorizationURL(clientID: String) -> URL? {
+        // CRITICAL FIX: Use redirect_uri from .env (must match Google Cloud Console config)
+        guard let redirectURI = DotEnvLoader.get("GOOGLE_OAUTH_REDIRECT_URI") else {
+            NSLog("❌ GOOGLE_OAUTH_REDIRECT_URI not found in .env")
+            return nil
+        }
+
         var components = URLComponents(string: "https://accounts.google.com/o/oauth2/v2/auth")
         components?.queryItems = [
             URLQueryItem(name: "client_id", value: clientID),
-            URLQueryItem(name: "redirect_uri", value: "urn:ietf:wg:oauth:2.0:oob"),
+            URLQueryItem(name: "redirect_uri", value: redirectURI),  // FROM .ENV (not hardcoded)
             URLQueryItem(name: "response_type", value: "code"),
             URLQueryItem(name: "scope", value: "https://www.googleapis.com/auth/gmail.readonly"),
             URLQueryItem(name: "access_type", value: "offline"),
@@ -19,12 +25,18 @@ struct GmailOAuthHelper {
             throw GmailAPIError.invalidURL("oauth2.googleapis.com/token")
         }
 
+        // CRITICAL FIX: Use redirect_uri from .env (must match authorization URL)
+        guard let redirectURI = DotEnvLoader.get("GOOGLE_OAUTH_REDIRECT_URI") else {
+            NSLog("❌ GOOGLE_OAUTH_REDIRECT_URI not found in .env")
+            throw GmailAPIError.invalidURL("Missing GOOGLE_OAUTH_REDIRECT_URI in .env")
+        }
+
         var components = URLComponents()
         components.queryItems = [
             URLQueryItem(name: "code", value: code),
             URLQueryItem(name: "client_id", value: clientID),
             URLQueryItem(name: "client_secret", value: clientSecret),
-            URLQueryItem(name: "redirect_uri", value: "urn:ietf:wg:oauth:2.0:oob"),
+            URLQueryItem(name: "redirect_uri", value: redirectURI),  // FROM .ENV (not hardcoded)
             URLQueryItem(name: "grant_type", value: "authorization_code")
         ]
 
