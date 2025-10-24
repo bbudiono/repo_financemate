@@ -1,14 +1,14 @@
 # FINANCEMATE - CURRENT TASKS
 
-**Version**: 1.6.0-GREP-ELIMINATION-COMPLETE
-**Last Updated**: 2025-10-24 13:30
-**Status**: ✅ MVP ~75-80% COMPLETE - Major Test Quality Improvements
+**Version**: 1.7.0-BLUEPRINT-COMPLIANCE-AUDIT
+**Last Updated**: 2025-10-24 14:45
+**Status**: ⚠️ MVP 74% COMPLETE - 12 P0 Blockers Discovered
 **Code Quality**: 68/100 (improving with atomic fixes)
 **E2E Tests**: ✅ 11/11 FUNCTIONAL (100%) - ALL grep-based tests eliminated
 **Functional Test Coverage**: 9 dedicated test suites, 40+ functional validations
 **Build Status**: ✅ GREEN with ZERO warnings
-**BLUEPRINT**: 42/114 (37%) - Email caching + test quality improvements
-**Latest**: P0 email cache bug FIXED + complete grep test elimination achieved
+**BLUEPRINT**: ✅ 84/114 (74%) - Systematic audit reveals 12 P0 critical blockers
+**Latest**: Complete BLUEPRINT compliance matrix created - 16 hours to production launch
 
 ---
 
@@ -73,15 +73,138 @@
 
 ---
 
-## 🎯 NEXT PRIORITY: Continue E2E Test Enhancement + UI/UX Fixes
+## 🎯 CURRENT PRIORITY: P0 BLUEPRINT COMPLIANCE (74% → 100%)
 
-### Remaining P0 Items (Est. 8 hours):
+**DISCOVERY**: Systematic BLUEPRINT audit reveals **12 P0 critical blockers** preventing production launch.
 
-**1. Enhance Remaining grep-Based Tests** (4 hours)
-- test_gmail_email_parsing - validate actual ShopBack line item parsing
-- test_transaction_persistence - verify Core Data save/retrieve cycle
-- test_chatbot_llm_integration - validate actual LLM responses
-- test_gmail_oauth_implementation - validate OAuth token flow
+**See**: `docs/BLUEPRINT_COMPLIANCE_MATRIX.md` for complete 114-requirement analysis.
+
+---
+
+### P0 CRITICAL BLOCKERS (Est. 16 hours) - MUST FIX BEFORE LAUNCH
+
+#### 1. Bank API Integration (8 hours) - HIGHEST PRIORITY
+**BLUEPRINT Lines 73-75**: Basiq API connection required for ANZ + NAB
+
+**Tasks**:
+- [ ] Research Basiq API documentation (sandbox environment)
+- [ ] Implement BasiqSyncManager.swift production connection logic
+- [ ] Add ANZ Bank institution mapping in BasiqInstitutionListView.swift
+- [ ] Add NAB Bank institution mapping in BasiqInstitutionListView.swift
+- [ ] Create Basiq OAuth consent flow (separate from Gmail OAuth)
+- [ ] Test transaction sync with real bank accounts (sandbox first)
+- [ ] Add error handling for failed bank connections
+- [ ] Document Basiq API keys in .env file
+
+**Evidence of Partial Implementation**:
+- ✅ BasiqAPIClient.swift exists (9 files found)
+- ✅ BasiqSyncManager.swift, BasiqAuthManager.swift, BasiqTransactionService.swift
+- ❌ NO production connection established
+- ❌ Institution mappings are placeholder only
+
+#### 2. Performance Validation (4 hours) - PRODUCTION SAFETY
+**BLUEPRINT Lines 290-294**: 5-year dataset must load <500ms, use <2GB memory
+
+**Tasks**:
+- [ ] Generate 50,000 synthetic transactions spanning 5 years
+- [ ] Load test Gmail table: measure list load time (must be <500ms)
+- [ ] Load test Transactions table: measure filter/sort performance
+- [ ] Profile memory usage with Xcode Instruments (must be <2GB)
+- [ ] Test pagination performance with 500-email batches
+- [ ] Add performance regression tests to E2E suite
+- [ ] Document performance benchmarks in ARCHITECTURE.md
+
+**Current Status**:
+- ✅ Pagination implemented (GmailViewModel.swift)
+- ✅ Lazy loading likely works (SwiftUI Table native)
+- ❌ NO load testing with 50k+ transactions
+- ❌ Memory usage NOT profiled
+
+#### 3. Accessibility Compliance (2 hours) - WCAG 2.1 AA MANDATORY
+**BLUEPRINT Line 264**: VoiceOver, 4.5:1 contrast, keyboard navigation
+
+**Tasks**:
+- [ ] Audit all views with macOS VoiceOver (Cmd+F5)
+- [ ] Verify descriptive labels on all interactive elements
+- [ ] Check color contrast ratios (4.5:1 minimum) in light mode
+- [ ] Check color contrast ratios (4.5:1 minimum) in dark mode
+- [ ] Test complete keyboard navigation: Tab, Shift+Tab, Enter, Escape, arrows
+- [ ] Add Cmd+N (new transaction), Cmd+F (search) keyboard shortcuts
+- [ ] Verify Space to select, Shift+arrows for range selection in tables
+- [ ] Document accessibility features in README.md
+
+**Current Status**:
+- ⚠️ VoiceOver labels exist (partial)
+- ❌ Contrast ratios NOT verified
+- ⚠️ Basic keyboard nav works (native Table), Tab/Enter NOT tested
+
+#### 4. Data Security Verification (2 hours) - PRIVACY ACT COMPLIANCE
+**BLUEPRINT Lines 229-231**: Encryption at rest, secure credentials
+
+**Tasks**:
+- [ ] Verify NSFileProtectionComplete on Core Data SQLite files
+- [ ] Confirm Keychain access controls (kSecAttrAccessibleWhenUnlockedThisDeviceOnly)
+- [ ] Test email content encryption in EmailCacheService.swift
+- [ ] Run SEMGREP security scan (check for hardcoded secrets)
+- [ ] Verify all API keys in .env file (not committed to git)
+- [ ] Test data deletion on account removal (Privacy Act compliance)
+- [ ] Document security architecture in ARCHITECTURE.md
+
+**Current Status**:
+- ✅ KeychainHelper.swift exists
+- ✅ EmailCacheService.swift exists
+- ❌ NSFileProtectionComplete NOT verified
+- ❌ Encryption NOT confirmed
+
+#### 5. Gmail Table Column 12 Fix (1 hour) - BLUEPRINT MANDATORY
+**BLUEPRINT Line 94**: Column 12 must show line items count in MAIN ROW (not just detail panel)
+
+**Tasks**:
+- [ ] Add line items count column to GmailReceiptsTableView.swift
+- [ ] Display count badge (e.g., "3 items") in collapsed row
+- [ ] Make column sortable (ascending/descending by count)
+- [ ] Add filter: "Has line items" / "Single item" toggle
+- [ ] Test with emails containing 1, 5, 10+ line items
+
+**Current Status**:
+- ⚠️ Line items shown in InvoiceDetailPanel (expanded view)
+- ❌ Count NOT visible in main table row
+
+#### 6. Verify 5-Year Email Search (30 min) - BLUEPRINT Line 112
+**BLUEPRINT Line 112**: Search "All Mail" for 5 years minimum
+
+**Tasks**:
+- [ ] Verify GmailAPIService.swift search query includes 5-year date range
+- [ ] Test with real Gmail account: confirm emails from 2020-2025 appear
+- [ ] Add date range filter UI: "Last 1 year", "Last 3 years", "Last 5 years", "All time"
+- [ ] Document email retention policy in Settings
+
+**Current Status**:
+- ✅ Gmail API search implemented
+- ❌ 5-year timeframe NOT confirmed in code
+
+#### 7. Vision OCR Integration Testing (1 hour) - BLUEPRINT Lines 150-154
+**BLUEPRINT Lines 150-154**: PDF/Image OCR must work e2e
+
+**Tasks**:
+- [ ] Test VisionOCRService.swift with real PDF attachment (City of Gold Coast rates notice)
+- [ ] Test with password-protected PDF (OurSage receipt - should escalate to user)
+- [ ] Test with image attachment (PNG receipt screenshot)
+- [ ] Verify OCR text combines with email body before extraction
+- [ ] Test spatial table detection (bounding box analysis)
+- [ ] Add OCR confidence score to extraction metadata
+- [ ] Document OCR accuracy in PERFORMANCE_REPORT.md
+
+**Current Status**:
+- ⚠️ VisionOCRService.swift exists
+- ⚠️ GmailAttachmentService.swift downloads PDFs
+- ❌ E2E pipeline NOT tested with real attachments
+
+---
+
+### Remaining P0 Items from Previous Plan (Est. 8 hours)
+
+**1. Enhance Remaining grep-Based Tests** (4 hours) - ✅ COMPLETE (100% elimination achieved)
 
 **2. UI/UX Verification** (2 hours)
 - Launch app and manually verify Gmail table has 14 visible columns
@@ -90,9 +213,9 @@
 - Check glassmorphism effects applied consistently
 
 **3. Add Missing Critical Tests** (2 hours)
-- Test 5-year dataset performance (<500ms list load)
-- Test keyboard navigation completeness
-- Test WCAG 2.1 AA accessibility (VoiceOver labels, 4.5:1 contrast)
+- Test 5-year dataset performance (<500ms list load) - NOW PART OF PERFORMANCE VALIDATION
+- Test keyboard navigation completeness - NOW PART OF ACCESSIBILITY COMPLIANCE
+- Test WCAG 2.1 AA accessibility (VoiceOver labels, 4.5:1 contrast) - NOW PART OF ACCESSIBILITY COMPLIANCE
 
 ---
 
@@ -180,7 +303,7 @@
 - ✅ **App Launch**: Successful (PID 8535, terminated after test)
 
 ### P0 Critical Fixes (Session 1)
-- ✅ Gmail OAuth - correct credentials (REDACTED_CLIENT_ID
+- ✅ Gmail OAuth - correct credentials configured for FINANCEMATE project
 - ✅ Invoice# MANDATORY - 10 extraction patterns, never blank
 - ✅ ForEach crash fix - GmailLineItem UUID
 - ✅ Invoice detail panel - always shows Invoice# and Payment
