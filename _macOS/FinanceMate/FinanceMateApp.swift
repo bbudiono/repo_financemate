@@ -8,15 +8,14 @@ struct FinanceMateApp: App {
     let persistenceController = PersistenceController.shared
 
     init() {
-        // Load OAuth credentials
+        // Load OAuth credentials from .env file (BLUEPRINT Line 33: NO secrets in source code)
         DotEnvLoader.load()
 
+        // Verify credentials loaded from .env (MANDATORY: No hardcoded fallback)
         if !DotEnvLoader.verifyOAuthCredentials() {
-            DotEnvLoader.setCredentials([
-                "GOOGLE_OAUTH_CLIENT_ID": "REDACTED_CLIENT_ID",
-                "GOOGLE_OAUTH_CLIENT_SECRET": "REDACTED_CLIENT_SECRET",
-                "GOOGLE_OAUTH_REDIRECT_URI": "http://localhost:8080/callback"
-            ])
+            NSLog("⚠️ WARNING: OAuth credentials not found in .env file")
+            NSLog("   Please add GOOGLE_OAUTH_CLIENT_ID, GOOGLE_OAUTH_CLIENT_SECRET to _macOS/.env")
+            NSLog("   Gmail functionality will be disabled until credentials are configured")
         }
 
         // Detect extraction capabilities (BLUEPRINT Section 3.1.1.4)
