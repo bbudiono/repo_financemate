@@ -31,7 +31,10 @@ struct KeychainHelper {
     }
 
     static func save(value: String, account: String) {
-        guard let data = value.data(using: .utf8) else { return }
+        guard let data = value.data(using: .utf8) else {
+            NSLog("❌ KeychainHelper.save FAILED: Could not encode value for account: \(account)")
+            return
+        }
 
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
@@ -39,7 +42,11 @@ struct KeychainHelper {
             kSecAttrAccount as String: account
         ]
 
-        SecItemDelete(query as CFDictionary)
+        // Delete existing item (ignore if not found)
+        let deleteStatus = SecItemDelete(query as CFDictionary)
+        if deleteStatus == errSecSuccess {
+            NSLog("🗑️  Deleted existing Keychain item: \(account)")
+        }
 
         let addQuery: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
@@ -49,7 +56,12 @@ struct KeychainHelper {
             kSecAttrAccessible as String: kSecAttrAccessibleWhenUnlockedThisDeviceOnly  // BLUEPRINT Line 229
         ]
 
-        SecItemAdd(addQuery as CFDictionary, nil)
+        let addStatus = SecItemAdd(addQuery as CFDictionary, nil)
+        if addStatus == errSecSuccess {
+            NSLog("✅ KeychainHelper.save SUCCESS: \(account)")
+        } else {
+            NSLog("❌ KeychainHelper.save FAILED: \(account) - Status: \(addStatus)")
+        }
     }
 
     static func delete(account: String) throws {
