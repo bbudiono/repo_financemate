@@ -102,14 +102,21 @@ def launch_financemate() -> Optional[int]:
         return None
 
 def terminate_app(app_pid: int):
-    """Gracefully terminate the app"""
+    """Gracefully terminate the app (with process existence check)"""
+    # Check if process exists first (prevents "No such process" error)
+    if not app_is_running(app_pid):
+        return  # Already terminated, nothing to do
+
     try:
-        subprocess.run(["kill", "-TERM", str(app_pid)], timeout=2)
+        subprocess.run(["kill", "-TERM", str(app_pid)], timeout=2, check=False)
         time.sleep(1)
     except:
-        # Force kill if graceful termination fails
+        pass
+
+    # Force kill if still running after graceful termination
+    if app_is_running(app_pid):
         try:
-            subprocess.run(["kill", "-9", str(app_pid)], timeout=1)
+            subprocess.run(["kill", "-9", str(app_pid)], timeout=1, check=False)
         except:
             pass
 
