@@ -118,6 +118,8 @@ struct GmailTransactionExtractor {
             // PRIORITY 1: Check for known brand domains (handles subdomains correctly)
             // Finance & Investment
             if domain.contains("binance.com") { return "Binance" }
+            if domain.contains("sharesies.com") { return "Sharesies" }
+            if domain.contains("americanexpress.com") { return "American Express" }
             if domain.contains("afterpay.com") { return "Afterpay" }
             if domain.contains("zip.co") { return "Zip" }
             if domain.contains("paypal.com") { return "PayPal" }
