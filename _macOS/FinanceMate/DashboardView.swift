@@ -131,6 +131,7 @@ struct EnhancedStatCard: View {
         .padding()
         .background(color.opacity(0.1))
         .cornerRadius(12)
+        .accessibleFocus() // WCAG 2.1 AA: Focus visible indicator for stat cards
     }
 }
 

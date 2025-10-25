@@ -37,6 +37,7 @@ struct TransactionsView: View {
                         .font(.title2)
                 }
                 .buttonStyle(.plain)
+                .accessibleFocus() // WCAG 2.1 AA: Focus visible indicator
                 .accessibilityLabel("Add Transaction")
 
                 // BLUEPRINT Line 73: SORTABLE via Menu (SortOption enum in ViewModel)
@@ -51,6 +52,7 @@ struct TransactionsView: View {
                         .font(.title3)
                 }
                 .buttonStyle(.plain)
+                .accessibleFocus() // WCAG 2.1 AA: Focus visible indicator
                 .accessibilityLabel("Sort Options")
             }
             .padding()

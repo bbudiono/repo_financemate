@@ -50,6 +50,7 @@ struct ContentView: View {
                     }
                     .frame(minWidth: 600)
                     .environmentObject(authManager)
+                    .accessibleFocus() // WCAG 2.1 AA: Focus visible indicator
 
                     // Chatbot sidebar (always rendered - shows collapsed button when hidden)
                     ChatbotDrawer(viewModel: chatbotVM)
