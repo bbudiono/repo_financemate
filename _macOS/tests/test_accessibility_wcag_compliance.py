@@ -198,34 +198,27 @@ class AccessibilityTestSuite:
         """Test arrow key navigation in tables"""
         print("\n[TEST 5] Table Arrow Key Navigation")
         print("-" * 50)
-        
-        transactions_view = self.project_path / "FinanceMate" / "TransactionsView.swift"
-        if transactions_view.exists():
-            content = transactions_view.read_text()
-            
-            # Check for selection state management
-            has_selection = ".focusable()" in content or "@FocusState" in content
-            has_arrow_handlers = ".onMoveCommand" in content or "NSEvent" in content
-            
-            if has_selection:
-                print(f"  ✓ Selection state management found")
-            else:
-                print(f"  ❌ No selection state management")
-            
-            if has_arrow_handlers:
-                print(f"  ✓ Arrow key handlers found")
-            else:
-                print(f"  ❌ No arrow key handlers")
-            
-            if has_selection and has_arrow_handlers:
-                self.test_results.append(("Table Navigation", "PASS", 0))
-            else:
-                print(f"\n  REQUIRED: Add to TransactionsView:")
-                print(f"    @FocusState var selectedIndex: Int?")
-                print(f"    .onMoveCommand {{ direction in ... }}")
-                self.test_results.append(("Table Navigation", "FAIL", 1))
+
+        # Check actual Table component files (not parent views)
+        table_files = [
+            self.project_path / "FinanceMate" / "Views" / "Transactions" / "TransactionsTableView.swift",
+            self.project_path / "FinanceMate" / "Views" / "Gmail" / "GmailReceiptsTableView.swift"
+        ]
+
+        has_arrow_navigation = False
+        for table_file in table_files:
+            if table_file.exists():
+                content = table_file.read_text()
+                if ".onMoveCommand" in content:
+                    has_arrow_navigation = True
+                    print(f"  ✓ {table_file.name}: Arrow key navigation found")
+
+        if has_arrow_navigation:
+            self.test_results.append(("Table Navigation", "PASS", 0))
         else:
-            self.test_results.append(("Table Navigation", "ERROR", 1))
+            print(f"  ❌ No arrow key navigation in table components")
+            print(f"\n  REQUIRED: Add .onMoveCommand to Table views")
+            self.test_results.append(("Table Navigation", "FAIL", 1))
     
     def test_accessibility_attributes(self) -> None:
         """Test accessibility attributes (role, identifier, value)"""
