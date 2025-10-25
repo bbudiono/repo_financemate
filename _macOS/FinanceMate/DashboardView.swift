@@ -23,6 +23,8 @@ struct DashboardView: View {
                 Text("FinanceMate")
                     .font(.largeTitle)
                     .fontWeight(.bold)
+                    .accessibilityLabel("FinanceMate Dashboard")
+                    .accessibilityAddTraits(.isHeader)
 
                 // BLUEPRINT Lines 147-148: Enhanced summary cards with icons, secondary metrics, trends
                 VStack(spacing: 16) {
@@ -35,6 +37,9 @@ struct DashboardView: View {
                             trend: viewModel.balanceTrend,
                             color: .blue
                         )
+                        .accessibilityElement(children: .combine)
+                        .accessibilityLabel("Total Balance: \(viewModel.formattedTotalBalance), Monthly spending: \(viewModel.formattedMonthlySpending), Trend: \(viewModel.balanceTrend.accessibilityDescription)")
+                        .accessibilityHint("Double-tap to view balance details")
 
                         EnhancedStatCard(
                             icon: "list.bullet.rectangle.fill",
@@ -44,6 +49,9 @@ struct DashboardView: View {
                             trend: viewModel.transactionTrend,
                             color: .green
                         )
+                        .accessibilityElement(children: .combine)
+                        .accessibilityLabel("Transactions: \(viewModel.transactionCount), This month: \(viewModel.monthlyTransactionCount), Trend: \(viewModel.transactionTrend.accessibilityDescription)")
+                        .accessibilityHint("Double-tap to view transaction details")
                     }
 
                     HStack(spacing: 16) {
@@ -55,6 +63,9 @@ struct DashboardView: View {
                             trend: viewModel.expensesTrend,
                             color: .red
                         )
+                        .accessibilityElement(children: .combine)
+                        .accessibilityLabel("Expenses: \(viewModel.formattedExpenses), Average per month: \(viewModel.formattedAvgMonthlyExpenses), Trend: \(viewModel.expensesTrend.accessibilityDescription)")
+                        .accessibilityHint("Double-tap to view expense details")
 
                         EnhancedStatCard(
                             icon: "arrow.up.circle.fill",
@@ -64,6 +75,9 @@ struct DashboardView: View {
                             trend: viewModel.incomeTrend,
                             color: .green
                         )
+                        .accessibilityElement(children: .combine)
+                        .accessibilityLabel("Income: \(viewModel.formattedIncome), This month: \(viewModel.formattedMonthlyIncome), Trend: \(viewModel.incomeTrend.accessibilityDescription)")
+                        .accessibilityHint("Double-tap to view income details")
                     }
                 }
                 .padding()
@@ -74,10 +88,14 @@ struct DashboardView: View {
                         Text("Spending by Category")
                             .font(.headline)
                             .padding(.horizontal)
+                            .accessibilityLabel("Spending by Category Chart")
+                            .accessibilityAddTraits(.isHeader)
 
                         SpendingCategoryChart(data: viewModel.categorySpending)
                             .frame(height: 200)
                             .padding()
+                            .accessibilityElement(children: .contain)
+                            .accessibilityLabel("Category spending breakdown chart showing \(viewModel.categorySpending.count) categories")
                     }
                 }
             }
@@ -188,6 +206,9 @@ struct SpendingCategoryChart: View {
                         .frame(width: 80, alignment: .trailing)
                 }
                 .frame(height: 24)
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel("\(item.category): \(item.amount, format: .currency(code: "AUD"))")
+                .accessibilityValue("\(Int((item.amount / maxAmount) * 100))% of total spending")
             }
         }
     }
@@ -204,5 +225,19 @@ struct TrendIndicator {
 
     var percentageText: String {
         String(format: "%.1f%%", abs(percentage))
+    }
+
+    // WCAG 2.1 AA: Accessibility description for VoiceOver
+    var accessibilityDescription: String {
+        let directionText: String
+        switch direction {
+        case .up:
+            directionText = "up"
+        case .down:
+            directionText = "down"
+        case .neutral:
+            directionText = "unchanged"
+        }
+        return "\(percentageText) \(directionText)"
     }
 }

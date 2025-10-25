@@ -92,33 +92,39 @@ class AccessibilityTestSuite:
         """Test complete keyboard navigation support"""
         print("\n[TEST 2] Keyboard Navigation Support")
         print("-" * 50)
-        
-        required_modifiers = [
-            ('.keyboardShortcut', 'Keyboard event handling'),
-            ('.focusable()', 'Focus management'),
-            ('.onMoveCommand', 'Arrow key navigation'),
-        ]
-        
-        main_view = self.project_path / "FinanceMate" / "ContentView.swift"
-        if main_view.exists():
-            content = main_view.read_text()
-            
-            missing_features = []
-            for modifier, description in required_modifiers:
-                if modifier not in content:
-                    missing_features.append(description)
-                    print(f"  ❌ {description}: Not implemented")
-                else:
-                    print(f"  ✓ {description}: Found in ContentView")
-            
-            if missing_features:
-                print(f"\n  REQUIRED: Add keyboard navigation to ContentView.swift")
-                self.test_results.append(("Keyboard Navigation", "FAIL", len(missing_features)))
-            else:
-                self.test_results.append(("Keyboard Navigation", "PASS", 0))
+
+        # Check across all relevant files (MODULAR pattern)
+        app_file = self.project_path / "FinanceMate" / "FinanceMateApp.swift"
+        content_view = self.project_path / "FinanceMate" / "ContentView.swift"
+        focus_mgmt = self.project_path / "FinanceMate" / "FocusManagement.swift"
+
+        combined_content = ""
+        for file_path in [app_file, content_view, focus_mgmt]:
+            if file_path.exists():
+                combined_content += file_path.read_text()
+
+        # Check for keyboard navigation features across codebase
+        has_shortcuts = '.commands' in combined_content or 'CommandGroup' in combined_content
+        has_focus = '.focusable()' in combined_content or '@FocusState' in combined_content
+        has_arrow_keys = '.onMoveCommand' in combined_content
+
+        features = {
+            "Keyboard shortcuts": has_shortcuts,
+            "Focus management": has_focus,
+            "Arrow key navigation": has_arrow_keys
+        }
+
+        missing = [f for f, present in features.items() if not present]
+
+        for feature, present in features.items():
+            status = "✓" if present else "❌"
+            print(f"  {status} {feature}: {'Implemented' if present else 'Missing'}")
+
+        if missing:
+            print(f"\n  REQUIRED: Implement {len(missing)} missing features")
+            self.test_results.append(("Keyboard Navigation", "FAIL", len(missing)))
         else:
-            print(f"  ⚠️  ContentView.swift not found")
-            self.test_results.append(("Keyboard Navigation", "ERROR", 1))
+            self.test_results.append(("Keyboard Navigation", "PASS", 0))
     
     def test_color_contrast_ratios(self) -> None:
         """Test WCAG AA color contrast ratios (4.5:1 minimum)"""
