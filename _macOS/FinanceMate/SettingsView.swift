@@ -28,6 +28,9 @@ struct SettingsView: View {
                         .cornerRadius(8)
                     }
                     .buttonStyle(.plain)
+                    .accessibilityLabel("\(section.rawValue) settings")
+                    .accessibilityValue(viewModel.selectedSection == section ? "Selected" : "Not selected")
+                    .accessibilityHint("Navigates to \(section.rawValue) settings section")
                 }
 
                 Spacer()
@@ -37,6 +40,8 @@ struct SettingsView: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .tint(.red)
+                .accessibilityLabel("Sign Out button")
+                .accessibilityHint("Signs out of FinanceMate account")
             }
             .frame(width: 200)
             .padding()
@@ -95,6 +100,9 @@ struct ProfileSection: View {
                 TextField("Enter display name", text: $viewModel.displayName)
                     .textFieldStyle(.roundedBorder)
                     .frame(maxWidth: 300)
+                    .accessibilityLabel("Display name text field")
+                    .accessibilityValue(viewModel.displayName.isEmpty ? "Empty" : viewModel.displayName)
+                    .accessibilityHint("Enter your preferred display name")
             }
 
             Button("Save Changes") {
@@ -102,6 +110,9 @@ struct ProfileSection: View {
             }
             .buttonStyle(.borderedProminent)
             .disabled(viewModel.isSaving)
+            .accessibilityLabel("Save profile changes button")
+            .accessibilityValue(viewModel.isSaving ? "Saving" : "Ready")
+            .accessibilityHint("Saves profile changes to account")
         }
     }
 }
@@ -122,14 +133,20 @@ struct SecuritySection: View {
             SecureField("Current Password", text: $viewModel.currentPassword)
                 .textFieldStyle(.roundedBorder)
                 .frame(maxWidth: 300)
+                .accessibilityLabel("Current password field")
+                .accessibilityHint("Enter your current password")
 
             SecureField("New Password", text: $viewModel.newPassword)
                 .textFieldStyle(.roundedBorder)
                 .frame(maxWidth: 300)
+                .accessibilityLabel("New password field")
+                .accessibilityHint("Enter your new password")
 
             SecureField("Confirm Password", text: $viewModel.confirmPassword)
                 .textFieldStyle(.roundedBorder)
                 .frame(maxWidth: 300)
+                .accessibilityLabel("Confirm new password field")
+                .accessibilityHint("Re-enter your new password to confirm")
 
             Button("Update Password") {
                 Task {
@@ -143,6 +160,9 @@ struct SecuritySection: View {
             }
             .buttonStyle(.borderedProminent)
             .disabled(viewModel.isSaving)
+            .accessibilityLabel("Update password button")
+            .accessibilityValue(viewModel.isSaving ? "Updating" : "Ready")
+            .accessibilityHint("Updates account password with new credentials")
         }
     }
 }
@@ -161,18 +181,24 @@ struct APIKeysSection: View {
                 SecureField("API Key", text: $viewModel.anthropicAPIKey)
                     .textFieldStyle(.roundedBorder)
                     .frame(maxWidth: 400)
+                    .accessibilityLabel("Anthropic Claude API key field")
+                    .accessibilityHint("Enter your Anthropic Claude API key for AI assistant features")
             }
 
             LabeledContent("OpenAI (GPT)") {
                 SecureField("API Key", text: $viewModel.openAIAPIKey)
                     .textFieldStyle(.roundedBorder)
                     .frame(maxWidth: 400)
+                    .accessibilityLabel("OpenAI GPT API key field")
+                    .accessibilityHint("Enter your OpenAI GPT API key for AI assistant features")
             }
 
             LabeledContent("Google (Gemini)") {
                 SecureField("API Key", text: $viewModel.geminiAPIKey)
                     .textFieldStyle(.roundedBorder)
                     .frame(maxWidth: 400)
+                    .accessibilityLabel("Google Gemini API key field")
+                    .accessibilityHint("Enter your Google Gemini API key for AI assistant features")
             }
 
             Button("Save API Keys") {
@@ -180,6 +206,9 @@ struct APIKeysSection: View {
             }
             .buttonStyle(.borderedProminent)
             .disabled(viewModel.isSaving)
+            .accessibilityLabel("Save API keys button")
+            .accessibilityValue(viewModel.isSaving ? "Saving" : "Ready")
+            .accessibilityHint("Saves AI assistant API keys to secure storage")
         }
     }
 }
@@ -213,6 +242,8 @@ struct ConnectionsSection: View {
                         }
                         .buttonStyle(.borderedProminent)
                         .tint(.red)
+                        .accessibilityLabel("Disconnect \(account.type) account")
+                        .accessibilityHint("Removes connection to \(account.email)")
                     }
                     .padding()
                     .background(.ultraThinMaterial)
@@ -251,6 +282,9 @@ struct AutomationSection: View {
                             .onChange(of: rule.isEnabled) { _ in
                                 viewModel.toggleRule(rule)
                             }
+                            .accessibilityLabel("Enable \(rule.name) automation rule")
+                            .accessibilityValue(rule.isEnabled ? "Enabled" : "Disabled")
+                            .accessibilityHint("Toggles automation rule: \(rule.condition) then \(rule.action)")
                     }
                     .padding()
                     .background(.ultraThinMaterial)
@@ -311,7 +345,10 @@ struct ExtractionHealthSection: View {
             }
 
             // BLUEPRINT Line 156.6: Export Button
-            Button("Export Feedback Data") { analytics.exportFeedbackData() }.buttonStyle(.borderedProminent)
+            Button("Export Feedback Data") { analytics.exportFeedbackData() }
+                .buttonStyle(.borderedProminent)
+                .accessibilityLabel("Export feedback data button")
+                .accessibilityHint("Exports extraction accuracy feedback data to file")
         }
         .onAppear { analytics.loadAnalytics() }
     }
