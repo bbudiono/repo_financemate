@@ -50,7 +50,7 @@ let clientSecret = ProcessInfo.processInfo.environment["GOOGLE_OAUTH_CLIENT_SECR
 let redirectURI = ProcessInfo.processInfo.environment["GOOGLE_OAUTH_REDIRECT_URI"] ?? ""
 
 // Expected values for bernhardbudiono@gmail.com
-let expectedClientID = "[REDACTED_CLIENT_ID]"
+let expectedClientID = "352456903923-2ldm2iqntfpkvucstnmk00tf0s8ah6lu.apps.googleusercontent.com"
 let expectedRedirectURI = "http://localhost:8080/callback"
 
 // Validate Client ID

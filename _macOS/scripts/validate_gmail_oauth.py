@@ -158,7 +158,7 @@ if let envPath = ProcessInfo.processInfo.environment["HOME"] {
 
 // Test OAuth URL generation
 let clientID = ProcessInfo.processInfo.environment["GOOGLE_OAUTH_CLIENT_ID"] ?? ""
-let expectedID = "[REDACTED_CLIENT_ID]"
+let expectedID = "352456903923-2ldm2iqntfpkvucstnmk00tf0s8ah6lu.apps.googleusercontent.com"
 
 if clientID == expectedID {
     print(" OAuth Client ID correctly loaded for bernhardbudiono@gmail.com")
