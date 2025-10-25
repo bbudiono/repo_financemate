@@ -15,6 +15,7 @@ struct KeychainHelper {
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service,
             kSecAttrAccount as String: account,
+            kSecMatchLimit as String: kSecMatchLimitOne,  // Return single item only
             kSecReturnData as String: true
         ]
 
