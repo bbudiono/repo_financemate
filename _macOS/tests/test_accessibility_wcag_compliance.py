@@ -159,31 +159,40 @@ class AccessibilityTestSuite:
         """Test keyboard shortcuts: Cmd+N, Cmd+F"""
         print("\n[TEST 4] Keyboard Shortcuts (Cmd+N, Cmd+F)")
         print("-" * 50)
-        
+
+        # Check FinanceMateApp.swift (where CommandGroup shortcuts are defined)
+        app_file = self.project_path / "FinanceMate" / "FinanceMateApp.swift"
         content_view = self.project_path / "FinanceMate" / "ContentView.swift"
+
+        combined_content = ""
+        if app_file.exists():
+            combined_content += app_file.read_text()
         if content_view.exists():
-            content = content_view.read_text()
-            
-            shortcuts_found = {
-                "Cmd+N (New)": bool(re.search(r'\.keyboardShortcut\("n".*\.command', content)),
-                "Cmd+F (Search)": bool(re.search(r'\.keyboardShortcut\("f".*\.command', content)),
-            }
-            
-            missing = [s for s, found in shortcuts_found.items() if not found]
-            
-            for shortcut, found in shortcuts_found.items():
-                status = "✓" if found else "❌"
-                print(f"  {status} {shortcut}")
-            
-            if missing:
-                print(f"\n  REQUIRED: Add keyboard shortcuts:")
-                print(f"    Button(...).keyboardShortcut(\"n\", modifiers: .command)")
-                print(f"    Button(...).keyboardShortcut(\"f\", modifiers: .command)")
-                self.test_results.append(("Keyboard Shortcuts", "FAIL", len(missing)))
-            else:
-                self.test_results.append(("Keyboard Shortcuts", "PASS", 0))
-        else:
+            combined_content += content_view.read_text()
+
+        if not combined_content:
+            print("  ⚠️  No source files found")
             self.test_results.append(("Keyboard Shortcuts", "ERROR", 1))
+            return
+
+        shortcuts_found = {
+            "Cmd+N (New)": bool(re.search(r'keyboardShortcut\("n"', combined_content, re.IGNORECASE)),
+            "Cmd+F (Search)": bool(re.search(r'keyboardShortcut\("f"', combined_content, re.IGNORECASE)),
+        }
+
+        missing = [s for s, found in shortcuts_found.items() if not found]
+
+        for shortcut, found in shortcuts_found.items():
+            status = "✓" if found else "❌"
+            print(f"  {status} {shortcut}")
+
+        if missing:
+            print(f"\n  REQUIRED: Add keyboard shortcuts:")
+            print(f"    Button(...).keyboardShortcut(\"n\", modifiers: .command)")
+            print(f"    Button(...).keyboardShortcut(\"f\", modifiers: .command)")
+            self.test_results.append(("Keyboard Shortcuts", "FAIL", len(missing)))
+        else:
+            self.test_results.append(("Keyboard Shortcuts", "PASS", 0))
     
     def test_table_keyboard_navigation(self) -> None:
         """Test arrow key navigation in tables"""
