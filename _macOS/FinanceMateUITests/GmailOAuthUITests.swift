@@ -13,11 +13,13 @@ class GmailOAuthUITests: XCTestCase {
         // Set launch arguments to indicate UI testing
         app.launchArguments = ["--uitesting"]
 
-        // Ensure OAuth credentials are available
+        // Ensure OAuth credentials are available from environment
+        // These MUST be set via Xcode scheme environment variables or .env file
+        // NEVER hardcode credentials in source code
         app.launchEnvironment = [
-            "GOOGLE_OAUTH_CLIENT_ID": "[REDACTED_CLIENT_ID]",
-            "GOOGLE_OAUTH_CLIENT_SECRET": "[REDACTED_OAUTH_SECRET]",
-            "GOOGLE_OAUTH_REDIRECT_URI": "http://localhost:8080/callback"
+            "GOOGLE_OAUTH_CLIENT_ID": ProcessInfo.processInfo.environment["GOOGLE_OAUTH_CLIENT_ID"] ?? "",
+            "GOOGLE_OAUTH_CLIENT_SECRET": ProcessInfo.processInfo.environment["GOOGLE_OAUTH_CLIENT_SECRET"] ?? "",
+            "GOOGLE_OAUTH_REDIRECT_URI": ProcessInfo.processInfo.environment["GOOGLE_OAUTH_REDIRECT_URI"] ?? "http://localhost:8080/callback"
         ]
 
         app.launch()

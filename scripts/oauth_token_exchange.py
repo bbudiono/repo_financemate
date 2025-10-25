@@ -20,11 +20,16 @@ class OAuthTokenExchanger:
     """Helper class for Gmail OAuth token exchange"""
 
     def __init__(self):
-        self.client_id = "[REDACTED_CLIENT_ID]"
-        self.client_secret = "[REDACTED_OAUTH_SECRET]"
-        self.redirect_uri = "http://localhost:8080/callback"
+        # Load from environment - NEVER hardcode credentials
+        import os
+        self.client_id = os.getenv("GOOGLE_OAUTH_CLIENT_ID", "")
+        self.client_secret = os.getenv("GOOGLE_OAUTH_CLIENT_SECRET", "")
+        self.redirect_uri = os.getenv("GOOGLE_OAUTH_REDIRECT_URI", "http://localhost:8080/callback")
         self.auth_code = None
         self.tokens = None
+
+        if not self.client_id or not self.client_secret:
+            raise ValueError("OAuth credentials not found in environment. Set GOOGLE_OAUTH_CLIENT_ID and GOOGLE_OAUTH_CLIENT_SECRET")
 
     def get_authorization_url(self) -> str:
         """Generate the OAuth authorization URL"""
