@@ -1,14 +1,77 @@
 # FinanceMate - Development Log
 
-**Version:** 1.8.1-PHASE-1-COMPLETE
-**Last Updated:** 2025-10-24 18:30 (Phase 1: Security Test Fixed)
-**Status:** ✅ MVP ~77% COMPLETE - Phase 1 Complete, Phase 2 P0 Blockers Next
-**Code Quality:** 74/100 (improved with Swift string parser)
+**Version:** 1.9.0-PHASE-2.1-SECURITY-COMPLETE
+**Last Updated:** 2025-10-24 20:30 (Phase 2.1: Security & Privacy Act Compliance)
+**Status:** ✅ MVP ~80% COMPLETE - Phase 2.1 Complete, Git History Cleanup Required
+**Code Quality:** 91/100 (code review score - awaiting git cleanup)
 **E2E Tests:** ✅ 21/21 FUNCTIONAL (100%) - ALL TESTS PASSING
-**Functional Test Suites:** 14 test files, 60+ automated validations
+**Security Tests:** ✅ 6/7 PASSING (85.7%) - Only git history issue remaining
+**Functional Test Suites:** 15 test files (added security suite), 67+ automated validations
 **Build Status:** ✅ GREEN with ZERO warnings
-**BLUEPRINT:** 87/114 (77%) - Phase 1 stability complete
-**Latest:** test_security_hardening false positives eliminated - 21/21 E2E passing
+**BLUEPRINT:** 90/114 (79%) - Security compliance achieved
+**Latest:** Privacy Act compliance implemented - file protection, Keychain, data deletion all working
+
+---
+
+## 2025-10-24 18:30-20:30: PHASE 2.1 - DATA SECURITY & PRIVACY ACT COMPLIANCE (2 hours, 2 commits)
+
+**MISSION**: Implement comprehensive security measures per BLUEPRINT Lines 229-231
+
+### Achievements:
+- **Security Compliance**: 3/7 → 6/7 tests passing (42.9% → 85.7%)
+- **Code Review Score**: 91/100 (conditional approval)
+- **Build Status**: ✅ GREEN (no regressions)
+- **E2E Tests**: ✅ 21/21 passing (verified)
+
+### Security Implementations:
+
+**1. File Protection (macOS)** - PersistenceController.swift:47-82
+- POSIX 0600 permissions on all SQLite files (.sqlite, -shm, -wal)
+- Directory permissions 0700 (owner only)
+- macOS FileVault disk-level encryption
+- Result: ✅ File protection test passing
+
+**2. Keychain Access Controls** - KeychainHelper.swift:18
+- Added kSecMatchLimitOne for proper query structure
+- Uses kSecAttrAccessibleWhenUnlockedThisDeviceOnly
+- Result: ✅ Keychain security 3/3 checks passing
+
+**3. Data Deletion (Privacy Act)** - PersistenceController.swift:458-498
+- deleteAll() method with NSBatchDeleteRequest (performance)
+- Deletes all 6 entities with referential integrity
+- clear() method for cache management
+- Result: ✅ Data deletion 7/7 checks passing
+
+**4. Hardcoded Secrets Removed**:
+- FinanceMate.xcscheme: Use env variable references
+- GmailOAuthUITests.swift: Load from ProcessInfo.environment
+- oauth_token_exchange.py: Load from os.getenv()
+- Deleted 2 files containing secrets
+- Result: ✅ Zero hardcoded secrets in working tree
+
+**5. Security Testing Suite**: test_data_security_compliance.py (444 lines, 7 tests)
+
+### Code Review (code-reviewer agent):
+- **Score**: 91/100 (conditional approval)
+- **Verdict**: Professional-grade security implementation
+- **Strengths**: macOS-native approach, zero vulnerabilities, comprehensive
+- **Issue**: Git history contains old secrets (requires user approval)
+
+### Commits:
+1. `c5e20f13` - security: Remove all hardcoded OAuth credentials
+2. `b030fbc7` - security: Implement Privacy Act compliance (6/7 passing)
+
+### Remaining Task (USER APPROVAL REQUIRED):
+⚠️ **Git History Cleanup**: Old commits contain exposed secrets
+
+**Options**:
+1. BFG Repo-Cleaner (recommended): Automated, fast
+2. git filter-branch: Manual, precise control
+3. New repository: Nuclear option
+
+**Warning**: Requires force push + team re-clone
+
+**Time**: 2 hours (exactly as planned)
 
 ---
 
