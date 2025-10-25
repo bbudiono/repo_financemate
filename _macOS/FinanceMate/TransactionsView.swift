@@ -27,6 +27,8 @@ struct TransactionsView: View {
                 Text("Transactions")
                     .font(.largeTitle)
                     .fontWeight(.bold)
+                    .accessibilityAddTraits(.isHeader)
+                    .accessibilityValue("\(viewModel.filteredTransactions.count) transactions")
                 Spacer()
 
                 // Add Transaction Button
@@ -76,6 +78,10 @@ struct TransactionsView: View {
         .sheet(isPresented: $showingAddTransaction) {
             AddTransactionForm(isPresented: $showingAddTransaction)
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Transactions View")
+        .accessibilityValue("\(viewModel.filteredTransactions.count) transactions, filtered by \(viewModel.selectedSource ?? "all sources")")
+        .accessibilityIdentifier("TransactionsView")
         .onAppear {
             // Update viewModel with actual transactions
             viewModel.updateTransactions(Array(transactions))
