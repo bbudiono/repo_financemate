@@ -26,7 +26,8 @@ class AccessibilityTestSuite:
     def __init__(self):
         self.test_results = []
         self.start_time = datetime.now()
-        self.project_path = Path.cwd()
+        # Fix: Use correct _macOS path (test is in _macOS/tests/, parent.parent = _macOS/)
+        self.project_path = Path(__file__).parent.parent
         
     def run_all_tests(self) -> Dict:
         """Execute all accessibility tests"""

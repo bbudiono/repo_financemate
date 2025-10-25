@@ -86,6 +86,9 @@ struct GmailReceiptsTableView: View {
             actionButtonsColumn
         }
         .tableStyle(.inset)
+        .onMoveCommand { direction in
+            handleArrowKeyNavigation(direction)
+        }
         .contextMenu(forSelectionType: ExtractedTransaction.ID.self) { ids in
             GmailTableHelpers.contextMenu(for: ids, viewModel: viewModel, onImport: importSelected)
         }
@@ -313,5 +316,27 @@ struct GmailReceiptsTableView: View {
             }
         }
         viewModel.selectedIDs.removeAll()
+    }
+
+    private func handleArrowKeyNavigation(_ direction: MoveCommandDirection) {
+        guard let currentID = viewModel.selectedIDs.first,
+              let currentIndex = sortedTransactions.firstIndex(where: { $0.id == currentID }) else {
+            return
+        }
+
+        switch direction {
+        case .up:
+            if currentIndex > 0 {
+                let newID = sortedTransactions[currentIndex - 1].id
+                viewModel.selectedIDs = [newID]
+            }
+        case .down:
+            if currentIndex < sortedTransactions.count - 1 {
+                let newID = sortedTransactions[currentIndex + 1].id
+                viewModel.selectedIDs = [newID]
+            }
+        default:
+            break
+        }
     }
 }

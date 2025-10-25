@@ -152,6 +152,9 @@ struct TransactionsTableView: View {
             .onChange(of: sortOrder) { oldValue, newValue in
                 viewModel.updateSort(newValue)
             }
+            .onMoveCommand { direction in
+                handleArrowKeyNavigation(direction)
+            }
             .contextMenu(forSelectionType: UUID.self) { selection in
                 if let transactionID = selection.first,
                    let transaction = viewModel.filteredTransactions.first(where: { $0.id == transactionID }) {
@@ -193,5 +196,27 @@ struct TransactionsTableView: View {
     private func setType(_ transaction: Transaction, _ type: String) {
         transaction.setValue(type, forKey: "transactionType")
         saveChanges()
+    }
+
+    private func handleArrowKeyNavigation(_ direction: MoveCommandDirection) {
+        guard let currentID = viewModel.selectedIDs.first,
+              let currentIndex = viewModel.filteredTransactions.firstIndex(where: { $0.id == currentID }) else {
+            return
+        }
+
+        switch direction {
+        case .up:
+            if currentIndex > 0 {
+                let newID = viewModel.filteredTransactions[currentIndex - 1].id
+                viewModel.selectedIDs = [newID]
+            }
+        case .down:
+            if currentIndex < viewModel.filteredTransactions.count - 1 {
+                let newID = viewModel.filteredTransactions[currentIndex + 1].id
+                viewModel.selectedIDs = [newID]
+            }
+        default:
+            break
+        }
     }
 }
