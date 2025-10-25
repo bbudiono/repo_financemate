@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import CoreData
 import os.log
 
 /// Basiq sync manager for background synchronization and Core Data integration
@@ -73,16 +74,65 @@ class BasiqSyncManager: ObservableObject {
     private func processTransactions(_ transactions: [BasiqTransaction], for connection: BasiqConnection) async {
         logger.info("Processing \(transactions.count) transactions for \(connection.institution.name)")
 
-        // Convert Basiq transactions to local Transaction model
-        // This would integrate with Core Data to store locally
-        // Implementation would depend on the existing Transaction model
+        let context = PersistenceController.shared.container.viewContext
 
-        // TODO: Implement Core Data integration
-        // - Map BasiqTransaction to local Transaction model
-        // - Handle duplicate detection
-        // - Update local database
-        // - Trigger UI refresh
+        for basiqTx in transactions {
+            // DUPLICATE DETECTION: Check if Basiq transaction already imported
+            if await transactionExists(basiqTransactionId: basiqTx.id, in: context) {
+                continue  // Skip duplicates
+            }
+
+            // MAP Basiq → Transaction
+            await context.perform {
+                let transaction = Transaction(context: context)
+                transaction.id = UUID()
+                transaction.amount = Double(basiqTx.amount) ?? 0.0
+                transaction.itemDescription = basiqTx.description
+                transaction.date = self.parseDate(basiqTx.postDate) ?? Date()
+                transaction.category = self.inferCategory(from: basiqTx)
+                transaction.source = "bank:\(connection.institution.shortName)"
+                transaction.externalTransactionId = basiqTx.id
+                transaction.transactionType = basiqTx.direction == "debit" ? "expense" : "income"
+                transaction.importedDate = Date()
+
+                // Store merchant info in note if available
+                if let merchant = basiqTx.enrich?.merchant?.businessName {
+                    transaction.note = "Merchant: \(merchant)"
+                }
+
+                do {
+                    try context.save()
+                } catch {
+                    self.logger.error("Failed to save transaction: \(error.localizedDescription)")
+                }
+            }
+        }
 
         logger.debug("Transaction processing completed")
+    }
+
+    private func transactionExists(basiqTransactionId: String, in context: NSManagedObjectContext) async -> Bool {
+        await context.perform {
+            let request = NSFetchRequest<Transaction>(entityName: "Transaction")
+            request.predicate = NSPredicate(format: "externalTransactionId == %@", basiqTransactionId)
+            return (try? context.count(for: request)) ?? 0 > 0
+        }
+    }
+
+    private func inferCategory(from basiqTx: BasiqTransaction) -> String {
+        // Use Basiq enrichment data for categorization
+        if let anzsic = basiqTx.enrich?.category?.anzsic {
+            if let division = anzsic.division {
+                return division
+            }
+        }
+
+        // Fallback categorization
+        return basiqTx.direction == "debit" ? "Expense" : "Income"
+    }
+
+    private func parseDate(_ dateString: String) -> Date? {
+        let formatter = ISO8601DateFormatter()
+        return formatter.date(from: dateString)
     }
 }

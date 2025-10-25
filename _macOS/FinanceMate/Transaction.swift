@@ -26,6 +26,7 @@ public class Transaction: NSManagedObject, Identifiable {
     @NSManaged public var contentHash: Int64  // BLUEPRINT Line 151: Email content hash for cache validation
     @NSManaged public var importedDate: Date?
     @NSManaged public var transactionType: String
+    @NSManaged public var externalTransactionId: String?  // Basiq: External transaction ID for duplicate detection
 
     public override func awakeFromInsert() {
         super.awakeFromInsert()
