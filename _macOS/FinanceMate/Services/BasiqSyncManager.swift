@@ -76,14 +76,22 @@ class BasiqSyncManager: ObservableObject {
 
         let context = PersistenceController.shared.container.viewContext
 
-        for basiqTx in transactions {
-            // DUPLICATE DETECTION: Check if Basiq transaction already imported
-            if await transactionExists(basiqTransactionId: basiqTx.id, in: context) {
-                continue  // Skip duplicates
-            }
+        // PERFORMANCE OPTIMIZATION: Batch fetch existing external IDs once (not in loop)
+        let existingIds = await fetchExistingExternalIds(in: context)
+        logger.debug("Found \(existingIds.count) existing external transaction IDs")
 
-            // MAP Basiq → Transaction
-            await context.perform {
+        // Filter out duplicates in-memory (O(n) instead of O(n²))
+        let newTransactions = transactions.filter { !existingIds.contains($0.id) }
+        logger.info("New transactions to import: \(newTransactions.count) of \(transactions.count)")
+
+        if newTransactions.isEmpty {
+            logger.info("No new transactions to import (all duplicates)")
+            return
+        }
+
+        // MAP all transactions BEFORE saving (batch operation)
+        await context.perform {
+            for basiqTx in newTransactions {
                 let transaction = Transaction(context: context)
                 transaction.id = UUID()
                 transaction.amount = Double(basiqTx.amount) ?? 0.0
@@ -91,7 +99,7 @@ class BasiqSyncManager: ObservableObject {
                 transaction.date = self.parseDate(basiqTx.postDate) ?? Date()
                 transaction.category = self.inferCategory(from: basiqTx)
                 transaction.source = "bank:\(connection.institution.shortName)"
-                transaction.externalTransactionId = basiqTx.id
+                transaction.externalTransactionId = basiqTx.id  // For duplicate detection
                 transaction.transactionType = basiqTx.direction == "debit" ? "expense" : "income"
                 transaction.importedDate = Date()
 
@@ -99,23 +107,34 @@ class BasiqSyncManager: ObservableObject {
                 if let merchant = basiqTx.enrich?.merchant?.businessName {
                     transaction.note = "Merchant: \(merchant)"
                 }
+            }
 
-                do {
-                    try context.save()
-                } catch {
-                    self.logger.error("Failed to save transaction: \(error.localizedDescription)")
-                }
+            // BATCH SAVE: Single save after all mapping (performance + atomicity)
+            do {
+                try context.save()
+                self.logger.info("Successfully saved \(newTransactions.count) bank transactions")
+            } catch {
+                context.rollback()  // ATOMIC: Rollback ALL on error
+                self.logger.error("Failed to save transactions (rolled back): \(error.localizedDescription)")
             }
         }
 
         logger.debug("Transaction processing completed")
     }
 
-    private func transactionExists(basiqTransactionId: String, in context: NSManagedObjectContext) async -> Bool {
+    /// Batch fetch all existing external transaction IDs (O(1) database query)
+    private func fetchExistingExternalIds(in context: NSManagedObjectContext) async -> Set<String> {
         await context.perform {
             let request = NSFetchRequest<Transaction>(entityName: "Transaction")
-            request.predicate = NSPredicate(format: "externalTransactionId == %@", basiqTransactionId)
-            return (try? context.count(for: request)) ?? 0 > 0
+            request.predicate = NSPredicate(format: "externalTransactionId != nil")
+            request.propertiesToFetch = ["externalTransactionId"]
+            request.returnsObjectsAsFaults = false
+
+            guard let results = try? context.fetch(request) else {
+                return Set()
+            }
+
+            return Set(results.compactMap { $0.externalTransactionId })
         }
     }
 
@@ -131,8 +150,27 @@ class BasiqSyncManager: ObservableObject {
         return basiqTx.direction == "debit" ? "Expense" : "Income"
     }
 
+    /// Robust date parsing with multiple format support
     private func parseDate(_ dateString: String) -> Date? {
-        let formatter = ISO8601DateFormatter()
-        return formatter.date(from: dateString)
+        // Try ISO8601 first (Basiq standard: "2024-01-15T10:30:00Z")
+        let iso8601 = ISO8601DateFormatter()
+        if let date = iso8601.date(from: dateString) {
+            return date
+        }
+
+        // Try short date format ("2024-01-15")
+        let shortFormatter = DateFormatter()
+        shortFormatter.dateFormat = "yyyy-MM-dd"
+        if let date = shortFormatter.date(from: dateString) {
+            return date
+        }
+
+        // Try timestamp format
+        if let timestamp = Double(dateString) {
+            return Date(timeIntervalSince1970: timestamp)
+        }
+
+        logger.warning("Unknown date format from Basiq: \(dateString)")
+        return nil  // Let caller handle with ?? Date() fallback
     }
 }
