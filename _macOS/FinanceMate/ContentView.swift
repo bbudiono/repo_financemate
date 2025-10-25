@@ -4,6 +4,7 @@ import CoreData
 struct ContentView: View {
     @StateObject private var authManager = AuthenticationManager()
     @State private var selectedTab = 0
+    @State private var showingAddTransaction = false
     @Environment(\.managedObjectContext) private var viewContext
 
     @StateObject private var chatbotVM: ChatbotViewModel
@@ -64,6 +65,20 @@ struct ContentView: View {
         .onAppear {
             authManager.checkAuthStatus()
             authManager.checkGoogleAuthStatus()
+        }
+        // WCAG 2.1 AA: Listen for keyboard shortcuts (BLUEPRINT Line 266)
+        .onReceive(NotificationCenter.default.publisher(for: .newTransactionShortcut)) { _ in
+            if authManager.isAuthenticated && selectedTab == 1 {
+                showingAddTransaction = true
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .selectTab)) { notification in
+            if authManager.isAuthenticated, let tabIndex = notification.object as? Int {
+                selectedTab = tabIndex
+            }
+        }
+        .sheet(isPresented: $showingAddTransaction) {
+            AddTransactionForm(isPresented: $showingAddTransaction)
         }
     }
 }

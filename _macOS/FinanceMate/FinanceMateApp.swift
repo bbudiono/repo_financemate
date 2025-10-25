@@ -56,5 +56,53 @@ struct FinanceMateApp: App {
             ContentView()
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
         }
+        // WCAG 2.1 AA Keyboard Shortcuts (BLUEPRINT Line 266)
+        .commands {
+            // Cmd+N - New Transaction
+            CommandGroup(replacing: .newItem) {
+                Button("New Transaction") {
+                    NotificationCenter.default.post(name: .newTransactionShortcut, object: nil)
+                }
+                .keyboardShortcut("n", modifiers: .command)
+            }
+
+            // Cmd+1-4 - Tab Navigation
+            CommandMenu("Navigate") {
+                Button("Dashboard") {
+                    NotificationCenter.default.post(name: .selectTab, object: 0)
+                }
+                .keyboardShortcut("1", modifiers: .command)
+
+                Button("Transactions") {
+                    NotificationCenter.default.post(name: .selectTab, object: 1)
+                }
+                .keyboardShortcut("2", modifiers: .command)
+
+                Button("Gmail") {
+                    NotificationCenter.default.post(name: .selectTab, object: 2)
+                }
+                .keyboardShortcut("3", modifiers: .command)
+
+                Button("Settings") {
+                    NotificationCenter.default.post(name: .selectTab, object: 3)
+                }
+                .keyboardShortcut("4", modifiers: .command)
+            }
+
+            // Cmd+F - Search (handled in TransactionsView)
+            CommandGroup(after: .toolbar) {
+                Button("Find Transactions") {
+                    NotificationCenter.default.post(name: .focusSearchShortcut, object: nil)
+                }
+                .keyboardShortcut("f", modifiers: .command)
+            }
+        }
     }
+}
+
+// WCAG 2.1 AA: Keyboard shortcut notification names (BLUEPRINT Line 266)
+extension Notification.Name {
+    static let newTransactionShortcut = Notification.Name("newTransactionShortcut")
+    static let focusSearchShortcut = Notification.Name("focusSearchShortcut")
+    static let selectTab = Notification.Name("selectTab")
 }
