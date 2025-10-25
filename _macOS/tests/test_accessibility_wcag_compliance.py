@@ -104,6 +104,12 @@ class AccessibilityTestSuite:
                 combined_content += file_path.read_text()
 
         # Check for keyboard navigation features across codebase
+        # Include table component files for MODULAR pattern validation
+        table_files = list((self.project_path / "FinanceMate" / "Views").rglob("*TableView.swift"))
+        for table_file in table_files:
+            if table_file.exists():
+                combined_content += table_file.read_text()
+
         has_shortcuts = '.commands' in combined_content or 'CommandGroup' in combined_content
         has_focus = '.focusable()' in combined_content or '@FocusState' in combined_content
         has_arrow_keys = '.onMoveCommand' in combined_content
