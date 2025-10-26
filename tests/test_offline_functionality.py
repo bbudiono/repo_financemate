@@ -188,7 +188,7 @@ def test_core_data_offline_access():
         print("  ❌ PersistenceController.swift not found")
         return False
 
-    content = open(persistence.read())
+    content = open(persistence).read()
 
     # Core Data should NOT have network dependencies
     has_network_dependency = any(url in content for url in [

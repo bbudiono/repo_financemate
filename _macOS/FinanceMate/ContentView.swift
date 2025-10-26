@@ -3,6 +3,7 @@ import CoreData
 
 struct ContentView: View {
     @StateObject private var authManager = AuthenticationManager()
+    @StateObject private var networkMonitor = NetworkMonitor()
     @State private var selectedTab = 0
     @State private var showingAddTransaction = false
     @Environment(\.managedObjectContext) private var viewContext
@@ -21,9 +22,16 @@ struct ContentView: View {
                 LoginView(authManager: authManager)
             } else {
                 // BLUEPRINT Line 126: HSplitView prevents chatbot from blocking table content
-                HSplitView {
-                    // Main content area
-                    TabView(selection: $selectedTab) {
+                VStack(spacing: 0) {
+                    // BLUEPRINT Line 298: Offline banner when network unavailable
+                    if !networkMonitor.isConnected {
+                        OfflineBanner()
+                            .environmentObject(networkMonitor)
+                    }
+
+                    HSplitView {
+                        // Main content area
+                        TabView(selection: $selectedTab) {
                         DashboardView()
                             .tabItem {
                                 Label("Dashboard", systemImage: "chart.bar.fill")
@@ -52,15 +60,17 @@ struct ContentView: View {
                     .environmentObject(authManager)
                     .accessibleFocus() // WCAG 2.1 AA: Focus visible indicator
 
-                    // Chatbot sidebar (always rendered - shows collapsed button when hidden)
-                    ChatbotDrawer(viewModel: chatbotVM)
-                        .frame(
-                            minWidth: chatbotVM.isDrawerVisible ? 300 : 60,
-                            idealWidth: chatbotVM.isDrawerVisible ? 350 : 60,
-                            maxWidth: chatbotVM.isDrawerVisible ? 500 : 60
-                        )
+                        // Chatbot sidebar (always rendered - shows collapsed button when hidden)
+                        ChatbotDrawer(viewModel: chatbotVM)
+                            .frame(
+                                minWidth: chatbotVM.isDrawerVisible ? 300 : 60,
+                                idealWidth: chatbotVM.isDrawerVisible ? 350 : 60,
+                                maxWidth: chatbotVM.isDrawerVisible ? 500 : 60
+                            )
+                    }
+                    .frame(minWidth: 900, minHeight: 600)
                 }
-                .frame(minWidth: 900, minHeight: 600)
+                .environmentObject(networkMonitor)
             }
         }
         .onAppear {
