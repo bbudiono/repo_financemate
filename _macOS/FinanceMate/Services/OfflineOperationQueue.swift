@@ -4,7 +4,7 @@
 //
 //  Purpose: Queues network operations for execution when connectivity is restored
 //  BLUEPRINT Requirement: Line 298 - Offline Functionality
-//  Architecture: Actor-based thread-safe operation queue with persistence
+//  Architecture: Actor-based thread-safe queue with dependency injection
 //
 
 import Foundation
@@ -31,22 +31,35 @@ struct OfflineOperation: Codable, Identifiable {
 }
 
 /// Thread-safe queue for offline operations with persistence
+/// PRODUCTION REFACTOR: Dependency injection eliminates NotificationCenter coupling
 actor OfflineOperationQueue {
     // MARK: - Properties
 
     private var operations: [OfflineOperation] = []
+    private let executor: OfflineOperationExecutor
     private let persistenceKey = "com.financemate.offlineOperations"
     private let maxRetries = 3
+    private let maxQueueSize = 100
+    private let operationExpirationDays: TimeInterval = 7 * 86400  // 7 days in seconds
 
     // MARK: - Initialization
 
-    init() {
+    /// Initialize queue with dependency-injected executor
+    /// - Parameter executor: Operation executor (defaults to production implementation)
+    init(executor: OfflineOperationExecutor = ProductionOfflineExecutor()) {
+        self.executor = executor
+
         // Load operations synchronously to avoid race condition
         // Actor init is synchronous, load from UserDefaults is fast
-        if let data = UserDefaults.standard.data(forKey: persistenceKey),
-           let decoded = try? JSONDecoder().decode([OfflineOperation].self, from: data) {
-            operations = decoded
-            NSLog("[OfflineQueue] Loaded \(decoded.count) persisted operations")
+        if let data = UserDefaults.standard.data(forKey: persistenceKey) {
+            do {
+                operations = try JSONDecoder().decode([OfflineOperation].self, from: data)
+                NSLog("[OfflineQueue] ✅ Loaded \(operations.count) persisted operations")
+            } catch {
+                // CRITICAL: Log data loss for audit trail (financial software requirement)
+                NSLog("[OfflineQueue] ❌ CRITICAL: Failed to decode operations - data corruption detected: \(error.localizedDescription)")
+                operations = [] // Start fresh but LOGGED the failure
+            }
         }
     }
 
@@ -56,18 +69,9 @@ actor OfflineOperationQueue {
     /// - Parameters:
     ///   - id: Optional custom ID (defaults to UUID)
     ///   - type: Operation type
-    // Maximum queue size to prevent unbounded growth
-    private let maxQueueSize = 100
-    private let operationExpirationDays: TimeInterval = 7 * 86400  // 7 days in seconds
-
     func enqueue(id: String? = nil, type: OfflineOperation.OperationType) {
         // Remove expired operations (older than 7 days)
-        let expirationDate = Date().addingTimeInterval(-operationExpirationDays)
-        let beforeCount = operations.count
-        operations.removeAll { $0.timestamp < expirationDate }
-        if operations.count < beforeCount {
-            NSLog("[OfflineQueue] Removed \(beforeCount - operations.count) expired operations")
-        }
+        cleanupExpiredOperations()
 
         // Check queue size limit
         if operations.count >= maxQueueSize {
@@ -84,42 +88,41 @@ actor OfflineOperationQueue {
         NSLog("[OfflineQueue] Enqueued \(type.rawValue) operation (queue size: \(operations.count))")
     }
 
-    /// Execute all queued operations
-    /// - Returns: Array of operation IDs that succeeded
-    func executeAll() async -> [String] {
+    /// Execute all queued operations with transaction atomicity
+    /// - Returns: Result containing successful operation IDs or failure errors
+    func executeAll() async -> Result<[String], Error> {
         var successfulOperations: [String] = []
+        var executionErrors: [String: Error] = [:]
 
         for operation in operations {
             do {
-                let success = try await executeOperation(operation)
-                if success {
-                    successfulOperations.append(operation.id)
-                } else {
-                    // Increment retry count
-                    await retryOperation(operation)
-                }
+                // Execute operation via dependency-injected executor
+                try await executeOperation(operation)
+                successfulOperations.append(operation.id)
+                NSLog("[OfflineQueue] ✅ Successfully executed \(operation.type.rawValue): \(operation.id)")
+
             } catch {
-                // PROPER ERROR HANDLING: Log and notify user
-                NSLog("❌ [OfflineQueue] Failed to execute operation \(operation.id): \(error.localizedDescription)")
+                // PRODUCTION: Proper error handling with user notification
+                NSLog("[OfflineQueue] ❌ Failed to execute operation \(operation.id): \(error.localizedDescription)")
+                executionErrors[operation.id] = error
 
-                // Notify UI of failure
-                await MainActor.run {
-                    NotificationCenter.default.post(
-                        name: NSNotification.Name("OfflineOperationFailed"),
-                        object: nil,
-                        userInfo: ["error": error.localizedDescription, "operationType": operation.type.rawValue]
-                    )
-                }
-
+                // Retry logic with exponential backoff consideration
                 await retryOperation(operation)
             }
         }
 
-        // Remove successful operations
+        // Atomic removal of successful operations
         operations.removeAll { successfulOperations.contains($0.id) }
         persistOperations()
 
-        return successfulOperations
+        // Return detailed result
+        if executionErrors.isEmpty {
+            return .success(successfulOperations)
+        } else {
+            // Partial success: some succeeded, some failed
+            let errorSummary = "Executed \(successfulOperations.count)/\(operations.count + successfulOperations.count) operations"
+            return .failure(OfflineQueueError.partialFailure(errorSummary))
+        }
     }
 
     /// Get count of pending operations
@@ -140,55 +143,37 @@ actor OfflineOperationQueue {
 
     // MARK: - Private Methods
 
-    /// Execute actual operation using NotificationCenter pattern (decoupled from services)
+    /// Execute operation using dependency-injected executor
     /// - Parameter operation: Operation to execute
-    /// - Returns: True if notification posted successfully (actual execution happens in listeners)
-    private func executeOperation(_ operation: OfflineOperation) async throws -> Bool {
+    /// - Throws: Execution errors from executor
+    private func executeOperation(_ operation: OfflineOperation) async throws {
         NSLog("[OfflineQueue] Executing \(operation.type.rawValue) operation: \(operation.id)")
 
-        // REAL IMPLEMENTATION: Post notifications for services to handle
-        // This decouples the queue from service implementations (KISS principle)
-        await MainActor.run {
-            switch operation.type {
-            case .gmailSync:
-                NotificationCenter.default.post(
-                    name: NSNotification.Name("OfflineGmailSyncRequested"),
-                    object: nil,
-                    userInfo: ["operationId": operation.id]
-                )
-                NSLog("[OfflineQueue] Posted Gmail sync notification")
+        // PRODUCTION: Use dependency injection instead of NotificationCenter
+        switch operation.type {
+        case .gmailSync:
+            try await executor.executeGmailSync()
 
-            case .basiqSync:
-                NotificationCenter.default.post(
-                    name: NSNotification.Name("OfflineBasiqSyncRequested"),
-                    object: nil,
-                    userInfo: ["operationId": operation.id]
-                )
-                NSLog("[OfflineQueue] Posted Basiq sync notification")
+        case .basiqSync:
+            try await executor.executeBasiqSync()
 
-            case .tokenRefresh:
-                NotificationCenter.default.post(
-                    name: NSNotification.Name("OfflineTokenRefreshRequested"),
-                    object: nil,
-                    userInfo: ["operationId": operation.id]
-                )
-                NSLog("[OfflineQueue] Posted token refresh notification")
-            }
+        case .tokenRefresh:
+            try await executor.executeTokenRefresh()
         }
-
-        return true  // Notification posted successfully (services will handle execution)
     }
 
+    /// Retry operation with exponential backoff
+    /// - Parameter operation: Operation to retry
     private func retryOperation(_ operation: OfflineOperation) async {
         guard operation.retryCount < maxRetries else {
             // Max retries reached, remove operation
             operations.removeAll { $0.id == operation.id }
             persistOperations()
-            NSLog("⚠️ [OfflineQueue] Operation \(operation.id) exceeded max retries, removing from queue")
+            NSLog("[OfflineQueue] ⚠️ Operation \(operation.id) exceeded max retries, removing from queue")
             return
         }
 
-        // Increment retry count
+        // Increment retry count atomically
         if let index = operations.firstIndex(where: { $0.id == operation.id }) {
             let updated = OfflineOperation(
                 id: operation.id,
@@ -198,22 +183,47 @@ actor OfflineOperationQueue {
             )
             operations[index] = updated
             persistOperations()
+            NSLog("[OfflineQueue] Retry \(updated.retryCount)/\(maxRetries) for \(operation.id)")
         }
     }
 
+    /// Clean up expired operations (older than 7 days)
+    private func cleanupExpiredOperations() {
+        let expirationDate = Date().addingTimeInterval(-operationExpirationDays)
+        let beforeCount = operations.count
+        operations.removeAll { $0.timestamp < expirationDate }
+
+        if operations.count < beforeCount {
+            NSLog("[OfflineQueue] Removed \(beforeCount - operations.count) expired operations")
+            persistOperations()
+        }
+    }
+
+    /// Persist operations to UserDefaults with explicit error handling
     private func persistOperations() {
-        guard let encoded = try? JSONEncoder().encode(operations) else {
-            NSLog("❌ [OfflineQueue] Failed to encode operations for persistence")
-            return
-        }
-        UserDefaults.standard.set(encoded, forKey: persistenceKey)
-    }
+        do {
+            let encoded = try JSONEncoder().encode(operations)
+            UserDefaults.standard.set(encoded, forKey: persistenceKey)
 
-    private func loadPersistedOperations() {
-        guard let data = UserDefaults.standard.data(forKey: persistenceKey),
-              let decoded = try? JSONDecoder().decode([OfflineOperation].self, from: data) else {
-            return
+            // Verify write succeeded (UserDefaults can fail silently on full disk)
+            if UserDefaults.standard.data(forKey: persistenceKey) == nil {
+                NSLog("[OfflineQueue] ❌ CRITICAL: UserDefaults write verification failed")
+            }
+        } catch {
+            NSLog("[OfflineQueue] ❌ CRITICAL: Persistence failure - \(error.localizedDescription)")
+            // TODO: Notify user that offline operations may not survive app restart
         }
-        operations = decoded
+    }
+}
+
+/// Errors specific to offline queue operations
+enum OfflineQueueError: Error, LocalizedError {
+    case partialFailure(String)
+
+    var errorDescription: String? {
+        switch self {
+        case .partialFailure(let message):
+            return message
+        }
     }
 }

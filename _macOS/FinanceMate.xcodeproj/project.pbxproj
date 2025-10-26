@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8C55301E02594825B006ED88 /* OfflineOperationExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483D03F5245A42EA92E88BA3 /* OfflineOperationExecutor.swift */; };
 		08F06BC3769A8A9F49B8B5AE /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA76140EE4946838694BF9A2 /* KeychainHelper.swift */; };
 		0A1B2C3D4E5F6A7B8C9D0E1F /* TransactionQueryHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F0E9D8C7B6A5F4E3D2C1B0A /* TransactionQueryHelper.swift */; };
 		0A5D945D9848B184FD19BAED /* EmailCacheService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 779F3E7AB1C78B0F65C81E1C /* EmailCacheService.swift */; };
@@ -123,6 +124,7 @@
 		3086D7B31CC38C940F43577D /* FoundationModelsExtractor.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FoundationModelsExtractor.swift; path = FinanceMate/Services/FoundationModelsExtractor.swift; sourceTree = "<group>"; };
 		32CCB7868F18BF10AD1987C5 /* NetworkMonitor.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NetworkMonitor.swift; path = Services/NetworkMonitor.swift; sourceTree = "<group>"; };
 		39169C61153AA909CBD1F3C3 /* OfflineOperationQueue.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OfflineOperationQueue.swift; path = Services/OfflineOperationQueue.swift; sourceTree = "<group>"; };
+		483D03F5245A42EA92E88BA3 /* OfflineOperationExecutor.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OfflineOperationExecutor.swift; path = Services/OfflineOperationExecutor.swift; sourceTree = "<group>"; };
 		3D0E8A5C2B7F4A9D1E3F6C8B /* MessageBubble.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageBubble.swift; sourceTree = "<group>"; };
 		3DC44DFD1DCD4F13800C757C /* GmailTransactionExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GmailTransactionExtractor.swift; sourceTree = "<group>"; };
 		3E4DCEAC92B2E4D08EFD6720 /* GmailReceiptsTableView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FinanceMate/Views/Gmail/GmailReceiptsTableView.swift; sourceTree = SOURCE_ROOT; };
@@ -247,6 +249,7 @@
 				DC524285E44B59635B116C6D /* PDFExtractionService.swift */,
 				32CCB7868F18BF10AD1987C5 /* NetworkMonitor.swift */,
 				39169C61153AA909CBD1F3C3 /* OfflineOperationQueue.swift */,
+				483D03F5245A42EA92E88BA3 /* OfflineOperationExecutor.swift */,
 			);
 			name = Services;
 			sourceTree = "<group>";
@@ -553,6 +556,7 @@
 				92D2A5045D2D4B1BA386EB23 /* MerchantDatabase.swift in Sources */,
 				E6A7B2C7D191CDB28690EB18 /* NetworkMonitor.swift in Sources */,
 				B00B75900938B20B85D08C3B /* OfflineOperationQueue.swift in Sources */,
+				8C55301E02594825B006ED88 /* OfflineOperationExecutor.swift in Sources */,
 				1AEDD5A492A851F7C18D9B4F /* OfflineBanner.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
