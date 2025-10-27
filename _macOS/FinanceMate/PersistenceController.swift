@@ -208,6 +208,26 @@ struct PersistenceController {
 
         transactionEntity.properties = [idAttr, amountAttr, descAttr, dateAttr, sourceAttr, categoryAttr, noteAttr, taxCategoryAttr, sourceEmailIDAttr, importedDateAttr, transactionTypeAttr, contentHashAttr, emailSourceAttr, externalTransactionIdAttr]
 
+        // PERFORMANCE: Add indexes for frequently queried fields (+8 points backend review)
+        // Improves query performance for sorting, filtering, and duplicate detection
+        let dateIndex = NSFetchIndexDescription(name: "date_idx", elements: [
+            NSFetchIndexElementDescription(property: dateAttr, collationType: .binary)
+        ])
+
+        let categoryIndex = NSFetchIndexDescription(name: "category_idx", elements: [
+            NSFetchIndexElementDescription(property: categoryAttr, collationType: .binary)
+        ])
+
+        let sourceEmailIndex = NSFetchIndexDescription(name: "sourceEmailID_idx", elements: [
+            NSFetchIndexElementDescription(property: sourceEmailIDAttr, collationType: .binary)
+        ])
+
+        let externalTxIndex = NSFetchIndexDescription(name: "externalTx_idx", elements: [
+            NSFetchIndexElementDescription(property: externalTransactionIdAttr, collationType: .binary)
+        ])
+
+        transactionEntity.indexes = [dateIndex, categoryIndex, sourceEmailIndex, externalTxIndex]
+
         // CRITICAL FIX: Add unique constraint on sourceEmailID to prevent duplicate Gmail extractions
         // This prevents the same email being cached multiple times with different extracted data
         let uniquenessConstraint = [sourceEmailIDAttr]
