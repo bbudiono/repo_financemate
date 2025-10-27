@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		8C55301E02594825B006ED88 /* OfflineOperationExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483D03F5245A42EA92E88BA3 /* OfflineOperationExecutor.swift */; };
 		08F06BC3769A8A9F49B8B5AE /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA76140EE4946838694BF9A2 /* KeychainHelper.swift */; };
+		88B706B46847468DAD4722BD /* OnboardingStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48E9C8F6C9F407BA1BFA5E3 /* OnboardingStep.swift */; };
+		F45FC7507B4F441597E49402 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FDD81572C344D1F99F9097D /* OnboardingView.swift */; };
 		0A1B2C3D4E5F6A7B8C9D0E1F /* TransactionQueryHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F0E9D8C7B6A5F4E3D2C1B0A /* TransactionQueryHelper.swift */; };
 		0A5D945D9848B184FD19BAED /* EmailCacheService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 779F3E7AB1C78B0F65C81E1C /* EmailCacheService.swift */; };
 		0B2C3D4E5F6A7B8C9D0E1F2A /* DataAwareResponseGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A1F0E9D8C7B6A5F4E3D2C1B /* DataAwareResponseGenerator.swift */; };
@@ -104,6 +106,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F48E9C8F6C9F407BA1BFA5E3 /* OnboardingStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models/OnboardingStep.swift; sourceTree = "<group>"; };
+		3FDD81572C344D1F99F9097D /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		0462096396F23463327279A7 /* AuthenticationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationManager.swift; sourceTree = "<group>"; };
 		0A7B5D2F9E4C1A6B8D0F3E5A /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
 		0AEFF9785A7F2ADFDD1D1547 /* OfflineBanner.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = OfflineBanner.swift; sourceTree = "<group>"; };
@@ -360,6 +364,7 @@
 			isa = PBXGroup;
 			children = (
 				4A9AAFCBEDA93C942D3D5126 /* GmailAPIError.swift */,
+				F48E9C8F6C9F407BA1BFA5E3 /* OnboardingStep.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -370,6 +375,7 @@
 				23E7A407FC97C201F14B660F /* Gmail */,
 				B48A01CD391F94FFA6DC445D /* Transactions */,
 				B842DD6C96E04B27E90ED6C7 /* Components */,
+				3FDD81572C344D1F99F9097D /* OnboardingView.swift */,
 			);
 			name = Views;
 			path = Views;
@@ -558,6 +564,8 @@
 				B00B75900938B20B85D08C3B /* OfflineOperationQueue.swift in Sources */,
 				8C55301E02594825B006ED88 /* OfflineOperationExecutor.swift in Sources */,
 				1AEDD5A492A851F7C18D9B4F /* OfflineBanner.swift in Sources */,
+				88B706B46847468DAD4722BD /* OnboardingStep.swift in Sources */,
+				F45FC7507B4F441597E49402 /* OnboardingView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

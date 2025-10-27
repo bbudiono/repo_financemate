@@ -6,6 +6,7 @@ struct ContentView: View {
     @StateObject private var networkMonitor = NetworkMonitor()
     @State private var selectedTab = 0
     @State private var showingAddTransaction = false
+    @State private var showingOnboarding = !UserDefaults.standard.bool(forKey: "hasCompletedOnboarding")
     @Environment(\.managedObjectContext) private var viewContext
 
     @StateObject private var chatbotVM: ChatbotViewModel
@@ -20,6 +21,8 @@ struct ContentView: View {
         Group {
             if !authManager.isAuthenticated {
                 LoginView(authManager: authManager)
+            } else if showingOnboarding {
+                OnboardingView(isPresented: $showingOnboarding)
             } else {
                 // BLUEPRINT Line 126: HSplitView prevents chatbot from blocking table content
                 VStack(spacing: 0) {
