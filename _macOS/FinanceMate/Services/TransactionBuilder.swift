@@ -21,6 +21,26 @@ class TransactionBuilder {
         NSLog("Merchant: %@", extracted.merchant)
         NSLog("Amount: %.2f", extracted.amount)
 
+        // VALIDATION GATE: Prevent corrupt financial data
+        let amountValidation = FieldValidator.validateAmount(extracted.amount)
+        if !amountValidation.isValid {
+            NSLog("❌ Amount validation failed: \(amountValidation.reason ?? "Unknown error")")
+            return nil
+        }
+
+        let dateValidation = FieldValidator.validateDate(extracted.date, emailDate: extracted.date)
+        if !dateValidation.isValid {
+            NSLog("❌ Date validation failed: \(dateValidation.reason ?? "Unknown error")")
+            return nil
+        }
+
+        // Validate merchant name (minimum 2 characters, non-empty)
+        let merchant = extracted.merchant.trimmingCharacters(in: .whitespacesAndNewlines)
+        if merchant.isEmpty || merchant.count < 2 {
+            NSLog("❌ Merchant validation failed: name too short or empty")
+            return nil
+        }
+
         let transaction = Transaction(context: viewContext)
         transaction.id = UUID()
         transaction.amount = extracted.amount
