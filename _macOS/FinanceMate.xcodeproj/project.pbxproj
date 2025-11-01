@@ -103,7 +103,9 @@
 		F19107AB83A247DD8A98C764 /* GmailCashbackExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 730E193D8F9F43AEBA97EB19 /* GmailCashbackExtractor.swift */; };
 		F73403B44F38F91E224CD21D /* GmailReceiptsTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E4DCEAC92B2E4D08EFD6720 /* GmailReceiptsTableView.swift */; };
 		FD47DD6F80A476B4EF448E5D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1715840A6674ADB3AD26EAF /* ContentView.swift */; };
-/* End PBXBuildFile section */
+		53C1A8E91D4B4D9A802800E9 /* PersistenceModelBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F879B2A74074E51A8EBF7F6 /* PersistenceModelBuilder.swift */; };
+		9080A89D0EBD4F46A0464283 /* PersistenceIndexConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB51B0C70ED4F3296F209FA /* PersistenceIndexConfiguration.swift */; };
+		/* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		F48E9C8F6C9F407BA1BFA5E3 /* OnboardingStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models/OnboardingStep.swift; sourceTree = "<group>"; };
@@ -210,7 +212,9 @@
 		F905C06B5EFAACD676C7D55D /* GmailEmailRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GmailEmailRepository.swift; sourceTree = "<group>"; };
 		FB450CF228F541ACBECDC36B /* AnthropicAPIModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnthropicAPIModels.swift; sourceTree = "<group>"; };
 		FD1B108972E6DE4F2BB3E4BE /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
-/* End PBXFileReference section */
+		2F879B2A74074E51A8EBF7F6 /* PersistenceModelBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FinanceMate/Persistence/PersistenceModelBuilder.swift"; sourceTree = "<group>"; };
+		5DB51B0C70ED4F3296F209FA /* PersistenceIndexConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FinanceMate/Persistence/PersistenceIndexConfiguration.swift"; sourceTree = "<group>"; };
+		/* End PBXFileReference section */
 
 /* Begin PBXGroup section */
 		207FA10B5AEA6A44F3FB9131 /* Extensions */ = {
@@ -566,7 +570,9 @@
 				1AEDD5A492A851F7C18D9B4F /* OfflineBanner.swift in Sources */,
 				88B706B46847468DAD4722BD /* OnboardingStep.swift in Sources */,
 				F45FC7507B4F441597E49402 /* OnboardingView.swift in Sources */,
-			);
+											53C1A8E91D4B4D9A802800E9 /* PersistenceModelBuilder.swift in Sources */,
+				9080A89D0EBD4F46A0464283 /* PersistenceIndexConfiguration.swift in Sources */,
+);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
