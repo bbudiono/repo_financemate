@@ -34,6 +34,8 @@ struct OnboardingView: View {
                             .fill(index == currentStep ? Color.blue : Color.gray.opacity(0.3))
                             .frame(width: 8, height: 8)
                             .animation(.easeInOut, value: currentStep)
+                            .accessibilityLabel("Step \(index + 1) of 3")
+                            .accessibilityAddTraits(index == currentStep ? .isSelected : [])
                     }
                 }
                 .padding(.top, 24)
@@ -48,6 +50,7 @@ struct OnboardingView: View {
                 }
                 .tabViewStyle(.automatic)
                 .animation(.easeInOut, value: currentStep)
+                .accessibilityLabel("Onboarding steps")
 
                 // Navigation controls
                 HStack(spacing: 24) {
@@ -65,6 +68,8 @@ struct OnboardingView: View {
                             )
                     }
                     .buttonStyle(.plain)
+                    .accessibilityLabel("Skip onboarding")
+                    .accessibilityHint("Dismiss onboarding and start using FinanceMate")
 
                     Spacer()
 
@@ -90,6 +95,8 @@ struct OnboardingView: View {
                             )
                     }
                     .buttonStyle(.plain)
+                    .accessibilityLabel(currentStep < 2 ? "Next step" : "Complete onboarding")
+                    .accessibilityHint(currentStep < 2 ? "Advance to step \(currentStep + 2)" : "Finish setup and begin using FinanceMate")
                 }
                 .padding(.horizontal, 32)
                 .padding(.bottom, 32)
