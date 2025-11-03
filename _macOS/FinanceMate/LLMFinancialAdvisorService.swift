@@ -19,9 +19,9 @@ struct LLMFinancialAdvisorService {
 
     // MARK: - Question Answering
 
-    /// Answer financial question with user context injection
-    func answerQuestion(_ question: String) async throws -> String {
-        logger.info("Processing question with LLM: \(question.prefix(50))...")
+    /// Answer financial question with user context injection and conversation history
+    func answerQuestion(_ question: String, conversationHistory: [AnthropicMessage] = []) async throws -> String {
+        logger.info("Processing question with LLM: \(question.prefix(50))... (history: \(conversationHistory.count) messages)")
 
         let systemPrompt = buildSystemPrompt()
         let userContext = buildUserContext()
@@ -32,7 +32,9 @@ struct LLMFinancialAdvisorService {
         User Question: \(question)
         """
 
-        let messages = [AnthropicMessage(role: "user", content: fullQuestion)]
+        // Build complete message history: previous messages + current question
+        var messages = conversationHistory
+        messages.append(AnthropicMessage(role: "user", content: fullQuestion))
 
         let response = try await client.sendMessageSync(messages: messages, systemPrompt: systemPrompt)
         logger.info("LLM response generated (\(response.count) chars)")

@@ -45,8 +45,15 @@ final class ChatbotViewModel: ObservableObject {
         // Get API key from environment
         let apiKey = ProcessInfo.processInfo.environment["ANTHROPIC_API_KEY"]
 
-        // Call async LLM-powered service
-        let result = await FinancialKnowledgeService.processQuestion(content, context: context, apiKey: apiKey)
+        // Build conversation history (last 10 turns, excluding welcome message)
+        let conversationHistory = messages
+            .filter { $0.role == .user || $0.role == .assistant }
+            .suffix(20) // Last 10 turns = 20 messages (user + assistant pairs)
+            .dropLast() // Exclude the current user message (already added)
+            .map { AnthropicMessage(role: $0.role == .user ? "user" : "assistant", content: $0.content) }
+
+        // Call async LLM-powered service with conversation history
+        let result = await FinancialKnowledgeService.processQuestion(content, conversationHistory: Array(conversationHistory), context: context, apiKey: apiKey)
         let responseTime = Date().timeIntervalSince(startTime)
 
         let assistantMessage = ChatMessage(

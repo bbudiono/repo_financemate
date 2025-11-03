@@ -9,17 +9,17 @@ struct FinancialKnowledgeService {
 
     // MARK: - Q&A Processing (ASYNC - LLM Integration)
 
-    static func processQuestion(_ question: String, context: NSManagedObjectContext? = nil, apiKey: String? = nil) async -> (content: String, hasData: Bool, actionType: ActionType, questionType: FinancialQuestionType?, qualityScore: Double) {
+    static func processQuestion(_ question: String, conversationHistory: [AnthropicMessage] = [], context: NSManagedObjectContext? = nil, apiKey: String? = nil) async -> (content: String, hasData: Bool, actionType: ActionType, questionType: FinancialQuestionType?, qualityScore: Double) {
 
         let questionType = classifyQuestion(question)
-        logger.info("Processing question (type: \(String(describing: questionType)))")
+        logger.info("Processing question (type: \(String(describing: questionType)), history: \(conversationHistory.count) messages)")
 
         // PRIORITY 1: Try LLM with user context (if API key available)
         if let context = context, let apiKey = apiKey, !apiKey.isEmpty {
             do {
-                logger.debug("Attempting LLM response with user context")
+                logger.debug("Attempting LLM response with user context and conversation history")
                 let service = LLMFinancialAdvisorService(context: context, apiKey: apiKey)
-                let response = try await service.answerQuestion(question)
+                let response = try await service.answerQuestion(question, conversationHistory: conversationHistory)
                 let qualityScore = calculateQualityScore(response: response, question: question)
                 logger.info("LLM response generated (quality: \(qualityScore)/10)")
                 return (response, true, .analyzeExpenses, questionType, qualityScore)
