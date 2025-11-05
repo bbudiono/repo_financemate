@@ -19,7 +19,7 @@ public class Transaction: NSManagedObject, Identifiable {
     @NSManaged public var date: Date
     @NSManaged public var source: String
     @NSManaged public var category: String
-    @NSManaged public var taxCategory: String
+    @NSManaged public var taxCategory: String?
     @NSManaged public var note: String?
     @NSManaged public var sourceEmailID: String?
     @NSManaged public var emailSource: String?  // CRITICAL FIX: Store email sender for merchant extraction
@@ -36,7 +36,6 @@ public class Transaction: NSManagedObject, Identifiable {
         setPrimitiveValue("", forKey: "itemDescription")
         setPrimitiveValue(0.0, forKey: "amount")
         setPrimitiveValue("Other", forKey: "category")
-        setPrimitiveValue(TaxCategory.personal.rawValue, forKey: "taxCategory")
         setPrimitiveValue("expense", forKey: "transactionType")
     }
 }

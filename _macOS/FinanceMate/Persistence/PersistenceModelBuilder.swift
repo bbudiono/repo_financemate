@@ -43,7 +43,7 @@ struct PersistenceModelBuilder {
         let source = createAttribute(name: "source", type: .stringAttributeType, optional: false, defaultValue: "manual")
         let category = createAttribute(name: "category", type: .stringAttributeType, optional: false, defaultValue: "Other")
         let note = createAttribute(name: "note", type: .stringAttributeType, optional: true)
-        let taxCategory = createAttribute(name: "taxCategory", type: .stringAttributeType, optional: false, defaultValue: "Personal")
+        let taxCategory = createAttribute(name: "taxCategory", type: .stringAttributeType, optional: true)
 
         // Gmail integration attributes
         let sourceEmailID = createAttribute(name: "sourceEmailID", type: .stringAttributeType, optional: true)
@@ -77,7 +77,7 @@ struct PersistenceModelBuilder {
         let itemDescription = createAttribute(name: "itemDescription", type: .stringAttributeType, optional: false, defaultValue: "")
         let quantity = createAttribute(name: "quantity", type: .integer32AttributeType, optional: false, defaultValue: 1)
         let price = createAttribute(name: "price", type: .doubleAttributeType, optional: false, defaultValue: 0.0)
-        let taxCategory = createAttribute(name: "taxCategory", type: .stringAttributeType, optional: false, defaultValue: "Personal")
+        let taxCategory = createAttribute(name: "taxCategory", type: .stringAttributeType, optional: true)
 
         entity.properties = [id, itemDescription, quantity, price, taxCategory]
         return entity
@@ -115,7 +115,7 @@ struct PersistenceModelBuilder {
 
         let id = createAttribute(name: "id", type: .UUIDAttributeType, optional: false)
         let lineItemID = createAttribute(name: "lineItemID", type: .UUIDAttributeType, optional: false)
-        let taxCategory = createAttribute(name: "taxCategory", type: .stringAttributeType, optional: false)
+        let taxCategory = createAttribute(name: "taxCategory", type: .stringAttributeType, optional: true)
         let percentage = createAttribute(name: "percentage", type: .doubleAttributeType, optional: false, defaultValue: 100.0)
         let amount = createAttribute(name: "amount", type: .doubleAttributeType, optional: false, defaultValue: 0.0)
 
