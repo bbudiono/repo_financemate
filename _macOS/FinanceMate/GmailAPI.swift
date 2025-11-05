@@ -78,8 +78,14 @@ struct GmailAPI {
         let (data, _) = try await URLSession.shared.data(for: request)
         let response = try JSONDecoder().decode(MessagesResponse.self, from: data)
 
+        // Handle empty responses gracefully (Gmail API may omit "messages" field when no results)
+        guard let messageStubs = response.messages, !messageStubs.isEmpty else {
+            NSLog("[GmailAPI] No emails found matching query")
+            return []
+        }
+
         var emails: [GmailEmail] = []
-        for message in response.messages {
+        for message in messageStubs {
             if let email = try? await fetchEmailDetails(messageId: message.id, accessToken: accessToken) {
                 emails.append(email)
             }

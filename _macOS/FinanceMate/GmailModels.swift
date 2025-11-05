@@ -54,7 +54,7 @@ struct TokenResponse: Codable {
 }
 
 struct MessagesResponse: Codable {
-    let messages: [MessageStub]
+    let messages: [MessageStub]?  // Optional - Gmail API may omit this field when no results
 }
 
 struct MessageStub: Codable {
