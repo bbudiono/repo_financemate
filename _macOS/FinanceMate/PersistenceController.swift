@@ -29,6 +29,11 @@ struct PersistenceController {
             container.persistentStoreDescriptions.first?.url = URL(fileURLWithPath: "/dev/null")
         }
 
+        // Enable automatic lightweight migration for schema changes
+        let description = container.persistentStoreDescriptions.first
+        description?.shouldMigrateStoreAutomatically = true
+        description?.shouldInferMappingModelAutomatically = true
+
         container.loadPersistentStores { description, error in
             if let error = error {
                 Self.logger.error("Core Data load error: \(error.localizedDescription)")
