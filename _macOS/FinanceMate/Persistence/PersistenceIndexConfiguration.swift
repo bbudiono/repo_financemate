@@ -4,7 +4,7 @@ import CoreData
 /// Extracted from PersistenceController.swift for KISS principle compliance
 struct PersistenceIndexConfiguration {
 
-    /// Configure indexes for all entities to improve query performance
+    /// Configure indexes for Transaction entity to improve query performance
     /// - Parameter entity: Transaction entity to configure indexes for
     static func configureIndexes(for entity: NSEntityDescription) {
         guard entity.name == "Transaction" else { return }
@@ -36,5 +36,29 @@ struct PersistenceIndexConfiguration {
         ])
 
         entity.indexes = [dateIndex, categoryIndex, sourceEmailIndex, externalTxIndex]
+    }
+
+    /// Configure indexes for ChatMessage entity to improve query performance
+    /// - Parameter entity: ChatMessage entity to configure indexes for
+    static func configureChatMessageIndexes(for entity: NSEntityDescription) {
+        guard entity.name == "ChatMessage" else { return }
+
+        // Find attributes by name for index creation
+        guard let timestampAttr = entity.attributesByName["timestamp"],
+              let roleAttr = entity.attributesByName["role"] else {
+            return
+        }
+
+        // PERFORMANCE: Index timestamp for chronological sorting (chat history)
+        let timestampIndex = NSFetchIndexDescription(name: "timestamp_idx", elements: [
+            NSFetchIndexElementDescription(property: timestampAttr, collationType: .binary)
+        ])
+
+        // PERFORMANCE: Index role for filtering user vs assistant messages
+        let roleIndex = NSFetchIndexDescription(name: "role_idx", elements: [
+            NSFetchIndexElementDescription(property: roleAttr, collationType: .binary)
+        ])
+
+        entity.indexes = [timestampIndex, roleIndex]
     }
 }

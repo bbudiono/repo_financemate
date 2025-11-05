@@ -15,14 +15,16 @@ struct PersistenceModelBuilder {
         let splitEntity = createSplitAllocationEntity()
         let gmailEmailEntity = createGmailEmailEntity()
         let metricsEntity = createExtractionMetricsEntity()
+        let chatMessageEntity = createChatMessageEntity()
 
         // Configure relationships between entities
         configureRelationships(transaction: transactionEntity, lineItem: lineItemEntity)
 
         // Apply indexes for performance optimization
         PersistenceIndexConfiguration.configureIndexes(for: transactionEntity)
+        PersistenceIndexConfiguration.configureChatMessageIndexes(for: chatMessageEntity)
 
-        model.entities = [transactionEntity, lineItemEntity, feedbackEntity, splitEntity, metricsEntity, gmailEmailEntity]
+        model.entities = [transactionEntity, lineItemEntity, feedbackEntity, splitEntity, metricsEntity, gmailEmailEntity, chatMessageEntity]
         return model
     }
 
@@ -161,6 +163,26 @@ struct PersistenceModelBuilder {
 
         entity.properties = [date, totalExtractions, tier1Count, tier2Count, tier3Count,
                            avgExtractionTime, avgConfidence, hallucinationCount, errorCount, cacheHitRate]
+        return entity
+    }
+
+    // MARK: - ChatMessage Entity (BLUEPRINT Line 273: Persistent chatbot)
+
+    private static func createChatMessageEntity() -> NSEntityDescription {
+        let entity = NSEntityDescription()
+        entity.name = "ChatMessage"
+        entity.managedObjectClassName = "ChatMessage"
+
+        let id = createAttribute(name: "id", type: .UUIDAttributeType, optional: false)
+        let content = createAttribute(name: "content", type: .stringAttributeType, optional: false, defaultValue: "")
+        let role = createAttribute(name: "role", type: .stringAttributeType, optional: false, defaultValue: "user")
+        let timestamp = createAttribute(name: "timestamp", type: .dateAttributeType, optional: false)
+        let hasData = createAttribute(name: "hasData", type: .booleanAttributeType, optional: false, defaultValue: false)
+        let questionType = createAttribute(name: "questionType", type: .stringAttributeType, optional: true)
+        let qualityScore = createAttribute(name: "qualityScore", type: .doubleAttributeType, optional: true)
+        let responseTime = createAttribute(name: "responseTime", type: .doubleAttributeType, optional: true)
+
+        entity.properties = [id, content, role, timestamp, hasData, questionType, qualityScore, responseTime]
         return entity
     }
 

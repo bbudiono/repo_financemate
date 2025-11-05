@@ -25,7 +25,10 @@ final class ChatbotViewModel: ObservableObject {
 
     init(context: NSManagedObjectContext) {
         self.context = context
-        initializeWelcomeMessage()
+        loadChatHistory()
+        if messages.isEmpty {
+            initializeWelcomeMessage()
+        }
         logger.info("ChatbotViewModel initialized with Australian financial expertise")
     }
 
@@ -36,6 +39,7 @@ final class ChatbotViewModel: ObservableObject {
 
         let userMessage = ChatMessage(content: content, role: .user)
         messages.append(userMessage)
+        saveMessage(userMessage)
 
         isProcessing = true
         defer { isProcessing = false }
@@ -67,6 +71,7 @@ final class ChatbotViewModel: ObservableObject {
         )
 
         messages.append(assistantMessage)
+        saveMessage(assistantMessage)
         updateQualityMetrics(result.qualityScore)
     }
 
@@ -77,6 +82,13 @@ final class ChatbotViewModel: ObservableObject {
     }
 
     func clearConversation() {
+        // Delete all persisted messages
+        let request = NSFetchRequest<NSManagedObject>(entityName: "ChatMessage")
+        if let entities = try? context.fetch(request) {
+            entities.forEach { context.delete($0) }
+            try? context.save()
+        }
+
         messages.removeAll()
         qualityScores.removeAll()
         totalQuestions = 0
@@ -110,5 +122,64 @@ final class ChatbotViewModel: ObservableObject {
         qualityScores.append(score)
         totalQuestions += 1
         averageQualityScore = qualityScores.reduce(0, +) / Double(qualityScores.count)
+    }
+
+    // MARK: - Persistence Methods
+
+    private func saveMessage(_ message: ChatMessage) {
+        let entity = NSEntityDescription.insertNewObject(forEntityName: "ChatMessage", into: context)
+
+        entity.setValue(message.id, forKey: "id")
+        entity.setValue(message.content, forKey: "content")
+        entity.setValue(message.role.rawValue, forKey: "role")
+        entity.setValue(message.timestamp, forKey: "timestamp")
+        entity.setValue(message.hasData, forKey: "hasData")
+        entity.setValue(message.questionType?.rawValue, forKey: "questionType")
+        entity.setValue(message.qualityScore, forKey: "qualityScore")
+        entity.setValue(message.responseTime, forKey: "responseTime")
+
+        do {
+            try context.save()
+            logger.info("Saved chat message: \(message.id)")
+        } catch {
+            logger.error("Failed to save chat message: \(error.localizedDescription)")
+        }
+    }
+
+    private func loadChatHistory() {
+        let request = NSFetchRequest<NSManagedObject>(entityName: "ChatMessage")
+        request.sortDescriptors = [NSSortDescriptor(key: "timestamp", ascending: true)]
+
+        guard let entities = try? context.fetch(request) else {
+            logger.warning("Failed to load chat history")
+            return
+        }
+
+        messages = entities.compactMap { entity -> ChatMessage? in
+            guard let content = entity.value(forKey: "content") as? String,
+                  let roleString = entity.value(forKey: "role") as? String,
+                  let role = MessageRole(rawValue: roleString) else {
+                logger.error("Invalid chat message entity")
+                return nil
+            }
+
+            let hasData = entity.value(forKey: "hasData") as? Bool ?? false
+            let questionTypeString = entity.value(forKey: "questionType") as? String
+            let questionType = questionTypeString.flatMap { FinancialQuestionType(rawValue: $0) }
+            let qualityScore = entity.value(forKey: "qualityScore") as? Double
+            let responseTime = entity.value(forKey: "responseTime") as? Double
+
+            return ChatMessage(
+                content: content,
+                role: role,
+                hasData: hasData,
+                actionType: .none,
+                questionType: questionType,
+                qualityScore: qualityScore,
+                responseTime: responseTime
+            )
+        }
+
+        logger.info("Loaded \(self.messages.count) chat messages from history")
     }
 }
