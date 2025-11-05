@@ -44,7 +44,8 @@ struct TransactionsTableHelpers {
     }
 
     /// Tax category color mapping
-    static func taxCategoryColor(_ category: String) -> Color {
+    static func taxCategoryColor(_ category: String?) -> Color {
+        guard let category = category else { return .gray }
         switch category {
         case "Personal": return .blue
         case "Business": return .purple

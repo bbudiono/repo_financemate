@@ -19,7 +19,7 @@ struct TransactionRowView: View {
                             .foregroundColor(.blue)
                     }
                     // Tax category
-                    Text(transaction.taxCategory)
+                    Text(transaction.taxCategory ?? "Uncategorized")
                         .font(.caption)
                         .padding(.horizontal, 8)
                         .padding(.vertical, 2)
@@ -41,7 +41,8 @@ struct TransactionRowView: View {
         }
     }
 
-    private func taxCategoryColor(_ category: String) -> Color {
+    private func taxCategoryColor(_ category: String?) -> Color {
+        guard let category = category else { return .gray }
         switch category {
         case "Personal": return .blue
         case "Business": return .purple

@@ -124,8 +124,8 @@ struct TransactionsTableView: View {
                 .width(min: 100, ideal: 120)
 
                 // COLUMN 9: Tax Category
-                TableColumn("Tax Category", value: \.taxCategory) { transaction in
-                    Text(transaction.taxCategory)
+                TableColumn("Tax Category") { transaction in
+                    Text(transaction.taxCategory ?? "Uncategorized")
                         .font(.caption)
                         .padding(.horizontal, 8)
                         .padding(.vertical, 2)
