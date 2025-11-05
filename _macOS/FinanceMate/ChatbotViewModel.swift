@@ -3,7 +3,7 @@ import CoreData
 import SwiftUI
 import os.log
 
-@MainActor
+@MainActor  // Thread safety: All message array access on main thread
 final class ChatbotViewModel: ObservableObject {
 
     // MARK: - Published Properties
