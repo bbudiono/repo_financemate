@@ -48,44 +48,25 @@ struct GmailView: View {
                     Text("Connect Gmail Account")
                         .font(.title2)
 
-                    Text("Click button to open browser for OAuth")
+                    Text("Click \"Connect Gmail\" → Browser opens → Click \"Allow\" → Done!")
                         .font(.caption)
                         .foregroundColor(.secondary)
 
+                    Text("✅ No code copying required - automatic redirect")
+                        .font(.caption2)
+                        .foregroundColor(.green)
+
                     Button("Connect Gmail") {
-                        // Get credentials from DotEnvLoader (not ProcessInfo - sandboxing issue)
-                        let clientID = DotEnvLoader.get("GOOGLE_OAUTH_CLIENT_ID")
-                        let clientSecret = DotEnvLoader.get("GOOGLE_OAUTH_CLIENT_SECRET")
-
-                        NSLog("=== GMAIL BUTTON CLICKED ===")
-                        NSLog("Client ID: %@", clientID ?? "NOT FOUND")
-                        NSLog("Client Secret: %@", clientSecret != nil ? "FOUND" : "NOT FOUND")
-
-                        if let clientID = clientID,
-                           let url = GmailOAuthHelper.getAuthorizationURL(clientID: clientID) {
-                            NSLog("Generated OAuth URL: %@", url.absoluteString)
-                            NSLog("Opening URL in browser...")
-                            NSWorkspace.shared.open(url)
-                            viewModel.showCodeInput = true
-                        } else {
-                            NSLog("FAILED: Could not generate OAuth URL")
-                            NSLog("Client ID nil: %@", clientID == nil ? "YES" : "NO")
-                            viewModel.errorMessage = "OAuth not configured. Check .env file."
-                        }
+                        NSLog("=== AUTOMATIC OAUTH FLOW STARTING ===")
+                        NSLog("LocalOAuthServer will handle callback automatically")
+                        viewModel.startAutomaticOAuthFlow()
                     }
                     .buttonStyle(.borderedProminent)
 
-                    if viewModel.showCodeInput {
-                        TextField("Enter authorization code", text: $viewModel.authCode)
-                            .textFieldStyle(.roundedBorder)
-                            .frame(maxWidth: 400)
-
-                        Button("Submit Code") {
-                            Task {
-                                await viewModel.exchangeCode()
-                            }
-                        }
-                        .buttonStyle(.borderedProminent)
+                    // Show loading indicator while OAuth server is running
+                    if viewModel.isLoading {
+                        ProgressView("Waiting for authentication...")
+                            .padding(.top, 8)
                     }
                 }
             } else {

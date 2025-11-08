@@ -9,9 +9,12 @@ class GmailViewModel: ObservableObject {
     @Published var selectedIDs: Set<String> = [] // For table row selection
     @Published var isLoading = false
     @Published var errorMessage: String?
-    @Published var showCodeInput = false
+    @Published var showCodeInput = false // Deprecated - kept for compatibility but hidden in UI
     @Published var authCode = ""
     @Published var showArchivedEmails = false // BLUEPRINT Line 102: Toggle for archived items
+
+    // RESTORATION: LocalOAuthServer for automatic OAuth callback handling
+    private let oauthServer = LocalOAuthServer()
 
     // BLUEPRINT Line 150: Batch processing progress
     @Published var isBatchProcessing = false
@@ -39,10 +42,49 @@ class GmailViewModel: ObservableObject {
         }
     }
 
+    /// RESTORATION: Start automatic OAuth flow with LocalOAuthServer
+    /// This replaces the manual code entry UX - user just clicks "Allow" in browser
+    func startAutomaticOAuthFlow() {
+        guard let clientID = DotEnvLoader.get("GOOGLE_OAUTH_CLIENT_ID"),
+              let clientSecret = DotEnvLoader.get("GOOGLE_OAUTH_CLIENT_SECRET") else {
+            errorMessage = "OAuth credentials not found in .env"
+            return
+        }
+
+        // Start local server to catch OAuth callback
+        do {
+            try oauthServer.startServer(port: 8080) { [weak self] authCode in
+                Task { @MainActor in
+                    guard let self = self else { return }
+
+                    NSLog("✅ OAuth callback received automatically - exchanging code for token")
+                    self.authCode = authCode
+
+                    // Automatically exchange the code without user intervention
+                    await self.exchangeCode()
+                }
+            }
+
+            // Generate OAuth URL and open in browser
+            if let url = GmailOAuthHelper.getAuthorizationURL(clientID: clientID) {
+                NSLog("🌐 Opening OAuth URL in browser: \(url.absoluteString)")
+                NSLog("🎯 LocalOAuthServer listening on http://localhost:8080")
+                NSWorkspace.shared.open(url)
+            } else {
+                oauthServer.stopServer()
+                errorMessage = "Failed to generate OAuth URL"
+            }
+        } catch {
+            errorMessage = "Failed to start OAuth server: \(error.localizedDescription)"
+            NSLog("❌ LocalOAuthServer failed to start: \(error)")
+        }
+    }
+
     func exchangeCode() async {
         guard let clientID = DotEnvLoader.get("GOOGLE_OAUTH_CLIENT_ID"),
               let clientSecret = DotEnvLoader.get("GOOGLE_OAUTH_CLIENT_SECRET") else {
             errorMessage = "OAuth credentials not found"
+            oauthServer.stopServer() // Clean up on error
             return
         }
 
@@ -57,9 +99,12 @@ class GmailViewModel: ObservableObject {
             )
             isAuthenticated = true
             showCodeInput = false
+            oauthServer.stopServer() // Stop server after successful auth
+            NSLog("✅ OAuth flow complete - server stopped")
             await fetchEmails()
         } catch {
             errorMessage = "Failed to exchange code: \(error.localizedDescription)"
+            oauthServer.stopServer() // Clean up on error
         }
 
         isLoading = false

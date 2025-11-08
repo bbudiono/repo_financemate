@@ -46,16 +46,18 @@ class GmailEmailRepository {
 
     /// Build Gmail API query for delta sync (only fetch emails after lastSync)
     func buildDeltaSyncQuery() -> String? {
-        // CRITICAL FIX: If Core Data is empty, ignore UserDefaults and fetch 5-year history
+        // CRITICAL FIX: If Core Data is empty, FORCE 5-year history regardless of UserDefaults
         // This handles database resets where UserDefaults still has stale lastSyncDate
         let emailCount = (try? loadAllEmails().count) ?? 0
         if emailCount == 0 {
-            NSLog("[GmailEmailRepository] Core Data empty - fetching 5-year history (ignoring stale lastSyncDate)")
+            NSLog("[GmailEmailRepository] Core Data empty - forcing 5-year fetch (clearing stale lastSyncDate)")
+            UserDefaults.standard.removeObject(forKey: Self.lastSyncKey)  // Clear stale date
             return nil  // Forces GmailAPI to use 5-year query
         }
 
+        // Only use delta sync if Core Data has existing emails
         guard let lastSync = getLastSyncDate() else {
-            // First sync: fetch all
+            NSLog("[GmailEmailRepository] No lastSyncDate - fetching 5-year history")
             return nil
         }
 
