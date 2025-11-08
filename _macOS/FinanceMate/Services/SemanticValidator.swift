@@ -42,18 +42,26 @@ class SemanticValidator {
     private func findCorrectedMerchant() -> String {
         let emailDomain = EmailDomainExtractor.extract(from: email.sender)
 
+        // RULE 1: Business rule mappings (e.g., afterpay.com → Officeworks)
         if let mapping = BusinessRuleEngine.mapping(for: emailDomain) {
             if ContentMatcher.matches(content: email.subject + transaction.rawText, merchant: mapping.correctedMerchant) {
+                NSLog("[SEMANTIC-VALIDATION] Business rule applied: \(emailDomain) → \(mapping.correctedMerchant)")
                 return mapping.correctedMerchant
             }
         }
 
+        // RULE 2: User feedback learning (historical corrections)
         let learningKey = "\(emailDomain)-\(transaction.merchant)"
         if let correction = corrections[learningKey] {
+            NSLog("[SEMANTIC-VALIDATION] User correction applied: \(transaction.merchant) → \(correction.correctedMerchant)")
             return correction.correctedMerchant
         }
 
-        return ContentExtractor.extractMerchant(from: email.subject, rawText: transaction.rawText) ?? transaction.merchant
+        // RULE 3: Preserve original merchant (do NOT override with naive matching)
+        // ContentExtractor was deleted due to naive .contains() bugs
+        // The extraction pipeline (Tier 1/2/3) already did proper merchant extraction
+        NSLog("[SEMANTIC-VALIDATION] No validation rules applied - preserving original: \(transaction.merchant)")
+        return transaction.merchant
     }
 
     private func calculateConfidence(correctedMerchant: String) -> Double {

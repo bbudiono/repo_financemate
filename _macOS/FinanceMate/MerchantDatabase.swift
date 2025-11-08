@@ -11,11 +11,14 @@ struct MerchantDatabase {
         "afterpay.com": "Afterpay",
         "afterpay.com.au": "Afterpay",
         "paypal.com": "PayPal",
-        "zip.co": "Zip Pay",
-        "zipmoney.com.au": "Zip Pay",
+        "zip.co": "Zip",
+        "zipmoney.com.au": "Zip",
+        "zip.com.au": "Zip",
         "klarna.com": "Klarna",
         "shopback.com": "Shopback",
         "shopback.com.au": "Shopback",
+        "spaceshipinvest.com.au": "Spaceship",
+        "spaceship.com.au": "Spaceship",
 
         // Banks & Financial Institutions
         "commbank.com.au": "Commonwealth Bank",
@@ -189,9 +192,14 @@ struct MerchantDatabase {
             return merchant
         }
 
-        // Check partial domain matches (for subdomains like info.shopback.com.au)
+        // Check subdomain matches (for subdomains like info.shopback.com.au)
+        // SECURITY FIX: Use proper subdomain matching instead of bidirectional .contains()
+        // Old logic caused cross-contamination (e.g., random domains matching unrelated merchants)
         for (mappedDomain, merchant) in merchantMappings {
-            if domain.contains(mappedDomain) || mappedDomain.contains(domain) {
+            // CORRECT: Only match if domain is subdomain or exact match
+            // "info.shopback.com.au" matches "shopback.com.au" ✓
+            // "spaceshipinvest.com.au" does NOT match "bunnings.com.au" ✓
+            if domain == mappedDomain || domain.hasSuffix(".\(mappedDomain)") {
                 return merchant
             }
         }

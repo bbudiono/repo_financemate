@@ -47,15 +47,17 @@ struct ExtractionPromptBuilder {
 
         Return JSON:
         {
-          "merchant": "Merchant Name",
-          "amount": 123.45,
-          "category": "Groceries|Retail|Transport|Utilities|Dining|Other",
-          "gstAmount": 12.34 or null,
-          "abn": "XX XXX XXX XXX" or null,
-          "invoiceNumber": "ABC-123" or null,
-          "paymentMethod": "Visa|Mastercard|PayPal|etc" or null,
-          "confidence": 0.85
+          "merchant": null,
+          "amount": null,
+          "category": null,
+          "gstAmount": null,
+          "abn": null,
+          "invoiceNumber": null,
+          "paymentMethod": null,
+          "confidence": 0.0
         }
+
+        CRITICAL: Replace ALL null values with extracted data. Do NOT copy this template literally.
 
         Return ONLY the JSON object above, no markdown formatting or explanations.
         """

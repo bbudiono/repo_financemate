@@ -102,6 +102,7 @@ struct GmailTransactionExtractor {
 
     /// Normalize verbose display names to short brand names
     /// "Bunnings Warehouse" → "Bunnings", "ANZ Group Holdings Ltd" → "ANZ"
+    /// "Zip Money Payments Pty Ltd" → "Zip"
     private static func normalizeDisplayName(_ displayName: String) -> String {
         NSLog("[NORMALIZE] Input: '\(displayName)'")
         let name = displayName.trimmingCharacters(in: .whitespaces)
@@ -113,6 +114,7 @@ struct GmailTransactionExtractor {
             .replacingOccurrences(of: " Limited", with: "", options: .caseInsensitive)
             .replacingOccurrences(of: " Ltd", with: "", options: .caseInsensitive)
             .replacingOccurrences(of: " Group Holdings", with: "", options: .caseInsensitive)
+            .replacingOccurrences(of: " Payments", with: "", options: .caseInsensitive)
             .replacingOccurrences(of: ".com.au", with: "", options: .caseInsensitive)
             .replacingOccurrences(of: ".com", with: "", options: .caseInsensitive)
             .replacingOccurrences(of: " Online", with: "", options: .caseInsensitive)
@@ -121,20 +123,42 @@ struct GmailTransactionExtractor {
 
         NSLog("[NORMALIZE] After suffix removal: '\(normalized)'")
 
-        // Specific business name mappings
-        if normalized.lowercased().contains("bunnings warehouse") || normalized.lowercased() == "bunnings warehouse" {
+        // Specific business name mappings (EXACT MATCH ONLY - no .contains())
+        let lowerNormalized = normalized.lowercased()
+
+        // CRITICAL: Use EXACT match or startsWith, NEVER contains()
+        // "Bunnings Warehouse" → "Bunnings" (exact match)
+        // "Spaceship with bunnings mention" → "Spaceship" (no false match)
+        if lowerNormalized == "bunnings warehouse" || lowerNormalized == "bunnings" {
             NSLog("[NORMALIZE] → Matched Bunnings Warehouse → Bunnings")
             return "Bunnings"
         }
-        if normalized.lowercased().contains("anz") {
+
+        // Zip variations (EXACT match only)
+        if lowerNormalized == "zip money" || lowerNormalized == "zip" || lowerNormalized == "zip pay" {
+            NSLog("[NORMALIZE] → Matched Zip variant → Zip")
+            return "Zip"
+        }
+
+        // ANZ variations
+        if lowerNormalized == "anz" || lowerNormalized == "anz bank" {
             NSLog("[NORMALIZE] → Matched ANZ")
             return "ANZ"
         }
-        if normalized.lowercased().contains("amazon") {
+
+        // Amazon
+        if lowerNormalized == "amazon" || lowerNormalized == "amazon australia" {
             return "Amazon"
         }
-        if normalized.lowercased().contains("officeworks") {
+
+        // Officeworks
+        if lowerNormalized == "officeworks" {
             return "Officeworks"
+        }
+
+        // Spaceship
+        if lowerNormalized == "spaceship" || lowerNormalized == "spaceship invest" {
+            return "Spaceship"
         }
 
         // Return first word for multi-word names (unless it's a known full name)

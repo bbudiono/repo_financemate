@@ -44,15 +44,14 @@ enum ContentMatcher {
 }
 
 enum ContentExtractor {
+    // DELETED: Broken naive .contains() matching that caused "Spaceship → Bunnings" bug
+    // This function was checking if email content mentioned "bunnings" ANYWHERE,
+    // even in unrelated contexts like "I shopped at Spaceship, not Bunnings"
+    // Proper merchant extraction now handled by MerchantDatabase.extractMerchant()
+    // which uses intelligent domain parsing and 150+ curated mappings
     static func extractMerchant(from subject: String, rawText: String) -> String? {
-        let content = "\(subject) \(rawText)".lowercased()
-        let merchants = ["officeworks", "uber", "kmart", "bunnings", "woolworths", "coles"]
-
-        for merchant in merchants {
-            if content.contains(merchant) {
-                return merchant.capitalized
-            }
-        }
+        // SECURITY FIX: Never use naive string matching for merchant extraction
+        // Always delegate to MerchantDatabase for accurate semantic extraction
         return nil
     }
 }
