@@ -8,7 +8,7 @@ struct FieldValidator {
     // MARK: - Rule 1: Amount Validation
 
     /// Validates transaction amount (Rule 1: >0.0 and <=999,999.99)
-    static func validateAmount(_ amount: Double) -> ValidationResult {
+    static func validateAmount(_ amount: Double) -> FieldValidationResult {
         guard amount > 0.0 else {
             return .invalid(penalty: 0.2, reason: "Amount must be positive")
         }
@@ -21,7 +21,7 @@ struct FieldValidator {
     // MARK: - Rule 2: GST Validation
 
     /// Validates GST is ~10% of amount (Rule 2: tolerance ±2%)
-    static func validateGST(gst: Double?, amount: Double) -> ValidationResult {
+    static func validateGST(gst: Double?, amount: Double) -> FieldValidationResult {
         guard let gst = gst else { return .valid }  // GST is optional
 
         let expected = amount * 0.1
@@ -37,7 +37,7 @@ struct FieldValidator {
     // MARK: - Rule 3: ABN Validation
 
     /// Validates ABN format (Rule 3: regex ^\d{2}\s?\d{3}\s?\d{3}\s?\d{3}$)
-    static func validateABN(_ abn: String?) -> ValidationResult {
+    static func validateABN(_ abn: String?) -> FieldValidationResult {
         guard let abn = abn else { return .valid }  // ABN is optional
 
         // Remove all whitespace for digit validation
@@ -65,7 +65,7 @@ struct FieldValidator {
     // MARK: - Rule 4: Invoice Number Validation
 
     /// Validates invoice number (Rule 4: 3-20 alphanumeric ^[A-Z0-9-]{3,20}$)
-    static func validateInvoiceNumber(_ invoiceNumber: String) -> ValidationResult {
+    static func validateInvoiceNumber(_ invoiceNumber: String) -> FieldValidationResult {
         // Check length
         guard invoiceNumber.count >= 3 && invoiceNumber.count <= 20 else {
             return .invalid(penalty: 0.2, reason: "Invoice number must be 3-20 characters")
@@ -92,7 +92,7 @@ struct FieldValidator {
     // MARK: - Rule 5: Date Validation
 
     /// Validates date is within email date ±30 days and not >5 years old (Rule 5)
-    static func validateDate(_ date: Date, emailDate: Date) -> ValidationResult {
+    static func validateDate(_ date: Date, emailDate: Date) -> FieldValidationResult {
         // Check if date is more than 5 years old
         let fiveYearsAgo = Calendar.current.date(byAdding: .year, value: -5, to: Date()) ?? Date().addingTimeInterval(-5 * 365 * 24 * 60 * 60)
         guard date >= fiveYearsAgo else {
@@ -117,7 +117,7 @@ struct FieldValidator {
     // MARK: - Rule 6: Category Validation
 
     /// Validates category is one of predefined Australian categories (Rule 6)
-    static func validateCategory(_ category: String) -> ValidationResult {
+    static func validateCategory(_ category: String) -> FieldValidationResult {
         let validCategories = [
             "Groceries", "Retail", "Utilities", "Transport", "Dining",
             "Healthcare", "Entertainment", "Other"
@@ -133,7 +133,7 @@ struct FieldValidator {
     // MARK: - Rule 7: Payment Method Validation
 
     /// Validates payment method (Rule 7: case-insensitive matching)
-    static func validatePaymentMethod(_ paymentMethod: String?) -> ValidationResult {
+    static func validatePaymentMethod(_ paymentMethod: String?) -> FieldValidationResult {
         guard let paymentMethod = paymentMethod else { return .valid }  // Payment method is optional
 
         let validMethods = [
@@ -150,19 +150,20 @@ struct FieldValidator {
     }
 }
 
-// MARK: - Validation Result Model
+// MARK: - Field Validation Result Model
 
 /// Result of field validation with confidence penalty
-struct ValidationResult {
+/// Note: This is the canonical FieldValidationResult type used by FieldValidator
+struct FieldValidationResult {
     let isValid: Bool
     let confidencePenalty: Double
     let reason: String?
 
-    static var valid: ValidationResult {
-        ValidationResult(isValid: true, confidencePenalty: 0.0, reason: nil)
+    static var valid: FieldValidationResult {
+        FieldValidationResult(isValid: true, confidencePenalty: 0.0, reason: nil)
     }
 
-    static func invalid(penalty: Double, reason: String) -> ValidationResult {
-        ValidationResult(isValid: false, confidencePenalty: penalty, reason: reason)
+    static func invalid(penalty: Double, reason: String) -> FieldValidationResult {
+        FieldValidationResult(isValid: false, confidencePenalty: penalty, reason: reason)
     }
 }

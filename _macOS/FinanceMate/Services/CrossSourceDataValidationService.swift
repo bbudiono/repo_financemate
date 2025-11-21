@@ -21,11 +21,11 @@ class CrossSourceDataValidationService: ObservableObject {
     }
 
     /// Validates transaction consistency across all data sources
-    func validateTransactionConsistency(transactions: [Transaction]) -> ValidationResult {
+    func validateTransactionConsistency(transactions: [Transaction]) -> ConsistencyValidationResult {
         let issues = transactions.compactMap { validateTransaction($0) }
         let score = issues.isEmpty ? 100.0 : 50.0
 
-        return ValidationResult(
+        return ConsistencyValidationResult(
             isConsistent: issues.isEmpty,
             consistencyScore: score,
             issues: issues
@@ -82,7 +82,7 @@ enum TransactionSource: String, CaseIterable {
     case bank = "bank"
 }
 
-struct ValidationResult {
+struct ConsistencyValidationResult {
     let isConsistent: Bool
     let consistencyScore: Double
     let issues: [ValidationIssue]

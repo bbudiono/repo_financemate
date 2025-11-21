@@ -28,7 +28,7 @@ enum SplitAllocationHelpers {
         existingAllocations: [SplitAllocation],
         newPercentage: Double,
         validationService: SplitAllocationValidationService
-    ) -> ValidationResult {
+    ) -> SplitAllocationValidationService.ValidationResult {
         return validationService.validateNewSplitAllocation(
             existingAllocations: existingAllocations,
             newPercentage: newPercentage
@@ -61,8 +61,8 @@ enum SplitAllocationHelpers {
     }
 }
 
-/// Result type for validation operations
-struct ValidationResult {
+/// Result type for split allocation validation operations
+struct SplitValidationResult {
     let isValid: Bool
     let errorMessage: String?
 }

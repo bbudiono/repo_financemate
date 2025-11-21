@@ -141,12 +141,17 @@ def test_database_persistence():
     db_size_before = SQLITE_DB_PATH.stat().st_size
     print(f"[8] Database size: {db_size_before} bytes")
 
-    # Step 6: Terminate app
+    # Step 6: Terminate app - Updated 2025-11-21 with killall fallback
     print("\nSTEP 5: Terminating app...")
     process.terminate()
-    process.wait(timeout=3)
+    try:
+        process.wait(timeout=3)
+    except subprocess.TimeoutExpired:
+        print("[9a] Graceful terminate timed out, using killall...")
+        subprocess.run(["killall", "FinanceMate"], stderr=subprocess.DEVNULL)
+        time.sleep(2)
     print("[9] App terminated")
-    time.sleep(2)
+    time.sleep(1)
 
     # Step 7: Verify database still exists and is intact
     print("\nSTEP 6: Verifying database persists after app termination...")
@@ -189,9 +194,13 @@ def test_database_persistence():
 
         print(f"[13] Transaction table contains {row_count} rows")
 
-        # Clean up
+        # Clean up - Updated 2025-11-21 with killall fallback
         process.terminate()
-        process.wait(timeout=3)
+        try:
+            process.wait(timeout=3)
+        except subprocess.TimeoutExpired:
+            subprocess.run(["killall", "FinanceMate"], stderr=subprocess.DEVNULL)
+            time.sleep(2)
 
         print("\n===== TEST PASSED =====")
         print("Core Data persistence verified successfully!")
