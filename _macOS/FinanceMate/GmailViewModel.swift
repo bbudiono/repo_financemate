@@ -305,7 +305,12 @@ class GmailViewModel: ObservableObject {
     }
 
     func createTransaction(from extracted: ExtractedTransaction) {
-        if transactionBuilder.createTransaction(from: extracted) == nil {
+        if transactionBuilder.createTransaction(from: extracted) != nil {
+            // BLUEPRINT Line 137: Auto-archive email on successful transaction import
+            // Mark the source email as archived so it's hidden from main view
+            archiveEmail(id: extracted.id)
+            NSLog("[ARCHIVE] Auto-archived email \(extracted.id) after transaction import")
+        } else {
             errorMessage = "Failed to save transaction"
         }
     }
