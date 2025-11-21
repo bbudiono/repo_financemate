@@ -1,20 +1,49 @@
 # FINANCEMATE - CURRENT TASKS
 
-**Version**: 2.5.0-P0-FIXES-COMPLETE
-**Last Updated**: 2025-11-03 01:30 (P0 Critical Fixes: OAuth UX + Chat Context)
-**Status**: ✅ MVP 84% COMPLETE - Production Quality 90.6/100 (4.4 points to >95%)
+**Version**: 2.6.1-MERCHANT-EXTRACTION-FIX
+**Last Updated**: 2025-11-08 (Merchant Extraction Bugs Fixed - Awaiting User Validation)
+**Status**: MVP 84% COMPLETE - Production Quality 90.6/100 (4.4 points to >95%)
 **Current Scores**: Backend 89/100, Frontend 96/100, Security 85/100
 **Component Quality**: Individual features 96-97/100 (Security, Accessibility, Bank API, Offline)
-**E2E Tests**: ✅ 21/21 FUNCTIONAL (100%)
-**Security Tests**: ✅ 7/7 PASSING (100%) + P0 .gitignore fix applied
-**Accessibility Tests**: ✅ 8/8 PASSING (100%)
-**Bank API Tests**: ✅ 9/9 PASSING (100%)
-**Performance Tests**: ✅ 5/5 PASSING (100%)
-**Offline Tests**: ✅ 4/4 PASSING (100%)
-**Total Test Coverage**: 54/54 tests passing (100%)
-**Build Status**: ✅ GREEN with ZERO warnings
-**BLUEPRINT**: ✅ 96/114 (84%)
-**Latest**: Comprehensive specialist reviews complete, P0 security fixed, roadmap to 95/100 documented
+**E2E Tests**: 19/21 FUNCTIONAL (90.5%)
+**Merchant Tests**: 11/11 PASSING (100%)
+**Security Tests**: 7/7 PASSING (100%)
+**Accessibility Tests**: 8/8 PASSING (100%)
+**Bank API Tests**: 9/9 PASSING (100%)
+**Performance Tests**: 5/5 PASSING (100%)
+**Offline Tests**: 4/4 PASSING (100%)
+**Build Status**: GREEN (commit 2abe276f)
+**BLUEPRINT**: 96/114 (84%)
+**Latest**: Merchant extraction bugs FIXED (Spaceship/Bunnings, Zip) - awaiting user re-extraction validation
+
+---
+
+## CRITICAL: Merchant Extraction Bug Fix (2025-11-08)
+
+### Status: CODE FIXED - AWAITING USER VALIDATION
+
+**Bugs Fixed (Commit 2abe276f):**
+1. Spaceship emails showing as "Bunnings" - FIXED
+2. Zip variants inconsistent - FIXED
+3. SemanticValidator overwriting correct merchants - FIXED
+
+**Automated Validation:**
+- 11/11 merchant extraction tests PASSING (100%)
+- Build status: GREEN
+- Code review: 92/100 (APPROVED)
+
+**User Action Required:**
+- User is viewing OLD extractions from before the fix
+- User needs to click "Extract & Refresh Emails" in the Gmail tab
+- See `docs/MERCHANT_EXTRACTION_FIX_VALIDATION.md` for step-by-step guide
+
+**Definition of Done:**
+- [x] Bug fix code committed (2abe276f)
+- [x] Automated tests passing (11/11)
+- [x] Code review approved (92/100)
+- [x] Build GREEN
+- [x] Validation guide created
+- [ ] **USER CONFIRMS** merchants display correctly after re-extraction
 
 ---
 
