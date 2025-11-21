@@ -15,6 +15,9 @@ final class ChatbotViewModel: ObservableObject {
     @Published var averageQualityScore: Double = 0.0
     @Published var totalQuestions: Int = 0
 
+    // BLUEPRINT Line 135: Context-Aware AI Assistant
+    @Published var currentContext: ScreenContext = .dashboard
+
     // MARK: - Private Properties
 
     private let context: NSManagedObjectContext
@@ -94,6 +97,17 @@ final class ChatbotViewModel: ObservableObject {
         totalQuestions = 0
         averageQualityScore = 0.0
         initializeWelcomeMessage()
+    }
+
+    // BLUEPRINT Line 135: Update context when navigating to new screen
+    func updateContext(to newContext: ScreenContext) {
+        guard newContext != currentContext else { return }
+        currentContext = newContext
+        logger.info("Screen context updated to: \(newContext.rawValue)")
+    }
+
+    func sendSuggestedQuery(_ query: SuggestedQuery) async {
+        await sendMessage(query.query)
     }
 
     // MARK: - Private Methods

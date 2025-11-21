@@ -4,12 +4,14 @@ struct ChatInputField: View {
     @Binding var messageText: String
     @FocusState.Binding var isInputFocused: Bool
     let isProcessing: Bool
+    // BLUEPRINT Line 135: Context-aware placeholder text
+    var placeholder: String = "Ask about your finances..."
     let onSend: () -> Void
 
     var body: some View {
         VStack(spacing: 8) {
             HStack(spacing: 8) {
-                TextField("Ask about your finances...", text: $messageText, axis: .vertical)
+                TextField(placeholder, text: $messageText, axis: .vertical)
                     .textFieldStyle(.plain)
                     .padding(.horizontal, 12)
                     .padding(.vertical, 8)

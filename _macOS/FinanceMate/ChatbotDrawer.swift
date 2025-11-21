@@ -40,14 +40,57 @@ struct ChatbotDrawer: View {
         VStack(spacing: 0) {
             drawerHeader
             Divider().opacity(0.3)
+            // BLUEPRINT Line 135: Context-aware suggested queries
+            if viewModel.messages.count <= 1 {
+                suggestedQueriesSection
+                Divider().opacity(0.3)
+            }
             messagesScrollView
             Divider().opacity(0.3)
             ChatInputField(
                 messageText: $messageText,
                 isInputFocused: $isInputFocused,
                 isProcessing: viewModel.isProcessing,
+                placeholder: viewModel.currentContext.placeholderText,
                 onSend: sendMessage
             )
+        }
+    }
+
+    // BLUEPRINT Line 135: Suggested queries based on current screen context
+    private var suggestedQueriesSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Suggestions for \(viewModel.currentContext.rawValue)")
+                .font(.caption)
+                .foregroundColor(.secondary)
+                .padding(.horizontal, 16)
+                .padding(.top, 8)
+
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 8) {
+                ForEach(viewModel.currentContext.suggestedQueries) { query in
+                    Button(action: {
+                        Task { await viewModel.sendSuggestedQuery(query) }
+                    }) {
+                        HStack(spacing: 6) {
+                            Image(systemName: query.icon)
+                                .font(.caption)
+                            Text(query.title)
+                                .font(.caption)
+                                .lineLimit(1)
+                        }
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 6)
+                        .frame(maxWidth: .infinity)
+                        .background(.ultraThinMaterial)
+                        .cornerRadius(8)
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    .accessibilityLabel("\(query.title) suggestion")
+                    .accessibilityHint("Asks: \(query.query)")
+                }
+            }
+            .padding(.horizontal, 16)
+            .padding(.bottom, 8)
         }
     }
 

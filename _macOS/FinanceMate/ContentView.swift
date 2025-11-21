@@ -80,6 +80,10 @@ struct ContentView: View {
             authManager.checkAuthStatus()
             authManager.checkGoogleAuthStatus()
         }
+        // BLUEPRINT Line 135: Update chatbot context when tab changes
+        .onChange(of: selectedTab) { newTab in
+            chatbotVM.updateContext(to: ScreenContext.from(tabIndex: newTab))
+        }
         // WCAG 2.1 AA: Listen for keyboard shortcuts (BLUEPRINT Line 266)
         .onReceive(NotificationCenter.default.publisher(for: .newTransactionShortcut)) { _ in
             if authManager.isAuthenticated && selectedTab == 1 {
