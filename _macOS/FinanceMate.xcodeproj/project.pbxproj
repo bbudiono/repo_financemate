@@ -40,6 +40,7 @@
 		3J7F8A1B6E3C0D4F7A5B2C60 /* LLMFinancialAdvisorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A3B1D8F5E4C2A7B9E1F3D5C /* LLMFinancialAdvisorService.swift */; };
 		3K8A9B2C7F4D1E5A8B6C3D71 /* AnthropicAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B4C2E9D6F5A3C8B1E4D7A9F /* AnthropicAPIClient.swift */; };
 		3L9B0C3D8F5E2A6B9C7D4E82 /* LineItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C6D5F4A0E7B3A9C1D2F8E6B /* LineItem.swift */; };
+		43C91191D68A305CCEF4DB44 /* Currency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8525C2E95E87DC320A0177C5 /* Currency.swift */; };
 		44D1E7A36F1DEFC689B2D29B /* AuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0462096396F23463327279A7 /* AuthenticationManager.swift */; };
 		472F3AB0C78B22DCD65B3D15 /* GmailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A06C1B981717175872995B /* GmailViewModel.swift */; };
 		472F3AB0C78B22DCD65B3D17 /* EmailCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 472F3AB0C78B22DCD65B3D16 /* EmailCacheManager.swift */; };
@@ -169,6 +170,7 @@
 		80D8BD2A3F8041F981DB403E /* FieldValidator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FieldValidator.swift; path = FinanceMate/Services/FieldValidator.swift; sourceTree = SOURCE_ROOT; };
 		84956A0DDADC0877D05E970E /* ScreenContext.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ScreenContext.swift; path = FinanceMate/Models/ScreenContext.swift; sourceTree = SOURCE_ROOT; };
 		84E9DF96B28AC0C677EC1C18 /* ExtractionHealthViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExtractionHealthViewModel.swift; path = FinanceMate/ViewModels/ExtractionHealthViewModel.swift; sourceTree = "<group>"; };
+		8525C2E95E87DC320A0177C5 /* Currency.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Currency.swift; path = FinanceMate/Models/Currency.swift; sourceTree = SOURCE_ROOT; };
 		856BE35DA9C5FBCCD4E91B28 /* AdvancedFilterPanel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AdvancedFilterPanel.swift; path = FinanceMate/Views/AdvancedFilterPanel.swift; sourceTree = SOURCE_ROOT; };
 		85C1CB1C75DC0D59EB08342C /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		862B24382DB2714189DE41A9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -380,6 +382,7 @@
 				F48E9C8F6C9F407BA1BFA5E3 /* OnboardingStep.swift */,
 				84956A0DDADC0877D05E970E /* ScreenContext.swift */,
 				F599A938AFDAF908204DD249 /* FilterRule.swift */,
+				8525C2E95E87DC320A0177C5 /* Currency.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -588,6 +591,7 @@
 				C0FE8028B161327BC5900600 /* ScreenContext.swift in Sources */,
 				73C9D1B85CB574762A9E826A /* FilterRule.swift in Sources */,
 				846A1A400950CFF2299C5D92 /* AdvancedFilterPanel.swift in Sources */,
+				43C91191D68A305CCEF4DB44 /* Currency.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
