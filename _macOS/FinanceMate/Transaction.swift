@@ -38,4 +38,35 @@ public class Transaction: NSManagedObject, Identifiable {
         setPrimitiveValue("Other", forKey: "category")
         setPrimitiveValue("expense", forKey: "transactionType")
     }
+
+    // MARK: - BLUEPRINT Line 133: Split Visual Indicator Support
+
+    /// Check if this transaction has any split allocations across all line items
+    /// Used by TransactionRowView to display split indicator badge
+    public var hasSplitAllocations: Bool {
+        guard let lineItems = value(forKey: "lineItems") as? NSSet else {
+            return false
+        }
+
+        for case let lineItem as LineItem in lineItems {
+            if lineItem.hasSplitAllocations {
+                return true
+            }
+        }
+        return false
+    }
+
+    /// Get total count of split allocations across all line items
+    /// Used by TransactionRowView to display split count badge
+    public var splitAllocationCount: Int {
+        guard let lineItems = value(forKey: "lineItems") as? NSSet else {
+            return 0
+        }
+
+        var totalCount = 0
+        for case let lineItem as LineItem in lineItems {
+            totalCount += lineItem.splitAllocationCount
+        }
+        return totalCount
+    }
 }

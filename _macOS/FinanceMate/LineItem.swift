@@ -24,4 +24,21 @@ public class LineItem: NSManagedObject, Identifiable {
     public var total: Double {
         return Double(quantity) * price
     }
+
+    /// BLUEPRINT Line 133: Check if this line item has any split allocations
+    /// Used by visual indicator system to show split badge on transactions
+    public var hasSplitAllocations: Bool {
+        guard let allocations = value(forKey: "splitAllocations") as? NSSet else {
+            return false
+        }
+        return allocations.count > 0
+    }
+
+    /// BLUEPRINT Line 133: Get count of split allocations for this line item
+    public var splitAllocationCount: Int {
+        guard let allocations = value(forKey: "splitAllocations") as? NSSet else {
+            return 0
+        }
+        return allocations.count
+    }
 }
